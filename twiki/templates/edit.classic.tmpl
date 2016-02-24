@@ -1,0 +1,59 @@
+%TMPL:INCLUDE{"twiki.classic"}%
+%TMPL:DEF{"focus"}%try { document.main.text.focus(); } catch (er) {}
+%TMPL:END%
+%TMPL:DEF{"templatescript"}%<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_edit.js"></script>
+%TMPL:END%
+%TMPL:DEF{"bodystart"}%<body bgcolor="#ffffff" onload="initForm()">
+#PageTop
+%TMPL:END%
+
+%TMPL:DEF{"footernote"}%<div class="TWikiFooterNote">
+&nbsp; &nbsp;
+</td><td valign="top">
+%IF{ "context RevCommentPluginEnabled" then="&nbsp; &nbsp; <label for='comment'>Summary of changes: </label> <sup>(<a target='RevComment' onclick='return launchWindow(\"%TWIKIWEB%\",\"RevComment\")' href='#%MAKETEXT{Opens page in new window}%' >%MAKETEXT{help}%</a>)</sup> <input type='hidden' name='t' value='%URLPARAM{t}%' /><input class='twikiEditComment' type='text' name='comment' value='%URLPARAM{comment}%'><br />" }%
+&nbsp; &nbsp;
+<input type="checkbox" name="dontnotify" %DONTNOTIFYCHECKBOX% /> Minor changes, don't notify <br />
+&nbsp; &nbsp;
+<input type="checkbox" name="forcenewrevision" %FORCENEWREVISIONCHECKBOX% /> Force new revision 
+<font size="-1">(<a href="#%MAKETEXT{"Opens page in new window"}%" target="DontNotify" onclick="return launchWindow('%TWIKIWEB%','DontNotify')" href="%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/DontNotify" rel='nofollow'>help</a>)</font>
+<font color="#333333" size="-1">
+%INCLUDE{"%TWIKIWEB%.WikiSyntaxSummary"}%
+</font>
+ </div>%TMPL:END%
+
+
+%TMPL:DEF{"content"}%<form name="main" action="%SCRIPTURLPATH{"save"}%/%WEB%/%TOPIC%" method="post">
+<div class"twikiEditTextarea">
+<textarea id='topic' name='text' wrap='virtual' rows='%EDITBOXHEIGHT%' cols='%EDITBOXWIDTH%' style='%EDITBOXSTYLE%' onkeydown='handleKeyDown(event)'>%TEXT%</textarea><br />
+</div>
+<input type="hidden" name="originalrev" value="%ORIGINALREV%" />
+<input type="hidden" name="skin" value="%URLPARAM{"skin"}%" />
+<input type="hidden" name="redirectto" value="%REDIRECTTO%" />
+<input type="hidden" name="formtemplate" value="%FORMTEMPLATE%" />
+<input type="hidden" name="templatetopic" value="%TEMPLATETOPIC%" />
+<input type="hidden" name="topicparent" value="%TOPICPARENT%" />
+<input type="hidden" name="newtopic" value="%NEWTOPIC%" />
+<input type="hidden" name="cmd" value="%CMD%" />
+See below for help in editing this page.
+<table border="0" cellpadding="2" cellspacing="0">
+ <tr>
+  <td><b>-- <nop>%WIKIUSERNAME% - %DATE%</b></td>
+  <td> &nbsp;&nbsp; <code>&lt;==</code> Your signature for easy copy and paste (triple click to select)</td>
+ </tr>
+</table>
+%FORMFIELDS%
+%TMPL:P{"topicinfo"}%</form>%TMPL:END%
+
+ 
+%TMPL:DEF{"topicaction"}%	<input type="submit" class="twikiSubmit" name="action_cancel" value="Cancel" id="cancel" />%TMPL:P{"sep"}%	<input type="submit" class="twikiSubmit" name="action_checkpoint" value="Checkpoint" id="checkpoint" />
+	<input type="submit" class="twikiSubmit" name="action_quietsave" value="QuietSave" id="quietsave" />
+    <input type="submit" class="twikiSubmit" name="action_save" value="Save" id="save" />%TMPL:P{"sep"}% 
+	<input type="submit" class="twikiSubmit" name="action_preview" value="Preview" id="preview" />%TMPL:END%
+%TMPL:DEF{"titleaction"}%(edit) %TMPL:END%
+%TMPL:DEF{"titlehelp"}% %TMPL:END%
+%TMPL:DEF{"webaction"}%Change topic%TMPL:END%
+%TMPL:P{"htmldoctype"}%
+%TMPL:P{"head"}%
+%TMPL:P{"bodystart"}%
+%TMPL:P{"main"}%
+%TMPL:P{"bodyend"}%

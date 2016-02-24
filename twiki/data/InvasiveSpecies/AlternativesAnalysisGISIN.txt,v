@@ -1,0 +1,127 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.1
+date	2007.08.04.04.02.05;	author AnnieSimpson;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="AnnieSimpson" date="1186200125" format="1.1" version="1.1"}%
+%META:TOPICPARENT{name="DevelopmentDocsGISIN"}%
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>GISIN: Alternatives Analysis</title>
+<link rel='stylesheet' href='W3C-REC.css' type='text/css'>
+</head>
+
+<body>
+<h1>Alternatives Analysis</h1>
+
+<h4>Version: 1.1 -- AlternativesAnalysisGISIN</h4>
+
+<h4>Last  Modified Date: 20th of March, 2007</h4>
+
+<h2>1. Introduction</h2>
+
+<p>This document provides information on the various alternatives for implementing the Global Invasive Species Information Network (GISIN). The document also contains an explanation of how components that are not a part of the system can be mapped to the system. </p>
+<p>Note: This is a living document and will be updated as new information becomes available. Please let me know if you have inputs <a href='mailto:jim@@nrel.colostate.edu'>(jim@@nrel.colostate.edu)</a> </p>
+
+<h2>2. Protocol Schema </h2>
+
+<p>There are a relatively large number of alternatives  available for the invasive species system to use as a communication  architecture between computers.&nbsp; The  architecture provides the structure that the protocol will operate within and  can have a significant effect on the easy of use and compatibility of the  system.</p>
+<p>The following sections document the architectures that were  selected for the system and those that were not and why.</p>
+<p>Currently the schema used has been taken from the DarwinCore schema and the Invasive Alien Species  Profile Schema (IASPS). </p>
+
+<h3>2.1 Access to Biological Collection Data (ABCD)</h3>
+<p>ABCD is a raster extensive schema for information related to biological specimens and observations. While it does not meet the exact needs of the invasive species community, and is more complex than is required, it does provide content and experience that should be examined as GISIN develops. GISIN will also need to examine allowing searches across ABCD enabled data sets. </p>
+
+<h3>2.2 Invasive Alien Species  Profile Schema (IASPS)</h3>
+<p>IASPS is a schema that captures the wide array of information that is of interest to the invasive species community. The schema was developed before the survey of providers showed that we needed to have a very simple provider solution. The current approach is to develop the GISIN schema by examining the content of the IASPS and including the simplest possible version of the content.</p>
+
+<h3>2.3 DarwinCore</h3>
+<p>DarwinCore is a relatively simple schema for specimens and occurrences and is in place in the US and Europe at a variety of herbariums and museums. DarwinCore was used as the starting point for occurrence data exchange.  </p>
+
+<h3>2.4 Taxon Concept Schema (TCS)</h3>
+<p>The invasive species community largely uses scientific names to communicate taxon information. This causes problems when the group of organisms represented by a scientific name changes. The invasive species community is somewhat insolated from this problem basically because we deal with a smaller number of species than herbariums and museums but the problem does occur. The current recommendation is to use full scientific names (or as much as the provider has available) and allow for addition of a taxon concept in the future. </p>
+<p>Reference: <a href='http://www.tdwg.org/activities/tnc/'>Taxonomic Names and Concepts Group</a> </p>
+Excellent write up: <a href='http://www.tdwg.org/uploads/media/User_Guide_01.pdf'>Taxon Concept Schema &#8211; User Guide</a>
+<p>Note: in reality the field folks tend to use common names or their own &quot;codes&quot; for taxon concepts (i.e. NRCS codes). Can we require all providers to map their codes and common names to scientific names? </p>
+
+<h2>3. Protocol Architectures</h2>
+<p>There are a relatively large number of alternatives  available for the invasive species system to use as a communication  architecture between computers.&nbsp; The  architecture provides the structure that the protocol will operate within and  can have a significant effect on the easy of use and compatibility of the  system.</p>
+<p>The following sections document the architectures that were  selected for the system and those that were not and why.</p>
+<p>Current REST is the selected alternative for implementation. </p>
+<h3>3.1 REST (HTTP Request/Response)</h3>
+<p>- Simplest architecture available<br />
+  - Most widely used for web services<br />
+  - Does not require anything other than a web server to  operate</p>
+<h3>3.2 SOAP</h3>
+<p>- Encoding and decoding SOAP packages can take 5 times the  time as other solutions<br />
+  - SOAP is more complex than required</p>
+  
+<h3>3.3 WASABI</h3>
+<p>- Requires a DLL<br />
+  - More complex than required</p>
+  
+<h3>3.4. DiGIR</h3>
+<p>- Hierarchical query structure adds more complexity than is  required</p>
+
+<h3>3.5 Biological Collection Access Service for Europe (BioCASE)</h3>
+ <p>BioCASE is in place and functional in a variety of locations in Europe for the exchange of information in museums and herbariums. BioCASE resolves schema differences at the provider level making it tool complicated a solution for us to support across the large variety of providers in the invasive species community.</p>
+ <p>Reference link: http://www.biocase.org/dev/systems/unitsystem.shtml </p>
+ 
+<h3>3.6 RSS Feeds</h3>
+ <p>- Still under investigation</p>
+<p>3.7 SDD &ndash; Structured Descriptive Data </p>
+<p>TBD</p>
+
+<h3>3.8 TDWG Access Protocol for Information Retrieval (TAPIR)</h3>
+<p>TAPIR is currently in development as a generic protocol for query/response for web services. TAPIR is independent of schema as long as they are XML-based. We can add our schema to TAPIR based systems in the future. </p>
+
+<h3>3.9 Open Archives Initiative - Protocol for Metadata Harvesting (OAI-PMH)</h3>
+<p>Anyone have input here? </p>
+
+<h2>4. Provider Solution</h2>
+<p>Because of the large variation in the level of technical resources available to providers, the variety of systems used by providers, and the minimum development resources available, the provider solution must either be one that already exists and meets the needs of all providers or is as simple as possible. Since an existing solution does not meet the needs of the invasive species community, a very simple provider solution (i.e. a toolkit) will be developed.</p>
+
+<h3>4.1 DiGIR</h3>
+<p>The DiGIR toolkit is only available for PHP, does not include support for checklists, and is more complicated than required (making it difficult to customize for providers). At the same time, the DiGIR solution for mapping elements of the protocol schema to database fields is very clever and makes the toolkit easy to adapt. This feature should be copied for GISIN. </p>
+
+<h2>5. Directory/Registry </h2>
+<p>GISIN requires a directory or registry to allow end-users and data consumers to find information on invasive species web services. Some of the challenging features of this registry is to allow searching based on language, taxon, and location. Language is fairly straightforward. Taxon is more challenging in that users may want to see all information within a given taxonomic group such as all members of the genus 'Tamarix'. This requires a hierarchical database behind the registry. The location search is still more challenging in that a person may be interested in invasive species in their county but their county may overlap with national parks and wildlife refuges. The question remains how to provide a complete list of the invasive species within a province without having all locations mapped to all locations they overlap with. </p>
+
+<h3>5.1 Universal Description, Discovery and Integration (UDDI) </h3>
+<p>While UDDI at first seemed to be a natural fit, it was discovered that the invasive species community needs very specific query capabilities to find web services of interest. </p>
+<p>Note: I'm not sure if UDDI is a fit now or not, comments? </p>
+
+<h2>6. Search Portal </h2>
+<p>End-users will expect to find a portal that allows them to search across data sources to find information on invasive species. GISIN will allow anyone to create a portal but it does seem that we should provide a sample portal. </p>
+<p>- When can be obtain funding to add search across other protocols? (BioCASE, DiGIR). </p>
+
+<h3>6.1 NISbase</h3>
+<p>NISBase has decided to remain a portal focused on aquatic non-indigenous species but will be adding the ability to search across GISIN providers.</p>
+</body>
+</html>
+
+
+
+
+-- Main.AnnieSimpson - 04 Aug 2007@

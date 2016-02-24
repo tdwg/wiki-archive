@@ -1,0 +1,2308 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.2
+date	2006.03.02.04.48.13;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.03.02.04.12.05;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@Agadir draft schema, v 0.9
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 sp2 U (http://www.altova.com) by Robert A. Morris (UMASS Boston CSLabs) -->
+<!-- This schema carries the working title Agadir and is versioned beginning with version 0.9
+	Bob Morris, ram@@cs.umb.edu 01 March 2006
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://landcareresearch.co.nz/IASProfile" targetNamespace="http://landcareresearch.co.nz/IASProfile" elementFormDefault="qualified" attributeFormDefault="unqualified" version="Agadir 0.9">
+	<xs:element name="Datasets">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Dataset" type="DatasetT" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--**************************************************************
+       Original IASProfile with addition of checklist types in preliminary form
+       Bob Morris ram@@cs.umb.edu
+       Feb 22 2006
+       **************************************************************
+       -->
+	<xs:complexType name="ChecklistByLocationT">
+		<xs:annotation>
+			<xs:documentation>@@@@@@See also ChecklistByTaxonType, which is not annotated as much. Should both be provided or should one be provided and XSLT spec'd to transform one to the other? That would be more robust against changes. BobMorris 22February2006</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChecklistGUID" type="GUIDT">
+				<xs:annotation>
+					<xs:documentation>A globally unique identifier for the entire data collection the present dataset was derived from. The exact format and/or semantics are still under discussion. @@@@@@If in a container of checklists, GUIDing is odd... BobMorris 2/22/2006</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SourceMetadata" type="SourceMetadataT">
+				<xs:annotation>
+					<xs:documentation>DublinCore-like container for metadata describing the source of this entire profile</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Locations">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Location" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@Could include "World" in case there are global  Taxa with globa biostatus and facts. But note that cannot enforce the "truth" of whether a biostatus or fact belongs to a particular location. Does this make XSLT tricky?...BobMorris 22February2006</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="LocationT">
+										<xs:sequence>
+											<xs:element name="Taxa">
+												<xs:annotation>
+													<xs:documentation>one or more taxon/location/fact triplets.</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="Taxon" maxOccurs="unbounded">
+															<xs:annotation>
+																<xs:documentation>TCS GUID and/or locally stored elements derived from IAS dbs</xs:documentation>
+															</xs:annotation>
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="Name" type="TaxonomicT">
+																		<xs:annotation>
+																			<xs:documentation>@@@@@@@@@@@@Name here is necessarily associated with location, but except for common names this is unlikely to be desired. Probably this implies need  decomposition of TaxonomicT into location independent and location dependent data ...BobMorris 22Feb2006 </xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:sequence>
+																		<xs:element name="Biostatus" type="BiostatusT"/>
+																		<xs:element name="Facts" minOccurs="0">
+																			<xs:complexType>
+																				<xs:sequence>
+																					<xs:element name="Fact" type="FactSheetT" maxOccurs="unbounded"/>
+																				</xs:sequence>
+																			</xs:complexType>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChecklistByTaxonT">
+		<xs:sequence>
+			<xs:element name="ChecklistGUID" type="PlaceholderT">
+				<xs:annotation>
+					<xs:documentation>A globally unique identifier for the entire data collection the present dataset was derived from. The exact format and/or semantics are still under discussion.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SourceMetadata" type="SourceMetadataT">
+				<xs:annotation>
+					<xs:documentation>DublinCore-like container for metadata describing the source of this entire profile</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Taxa">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Taxon" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>TCS GUID and/or locally stored elements derived from IAS dbs</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Name" type="TaxonomicT">
+										<xs:annotation>
+											<xs:documentation>@@@@@@fix TaxonomicT to use ABCD-style "Higher taxon". Also add synonyms</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Locations">
+										<xs:complexType>
+											<xs:sequence maxOccurs="unbounded">
+												<xs:element name="Location" type="LocationT" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Should only be populated if this is a regional fact sheet element - see switch within Facts</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SourceMetadataT">
+		<xs:annotation>
+			<xs:documentation>Not sure about linkage of DC with reference here. Needs further consideration.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Metadata" type="ContentMetadata" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ABCD Metadata element</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SourceReference" type="ReferencedSource" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>the sources used to build this profile. Lit references, web references, people. Against keyword to indicate profile component. This mechanims rather than many reference elemnts for each component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaxonomicT">
+		<xs:annotation>
+			<xs:documentation>Linkage to TCS data with some minimal local caching. Note that source dbs containing detailed and authoritative taxonomic data should share that data via the TaxonConceptSchema.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TCSGUID" type="GUIDT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The GUID of the taxon concept - even if nominal concept - within an akcknowldeged taxon name catalogue - the ECATGUID (superset of ITIS/COL/Species2000/GSD/RSD s)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ScientificName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Full name without author string</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Authors" type="xs:string" minOccurs="0"/>
+			<xs:element name="Kingdom" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Rank data should be derived from taxon db's via the GUID</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FamilyName" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>@@@@@@###Agadir. This will go away and be replaced by a DC style rank name and rank value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CommonNames" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Critical to capture these data from IAS dbs</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaxonDataSources" type="SourceMetadataT" minOccurs="0"/>
+			<xs:element name="LifeForm" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Standard">
+							<xs:annotation>
+								<xs:documentation>See Attributes</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="Virus"/>
+									<xs:enumeration value="Bacteria"/>
+									<xs:enumeration value="Fungus"/>
+									<xs:enumeration value="Arachnid"/>
+									<xs:enumeration value="Insect"/>
+									<xs:enumeration value="Flatworm"/>
+									<xs:enumeration value="Nematode"/>
+									<xs:enumeration value="Mollusc"/>
+									<xs:enumeration value="Alga/seaweed"/>
+									<xs:enumeration value="Anemone"/>
+									<xs:enumeration value="Coral"/>
+									<xs:enumeration value="Comb jelly"/>
+									<xs:enumeration value="Jellyfish"/>
+									<xs:enumeration value="Crustacean"/>
+									<xs:enumeration value="Starfish"/>
+									<xs:enumeration value="Fish"/>
+									<xs:enumeration value="Amphibian"/>
+									<xs:enumeration value="Reptile"/>
+									<xs:enumeration value="Bird"/>
+									<xs:enumeration value="Mammal"/>
+									<xs:enumeration value="Aquatic plant"/>
+									<xs:enumeration value="Palm"/>
+									<xs:enumeration value="Tree"/>
+									<xs:enumeration value="Shrub"/>
+									<xs:enumeration value="Grass"/>
+									<xs:enumeration value="Rush"/>
+									<xs:enumeration value="Sedge"/>
+									<xs:enumeration value="Herb"/>
+									<xs:enumeration value="Vine, climber"/>
+									<xs:enumeration value="Bromeliad"/>
+									<xs:enumeration value="Fern"/>
+									<xs:enumeration value="Succulent"/>
+									<xs:enumeration value="Other"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="External" type="ExternalEnumT"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Synonyms" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>@@@@@@See Agadir minutes</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Synonym" type="PlaceholderT" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReferencedSource">
+		<xs:annotation>
+			<xs:documentation>Linkage to referenced data - not enumerated here</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReferenceGUID" type="GUIDT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>URI of an external reference</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceElement" type="PlaceholderT">
+				<xs:annotation>
+					<xs:documentation>cached elements of a reference - not enumerated here. Structures exist elsewhere. External namespace?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Keyword" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>keywords to match profile component decriptors. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DataQualityStatement" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Third party comment@@@@@@###what does this mean?BobMorris.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ImageURI" type="xs:anyURI">
+		<xs:annotation>
+			<xs:documentation>In its simplest form this is a URL. The image provider to ensure appropriate image metadata in the web form referenced. A TDWG group is being formed to deal with image metadata standards. Could be expanded here - structures exist elsewhere.@@@@@@@@@@@@ram where/how to treat images. They are needed in many places, probably. Certainly needed in taxa, maybe in locations. There may be embedded images. Does UBIF specify media resources?</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="HabitatT">
+		<xs:sequence>
+			<xs:element name="HabitatRange" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>See Enumeration</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="native"/>
+						<xs:enumeration value="introduced"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Realm" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>See Enumeration</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="terrestrial"/>
+						<xs:enumeration value="freshwater"/>
+						<xs:enumeration value="brackish"/>
+						<xs:enumeration value="marine"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Description" type="xs:string"/>
+			<xs:element name="UniversalHabitatType">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="Standard">
+							<xs:annotation>
+								<xs:documentation>See Enumeration</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="Coastland habitats"/>
+									<xs:enumeration value="Estuaries"/>
+									<xs:enumeration value="Lakes"/>
+									<xs:enumeration value="Watercourses"/>
+									<xs:enumeration value="Wetlands"/>
+									<xs:enumeration value="Urban areas"/>
+									<xs:enumeration value="Agricultural areas"/>
+									<xs:enumeration value="Disturbed areas"/>
+									<xs:enumeration value="Planted forests"/>
+									<xs:enumeration value="Natural forests"/>
+									<xs:enumeration value="Scrub/shrublands"/>
+									<xs:enumeration value="Range/grasslands"/>
+									<xs:enumeration value="Tundra"/>
+									<xs:enumeration value="Deserts"/>
+									<xs:enumeration value="Ice"/>
+									<xs:enumeration value="Host"/>
+									<xs:enumeration value="Vector"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="External" type="ExternalEnumT"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RequirementsTolerances" type="RequirementsTolerancesT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>@@@@@@###Needs work</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequirementsTolerancesT">
+		<xs:annotation>
+			<xs:documentation>@@@@@@###Needs work</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Temperature" type="NumericRangeT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>@@@@@@### need temp units?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Precipitation" type="LinearMeasureT" minOccurs="0"/>
+			<xs:element name="Elevation" type="LinearRangeT" minOccurs="0"/>
+			<xs:element name="Depth" type="LinearRangeT" minOccurs="0"/>
+			<xs:element name="Pedology" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>@@@@@@###Needs work</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SoilType" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="SoilTexture" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="ParticleSize" type="NumericRangeT" minOccurs="0"/>
+						<xs:element name="SoilReaction" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="SoilDrainage" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="SlopeRange" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="Aspect" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="ShowLine" type="PlaceholderT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Salinity" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Frost" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Waterlogging" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Drought" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="SolarRadiation" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="pH" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="DissolvedOxygen" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="WaterVelocity" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Turbidity" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Shading" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Disturbance" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Competition" type="PlaceholderT" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FactSheetT">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>@@@@@@May need refactoring at least because Biostatus is separate for checklists. BobMorris; Hannu: generally may need factoring if to be useful for other checklist contexts@@@@@@@@@@a few things MUST be location specific and this may now be lost since we don't model LocationSpecificFacts anymore. Needs scientists to revisit which must be, which may be and which must not be location specific. This might be only Name</xs:documentation>
+			</xs:annotation>
+			<xs:element name="Sources" type="ReferencedSource" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>@@@@@@@@@@@@Factsheet should not require sources in each fact, but checklists usually will. Hence this needs refactoring...ram</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DescriptiveDiagnosticData" type="DescriptiveDiagnosticDataType" minOccurs="0"/>
+			<xs:element name="Biology" type="BiologyT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>@@@@###Needs work</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ClimatePreference" type="ClimatePreferencesType" minOccurs="0"/>
+			<xs:element name="HabitatData" type="HabitatT" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Think about including a lifecycle-stage option</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Hosts" type="HostsT" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Interaction and distribution of hosts. Mechanims here is poor and will repeat identical host data for different taxa?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Enemies" type="InteractionsT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Uses" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Use" type="UseT"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Impacts" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Impact" type="ImpactsT" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RiskStatement" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Management" type="ManagementT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Project or case study</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Introduction" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>@@@@@@Known Introduction methods. Will be an Enumeration</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Dispersal" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>@@@@@@ Known Dispersal methods</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NativeRange" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="IntroducedRange" type="PlaceholderT" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExpertT">
+		<xs:sequence>
+			<xs:element name="Agent" type="ContactT">
+				<xs:annotation>
+					<xs:documentation>Needs to refer to an agent model. Not enumerated here.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaxaAndRange" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Taxa" type="TaxonomicT" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>experts in these set of taxa (at any rank)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="FreeTextRange" type="PlaceholderT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InteractionsT">
+		<xs:sequence>
+			<xs:element name="TaxonName" type="TaxonomicT"/>
+			<xs:element name="LifeStage" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Symptom" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Part" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Status" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Status of organims being impacted, e.g. rare, endangred, threatened.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LocationT">
+		<xs:sequence>
+			<xs:element name="MarineBioregion" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FreshWaterBody" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Continent" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="IslandGroup" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Island" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Country" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="StateProvince" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="CountyMunicipality" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Locality" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="LocalityType" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>port, protected area etc</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NearestNamedPlace" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="GeodeticDatum" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Need to assure compliance with geospatial standards</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DecimalLongitude" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>@@@@@@from greenwich? 0-360? -180-+180</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DecimalLatitude" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="FullEasting" minOccurs="0"/>
+			<xs:element name="FullNorthing" minOccurs="0"/>
+			<xs:element name="CoordinateUncertaintyMeters" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>I think we need accuracy and uncertainty</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ProjectionType" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="GridUnits" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="UTMZone" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="BoundingBoxDX" type="LinearMeasureT" minOccurs="0"/>
+			<xs:element name="BoundingBoxDY" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="AreaSize" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="Elevation" type="NumericRangeT" minOccurs="0"/>
+			<xs:element name="MinimumDepthInMeters" minOccurs="0"/>
+			<xs:element name="MaximumDepthInMeters" minOccurs="0"/>
+			<xs:element name="DefinedLocationSchema">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="DefinedSchemaType">
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="DefinedSchemaName" minOccurs="0"/>
+								<xs:element name="DefinedSchemaValue" minOccurs="0"/>
+								<xs:element name="DefinedSchemaReference" type="ReferencedSource" minOccurs="0"/>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LocationGUID" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Extrenal references, e.g. to WMS providers. Probably a better way? What do FDGC do? </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BiologyT">
+		<xs:sequence>
+			<xs:element name="Reproduction" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>think about relationship with requirements @@@@@@###Needs work</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Temperature" type="xs:decimal" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###Needs annotation. Should be a numeric range?</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Cues" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###S\Enumeration??</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Salinity" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###Needs annotation. Should be numeric range?</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="StrategyOrSystem" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###???</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="FecundityOrOutput" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###???</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Nutrition" type="xs:string" minOccurs="0"/>
+			<xs:element name="LifeCycle" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>e.g. disease cycle</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TrophicLevel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Position in the food chain, determined by the number of energy-transfer steps to that level. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UndesirableCharacteristics" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Persistence, Capacity to establish and spread, Capable of securing and ingesting a wide range of food, Tolerant of physical conditions, Pioneering in disturbed or vacant habitats</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Growth" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Rate" type="xs:string" minOccurs="0"/>
+						<xs:element name="Cues" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>What triggers growth</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DevelopmentTime" type="xs:string" minOccurs="0"/>
+						<xs:element name="DevelopmentStage" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ManagementT">
+		<xs:annotation>
+			<xs:documentation>@@@@@@###feels like this should be a singleton which is a choice, each one also being a singleton representing a single Management activity, and those should be in a container wherever used. Hiw di you tell the difference between a single management with may objects, e.g. DiffucultyEfficacy and severak Management activities with one object? BobMorris</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ProjectOrCaseStudy" type="ProjectOrCaseStudyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:sequence minOccurs="0">
+				<xs:element name="Prevention" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>@@@@@@###needs work</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IncursionDetection" type="PlaceholderT" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Where/when to look for it, how to attract/trap it, where to find a diagnostic key/expert to identify it, etc.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="RapidResponse" type="PlaceholderT" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>how to collect it, who to send sample to, warning statements etc.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="AwarenessRaising" type="PlaceholderT" minOccurs="0"/>
+							<xs:element name="PostPreBorder" type="PlaceholderT" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Flag as post or pre</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Control" type="ActivityT" minOccurs="0"/>
+				<xs:element name="Eradication" type="ActivityT" minOccurs="0"/>
+				<xs:element name="Containment" type="ActivityT" minOccurs="0"/>
+				<xs:element name="Mitigation" type="ActivityT" minOccurs="0"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ImpactsT">
+		<xs:sequence>
+			<xs:element name="Type" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>#NeedsWork</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Environmental" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###Needs work</xs:documentation>
+							</xs:annotation>
+							<xs:complexType mixed="false">
+								<xs:sequence>
+									<xs:element name="EcosystemProcesses" type="PlaceholderT" minOccurs="0"/>
+									<xs:element name="CommunityStructure" type="PlaceholderT" minOccurs="0"/>
+									<xs:element name="CommunityComposition" type="PlaceholderT" minOccurs="0"/>
+									<xs:element name="TaxonImpacted" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>@@@@@@###Is this needed? Isn't the TaxonImpacted the one containing this  impact element? Michael and I discussed in Agadir and I think I still don't understan. BobMorris</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Taxon" type="TaxonomicT" minOccurs="0"/>
+												<xs:element name="ConservationSignificance" type="PlaceholderT" minOccurs="0"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="HumanHealth" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="EconomicLivelihood" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="CulturalAmenity" type="PlaceholderT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Outcome" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>See Enumeration @@@@@@###removed 'Other' from this. Did its presence mean there was supposed to be an external schema? BobMorris, Agadir</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value=""/>
+						<xs:enumeration value="Altered tropic level"/>
+						<xs:enumeration value="Changed gene pool"/>
+						<xs:enumeration value="Conflict"/>
+						<xs:enumeration value="Damaged ecosystem services"/>
+						<xs:enumeration value="Ecosystem change"/>
+						<xs:enumeration value="Habitat alteration"/>
+						<xs:enumeration value="Host damage"/>
+						<xs:enumeration value="Increases vulnerability to invasions"/>
+						<xs:enumeration value="Infrastructure damage"/>
+						<xs:enumeration value="Loss of endangered species"/>
+						<xs:enumeration value="Loss of medicinal resources"/>
+						<xs:enumeration value="Loss of native species"/>
+						<xs:enumeration value="Modification of fire regime"/>
+						<xs:enumeration value="Modification of hydrology"/>
+						<xs:enumeration value="Modification of natural benthic comunities"/>
+						<xs:enumeration value="Modification of nutrient regime"/>
+						<xs:enumeration value="Modification of successional patterns"/>
+						<xs:enumeration value="Monoculture formation "/>
+						<xs:enumeration value="Negatively impacts agriculture "/>
+						<xs:enumeration value="Negatively impacts aquaculture"/>
+						<xs:enumeration value="Negatively impacts cultural/traditional practices"/>
+						<xs:enumeration value="Negatively impacts forestry"/>
+						<xs:enumeration value="Negatively impacts human health"/>
+						<xs:enumeration value="Negatively impacts livelihoods"/>
+						<xs:enumeration value="Negatively impacts mariculture"/>
+						<xs:enumeration value="Negatively impacts tourism"/>
+						<xs:enumeration value="Obstructs waterways"/>
+						<xs:enumeration value="Reduced amenity values"/>
+						<xs:enumeration value="Reduced native biodiversity"/>
+						<xs:enumeration value="Selective loss of genotypes"/>
+						<xs:enumeration value="Soil accretion "/>
+						<xs:enumeration value="Threat to endangered species"/>
+						<xs:enumeration value="Threat to native species"/>
+						<xs:enumeration value="Transportation disruption "/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Mechanism" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Alleopathic
+Causes allergic response 
+Competition-Monopolising resources
+Competition-Shading
+Competition-Smothering
+Competition -Strangling
+Competition-Other
+Disease transmission
+Filtration
+Fouling
+Herbivory/Grazing/Browsing
+Hybridisation
+Induces hypersensitivity
+Interaction with other invasive species 
+Parisitism
+Pathogenic
+Poisoning
+Pollen swamping 
+Predation
+Rapid growth
+Rooting
+Trampling 
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Interactions" type="InteractionsT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="FreeText" type="FreeTextT" minOccurs="0"/>
+			<xs:element name="Degree" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>e.g. high, moderate, minor or potential</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ProjectOrCaseStudy" type="ProjectOrCaseStudyType">
+				<xs:annotation>
+					<xs:documentation>@@@@@@###Needs work</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UseT">
+		<xs:sequence>
+			<xs:element name="UseType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>See enumeration</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Economic"/>
+						<xs:enumeration value="Social"/>
+						<xs:enumeration value="Environmental"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Free text</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AlternativeOrganisms" type="TaxonomicT" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DefinedSchemaType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Generic user defined classification scheme @@@@@@Meant as a simple extension mechanism for lists given as an enumeration. Applications are not guaranteed to be able to parse this list, or even resolve it. But if they can, it is required that that searches and comparisons and other TAPIR stuff against these and the original enumeration should work...</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ListResolutionGUID" type="GUIDT">
+				<xs:annotation>
+					<xs:documentation>This must result in the production of a list in some form whose elements can be compared to </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ContentMetadata">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">Metadata referring to the principal source of the entire data collection (thus the metadata scope may be wider than the objects actually contained in the data set). If a history of the data collection (revised or expanded in various projects or at different institutions) exist, this must be reflected in the IPR statements and possibly in the list of Owners.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Description">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Dublin Core conformant elements describing the content of the data source queried, representation in different languages possible</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Representation" type="MetadataDescriptionRepr" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">The description in a specified language. Only one representation should be delivered for each language. [ATTR: language]</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="IconURI" type="xs:anyURI" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">The URI of an icon/logo symbolizing the project.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Scope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Keyword lists of geographical, taxonomic, etc. scopes. In the case of projects in progress, 'scope' may define the planned or intended, rather than the achieved scope (or coverage). If scope is given, the content available should be entirely within scope, because this item is for resource discovery purposes. Compare also Coverage in DC.Description (which is language-specific). (Items from Scope may be added to DC.Coverage)@@@@@@###needs work</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GeoecologicalTerms" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>A collection of terms describing the geoecological scope of the source queried by means of area names (e.g. 'Worldl', 'Germany', 'Atlantic Ocean', 'Andes', 'Mountains'. A list of recommended terms should be developed.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="GeoEcologicalTerm" type="StringL255" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="TaxonomicTerms" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>A collection of taxon names of higher rank describing the taxonomic scope of the source queried. A list of recommended terms should be developed.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="TaxonomicTerm" type="StringL255" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Version" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Number and date of current version (particularly for citing purposes)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Major" type="xs:nonNegativeInteger">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">The major version number ('1' in 1.2) as defined by the content creators.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Minor" type="xs:nonNegativeInteger" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">An optional minor version number ('2' in 1.2)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Modifier" type="String255" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">Unconstrained text specifying status + optional number, e. g., 'beta', 'alpha', 'rc/release candidate', 'internal'. If missing, release status is assumed.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DateIssued" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element Date.Issued: Citable 'publication date' of the current version (comp. RevisionData/DateCreated and DateModified for version- independent dates). This date should be missing if the current version is not yet published!</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RevisionData" type="RevisionData">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Creators, Revision status, and dates of the entire data collection from which the current dataset is derived.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Owners" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Entities having legal possession of the data collection content. Here defined for the entire data collection, not for individual units. If an owner statement is present on the unit level, it should override this dataset-level statement.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Owner" type="ContactT" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">Entitiy having legal possession of the data collection content.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="IPRStatements" type="IPRStatements" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Copyright, terms of use, license and other IPR-related statements like disclaimer or acknowledgement. Giving a copyright statement and a (if possible public) licence is highly recommended! (=DC.Rights)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClimatePreferencesType">
+		<xs:sequence>
+			<xs:element name="Climate" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Tropical 
+Subtropical
+Temperate
+Boreal
+Polar, All</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Tropical"/>
+						<xs:enumeration value="Subtropical"/>
+						<xs:enumeration value="Boreal"/>
+						<xs:enumeration value="Polar"/>
+						<xs:enumeration value="All"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ManagementDataT">
+		<xs:sequence>
+			<xs:element name="Duration" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Concentration" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="GridSize" type="PlaceholderT" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ManagementMethodT">
+		<xs:sequence>
+			<xs:element name="Concentration" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="ConcentrationUnits" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="ApplicationRate" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="ApplicationRateUnits" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="NumberApplications" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="TimeBetweenApplications" type="PlaceholderT" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="HostsT">
+		<xs:sequence>
+			<xs:element name="Interaction" type="InteractionsT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Host taxon</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Range" type="RangeT" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RangeT">
+		<xs:sequence>
+			<xs:element name="Area" type="PlaceholderT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>location</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NativeInArea" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Native in this location or not</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PathwayType">
+		<xs:sequence>
+			<xs:element name="Date" minOccurs="0"/>
+			<xs:element name="Vector" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Aircraft
+Aquaculture stock
+Bait
+Bulk freight/cargo
+Clothing/footwear
+Consumable
+Container
+Debris associated with human activities
+Floating vegetation/debris
+Germplasm
+Habitat material
+Hides, trophies, feathers
+Host organism
+Humans 
+Live seafood
+Luggage
+Machinery/equipment
+Mail
+Mulch, straw, baskets, sod, etc
+Other live animal
+Other vector
+Pet
+Plant or parts of plants
+Sailor's seachests
+Ship ballast water/sediment
+Ship bilge water
+Ship holds, cabins, etc.
+Ship structures above the water line
+Ship/boat
+Ship/boat hull fouling
+Shipping material
+Soil, sand etc.
+Vehicles
+Waste associated with human activities
+Water
+Wind
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Cause" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Acclimatisation Societies
+Agriculture (includes horticulture, forestry, etc.)
+Aid
+Angling
+Aquaculture
+Aquarium trade
+Biological control
+Botanical gardens
+Breeding
+Cut flower trade
+Digestion/excretion
+Disturbance
+Dune stabilisation
+Erosion control
+Escape from confinement
+Flooding
+Food
+Forage
+Forestry
+Garden escape
+Garden waste disposal
+Harvesting fur/wool/hair
+Hedges
+Hitchhiker
+Horticulture
+Hunting 
+Industrial purposes
+Intentional release
+Interbasin transfers
+Interconnected waterways
+Internet sales
+Landscape/fauna "improvement"
+Landscaping industry
+Live food trade
+Mariculture
+Medicinal use
+Military movements
+Natural disaster
+Nursery trade
+Off-site preservation
+Ornamental purposes
+Other cause
+People foraging
+People sharing resources
+Pet trade
+Propagation
+Racing 
+Research
+Seed trade
+Self-propelled
+Smuggling
+Stocking
+Timber trade
+Windbreaks
+Worm cultivation
+Zoos
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Route" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="To" minOccurs="0"/>
+						<xs:element name="From" minOccurs="0"/>
+						<xs:element name="Corridor" minOccurs="0"/>
+						<xs:element name="FreeText" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Rememember to add de-aggregated containers</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Distance" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Type" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Intentional
+Intentional, illegally
+by natural means
+Unintentional
+Unknown
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InitialPopulationSize" minOccurs="0"/>
+			<xs:element name="ProjectOrCaseStudy" type="ProjectOrCaseStudyType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActivityT">
+		<xs:annotation>
+			<xs:documentation>@@@@@@###There is something wrong with the container here. Maybe this should be a choice and represent a single activity with each choice singleton, and the object of type ActtivityT should be in a container. BobMorris</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>@@@@@@###Feels like sthis should be a singleton choice of signletons, and users of it should implement the container. BobMorris </xs:documentation>
+			</xs:annotation>
+			<xs:element name="Physical" type="ManagementDataT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Biological" type="ManagementDataT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Chemical" type="ManagementDataT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Cultural" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="IPM" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ControlMethodsType">
+		<xs:sequence>
+			<xs:element name="Poison" type="ManagementMethodT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Herbicides" type="ManagementMethodT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Trapping" type="ManagementMethodT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Hunting" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="BiologicalControl" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Community needs to provide advice here</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Taxa" type="TaxonomicT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Other" type="ManagementMethodT" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>e.g. mechanical </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NonTargetIssues" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MitigationAction" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OutcomeSuccess" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SuccessCriteria" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ReinvasionRisk" minOccurs="0"/>
+			<xs:element name="Cost" minOccurs="0"/>
+			<xs:element name="AgentsX" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>individuals/Organiztions/ contacts etc. Elsewhere</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SopportingDocumentation" type="ReferencedSource" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProjectOrCaseStudyType">
+		<xs:sequence>
+			<xs:element name="CostToDate" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Contacts" type="ContactT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CompletionDate" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="StartDate" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="BackgroundInformation" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="LegalRegulatory" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="NonTargetIssues" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="ActivityDetails" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Aim" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="RiskOfReinvasion" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Results" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Success" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="Failure" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="Criteria" type="PlaceholderT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Conclusion" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Sources" type="SourceMetadataT" minOccurs="0"/>
+			<xs:element name="DifficultyEfficacy" type="PlaceholderT" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="EstimatedTotalCost" type="PlaceholderT" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Below ABCD elements</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="String">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">normalized string required to contain at least 1 character (this removes the xml string anomaly, i. e. either element/attribute may be optional, but if they are required the content may not be an empty string)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:normalizedString">
+			<xs:minLength value="1" fixed="false"/>
+			<xs:whiteSpace value="collapse" fixed="false"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="StatementT">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">Text, optional Details (both free-form text) and optional URI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Text" type="String">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">A concise representation of a statement, recommended to be as short as possible, but actual length is unconstrained.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Details" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Optional text of unconstrained length, elaborating details of the ShortText</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="URI" type="xs:anyURI" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">An optional resource on the net providing details on the statement (may be used as an alternative to the long text).@@@@@@###Maybe should be a GUID. Even DOI would be meaningful here.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="language" type="xs:language" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="IPRStatements">
+		<xs:annotation>
+			<xs:documentation>A sequence of statements related to Intellectual Property Rights, credit and acknoledgement.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IPRDeclarations" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="IPRDeclaration" type="StatementT" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Used where the IPR declaration cannot be parsed into the specific items or for forms of IPR declaration not yet covered  (e.g. database rights),</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Copyrights" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Copyright" type="StatementT" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Copyright may include the information that the data has been released to the public domain.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Licenses" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="License" type="StatementT" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>To be used if data are placed under a public license (GPL, GFDL, OpenDocument). Placing data under a public license while maintaining copyright is recommended!</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TermsOfUseStatements" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TermsOfUse" type="StatementT" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Defines conditions under which the data may be analised, distributed or changed. "Terms of use" includes concepts like "Usage conditions" and "Specific Restrictions".</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Disclaimers" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Disclaimer" type="StatementT" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Disclaimer statement, e. g. concerning responsibility for data quality or legal implications.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Acknowledgements" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Acknowledgement" type="StatementT" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>A free form text acknowledging support (e. g. grant money, help, permission to reuse published material, etc.)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Citations" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container element for one to several statements, normally representing different language representations of the same content.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Citation" type="StatementT">
+							<xs:annotation>
+								<xs:documentation>Indicates how this dataset or record should be attributed if used [OBIF 1.0]</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MetadataDescriptionRepr">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">Language-specific content metadata (title, description, etc.) with *required* Language attribute added.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Title" type="String255">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element "Title": A short, concise title.</xs:documentation>
+					<xs:documentation xml:lang="en-us">General Note on DublinCore translation: In addition to those that can bee transformed from UBIF metadata, an additional DC.Type='dataset' should be added.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Details" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element "Description": Free-form text containing a longer description of the project.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Coverage" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element "Coverage": Free-form text describing geographic, taxonomic, or other coverage aspects of terminology or descriptions available in the current project.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="URI" type="GUIDT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">URL pointing to an online source related to the current project, which may or may not serve an updated version of the description data.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="language" type="xs:language" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="String255">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">normalized string restricted to 1..255 character length (i. e. required, may not be empty string)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:normalizedString">
+			<xs:minLength value="1" fixed="true"/>
+			<xs:maxLength value="255" fixed="true"/>
+			<xs:whiteSpace value="collapse" fixed="false"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="LabelReprT">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">Language-specific simple label, using simple formatted text</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Text" type="String255">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Label text in a specific language.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Abbreviation" type="String50" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Restricted to 50 characters maximum length, including blanks (recommended to be shorter!). Label abbreviations are especially important when displaying information in a tabular format.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="language" type="xs:language" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="StringL255">
+		<xs:annotation>
+			<xs:documentation>String255 (i.e. xs:string with length 1-255), extended with language attribute</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="String">
+				<xs:attribute name="language" type="xs:language" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="PersonName">
+		<xs:annotation>
+			<xs:documentation>Name of an individual person</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FullName" type="String255">
+				<xs:annotation>
+					<xs:documentation>Preferred form of personal name for display as a string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SortingName" type="String255" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The full name with the elements in preferred sorting sequence (vCard: Sort-String).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AtomisedName" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="InheritedName" type="String255">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">Family names, generational names, clan name, parents/grandparents personal names, etc. This (= last name in western cultures) may be compound ('Fischer von Waldheim', 'da Selva', 'Silvano Morales'). Depending on culture it is not necessarily the name of the parents nor common to the married couple and children, thus 'family name' should be avoided even though used in vCard.  (vCard:N.Family)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Prefix" type="String255" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">Prefix to inherited name that should be output before name, but is usually not included in sorting. Examples: 'von', 'Lord'. Compare Title for 'Prof', 'Dr.' (vCard:N.Prefix)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Suffix" type="String255" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">Suffix to name that should be output after name, regardless whether it is in sorting sequence (Inherited, Given) or not. Examples: 'Jun.', 'III.'. (vCard:N.Suffix)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="GivenNames" type="String255" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">The name given to a person as a personal name (= first or christian name in western cultures, including 'middle initials') may contain several words ('Ana Maria', 'Jerry B.'). Applicable only to persons. (vCard:N.Given + vCard:N.Middle)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="PreferredName" type="String255" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">May differ from the first given name: second given name, nickname ('Bob' for 'Robert'), etc. (vCard:Nickname)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StringL">
+		<xs:annotation>
+			<xs:documentation>String (i. e. xs:string with minimum length=1) extended with language attribute</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="String">
+				<xs:attribute name="language" type="xs:language" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="StringLP">
+		<xs:annotation>
+			<xs:documentation>String (i. e. xs:string with minimum length=1) extended with language and preferred attribute</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="String">
+				<xs:attribute name="language" type="xs:language" use="optional"/>
+				<xs:attribute name="preferred" type="xs:boolean" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="anyUriP">
+		<xs:annotation>
+			<xs:documentation>xs:anyURI extended with Preferred attribute</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:anyURI">
+				<xs:attribute name="preferred" type="xs:boolean" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="StringP255">
+		<xs:annotation>
+			<xs:documentation>String255 (i.e. xs:string with length 1-255), extended with preferred attribute</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="String255">
+				<xs:attribute name="preferred" type="xs:boolean" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="String50">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">normalized string restricted to 1..50 character length to be used for abbreviations (the recommended length of abbreviations is usually much shorter, but 50 characters should be a</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:normalizedString">
+			<xs:minLength value="1" fixed="true"/>
+			<xs:maxLength value="50" fixed="true"/>
+			<xs:whiteSpace value="collapse" fixed="false"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="LabelT">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">Collection of language-specific label representations</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Representation" type="LabelReprT" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Language-specific label representation
+[ATTR: language]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrganisationT">
+		<xs:sequence>
+			<xs:element name="Name" type="LabelT">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Full organization or corporate name in multiple languages (en: 'Botanical Garden of ...', de: 'Botanischer Garten von ...'). vCard:Org.OrgName). The Label mechanism also supports acronyms / abbreviations (no vCard equivalent!). @@@@@@###Feels like this needs some unique prefered label--else can't compare Name objects...BobMorris </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrgUnits" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">If the contact contains no person definition: the unit within the organization the agent represents; else a list of the various organisational units to which a person may belong. (vCard:OrgUnit)@@@@@@###as above, maybe needs a unique label fir comparison of OrgUnits  BobMorris</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="OrgUnit" type="StringL" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation xml:lang="en-us">(vCard:OrgUnit)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TelephoneDevice">
+		<xs:annotation>
+			<xs:documentation>Type of device reached by telephone number, e.g. voice, fax, voice/fax</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:Name"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="TelephoneNumber">
+		<xs:annotation>
+			<xs:documentation>Telephone or Fax number</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Number" type="String255">
+				<xs:annotation>
+					<xs:documentation>Full number in standard international format</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Device" type="TelephoneDevice" minOccurs="0"/>
+			<xs:element name="UsageNotes" type="StringL" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Free text for constraints on use e.g. "weekdays only" or "home number"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="preferred" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="ContactT" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Contact details.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Organisation" type="OrganisationT" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Organisation to contact</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Person" type="PersonName" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Person to contact</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Roles" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Role" type="StringL" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Analogue to vCard:Role: Functional contact name, e.g. "Database administrator", "The Director", etc.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Addresses" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contact addresses (one preferred, different languages possible)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Address" type="StringLP" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Contact address as string.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TelephoneNumbers" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Telephone and fax numbers</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TelephoneNumber" type="TelephoneNumber" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Telephone or fax number</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EmailAddresses" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>E-mail addresses</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="EmailAddress" type="StringP255" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>E-mail address for contact</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="URIs" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>URIs for person or organisation</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="URL" type="anyUriP" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>URI for person or organisation</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LogoURI" type="xs:anyURI" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>URL of a logo image.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RevisionData">
+		<xs:annotation>
+			<xs:documentation xml:lang="en-us">RevisionData (creators, dates, revision) for the entire project/data set or individual objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Creators" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element "Creators", i.e. Author or editor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Contributors" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element"Contributors": General contributors, or translators.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DateCreated" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element "Date.Created": Date/time when the intellectual content (project, term, description, etc.) was created. Applications may initially set this to the system date for new data objects, but authors must be able to change it to an earlier date if necessary. If for legacy data this is imprecisely known, it may be missing here. Earlier versions in other data formats should then be mentioned in the copyright or acknowl. statements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DateModified" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation xml:lang="en-us">Source for Dublin-Core standard element Date.Modified: Date/time when the last modification of the object was made. If in online data sources the provider can not assess this, the current date/time may be substituted. For legacy data this may be set to the file date of imported data, or estimated.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DescriptiveDiagnosticDataType">
+		<xs:sequence>
+			<xs:element name="EcoFunctionalGroup" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>marine - trophic level? @@@@@@Need enumeration?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrganismType">
+				<xs:annotation>
+					<xs:documentation>See enumeration</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="micro-organisms"/>
+						<xs:enumeration value="fungus">
+							<xs:annotation>
+								<xs:documentation>Groups traditionally studied by mycologists and the ICBN
+</xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value="arachnid"/>
+						<xs:enumeration value="insect
+"/>
+						<xs:enumeration value="flatworm
+"/>
+						<xs:enumeration value="nematode
+"/>
+						<xs:enumeration value="mollusc (Aquatic and terrestrial)
+"/>
+						<xs:enumeration value="alga
+"/>
+						<xs:enumeration value="anemone
+"/>
+						<xs:enumeration value="coral
+"/>
+						<xs:enumeration value="comb jelly
+"/>
+						<xs:enumeration value="jellyfish
+"/>
+						<xs:enumeration value="crustacean
+"/>
+						<xs:enumeration value="starfish
+"/>
+						<xs:enumeration value="fish
+"/>
+						<xs:enumeration value="amphibian
+"/>
+						<xs:enumeration value="reptile
+"/>
+						<xs:enumeration value="bird
+"/>
+						<xs:enumeration value="mammal
+"/>
+						<xs:enumeration value="aquatic plant (Floating or submerged)
+"/>
+						<xs:enumeration value="palm
+"/>
+						<xs:enumeration value="tree
+"/>
+						<xs:enumeration value="shrub
+"/>
+						<xs:enumeration value="grass
+"/>
+						<xs:enumeration value="rush
+"/>
+						<xs:enumeration value="sedge
+"/>
+						<xs:enumeration value="herb
+"/>
+						<xs:enumeration value="vine, climber
+"/>
+						<xs:enumeration value="bromeliad
+"/>
+						<xs:enumeration value="fern
+"/>
+						<xs:enumeration value="succulent   Pam's FreshWaterTerms: All  Amphibians-Frogs "/>
+						<xs:enumeration value="Amphibians-Salamanders Fishes Mammals 
+"/>
+						<xs:enumeration value="Reptiles-Crocodilians Reptiles-Lizards Reptiles-S"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Summary" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Brief synopsis of species' invasiveness, significance, interesting facts.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DescriptiveData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>NB This is a mixed bag of elements. Species level descriptive data should be provided by SpeciesBank sources with its own descriptive schema. Morphological data should be provided through SDD elements. Again this component is acting as a cache for data best delivered elsewhere or for reflecting the actual content of profile dbs.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GlossaryURI" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="SpeciesBankURI" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Not sure how far GBIF SpeciesBank has got with data standards</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="SDDGUID" type="GUIDT" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>TDWG SDD container reference</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ImageURI" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="MaximumSize" type="PlaceholderT" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@???What is this?</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Phenology" type="PlaceholderT" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@???What is this</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="KeyFeatures" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="AdultDescription" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="JuvenileDescription" type="PlaceholderT" minOccurs="0"/>
+						<xs:element name="References" type="SourceMetadataT" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>@@@@@@###Needs work</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Lookalikes" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Remarks" type="xs:string" minOccurs="0"/>
+									<xs:element name="LookalikeTaxon" type="TaxonomicT"/>
+									<xs:element ref="ImageURI" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Below borrowed from TCS</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="PlaceholderT">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ParagraphT">
+		<xs:annotation>
+			<xs:documentation>  used for long text</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Paragraph" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Use html e.g. &amp;lt;b&amp;lt; for bold. Do not embed "&lt;" or "&gt;" literals.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BiostatusT">
+		<xs:annotation>
+			<xs:documentation>@@@@@@###Much work to do</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Occurrence" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>1 Absent
+1.1 Recorded in error
+1.2 Extinct
+1.3 Eradicated
+1.4 Border intercept
+2 Reported 
+2.1 Established (able to survive)
+2.2 Naturalised (reproducing)
+2.4 In captivity/cultivated
+2.5 Sometimes present
+2.6 Present/controlled
+3 Uncertain
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Status" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Alien
+Native (no further data)
+Native. Endemic
+Native. Non-endemic
+Not specified
+Biostatus uncertain 
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Invasiveness" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Invasive
+Not invasive
+Not specified
+Uncertain 
+</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DateOfFirstObservation" minOccurs="0">
+				<xs:complexType/>
+			</xs:element>
+			<xs:element name="Introduction" type="PathwayType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Dispersal" type="PathwayType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>same elements as 'Introduction' but different vocabulary. Better way to handle this?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PopulationDynamics" type="PlaceholderT" minOccurs="0"/>
+			<xs:element name="Distribution" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>free text. Widespread, localised etc.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+						<xs:element name="Trend" type="PlaceholderT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Abundance" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>free text.Where to put Population dynamic terms such as growth rate, age, stable, expanding, numerous, few, trend? c.f. distribution and occurrence</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+						<xs:element name="Trend" type="PlaceholderT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Sources" type="ReferencedSource" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExtensibleEnumerationT" abstract="true">
+		<xs:annotation>
+			<xs:documentation>@@@@@@</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="other" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>@@@@@@A string that provides a value not in the enumeration list. There should be a way to discourage its use, e.g. it must come from a resolvable external list. Otherwise, provider must map to one of the given ones. This is not enforcable in XML Schema. Should there be an "other" in the Enumeration?@@@@@@@@This is the idea of "defined schema"</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Profiles">
+		<xs:annotation>
+			<xs:documentation>root container</xs:documentation>
+		</xs:annotation>
+		<xs:sequence/>
+	</xs:complexType>
+	<!-- ************************************** -->
+	<xs:attributeGroup name="TimeMeasures">
+		<xs:annotation>
+			<xs:documentation>Enumerated time measures</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="unitTime" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ns"/>
+					<xs:enumeration value="ms"/>
+					<xs:enumeration value="s"/>
+					<xs:enumeration value="min"/>
+					<xs:enumeration value="hr"/>
+					<xs:enumeration value="day"/>
+					<xs:enumeration value="week"/>
+					<xs:enumeration value="month"/>
+					<xs:enumeration value="year"/>
+					<xs:enumeration value="decade"/>
+					<xs:enumeration value="century"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="NumericRangeT">
+		<xs:annotation>
+			<xs:documentation>A range of numbers, optionally per unit time expressed in optional unitTime attribute, </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Lower" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="Upper" type="xs:decimal" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="TimeMeasures"/>
+	</xs:complexType>
+	<xs:attributeGroup name="LinearUnit" id="MKS">
+		<xs:annotation>
+			<xs:documentation>units</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="units" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="nm"/>
+					<xs:enumeration value="cm"/>
+					<xs:enumeration value="m"/>
+					<xs:enumeration value="km"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="LinearMeasureT" mixed="false">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attributeGroup ref="LinearUnit"/>
+				<xs:attributeGroup ref="TimeMeasures"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="LinearRangeT">
+		<xs:complexContent>
+			<xs:extension base="NumericRangeT">
+				<xs:attributeGroup ref="LinearUnit"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:attributeGroup name="AreaUnit">
+		<xs:attribute name="units" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="sq nm"/>
+					<xs:enumeration value="sq mm"/>
+					<xs:enumeration value="sq cm"/>
+					<xs:enumeration value="sq m"/>
+					<xs:enumeration value="hectare"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="AreaMeasureT">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attributeGroup ref="AreaUnit"/>
+				<xs:attributeGroup ref="TimeMeasures"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="AreaRangeT">
+		<xs:annotation>
+			<xs:documentation>A range of areas, optionally over time. Requires units attribute taken from the AreaUnit/units attribute enumeration. Examples: codes "area 15000 - 30000 hectares"  <area units="hectare">
+					<Lower>15000</Lower>
+					<Upper>300000</Upper>
+				</area> or 15000-30000 hectares per year"</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="NumericRangeT">
+				<xs:attributeGroup ref="AreaUnit"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:attributeGroup name="VolumeUnit">
+		<xs:attribute name="units" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="cu nm"/>
+					<xs:enumeration value="cu mm"/>
+					<xs:enumeration value="cu cm"/>
+					<xs:enumeration value="cu m"/>
+					<xs:enumeration value="cu km"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="VolumeMeasureT">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attributeGroup ref="VolumeUnit"/>
+				<xs:attributeGroup ref="TimeMeasures"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="VolumeRangeT">
+		<xs:annotation>
+			<xs:documentation>A range of areas, optionally over time. Requires units attribute taken from the AreaUnit/units attribute enumeration. Examples: codes "area 15000 - 30000 hectares"  <area units="hectare">
+					<Lower>15000</Lower>
+					<Upper>300000</Upper>
+				</area> or 15000-30000 hectares per year"</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="NumericRangeT">
+				<xs:attributeGroup ref="VolumeUnit"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LSIDT">
+		<xs:annotation>
+			<xs:documentation>LSID type. @@@@@@Should have a Pattern?</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="GUIDT">
+		<xs:choice>
+			<xs:element name="URI" type="xs:anyURI"/>
+			<xs:element name="LSID" type="LSIDT"/>
+			<xs:element name="DOI" type="xs:string"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:attributeGroup name="GUIDattrs">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:attribute name="URI" type="xs:anyURI" use="optional"/>
+		<xs:attribute name="LSID" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+	<xs:complexType name="ExternalEnumT">
+		<xs:annotation>
+			<xs:documentation>@@@@@@ Attr says how you get it. 
+The GUID whose resolution produces a list from which a given string is chosen. TBD: in what form and where, when in the document is this list? What queries against it? How does it compare to the elements in some other list, e.g. an enumeration? Maybe a key to a separate section? That's the SDD model? 
+
+Should be a controlled patttern?</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Value" type="xs:string"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="GUIDattrs"/>
+	</xs:complexType>
+	<xs:complexType name="FreeTextT">
+		<xs:sequence>
+			<xs:element name="Paragraph" type="ParagraphT" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DatasetT">
+		<xs:choice>
+			<xs:element name="Checklist" type="ChecklistByLocationT"/>
+			<xs:element name="Images">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="ImageURI" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Taxonpages">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Taxonpage" type="FactSheetT" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Experts">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Expert" type="ExpertT" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>
+@
+
+
+1.1
+log
+@Agadir draft schema, v 0.9
+@
+text
+@d2 1
+d38 1
+a38 1
+						<xs:element name="Location" type="LocationT" minOccurs="0">
+d42 41
+a450 106
+			<xs:choice minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>General or Local fact sheet?</xs:documentation>
+				</xs:annotation>
+				<xs:element name="LocationSpecificlFacts" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>A fact sheet about a specific area</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Biostatus" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Occurrence" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>1 Absent
+				1.1 Recorded in error
+				1.2 Extinct
+				1.3 Eradicated
+				1.4 Border intercept
+				2 Reported 
+				2.1 Established (able to survive)
+				2.2 Naturalised (reproducing)
+				2.4 In captivity/cultivated
+				2.5 Sometimes present
+				2.6 Present/controlled
+				3 Uncertain
+				</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="Status" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Alien
+				Native (no further data)
+				Native. Endemic
+				Native. Non-endemic
+				Not specified
+				Biostatus uncertain 
+				</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="Invasiveness" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Invasive
+				Not invasive
+				Not specified
+				Uncertain 
+				</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="DateOfFirstObservation" minOccurs="0">
+											<xs:complexType/>
+										</xs:element>
+										<xs:element name="Introduction" type="PathwayType" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>@@@@@@For Known Introduction Method above, include only cause and vector</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="Dispersal" type="PathwayType" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>same elements as 'Introduction' but different vocabulary. Better way to handle this? @@@@@@See restriction in "Introduction" above to make base type.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="PopulationDynamics" minOccurs="0"/>
+										<xs:element name="Distribution" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>free text. Widespread, localised etc.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+													<xs:element name="Trend" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Abundance" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>free text.Where to put Population dynamic terms such as growth rate, age, stable, expanding, numerous, few, trend? c.f. distribution and occurrence</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+													<xs:element name="Trend" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Sources" type="ReferencedSource" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="LegalStatus" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="DefinedSchema" type="DefinedSchemaType" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+@

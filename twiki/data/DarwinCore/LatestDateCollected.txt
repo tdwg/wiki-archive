@@ -1,0 +1,128 @@
+%META:TOPICINFO{author="JohnWieczorek" date="1205679002" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="DarwinCoreDraftStandard"}%
+---++Element Description: Latest Date Collected
+The latest date-time (Common Era calendar) in a date-time period during which an organism or group of organisms was collected or observed. If the event is recorded as occurring at a single date-time, populate both EarliestDateCollected and !LatestDateCollected with the same value. 
+
+
+---++++ Change Log:
+
+&#8226;	04 Aug 2005 - changed data type from nonNegativeInteger to positiveInteger for !MonthCollected and !DayCollected. Changed wording in the descriptions of !MonthCollected and !DayCollected to avoid the conception that two digits are required. ( -- Main.JohnWieczorek, per Ginzbarg).
+
+&#8226;	11 Sep 2005 - replaced !YearCollected, !MonthCollected, !DayCollected, and !TimeCollected with !EarliestDateCollected and !LatestDateCollected ( -- Main.JohnWieczorek & Blum).
+
+&#8226;	18 May 2006 - modified description of !EarliestDateCollected and !LatestDateCollected to express suggested best practices. (De Giovanni, Blum, & -- Main.JohnWieczorek).
+
+&#8226;	10 Jan 2007 - change data type from xsd:dateTime to simpleType DateTimeISO developed for ABCD. This new data type allows greater flwxibility in the use of the ISO 8601 standard than the xsd:dateTime does. xsd::dateTime requires a fully specified date and time, which is too restrictive for use as a Collecting Event Date element ( -- Main.JohnWieczorek).
+
+---+++ Comments 
+Use the space below to make comments about this page. -- Main.StephenLong - 24 Aug 2006
+
+------
+%ICON{bubble}% *Multiple collecting dates*
+Posted by: Mickaël Graf [mailto:mickael.graf@nrm.se]   Date: Fri, 12 Dec 2003, 14:03:34
+
+Dear all (Stan alone?)
+
+I am currently working to fit databases with !DarwinCore, as currently used by GBIF, and I am often confronted to a problem where two dates (in various formats) are registered for the same record, in the same "date" field. So far, this is only in botany I saw that, where scientists are collecting specimens in different times of the year (spring, summer etc.).
+
+There is currently no way to express that in !DarwinCore 2. Could it be possible to implement it in !DwC ?
+
+Regards
+Mickaël Graf
+------
+%ICON{bubble}% *CollectionNumber and Date Ranges*
+Posted by: Stan Blum [mailto:sblum@calacademy.org]  Date: Sun, 03 Oct 2004, 21:48:48
+
+The contents of the earlier garbled (encoded) message are re-sent below.
+
+Dear Rich,
+
+Thanks for your comments. 
+
+<verbatim><snip></verbatim>
+
+The suite of elements used for dates is a pretty hot topic. I gather from your comments that you would like to see a suite of elements, either in the core or in the curatorial extension, that accommodates date ranges for a specimen record. Can you tell me (us) more specifically what functions you want to support with these more complex date fields? Do you want to query against data ranges? (Note that a single data field is already typically queried using a range -- _e.g._, !CollectionDate is greater-than X and/or less-than Y-- so querying a date range becomes
+significantly more complicated. It adds the notion of my query range either overlapping or completely containing the collecting range of the specimen. Even if you want all specimens collected after 1979, you would need to specify the equivalent of "might have been collected after
+1979" (!EndDate >= Jan 1, 1980), or definitely collected after 1979 (!BeginDate >= Jan 1, 1980). Do you want users to be confronted with that degree of complexity? I can also understand that you might want to use !DarwinCore (and appropriate extensions) as a structure for exchanging records between databases (not just for creating data sets to analyze) and you feel it's important not to lose these details. Is that the kind of usage you were thinking about? We're interested in what's motivating people to ask for particular additions; more than just "our records have these fields".
+
+Looking forward to your response. Cheers, -Stan
+------
+
+%ICON{bubble}% *Date Recommendation*
+Posted by gkamp at 2005-09-28 08:44 PM
+
+"3 Sep 2005 - Recommendation that Month, Day, Year, and Time concept combinations be collapsed into single ISO 8601 date and time concepts. !YearCollected, !MonthCollected, !DayCollected, !TimeCollected would become !DateCollected, while !YearIdentified, !MonthIdentified, !DayIdentified would become !DateIdentified. This change would simplify representation of date ranges on events (_e.g._, !BeginDateCollected, !EndDateCollected.)"
+
+This is problematic when there is missing information for historical records. We have insect labels with only pieces of this information (only a day and month; only a month and year; only a year) that never successfully fit into a true "date" as defined above. This is true not only for collecting dates but even more so for identification (determination) dates, which for insects anyway, are generally only a year. I submit that it is important to keep these fields separated for data entry, but to allow the calculation of a date when all fields are represented.
+
+Gail Kampmeier
+------
+<DL>
+<DD>%ICON{bubble}% *Agree*
+Posted by ChuckMiller at 2005-09-29 07:57 AM
+
+I agree with Gail. If Darwin Core is to enable the exchange of basic specimen data, one of the most basic elements of that data is the collection date. Collectors of the past were notoriously bad about taking shortcuts in their field notes and their labels. Specific dates are often missing. Sometimes even months are missing. To my mind, collapsing date components into a single date representation is a computer-world notion. It seems efficient, but it can result in loss of validly useful information - that some detail is missing. Forcing a label annotation like January 1801 to be arbitrarily changed to January 1, January 15, or January 31 seems unnecessarily problematic to me. Certainly the computers have no problem with the date element separations. They can easily either map the values from database date format to Month, Day, Year or map from Month, Day, Year fields if they exist. So, why consolidate during data exchange? I think if any change in this date area were needed, it would the addition of three more elements, for Ending Date, Month and Year, and thus enabling a date range, say from January 1801 to March 1801. But, not to an artificially constructed date value. 
+
+Chuck Miller, Missouri Botanical Garden
+</DL>
+------
+<DL>
+<DD>%ICON{bubble}% *Re: date recommendation*
+Posted by lapham at 2005-10-01 07:01 AM
+
+Accees, at least, will accepet dates without the day in a DateTime field, if the data is so fragmenteded it only has a year portion it won't go into a DateTime field and a verbatrim date field woud be requied for that. It takes a whole lot less code to extract a range for DateTime field that it does for the atomized fields and fragmented dates are relatively rare.
+
+Charlie Lapham
+</DL>
+------
+------
+%ICON{bubble}% *Earliest and !LatestCollectionDate*
+Posted by lapham at 2005-09-30 03:07 PM
+
+Legacy data in herbaria typically contains one collection date. Should it be used to populate one or both these elements? If one, which one?
+------
+<DL>
+<DD>%ICON{bubble}% *Re: Agree*
+Posted by lapham at 2005-10-01   07:33 AM
+
+The problem with this pair of elements may be similar to our earlier bounding box problem. These two elements are charactersisitcs of a group of collecting/observation events and are inappropriate for single collecting/observation event records. We need to revert back to a single CollectionDate DateTime element with a verbatim field for fragmentary dates.
+
+Charlie Lapham
+
+------
+<DL>
+<DD>%ICON{bubble}% *Re: Agree*
+Posted by fini at 2005-12-19   02:53 AM
+
+"We need to revert back to a single !CollectionDate DateTime element with a verbatim field for fragmentary dates. "
+
+I agree with Charlie Lapham, it is basically impossible to decide dates to fill out if there is only one, this would lead to people filling both fields with the same values, or even worse people would just fill out one of them, but not always the same.
+
+My suggestion along Charlie's idea is to have fields similar to these:
+
+!YearCollected, !YearCollectedRangeEnd.
+!MonthCollected, !MonthCollectedRangeEnd.
+!DayCollected, !DayCollectedRangeEnd.
+!TimeCollected, !TimeCollectedRangeEnd.
+</DL>
+------
+<DL>
+<DD>%ICON{bubble}% *Re: Agree*
+Posted by lapham at 2006-01-15   07:59 PM
+
+if we susstitute !DateCollected-date/time data type and Additional !dateCollected- date/time data type, the second field can be used to establish a range,if needed. The addtional fild should not be comfused with with the primary date field. Both of them at date/time data types so one can use greater than, or less than criteria and sort them easily. Having a clear primary field is also essetial for setting the !DayOfYear Julian date field unambiguously.
+</DL>
+</DL>
+------
+------
+<DL>
+<DD>%ICON{bubble}% *Re: Agree*
+Posted by fini at 2005-12-19 02:38 AM
+
+"They can easily either map the values from database date format to Month, Day, Year or map from Month, Day, Year fields if they exist."
+
+Even this should be done with great caution (especially if the data was ever to be exported from the db), since using database date fields will also tend to disallow incomplete dates, this could unintentionally result in converting dates like 00-12-2005 into 01-12-2005 or simply result in a database error, blank dates etc.
+</DL>
+------
+
+%ICON{bubble}%

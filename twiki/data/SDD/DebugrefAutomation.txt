@@ -1,0 +1,33 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118872" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+Except for the background most of the discussion below is obsoleted by the completed debugref tool described on DebugRef. The tool can be used either standalone or by plugging your instance document into a web page mentioned there. 
+
+-- Main.BobMorris - 16 Dec 2003
+
+---
+
+Background: In Descriptions and elsewhere, SDD makes extensive use of the XML Schema key/keyref mechanisms. For reasons that can, if desired, be argued elsewhere, the drafters decided that key uniqueness is best facilitated by using integers, not strings, as keys. (Roughly, the arguments arise from the fact that keys will be machine generated.)  One consequence of this is that wherever keyrefs are in use, they will have a value uninformative to a human attempting to debug an instance document. For this reason, any place there is a keyref (or an attribute whose type is derived from the keyref base data type), there is also a string-valued optional attribute named "debugref". Its precise semantics are unspecified, but the intention is to allow for something meaningful to be placed there to aid debugging.
+For example, where the keyref might be the integer 783445, the debugref might have value "WingColor state = blue", signifying that the reference is to the "blue" state of a character named "WingColor". A typical use case for debugref would be a programmer and a biologist collaboratively trying to understand why a keyref points into something strange. Typically this would reflect a programming error that might arise because the programmer did not understand some context of a reference. (However, the Schema architecture is designed so that a great many such errors are detected by XML validation).
+
+To aid debugging Main.JacobAsiedu has written an XSLT program that examines a keyref, traces back to the referenced key, uses some heuristics to choose one of the several bits of text that are associated with the thing that key is on, and puts it in the debugref.
+
+This is not a terribly robust solution. It does not survive changes to the schema even as simple as renaming one of the objects mentioned in the heuristic. It also may be that the heuristics choose something that is optional and absent, whereas something else might have been a better choice. 
+
+We are examining table-driven approaches to this, though they are not much better than saying "just modify the XSLT if the Schema changes." One alternative that comes to mind is an optional text-valued attribute named, say, "debugtext", on every keyed object. Then a program like Jacob's could look for that and use it if it is there, or if if not, use heuristics if the program so chooses. I call this the "printf" approach, following the practice of many programmers to insert output statements at the point at which they have or anticipate debugging needs.
+
+Comments?
+
+-- Main.BobMorris - 20 Nov 2003   
+---
+
+I am very grateful to Bob and Jacob for creating a first version of the XSL script. That will be very helpful when we try to debug our first applications!
+
+As proposed, I have added optional debugkey attributes in addition to the already existing debugref attributes. Each debugref now uniquely corresponds with a debugkey. As a consequence, the place where a debugref points to can be found with a simple text search. Also it may make the creation of the debugrefs easier.
+
+By design of SDD, most keyed objects have a required and unique label (controlled by xml schema identity constraints). This is true for characters, states, Stat. measures, <nop>CodingStatus, modifiers, concept trees, key trees, all resources. In some cases the labels have to be derived. Most problematic are the node keys that we have.
+
+I already have a document discussing the debugkey/ref issue and have added a lists all keyed objects and a method to derive human readable debugkey labels for them, see http://160.45.63.11/Projects/TDWG-SDD/Docs/SDD_I_KeyKeyref.html
+
+Gregor Hagedorn - 20 Nov 2003

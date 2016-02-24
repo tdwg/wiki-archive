@@ -1,0 +1,81 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118871" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---+!! %TOPIC%
+
+Kevin writes in email: "I'm also keen to visit the topic we didn't properly get to discuss - it seems to me that global states are poorly served by being defined in the concept tree, and I'd like to see a separate element for them, perhaps in the root of &lt;DescriptiveTerminology&gt;. But, I need to know your logic in putting them into the concept trees in the first place - I can't for the life of me work out why you thought that was a good place for them in the first place."
+
+Gregor: We had such a list of "state groups" before Lisbon (2003). However, there are several problems with this: For each group, you need to define a reusable state-group object with a label, so you can find these things in the user interface. If you have several dozens of these, you may even want to have them in a hierarchy. The simplest is that half your state groups are really values for a structure part (leaf types, inflorescense types, hair types, etc.), the other half are values for properties (color, shape, etc.).
+
+In Lisbon it occurred to me that if Concept tree covers both a structural and property hierarchy, the state-group concepts are always already labeled there. I tried to think of a counter example, but could find none. Consequently, I tried to move things over (see documentation in ResolvedTopicGenericStates). Renaming the earlier "GenericStates" to ~ConceptStates occurred later (see SchemaChangeLog10Beta2). 
+
+Leading up to New Zealand I got no comments on it so far, but I am very interested to discuss it now. In fact, I am uncertain how good the current solution is. My suspicion is that it would be more logical to identify states with concepts, than to list special concept states inside concept nodes.
+
+It seems that every specialized is a value for a generalized concept. A rhizome is a value for "underground structure", umbel is a value for inflorescence, but determinate and indeterminate umbels are potential values both for "umbel type" and "inflorescence type", etc. All are kind-of relation, no analogous reasoning can be made for part-of relations. See e.g. http://www.ibiblio.org/botnet/test/6-04-1.html
+
+As I say, this is very tentative and I am not sure about it...
+
+-- Main.GregorHagedorn - 28 Sep 2005
+
+I have a bit of a problem understanding your more complex examples - the problem we have (see ResolvedTopicGenericStates) is that for simple cases the current solution seems silly, but you say that for complex cases a simple solution (a flat list of global states) doesn't work - so can you give a real example of a complex case?
+
+To me, in the above, rhizome is a local state of the character "Underground structures" - I can't envisage "rhizome" as a global state (or at least, not as a seriously global one that should be treated as such). Or am I misunderstanding you here.
+
+To me, global states are states that need to be used multiple times in many characters - e.g. the state "blue" can be a state of petal colour, leaf colour and fruit colour. By declaring it as global, one can make the assertion that "blue" in petal colour is the same as "blue" in fruit colour. You seem to have a more general idea of what a global state is and can be used for, but it's not clear to me what that is.
+
+-- Main.KevinThiele - 29 Sep 2005
+
+I admit that my statements are confusing, I am mixing things in my explanation. So problem 1 is: you have properties like color, but also structural parts like hair type (simple, stellate, branched, with glands, etc.). Clearly these reoccur in many places. Do we agree that we need some container keeping hair types together, or should the list be:<br/>
+ red<br/>
+ simple<br/>
+ blue<br/>
+ stellate<br/>
+ green?
+
+If we need containers, I argue that it is a hassle managing them, adding multilingual labels, while at the same time these containers are already present as concepts in the concept tree.
+
+Second problem: In the case of higher level structures, these are not reused in the same way, and in fact in current BDI.SDD_ no mechanism would make use of defining them in the concept tree. However, thinking about dependencies, many character dependencies depend in prinicple on whether leaves are present, or a rhizome. Currently this information is tied to actual character, but my hope in including them in my "concept state" thinking is that it may be possible to define this generally in the future. This is not necessary in single projects, but highly desirable in federated projects where definitions and data have an n-to-m relation.
+
+-- Main.GregorHagedorn - 28 Sep 2005
+
+I'd have no difficulty with wrapping global states into groups:
+
+Leaves<br/>
+&nbsp;&nbsp;&nbsp;red<br/>
+&nbsp;&nbsp;&nbsp;blue<br/> 
+&nbsp;&nbsp;&nbsp;green<br/>
+Hair types<br>
+&nbsp;&nbsp;&nbsp;stellate<br/>
+&nbsp;&nbsp;&nbsp;simple<br/>
+
+Note that the groups (Leaves, Hair types) look like characters but are not, and I expect would never actually be referenced anywhere else in the document - they are merely groupings of convenience. I suppose they will need to have labels and all the rest (in this sense, they may perhaps be derived from true characters).
+
+So the logic flow is:<br>
+1. Define global states in &lt;GlobalStates&gt;, these grouped for convenience<br>
+2. Attach the global states as necessary into characters by reference<br>
+3. Arrange the characters into concept trees, if desired.<br>
+
+This seems conceptually simple (and hence easy to explain) to me.
+
+-- Main.KevinThiele - 30 Sep 2005
+
+As you say, the group names are not characters, but they are indeed always concepts. That duplication does not bother you? 
+
+Another question is: what do we want to achieve by these global states after all? Real question, despite that I say more below...
+
+Do we want to avoid to type the label for the state twice? Seeing that labels are identical? The latter, i.e. conceptual identity rather than labeling identity (one BDI.SDD_ set may be english, the other German, but use common concepts) seems to depend rather on identity of glossary references, than on reusing states.
+
+Reuse of state-sets seems to make sense, i.e. if I add a state it should be added in all characters using a property concept. but this is currently achieved only very indirectly, and not in the scenario you describe above.
+
+-- Main.GregorHagedorn - 30 Sep 2005
+
+It seems that everyone agrees that reuse of states is a good idea. I think it is a little more tricky that making global groups however. 
+
+In the case of  "Pubescence" which is used everywhere, we have had 13 global states on my prairie plant/ tree project. While Pubescence was used as a character perhaps a dozen times across different plant parts, the set of legal, or actually occurring Pubescent values that actually occurred on any one character was usually only 5 or 6. So for example, first-year-twig Pubescence might have three values across the collection of species while Herbaceous-stem pubescence might have 7 states partially overlapping with the first-year-twig pubescent values. So we had to make a superset of all legal states with definitions, synonyms and images then in each character define the states that could occur one by one. Still, having the global definition helped a great deal. We only needed one definition and one image? usually. I did not have language labels but I think this would help with the language labels in BDI.SDD_ as well. You should only need to add the German for "Tomentose" in one place? what is the German for "Tomentose"? Does not matter, we still would need to put it in the German label even if it is "Tomentose";. So I would argue for allowing global states. I believe we can already reference individual states in the concept trees for the characters allowing us to make subsets of the global list.
+
+-- Main.BryanHeidorn - 04 Oct 2005
+
+My current idea would be to get rid of ConceptStates, and simply let a state-by-reference point to a concept node. The advantage of this would be that in the concept tree, we could have a hierarchy and thus, in addition to expressing common definition and labeling, have narrower concepts within broader concepts: reddish color - bright red, dull red, and since we can now have DAGs instead of trees, also dull-color - dull red, dull yellow.
+
+I am slightly uncertain whether all formatting/display issues are fullfilled by this...
+
+-- Main.GregorHagedorn - 4. Oct 2005

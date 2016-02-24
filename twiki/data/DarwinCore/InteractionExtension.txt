@@ -1,0 +1,107 @@
+%META:TOPICINFO{author="JohnWieczorek" date="1269534577" format="1.1" version="1.19"}%
+---+!! Historical <noautolink>%WEB%</noautolink> wiki site. Deprecated.
+------
+
+*Note*: These Wiki pages are for historical purposes, they *do not* reflect the content of the current standard, which can be found at
+
+* http://rs.tdwg.org/dwc/index.htm
+
+
+---++Interaction Extension Concept List
+
+This document lists the proposed concepts of a new Interaction Extension for version 1.4 of !DarwinCore. This extension is being proposed as a means of recording the interaction between two organisms: one represented through DarwinCore and the other represented through this extension. This list of concepts basically consists of a concept indicating the type of interaction and then the same Taxonomic, Identification and Biological concepts that are present in DarwinCore. Although the names for these concepts are the same as in DarwinCore, they will be under a different namespace. This extension can be further extended by other lists of concepts that are specific to certain types of interactions (for example the PollinationExtension).
+
+|  *Element*  |  *Description*  |  *Nillable*  |  *Type*  |  *Min Value*  |  *Max Value*  |
+|  |  *Interaction Elements*  |  |  |  |  |
+| *[[RelationshipType]]* | A descriptive term indicating the type of relationship between an organism represented with DarwinCore and the related organism represented with this extension. Examples:<br><b>VisitedFlowerOf - FlowerVisitedBy, PreyedUpon - PreyedUponBy, DispersedSeedOf - SeedWasDispersedBy, HostOf - ParasiteOf, ExtractedResinFrom - ResinExtractedBy, NestedIn - UsedAsNestBy, PathogenOf - InfectedBy</b> | no | string |  |  |
+|  |  *Record-level Elements*  |  |  |  |  |
+| *[[GlobalUniqueIdentifier]]* | A Uniform Resource Name (URN) as a unique identifier for the related organism (if different from the global unique identifier of the organism represented by DarwinCore). In the absence of a persistent global unique identifier, construct one in the form: &#8220;[InstitutionCode]:[CollectionCode]: [CatalogNumber]&#8221; Example: &#8220;FMNH:Mammal:145732&#8221; | yes | string |  |  | 
+| *[[BasisOfRecord]]* | A descriptive term indicating whether the related organism represents an object or observation. Examples:<br><b>PreservedSpecimen</b>- A physical object representing one or more organisms, part of organism, or artifact of an organism. synonyms: voucher, collection, lot.<br><b>FossilSpecimen</b>- A physical object representing one or more fossil organisms, part of fossil organism, or artifact of a fossil organism.<br><b>LivingSpecimen</b>- An organism removed from its natural occurrence and now living in captivity or cultivation.<br><b>HumanObservation</b>- A report by a known observer that an organism was present at the place and time.<br><b>MachineObservation</b>- A report by a monitoring device that an organism was present at the place and time.<br><b>StillImage</b>- An photograph, drawing, painting.<br><b>MovingImage</b>- A sequence of still images taken at regular intervals and intended to be played back as a moving image; may include sound.<br><b>SoundRecording</b>- An audio recording.<br><b>OtherSpecimen</b>- Any type of specimen not covered by any of the categories above. | no | string |  |  |
+| *[[InstitutionCode]]* | The code (or acronym) identifying the institution administering the collection in which the related organism is cataloged. No global registry exists for institutional codes; use the code that is "standard" at your institution or in your discipline. If null, then the same InstitutionCode of the organism represented in DarwinCore should be assumed.| yes | string |  |  | 
+| *[[CollectionCode]]* | The code (or acronym) identifying the collection within the institution in which the related organism is cataloged. If null, then the same CollectionCode of the organism represented in DarwinCore should be assumed.| yes | string |  |  | 
+| *[[CatalogNumber]]* | The alphanumeric value identifying the related organism within the collection. It is highly recommended that each record be uniquely identified within a collection by this value. It is also recommended that each record be uniquely identified in a global context by the combination of !InstitutionCode, !CollectionCode and !CatalogNumber. | yes | string |  |  |
+|  |  *Taxonomic Elements*  |  |  |  |  |
+| *[[ScientificName]]* | The full name of the lowest level taxon to which the related organism has been identified in the most recent accepted determination, specified as precisely as possible, including name-author, year or authorship, sensu or sec. (according to or following) author, and indication of uncertainty. Conceptually equivalent to a full taxonomic identification as given by the identifier (verbatim). Does not include the identifier name or date of identification.  Examples: "Coleoptera" (an Order), "Vespertilionidae" (a Family), "Manis" (a Genus), "Ctenomys sociabilis" (Genus + !SpecificEpithet), "Ambystoma tigrinum diaboli" (Genus + !SpecificEpithet + !SubspecificEpithet), "Quercus agrifolia var. oxyadenia (Torr.) J.T. Howell" (Genus + !SpecificEpithet + !InfraspecificRank + !InfraspecificEpithet + !ScientificNameAuthor). | no | string |  |  |
+| *[[HigherTaxon]]* | The combination of names of taxonomic ranks less specific than Genus. "LIKE" query operations on this element will search for a substring that might match any of the higher taxon names. This element may contain the scientific name of any supra-specific taxon, including subfamily, tribe, subgenus, etc. | yes | string |  |  |
+| *[[Kingdom]]* |The name of the kingdom in which the related organism is classified. | yes | string |  |  |
+| *[[Phylum]]* |The name of the phylum (or division) in which the related organism is classified. | yes | string |  |  |
+| *[[Class]]* |The name of the class in which the related organism is classified. | yes | string |  |  |
+| *[[Order]]* |The name of the order in which the related organism is classified. | yes | string |  |  |
+| *[[Family]]* |The name of the family in which the related organism is classified. | yes | string |  |  |
+| *[[Genus]]* |The name of the genus in which the related organism is classified. | yes | string |  |  |
+| *[[SpecificEpithet]]* |The specific epithet of the scientific name applied to the related organism. | yes | string |  |  |
+| *[[InfraspecificRank]]* | The infraspecific rank (subspecies, variety, forma) of the !InfraspecificEpithet. Examples: "subsp.", "var.", "forma". | yes | string |  |  |
+| *[[InfraSpecificEpithet]]* |The infraspecific epithet of the scientific name applied to the related organism. | yes | string |  |  |
+| *[[AuthorYearOfScientificName]]* | The author of the !ScientificName and the year of publication, if known. More than one author can be listed in a concatenated string. Should be formatted with parentheses and year according to the conventions of the applicable nomenclatural code. | yes | string |  |  |
+| *[[NomenclaturalCode]]* | The nomenclatural code under which the !ScientificName is constructed.  Examples: "ICBN", "ICZN", "BC", "ICNCP", "BioCode" | yes | string |  |  |
+|  |  *Identification Elements*  |  |  |  |  |
+| *[[IdentificationQualifer]]* |A standard term to qualify the identification of the related organism when doubts have arisen as to its identity.  Examples: "cf.", "aff.", "subspecies in question" | yes | string |  |  |
+|  |  *Biological Elements*  |  |  |  |  |
+| *[[Sex]]* | The sex of the biological individual represented by the catalogued object or observation. Examples: "male", "female", "hermaphrodite", "gynandromorph", "monoecious", "dioecious", "not recorded", "indeterminate", "transitional" | yes | string |  |  |
+| *[[LifeStage]]* | The age class or life stage of the biological individual represented by the catalogued object or observation. Examples: "adult", "mature", "juvenile", "eft", "nymph", "seedling", "seed", "egg" | yes | string |  |  |
+
+Status:
+
+&#8226;	First version (0.1) of the [[http://rs.tdwg.org/dwc/tdwg_dw_inter.xsd][XML schema]] finished. Ready for testing.
+
+Submitted by: Renato De Giovanni, Etienne Cartolano, Tereza Giannini, Antonio Saraiva and Pedro Pizzigatti.  
+
+Submitted: 16 May 2007
+
+Development of this extension was supported in part by the [[http://pollinators.iabin.net/][Pollinators Thematic Network]] of the Inter-American Biodiversity Information Network ([[http://www.iabin.net/][IABIN]]) and by the Pollination Information Management System of the Food and Agriculture Organization of the United Nations ([[http://www.fao.org/][FAO]]).
+
+---++++Open Questions:
+
+&#8226;	16 May 2007 - Should we allow opposite relationship types? For instance VisitedBy and Visited (R. De Giovanni).
+
+&#8226;	8 June 2007 - How should we handle interaction attributes to avoid a terminology explosion like:  feeds on flowers of, feeds on nectar of,  feeds on pollen of,  feeds on seeds of, feeds on fruits of,  feeds on anthers of, etc, etc. (R. De Giovanni).
+
+&#8226;	14 June 2007 - InstitutionCode and CollectionCode are null if both species are in the same institution or collection (E. Cartolano)?
+
+---++++Comments & suggestions:
+
+*&#8226; 16 May 2007* - This extension might include a RelatedGlobalUniqueIdentifier (J. Wieczorek).
+
+*comment:* thanks, it was included. (R. De Giovanni)
+------
+*&#8226; 30 May 2007* - Regarding the term "PredatedBy": 
+
+The American Heritage(r) Dictionary of the English Language: Fourth Edition. 2000. (http://www.bartleby.com/61/45/P0514500.html)
+
+...Inflected forms: predated, predating, predates
+
+1. To mark or designate with a date earlier than the actual one: predated the check. 
+
+2. To precede in time; antedate....
+
+I'd prefer to see "PreyedUponBy" (D. Inouye) 
+
+*comment:* thanks, I made the change. (R. De Giovanni)
+------
+*&#8226; 13 June 2007* - Regarding opposite relationships and catalog numbers:
+
+I would support the inclusion of opposite relationships, because/if the direction of the relationship will depend on the placement of the data regarding two the organisms either in the DarwinCore or this extension.
+
+I am aware of several examples where a related organism has a different catalog number e.g., plant vouchers deposited at one institute and the insect vouchers at another.  This also may apply to vouchers in different collections at the same institute.
+
+-- Main.AaronWilton - 13 Jun 2007
+
+*comment:* thanks, we added the possibility of having opposite relationships and we also included concepts to fully locate the record of the related organism: institution code, collection code and catalog number. (R. De Giovanni, T. Giannini and E. Cartolano)
+----
+
+You should be aware of the TaxonOccurrenceInteraction object being developed as part of the LSID Vocabularies for use at Herb IMI  to indicate interactions between fungi and hosts. 
+
+http://rs.tdwg.org/ontology/voc/TaxonOccurrenceInteraction
+
+The TaxonOccurrence object is a very close match to DarwinCore 1.4 and the TaxonOccurrenceInteraction class allows multiple arbitrary links to be made between these objects using an extensible mechanism.
+
+I strongly recommend _not_ continuing to extended DwC in this manner. Especially if it involves linking objects together like this. It will only store up problems for the future.
+
+-- Main.RogerHyam - 2007-09-06
+
+*comments:* 
+
+Roger, I may agree with you that an RDF approach can better formalize links between objects, and I also like the TAG effort to produce a standard ontology that we can all use. I just disagree that extending DarwinCore "will only store up problems for the future". You know that TAPIR (the protocol intended to exchange this data) is very flexible in terms of output, so, if necessary, it should be possible to get a valid RDF output (according to the new TDWG ontology) from providers that mapped DarwinCore + extensions. It should also be easy in the very near future (I'm working on this right now) to migrate local TAPIR mappings to equivalent ones (eg. from DarwinCore + extensions concepts to TDWG ontology concepts). This means that what was proposed here, if adopted, will in no way prevent interoperability and compatibility with initiatives like the TDWG ontology. DarwinCore is being used now to serve more than 100 million records to GBIF, and extending it was the simplest and most effective way to move forward in the projects that were interested in exchanging interaction data.
+
+-- Main.RenatoDeGiovanni - 2007-09-07
+----

@@ -1,0 +1,787 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@---+ BerlinMeetingMinutes
+
+The minutes from the BerlinProtocolMeeting, 26th/27th of July in the Botanical Museum of Berlin.
+-----
+
+---+++++ Attendees
+<verbatim>
+Markus D�ring à M
+Renato De Giovanni à R
+Stan Blum à S
+Donald Hobern à DO
+Anton Guenstch à A
+Dave Vieglas à DV
+John Wieczorek à JW
+Javier de la Torre à JT
+</verbatim>
+
+---+++++ First proposal (XQuery)
+
+Quick discussion and everybody agreed that the technology is still not ready to use it freely.
+R guesses that free tools will only be available maybe in 5 years. S thought that less and DV pointed that most of the current implementations are commercial and that in the SEEK project they spent a lot of time and resources with it and they only implemented a very basic thing.
+
+---+++++ Second Proposal (Conservative)
+
+The second proposal focus on the differences between the protocols, tries to eliminate those differences, and also suggests some additional features.
+
+---+++++ Third Proposal (Second proposal in SOAP)
+
+It was explained that the third proposal is a SOAP implementation of the second one. Everything discussed for the second proposal would be used in the this one.
+
+---+++++ explanation on the Second proposal by Markus
+
+<verbatim>
+Person:   Comment:
+
+M   Start explaining the second proposal and start with the access point discussion. What is an access point, url per database
+S   Incomplete
+DO   Asking about the Manis network
+JW   Incomplete
+S   Incomplete.   
+A   Ask for an explanation of what is an access point
+M   An Access point would be a database, simple.
+A   A database hosting two kinds of data is two access points?
+M   No, one database is an access point serving different kinds of data
+DO   We all must agree on a common vocabulary for these terms.
+S   We will have the situation when we have in a single database different kind of objects.
+JW   You must have an access point for every schema.
+A   Data providers configuring ABCD and Darwin Core?
+DO   The word resource is confusing. It Is important to have an umbrella for all resources to identify the same objects inside a data provider.
+JW   That points to the question of what is an object.
+M   Points that all these discussion are inside the proposal still not explained. Want to return to the description. The definition of a resource and the root element will arise later in the proposal.
+DV   If every resource have and access point we would have to query many more services and that has a performance impact.
+DO   Maybe we can also accept metadata and capabilities request for the whole services in a data provider.
+DV   Will accept the idea of pointing to a single resource, now it only could be done with the protocol.
+DO   ABCD can handle aggregation of data (multiple datasets in a single ABCD document).
+A   This is not the way ABCD was intended to be used.
+DV   Providers should accept all kind of request, in the proposal is only metadata and capabilities.
+M   Then databases should be defined as different resources.
+S   Different levels in definition give complexity.
+JW   But also flexibility
+S   Modification on the proposal so that the providers, in the sense of the second proposal, should accept all kind of request.
+M   Accessing several resources trough one query to a single provider, what should be the response?
+DO   ABCD can handle, again, this aggregation of answers
+M   We should not give this responsibility to the content schemas.
+A   That would make necessary for the protocol to understand the content schema. Not nice.
+R   Leave this discussion as an open issue.
+-----------   -------------------------------------------------------------------------
+R   Next point. Differences in the header information
+DV   The example for Digir in the proposal is not correct for the Digir software. The protocol schema set the destination as multiple. The software doesnt allow it. The Digir portal should only have one destination. The protocol schema is incorrect.
+M   Desirable only one destination. No matter if it is a resource or a provider.
+DO   The same protocol for the connection to the data providers and the connection from portals to portals.
+R   The wrapper will only handle one destination, the first one, while in the protocol is still acceptable to define more than one destination. Portals to portals could use this multiple functionality.
+R   We agree on allowing multiple destinations.
+----------   ----------------------------------------------------------
+R   Shows an example of the new protocol proposal.
+DV   The software information in the header is not necessary to be sent all the time in request and responses. Move it to capabilities.
+M   The source and destination made multiple, should it have an ID to identify the sequence? Not resolved.
+M   The compression part is a very vague idea to request the compression of the content of a response. This allows a software to parse the protocol without having to decompress the document. Agreed to remove it because most functionality can be handled on http basis.
+S   Take a look into the implications, just discuss about the integration.
+J   If we move the software information to capabilities, in the error messages in the diagnostics should also appear.
+M   Agree on that.
+----------   ------------------------------------------------------------------------------------
+M   Remove the type information on the header of the protocol. Is redundant and cause problems. Not real consequences.
+DV   There are not many implications.
+M   Keep the information in the header to put in the response.
+A   Could be called message as DV already pointed.
+---------   -----------------------------------------------------------------------------------------
+M   Next issue. Different request types.
+S   Ping request accepted with pong.
+----------   -----------------------------------------------
+R   Starting with the metadata Request. Explanations.
+S   We should keep the metadata specific part outside of the protocol.
+R   That is right, is not generic, but we need this information to register data providers in the UDDI.
+M   Checking what is exactly necessary for the UDDI and what not in the metadata part.
+M   Problems with the NumberOfRecords. Is not very trustable. And what is a record. That depends on the schema.
+DO   The numberofrecords is not working properly.
+R   Suggestion to drop it and replace it with other alternative.
+JT   Separate the metadata into another schema and have different for different communities.
+M   Then we do not have a common way of accesing this data and will make more complicate.
+R   A single database could serve data in different schemas so it is nice to be able to define different standards for one database (not use the word resources)
+DO   People will like to share their data in different standards, ABCD and DC. It will be easy to see that the data is the same. This could also be achieved with global identifiers.
+S   Is not clear if it is nice to be able to map to different schemas.
+A   Is something necessary to be able to give the users the possibility to map to overlapping different schemas, ABCD and DC.
+R   If DC is included in ABCD, only map to ABCD. Users would still be able to retrieve DC versions through custom searches.
+S   Keep in the metadata which conceptual schemas are mapped.
+M   This problems in different conceptual schemas would be solved by the users in some way when the problems arise.
+-----------   ------------------------------------------------------------------------------
+M   Description on the capabilities proposal.
+DO   Maybe all capabilities should be grouped by conceptualschemas.
+M   Discussion about support of different protocols by the wrapper. In the capabilities specifying the protocols that the wrapper support.
+R   Maybe it is better to have a central repository of what protocols different softwares support.
+DO   Move to the next point.
+S   Typefying concepts?
+M   Take a look into the OpenGIS capabilities request. They define what differents things could be done with a concept.
+M   Operations that could be done in a concept - need to think more about it.
+-----------   ---------------------------------------------------------------------------------
+R   Description of the filtering system in Digir and BioCASE.
+R   No examples of concepts that could not be searchable.
+R   Proposal of new paths to point inside the conceptual schema.
+DV   This new qualified paths represent a big change in the Digir idea.
+DV   No implementation of Xpath
+M   The idea of the path is only to specify the concept exactly, not using Xpath.
+DV   We have to be sure that the order on repeteable elements are correctly specified. With the path proposal is not possible to point to the second element on a list for example.
+R   Maybe change the name.
+M   There could be problems where the concept is not clear to point.
+R   The proposal for paths is accepted.
+DV   We have to specify that the path is defining the elements and the values, just for clarification.
+------------   ----------------------------------------------------------------------------------------
+M   Presentation on the Search Request.
+DV   The Full document search does not affect the Digir software, is possible to define already something like this.
+M   Talking about the Partial Document. It would be easy to implement it in bioCASE
+A   What would happen if you specify in a PartialSearch request a concept that is inside a choice?
+M   The wrapper should raise an error.
+A   Maybe we would need an error code for non meaningful searches.
+M   Is in another part of the proposal.
+-----------   -------------------------------LUNCH TIME------------------------------------
+M   Starting to explain the Custom Document Search
+JW   The PartialDocumentSearch and the FullDocument can be merged into one being the second one a subset of the first. Possible.
+DV   Possible to define the custom structure in an external url. Other thing I did not get.
+DO   Is it necessary to declare the name space in the protocol if then this name space will only be used inside values under the name element?
+M   No sure, in the schema definition is used like this but is not known if it is possible to do some validation with it.
+DV   Technically you should not declare these namespaces if you are not really using it.
+M   In other communities they are doing it in the same way, OpenGIS and schema definition.
+DV   In Seek project they declare all the namespaces in a list, but he does not know why was done exactly like this.
+M   Is a minor issue and there is no need to do solve it right now.
+-----------   --------------------------
+M   Start explaining other things. Deal with recursive relationships between concepts, for SDD. I.e. unlimiting depth nesting
+DO   Digir probably would not be able to handle SDD request because they are too complicate.
+M   Not solved but to consider as a limitation of the protocol.
+M   Discussion on specification of data dictionaries Will not be possible to handle this.
+M   Consider this as a missing feature in the protocol
+------------   -------------------------------------
+R   Presenting the second proposal for a Search Request.
+DV   Asking that the software would have to known which elements are mandatory inside the schema and which ones not.
+M   This partial search make possible to construct clients that can trust on getting valid documents.
+M   Explaining a little bit how the wrapper works with the CMF and the alternative respresentation of the schema.
+JT   Mapping two concepts to another one in the CustomSearch
+M   In BioCASE is possible, in Digir is only one to one relation.
+M   Implementing the total schema definition for the customSearch
+DV   There are not many people understating at all the complete schema definition language, so it is too difficult probably to implement it
+M   Use the schema definition language of our own?
+DV   By using XML Schema would mean to explain the people what they can not use. Another way would probably be more elegant.
+M   Question about if we should split the definition of the CustomStructure and then in another place the mapping.
+DO   There are other techniques that make possible to transform documents very easely, like XSLT, so why worry about implement it in the wrapper.
+DV   Leave this discussion for later
+R   Apart from this CustomSearch the rest of our protocol would look very similar to the Open GIS community.
+M   There is no people using it the Custom structure?
+DV   Not really, most of the people use pre-made structures.
+M   We think about it and come later.
+-----------   -----------------------------------------------------------------------------------
+M   Explanation of the Inventory/Scan Request
+DV   The first proposal is quite similar to the Digir approach.
+DV   It would not be difficult to implement this in Digir.
+M   Seems to be OK for all.
+------------   ------------------------------------------------------------------------
+M   Discuss about Filters
+M   Presented the ideas to eliminate differences between operators. 
+S   A difference between when a field is null and when is not mapped 
+M   Is it necessary to leave elements with empty values?
+JW   Could be useful not know that something is mapped but is not filled.
+DV   Being able to specify if you want a complete structure even if there are nulls.
+M   Maybe including nulls in the CustomSearch, because you are the one defining it, and drop them in the FullSearch. ABCD documents with nulls would be huge.
+DV   When you explicitly return a document when something is unmapped, then you should get a diagnostic. For the other is could be dropped. TO BE CONFIRMED WITH MARKUS
+DV   For the other operators would be ok.
+M   Change maxOccurs of LOPS to unbounded so that it is more clear. 
+DV   Seems to be a trivial change. AGREE.
+---------   ----------------------------------------------------------
+R   Standarizing the name of the parameter in both for POST and GET.
+ALL   Yes good idea.
+M   Good to have a recommendation. Maybe request.
+-----------   ------------------------------------------------------
+M   Fault codes discussion
+DV   An agreement on the fault codes would be very nice.
+JT   In SOAP is the same idea, different parameters in different elements, but the same idea.
+----------   --------------------------------------------
+M   To be completed
+----------   ---------------------------------------------
+M   UnknownConcepts stuff
+A   We need some flexibility flag.
+DV   You need to specify it or there would be misleading interpretations.
+A   That is necessary for very polimorphic content schemas like ABCD.
+DO   Proposal of a IsMapped operator.
+-------------   ---------------------------------------------------------
+R   Rest of extra suggestions we agree on them.
+-------------   -------------more comments---------------
+DV   In operator. To be able to use as the in operator the result of another request. Hidden feature.
+JTA   Sort by stuff.
+M   Is not possible in some complicate structures.
+S   For some reason was not possible to implement it.
+M   Only implement it on the inventory.
+DV   In paging it would be necessary.
+DV   He prefers to leave sorting for the presentation.
+A   In distributed queries it does not have sense.
+JTA   But in non distributed yes. Implement in Inventory
+JW   Different sorting in different database implementations.
+M   Allow Sort by in the inventory request.
+JTA   Case sensitive. Is it possible to handle it?
+DV & M   Not all DBMS support this
+-------------   ---------------------------------------------------------
+JT   SOAP third proposal
+DV   Dis: performance, redefine new services for each new schema, library incompatibilities between different versions and languages
+DV   Pros: GRID compatible, easier for clients programming, passing parameters is a lot easier
+JT   Write SOAP parsers for wrappers ourselves to gain performance
+DV   Why? Too much work.
+DV   Efficient SAX libraries are available
+S   So problematic is only the custom document retrieval, where response structure is unknown.
+JT   SOAP helps to attract other people to use our protocol
+A   Right now existing software is running, so its a good opportunity to do radical changes.
+DV   Find out why OpenGIS is not using SOAP. Get additional arguments.
+-------------   ---------------------------------------------------------
+R & M   Presentation on the OpenGIS
+DO   Using the OpenGIS would make possible for us be queried by the  community?
+DV   Not really. Not complete.
+R   We can use this standard for our filter
+JW   Then the isMapped and the in operator would be gone
+R   INs could be easily substituted by a sequence of ORs, the other one (isMapped) would be missing.
+M   There is no inventory
+S   This is something you cannot do with a function.
+JW   We can extend their standard to fit our needs.
+DV   We can not take a decision right now.
+M   Two possibilities: We take what we need from them and extend to fit our needs or we try to contact with them and merge.
+DV   Example on OpenGIS using SOAP with Access and .NET. Problems with big types.
+---------   -----------------------------------------------
+M   Return to open discussion, types of searches
+DO   I see no need for custom.
+M   Only one type of search. With no parameters is a FullSearch specifying a schema. And if you specify the concepts then is like a PartialSearch.
+M   No need to specify in the protocol the RecordDefinition because we are always using a schema in the background.
+M   Need to specify the response name space?
+DO   Only the name space is needed, not the location of the schema (now that there is no custom search where it could be used)
+DO   Useful to be able to specify a complete branch as what you want to receive.
+A   We can use the root element in the FullSearch also. So there is only one Search operation.
+R   Not a good idea to drop the possibility to use concepts from different concepts schemas.
+R   Explain how the BioCASE CMF files work.
+M   Show an example CMF based on Darwin Core. One problem:  See PyWrapperAlgorithm.
+DO   We can start having problems with conceptual schemas like ABCD or SDD due to this problem. (did not get Donald answer and comments). 
+M   The clients could create very bad structures that do not have sense. Could create confusions.
+DO   Ask Markus about Donald comments on this.
+R   Even if we do not set up this CustomSearch we should be able to handle concepts from different schemas. Showed an example where this is going on (SICol project). Digir already supports to map a database to two schemas. Then is possible to create documents from two different schemas. Both are attached together.
+M   But working with complex data with nested elements we would need an insertion point in the original tree structure for the new "extension".
+DO   Communities that maybe need to extend a schema would use this functionalities.
+M   ??? Allow only to hang around with complex types ???
+DO   Still have the problem on creating.
+JT   The future is in ComplexTypes and how to relate them.
+DO   Extension schemas could only be attached to the root level of the schema where they are being attached. 
+   Extension schemas is a problem, discussion on this. Some communities, even sharing verysimilar data, do not agree in a common content schema, so that is why is needed to support extensions to schemas (in answer to Markus question).
+-----------   -------------------------------------------------
+   SECOND DAY
+M   Markus show a WikiPage with the results from yesterday (BerlinMeetingResults).
+DV   Issue about DateLastModified. Attached to the resource or the datasource. Attach it to the source, a small change in the datasource does not mean a change in the source.
+R   The dataLastModified is attached to the schema in the conceptualschemas in the metadata part.
+DV   The numberofrecords if we can warrant the accuracy of the name then is nice.
+R   In cases when extensions are in the same idea, the number of records is nice.
+M   Open the discussion on how to make capabilities for the whole datasource.
+R   Not make possible to have different request types and filter operators for every resource.
+JW   It's possible to have different kind of data.
+M   In a technical point of view the databases will always accept the same filter operators, but could be necessary.
+A   Is there a set of mandatory filters operators? It would be very nasty to have them very different in a lot of data providers.
+M   Some of them we can make them mandatory, for example Like, greater, lesser
+M   Should we group in BasicFilterOperator group?
+DO   How would be possible to know from the name what a function does?
+M   It just does not do it.
+A   It will have to be explained somewhere else.
+S   Posibility to define different operators for different kind of fields? Not possible to a max in a text field for instance.
+M   In BioCASE in the configuration files is possible to do not make a field searchable.
+JW   I do not want to deal with all this information. Better give and error.
+M   The name of the identifier (path).
+DV   Path is fine. Everybody agree on Path
+A   In a requestl if no concepts are specified then only the mandatory ones could be retrieve.
+M   Fine.
+M   Evaluate to false if concepts is not mapped but compared?
+JT   I think you should return an error..
+A   But if something is not mapped and then you get an error there would be no possibility to be flexible on more complicated searches.
+JT   Use IsMapped as a function that can be used to replace something like blanks.
+DO   If you create a request with something not mapped at least a warning should arise, but then you would like to get results stil
+DV   Remove it? Rely on the capabilities.
+A   100 databases, 50 with ISO2Letter code and the other ISO3LetterCode With a IsMapped function it would not be possible.
+DO   Creating a federated query with unknown providers then you have to ask, for example, for genus in different places
+M   Eliminate the isMapped function and evaluate always as False when refering to a non mapped concept. Always return a warning in the diagnostics about this.
+M   Maybe we have to think in more complex queries, for example with OR
+R   Maybe we should omit to treat the unmapped fields in the queries.
+   
+M   Start the discussion of CustomSearch..
+M   The only way to output two schemas together is with CustomSearches.
+JT   If it is only extensions we could put this task in the data provider.
+M   Then if you have 4 extensions and 5 schemas you would have to map 32 documents.
+JT   Is this a real scenario?
+DO   Yes, it is.
+M   Go for CustomSearch.
+DO   How the top level structures get created? In ABCD is part of the content schema, in Darwin core is part of the protocol. In the configuration process you could identify the top-level envelope so that then we can aggregate schemas.
+M   Something to look to, but what I do not like is that mybe we could lose some generity in the protocol.
+DV   Is not clear to me where this root element would appear in the response.
+DO   Analysis of what a Digirr response contains
+DO   If Darwin Core would implement a Responses element wrapping the Response then it would be easy to work as an aggregator of data, like the GBIF portal. A response would only have to be changed to include a new element, Responses, that will wrap only one element called Response.
+DO   For example, a datasource you could provide 3 big datasets inside a datasets element. For example with data from collections, taxonomy, sdd,etc
+A   But this is specific to one application. You can do it like this if you want.
+DV & DO   Discussion on the differences between the Digir response and an ABCD document.
+M   Could be possible to specify in the response document a location where the metadata can be taken, something like a static URL. Then is not necessary to attach it. Every record got a pointer to a URL with the metadata.
+M   Markus show the UBIF.JWSL
+DO   Is too complicate for the Digir software, is verycomplicate for almost everybody.
+R   Show a simple structure where there are three different levels defined in two different schemas. Is possible to create these kind of structures.
+DO   Not understand
+DO   . Use the same protocol for all components. That males the software more useful 
+DO   If we want to put protocols together we will have to address that in Digir the response, records, is part of the protocol while in BioCASE is part of the content schema. We would have to solve this problem to put protocols together.
+--------   ----------------------------------------------
+   New structure of the protocol.
+M & DO   Creation of the new proposal for the protocol schema - live.
+----------   --------------------------------------------
+DO   Presentation of the new proposal for the protocol
+DO   The metadata envelope contains a sequence of elements from a metadata schema identified in the capabilities. We can take the schema already proposed.We do not specify filtering on metadata, you always get all.
+A   In ABCD you have metadata in two levels, common and for specific units
+M   Is the same idea in the new proposal, but there will have to be a recommendation to remove the metadata not from specific units from conceptual schemas and put it into the protocol envelope in a different schema.
+DO   Extensions should only be done with types. There should not be the possibility to extend inside types, that makes everything much complicate and with no much sense.
+M   Two possibilities, to put the units in ABCD being represented by record and to show only complex types behind it, or define a UnitType that is attached to records.
+---------   --------------------------------------------------------------
+M   Need to be able to specify more than one record definition.
+M   All metadata together sent and no possibility to
+------------   ---------------------------
+S   The next protocol would be something like an experimental one
+A   Treated like BioCASE and Digir right now.
+DO   GBIF will support all protocols and will create a proxy service to help people that do not want to deal with all protocols at the same time. GBIF will try to put some budgets on it.
+DV   What is the license of the code?
+DO   Mozilla Public License.
+JW   And the implementation of this third protocol?
+S   
+DV   We need a strategy to these changes in the schema and in the software.
+S   Is it possible to create a Darwin Core in a class way?
+DV   Create DC as a subset from ABCD
+S   Problems with some elements.
+------   -----
+   NAME FOR THE PROTOCOL
+A   Want some BioCASE acknoledgement
+DO   Bigir!
+   
+</verbatim>
+
+
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d256 1
+a256 1
+M   The clients could create very bad structures that does not have sense. Could create confusions.
+d259 1
+a259 1
+M   But doing in tree structure with nested elements where do you insert this points.
+d261 1
+a261 1
+M   Allow only to hang around with complex types
+d263 1
+a263 1
+M   The future is in ComplexTypes and how to relate them.
+d298 1
+a298 1
+M   Eliminate the isMapped function and evaluate always as False and return always a warning in the diagnostics.
+d305 1
+a305 1
+M   Then if you have 4 extensions and 4 schemas you would have to mapped 16 documents.
+d310 1
+a310 1
+M   Something to look to, but what I do not like is that mybe we could lose some generic in the protocol.
+d326 1
+a326 1
+M & DO   Creation of the new proposal of protocol live.
+d338 1
+a338 1
+S   The next protocol would be something like an experimental
+d351 1
+a351 1
+A   Want some BioCASE mention
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d78 1
+a78 1
+M   The ZIP part is not decided
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d270 2
+a271 2
+R   The dataLastModified is attached in the schema in the conceptualschemas in the metadata part. In the wiki page.
+DV   The numberofrecords if we can warranty the accurate of the name then is nice.
+d275 1
+a275 1
+JW   Is possible to have different kind of data.
+d288 1
+a288 1
+A   In a requestl if no concepts are specify then only the mandatory ones could be retrive.
+d290 1
+a290 1
+M   Eveluate to false if concepts is not mapped but compared?
+d292 1
+a292 1
+A   But if something is not mapped arise and error there would be no possibility to be flexible chaking if something.
+d313 1
+a313 1
+DO   If Darwin Core would implement a Responses element wrapping the Response then it would be easy to work as an aggregator of data, like the GBIF portal.A response would only have to be changed to include a new element, Responses, that will wrap only one element called Response.
+d340 1
+a340 1
+DO   GBIF will support all protocols and will create a proxy service to help people that do not want to deal with all protocols at the same time.GBIF will try to put some budgets on it.
+d345 1
+a345 1
+DV   We need an strategy plan to this changes in the schema and in the software.
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d247 1
+a247 1
+M   No need to specify in the protocol the RecordDefinition because we are always using an schema in the background.
+d254 3
+a256 3
+M   Show an example CMF based on Darwin Core. One problem:  Found in PyWrapperAlgorithm in the WikiWiki page.
+DO   We can start having problems with conceptual schemas like ABCD or SDD due to this problem.I did not get Donald answer and comments. 
+M   The clients could create very bad structures that does not have sense. Could create confussions.
+d258 1
+a258 1
+R   Even if we do not set up this CustomSearch we should be able to handle concepts from different schemas. He show an example where this is going on: http://sicol.cria.org.br/provider/admin/setup.phpDigir support to map a database to two schemas. Then is possible to create documents from two different schemas. Both are attached together.
+d260 1
+a260 1
+DO   Communities that maybe need to extend and schema would use this functionalities.
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d244 1
+a244 1
+M   Return to open discussion, types of searchs
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@a242 1
+R   Fear to handle with new technologies because it takes a lot of time.
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d166 1
+a166 1
+R   Apart of this CustomSearch the rest of our protocol would look very similar to the Open GIS community.
+d182 2
+a183 2
+M   Maybe including nulls in the CustomSearch, because you are the one dfining it, and drop them in the FullSearch. ABCD documents with nulls would be huge.
+DV   When you explicitly a document when something is mapped, then you should get a diagnostic. For the other is could be dropped. TO BE CONFIRMED WITH MARKUS
+d188 1
+a188 1
+R   Standarizing the name of the parameter in both for posting and GET.
+d201 1
+a201 1
+A   That is necessary for very polimophic content schemas like ABCD.
+d225 1
+a225 1
+DV   Efficient SAJW libraries are available
+d229 1
+a229 1
+DV   Find out why openGIS is not using SOAP. Get additional arguments.
+d233 1
+a233 1
+DV   Not reall. Not complete.
+d235 2
+a236 2
+JW   Then the Ismapped and the in operator would be gone
+R   The in operator there would be no problem to implemented, the other one not sure.
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d121 3
+a123 3
+DV   No implementation of JWpath
+M   The idea of the path is only to specify the concept exactly, not using JWpath.
+DV   We have to be sure that the order on repeteable elements  are correctly specify. With the path proposal is not possible to pointo the second element on a list for example.
+d130 1
+a130 1
+DV   The Full document search doesn not affect the Digir software, is possible to define already something like this.
+d133 2
+a134 2
+M   The wrapper should arise and error.
+A   Maybe we would need an error code for not meaningful searches.
+d138 1
+a138 1
+JW   The PartialDocumentSearch and the FullDocument can be merge into one being the second one a subset of the first. Possible.
+d155 1
+a155 1
+M   This partial search make possible to construct clients that casn trust on getting valid documents.
+d160 5
+a164 5
+DV   There is not many people understating at all the complete schema definition language, so it is too difficult probably to implement it
+M   Use the schema definition language or our own?
+DV   Using the schema DL would mean to explain the people what they can not use. Another way would probably be more elegant.
+M   Question about if we should split the definition of the CustomStructre and then in another place the mapping.
+DO   There are other techniques that make possible to transform documents very easely, like JWSLT, so why worry about implement it in the wrapper.
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d76 1
+a76 1
+DV   The software information in the header is not necessary to be sent it all the time in request and responses. Move it to capabilities.
+d79 2
+a80 2
+S   Take a look into the implecations,just discuss about the integration.
+J   If we move the software information to capabilities in the error messages in the diagnostics should also appear.
+d83 3
+a85 3
+M   Remove the type information on the header of the protocol. Is redundant and cause problems.Not real consecuences.
+DV   There is not many implecations.
+M   Keep the information the header to put in the response.
+d104 2
+a105 3
+R   If DC is included in ABCD, only map to ABCD.
+   . Something lost
+R   Keep the metadata about to which conceptual schemas are mapped.
+d109 1
+a109 1
+DO   Maybe all capabilities should be group by conceptualschemas.
+d113 1
+a113 1
+S   Typifying concepts?
+d115 1
+a115 1
+M   Operations that could be done in a concept needs more to think about it.
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d75 3
+a77 3
+R   Show an example of the new protocol proposal.
+DV   The software information in the header is not necessary to send it all the time in request and responses. Move it to capabilities.
+M   The source and destination made multiple, should it have and ID to identify the sequence? Not resolved.
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d36 1
+a36 1
+M   Start explaining the second proposal and start with the access point discussion. What is and access point, url per database
+d49 1
+a49 1
+DO   The word resource is confusing.  It Is important to have an umbrella for all resources to identify the same objects inside a data provider.
+d51 1
+a51 1
+M   Points that all these discussion are inside the proposal still not explained. Want to return to the description.The definition of a resource and the root element will arise later in the proposal.
+d55 1
+a55 1
+DO   ABCD can handle aggregation of data. The Digir can aggregate the data in a single ABCD document.
+d70 1
+a70 1
+M   Desirable only one destination. Never less it is a resource or a provider.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d6 1
+a6 1
+---+++++ Attendants
+d18 1
+a18 1
+---+++++ First proposal (JWquery)
+d20 2
+a21 2
+Discuss a little bit and everybody agree that the technology is still not ready to use it freely.
+Renato thinks that the technology will be ready in 5 years. Stan thought that less and Jone pointed that most of the current implementations are commercial and that in the Seek project they spent a lot of time and resources with it and they only implemented a very basic thing.
+d25 1
+a25 1
+The second proposal extends the current protocols and tries to make a common one based on the others.
+d29 1
+a29 1
+Is explained that the third proposal is a implementation, in a SOAP way, of the second proposal .Everything discussed for the second proposal would be used in the this one.
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d35 1
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d33 323
+a355 1
+
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d7 1
+d16 1
+a16 1
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d6 29
+@

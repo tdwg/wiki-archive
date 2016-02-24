@@ -1,0 +1,1479 @@
+<?
+$sess_id = $REMOTE_ADDR;
+$sess_id = ereg_replace("\.","",$sess_id);
+session_id($sess_id);
+session_start($sess_id);
+
+
+if (empty($func)) $func="browselist";
+
+
+
+if($func=="browselist")
+{
+  echo "<HEAD><TITLE>LIF->SDD Converter</TITLE><BODY bgColor='#9BAFDA'>";
+  echo "<H2><P ALIGN=center><u>LIF->SDD Converter</u></P></H2><br><br><br><br>";
+  echo "<table align=center bgcolor=#B9C9E8><tr><td>";
+  echo "<form action=converter.php method=post ENCTYPE=multipart/form-data>
+  <P>Choose a .LIF file to convert:</td>";
+  echo "<td><select name=location size=1>
+    <option value=0>--Choose A LIF--</option>
+    <option value=../key/Keys/Nemertea/Nemertea.LIF>Key to the Nemerteans</option>
+    <option value=../key/Keys/scyphozoa/scyphozoa.LIF>Key to the Scyphozoa</option>
+    <option value=../key/Keys/amoebae/amoebae.LIF>Key to the Amoebae</option>
+    <option value=../key/Keys/primary/primary.LIF>Key to Marine Fishes</option>
+  </select></td></tr>";
+  echo "<tr><td align=center>or</td></tr>";
+  echo "<tr><td>Upload a .LIF from your computer:</td>";
+  echo "<td><INPUT TYPE=file NAME=location3 SIZE=30 ACCEPT=text></td></tr>";
+  echo "<tr><td align=center>or</td></tr>";
+  echo "<tr><td>From a location on the web:</td>";
+  echo "<td><input type=text name=location2 size=50></td></tr>";
+  echo "<tr><td align=center colspan=2><input type=hidden name=func value=load>
+  <input type=submit value=Convert></td></form></tr></table>";
+  exit;
+}
+
+
+
+
+
+
+if($func=="load")
+{
+  unset($matrix);
+  unset($taxa_scores);
+  unset($lineinfo);
+  unset($statetext);
+  unset($taxontext);
+  unset($statemedia);
+  unset($taxonmedia);
+  unset($metric);
+  unset($selected_state);
+  unset($preferences);
+  unset($family);
+  unset($charstuff);
+  unset($statestuff);
+  unset($user_mode);
+  unset($multimedia);
+  unset($mediadir);
+  unset($charimage);
+  unset($is_open);
+  unset($depend);
+  unset($depends);
+  unset($subkey);
+  unset($taxanames);
+  unset($subkey_text);
+  unset($stylesheet);
+  unset($tns_names);
+  unset($nametype);
+  session_unregister("matrix");
+  session_unregister("taxa_scores");
+  session_unregister("lineinfo");
+  session_unregister("statetext");
+  session_unregister("taxontext");
+  session_unregister("statemedia");
+  session_unregister("taxonmedia");
+  session_unregister("metric");
+  session_unregister("selected_state");
+  session_unregister("preferences");
+  session_unregister("family");
+  session_unregister("charstuff");
+  session_unregister("statestuff");
+  session_unregister("user_mode");
+  session_unregister("multimedia");
+  session_unregister("mediadir");
+  session_unregister("charimage");
+  session_unregister("is_open");
+  session_unregister("depend");
+  session_unregister("depends");
+  session_unregister("subkey");
+  session_unregister("taxanames");
+  session_unregister("subkey_text");
+  session_unregister("stylesheet");
+  session_unregister("tns_names");
+  session_unregister("nametype");
+  if($bgcolor)
+  {
+    echo "<BODY BGCOLOR=$bgcolor>";
+  }else
+  {
+    echo "<BODY BGCOLOR=#9BAFDA>";	
+  }
+  echo "<P align=center>Loading...</P><br>";
+  if((isset($location3))&&($location3!="none")&&($location3!=""))
+  {
+    if(ereg("[[:space:]]",$location3_name))
+    {
+      echo "<p align=center>Please choose a *.LIF that does<br>";
+      echo "not contain any spaces in the title</p>";	
+      echo "<P align=center><form action=converter.php name=lifspace method=post>
+    	<input type=hidden name=func value=browselist>";
+    	?>
+    	<img src="Global/back.gif" border=0 onClick="document.lifspace.submit();" onmouseover="this.style.cursor='hand'">
+    	<?
+      echo "</form></p>";
+    }else if(!(eregi("\.LIF$",$location3_name)))
+    {
+      echo "<p align=center>You did not choose a *.LIF file</p>";	
+      echo "<P align=center><form action=converter.php name=lifspace method=post>
+    	<input type=hidden name=func value=browselist>";
+    	?>
+    	<img src="Global/back.gif" border=0 onClick="document.lifspace.submit();" onmouseover="this.style.cursor='hand'">
+    	<?
+      echo "</form></p>";
+    }
+    else
+    {
+      $newlifname = "user_log/$location3_name";
+      if(file_exists($newlifname)) 
+      {
+	echo "<P align=center> A file aready exists with this name, please rename and try again </P>";
+        echo "<P align=center><form action=converter.php name=lifspace method=post>
+    	<input type=hidden name=func value=browselist>";
+    	?>
+    	<img src="Global/back.gif" border=0 onClick="document.lifspace.submit();" onmouseover="this.style.cursor='hand'">
+    	<?
+        echo "</form></p>";
+      }else
+      {
+        echo "<BODY onLoad='document.load.submit();'>";
+	@copy ("$location3", $newlifname)
+	or
+	die ("Couldn't copy the file. <a href='javascript:history.go(-1)' onMouseOver='self.status=document.referrer;return true'>Go Back</a>.");
+      }
+    }
+    echo "
+    <form name=load action=converter.php method=post>
+  	<input type=hidden name=func value=import>
+  	<input type=hidden name=taxaimage value=$taxaimage>
+  	<input type=hidden name=bgcolor value=$bgcolor>
+  	<input type=hidden name=fontname value=$fontname>
+  	<input type=hidden name=user_mode1 value=$user_mode1>
+  	<input type=hidden name=location value=0>
+  	<input type=hidden name=location2 value=$newlifname>
+  	<input type=hidden name=location3 value=1>
+  	<input type=hidden name=filename value=$newlifname>
+  	<input type=hidden name=stylesheet value=$stylesheet2>
+    </form>";
+  }else
+  {
+    echo "<BODY onLoad='document.load.submit();'>";
+    echo "
+    <form name=load action=converter.php method=post>
+  	<input type=hidden name=func value=import>
+  	<input type=hidden name=taxaimage value=$taxaimage>
+  	<input type=hidden name=bgcolor value=$bgcolor>
+  	<input type=hidden name=fontname value=$fontname>
+  	<input type=hidden name=user_mode1 value=$user_mode1>
+  	<input type=hidden name=location value=$location>
+  	<input type=hidden name=location2 value=$location2>
+  	<input type=hidden name=stylesheet value=$stylesheet2>
+    </form>";
+  }
+  exit;
+} 
+ 
+ 
+ 
+ 
+ 
+if($func=="import")
+{
+  if($bgcolor)
+  {
+    echo "<BODY BGCOLOR=$bgcolor>";
+  }else
+  {
+    echo "<BODY BGCOLOR=#9BAFDA>";
+  }
+  echo "<P align=center>Loading...</P><br>";
+
+  if($location)
+  {
+    $LIF_file="$location";
+  }else if($location2)
+  {
+    $LIF_file="$location2";
+  }else
+  {
+    echo "<br><br><br><br><br><br><br><br><br>";
+    echo "<P align=center>You Need To Choose A *.LIF File To Open.<br>";
+    echo "<form action=converter.php name=lifspace method=post>
+    	<input type=hidden name=func value=browselist>";
+    	?>
+    	<img src="Global/back.gif" border=0 onClick="document.lifspace.submit();" onmouseover="this.style.cursor='hand'">
+    	<?
+    echo "</form></p>";
+    exit;
+  }
+  if(!$file=@fopen($LIF_file,"r"))
+  {
+    echo "<br><br><br><br><br><br><br><br><br><p align=center>Can't open file: $LIF_file</p>";
+    echo "<P align=center><form action=converter.php name=lifspace method=post>
+    	<input type=hidden name=func value=browselist>";
+    	?>
+    	<img src="Global/back.gif" border=0 onClick="document.lifspace.submit();" onmouseover="this.style.cursor='hand'">
+    	<?
+    echo "</form></p>";
+    exit;
+  }
+  $LIF=file($LIF_file);
+
+
+
+  $character = read2blank("Character List","states", $LIF,"char");
+  $charstuff = $character[0];
+  $statestuff = $character[1];
+  $family = $character[2];
+  session_register("charstuff");
+  session_register("statestuff");
+  session_register("family");
+  unset($character);
+
+  $data=read2blank("Main Data","matrix", $LIF,"matrix");
+  $matrix = $data[0];
+  $lineinfo = $data[1];
+  
+  
+  $taxanames=read2blank("Taxon","taxa", $LIF,"taxa");
+  $metric=read2blank("Metric Data","metric", $LIF,"metric");
+  $statemedia=read2blank("State Media","statemedia", $LIF,"smedia");
+  $statetext=read2blank("State Text","statetext",$LIF,"stext");
+  $taxonmedia=read2blank("Taxon Media","taxonmedia", $LIF,"tmedia");
+  $taxontext=read2blank("Taxon Text","taxontext",$LIF,"ttext");
+  $mediadir=read2blank("Multimedia","mediadir",$LIF,"mediadir");
+  $depend=read2blank("Dependency","depend",$LIF,"depend");
+  $subkeyinfo=read2blank("Subkey","subkeyinfo",$LIF,"subkey");
+
+  if($subkeyinfo)
+  {
+    $num = count($subkeyinfo);
+    for($i=0 ; $i<$num ; $i++)
+    {
+      $array = split("[[:space:]]\"",$subkeyinfo[$i]);
+      $n = $array[0];
+      $url = substr($array[2],0,-2);
+      $subkey[$n] = trim($url);
+      $text = substr($array[1],0,-1);
+      if($text)
+      {
+        $subkey_text[$n] = trim($text);
+      }
+    }
+  }
+
+  if(!$taxonmedia)
+  {
+    $taxonmedia[]=a;
+    $taxonmedia[]=b;
+  }
+  if(!$statemedia)
+  {
+    $statemedia[]=a;
+    $statemedia[]=b;
+  }
+  if(!$statetext)
+  {
+    $statetext[]=a;
+    $statetext[]=b;
+  }
+  if(!$taxontext)
+  {
+    $taxontext[]=a;
+    $taxontext[]=b;
+  }
+  if(!$metric)
+  {
+    $metric[]=a;
+    $metric[]=b;
+  }
+  if(ereg("^(.*)/(.*)/(.*)\.LIF",$LIF_file,$arr))
+  {
+    $LIFname = $arr[3];
+  }elseif(ereg("^Keys/(.*)\.LIF$",$LIF_file,$arr))
+  {
+    $LIFname = $arr[1];
+  }
+
+  if($location)
+  {
+    $multimedia = "local";
+  }elseif($location2)
+  {
+    $multimedia = "url";
+  }
+  if($location3)
+  {
+    $multimedia = "remote";
+  }
+  if(ereg("http://",$mediadir[1]))
+  {
+    $multimedia = "url";
+  }
+
+  $preferences[0]=$LIFname;
+  $preferences[1]=$taxaimage;
+  $preferences[2]=$fontname;
+  $preferences[3]=$bgcolor;
+  
+  
+  $num=count($family);
+  for($i=1 ;$i<=$num ; $i++)
+  {
+    $images = imagestuff(state,$i);
+    if($images[0])
+    {
+      $char = $family[$i];
+      $charimage[$char] = 1;
+    }	
+  }
+  
+  
+  fclose($file);
+  if($location3)
+  {
+    $preferences[4]="upload";
+    $success = @unlink($filename) or die ("Could not delete file.<br>Contact David Remsen (<A HREF='mailto:dremsen@mbl.edu'>dremsen@mbl.edu</A>)");
+  }
+
+  echo "<form name=play action=converter.php method=post>";
+
+  $pass_color="green";
+  $fail_color="red";
+
+  $user_mode = $user_mode1;
+
+
+
+  $charstuff = array_replace($charstuff);
+  $statestuff = array_replace($statestuff);
+  $taxanames = array_replace($taxanames);
+  $taxonmedia = array_replace($taxonmedia);
+  $taxontext = array_replace($taxontext);
+  $statemedia = array_replace($statemedia);
+  $subkeytest = array_replace($subkeytest);
+
+
+  session_register("matrix");
+  session_register("selected_state");
+  session_register("taxa_scores");
+  session_register("lineinfo");
+  session_register("statemedia");
+  session_register("taxonmedia");
+  session_register("statetext");
+  session_register("taxontext");
+  session_register("preferences");
+  session_register("metric");
+  session_register("user_mode");
+  session_register("webkey");
+  session_register("family");
+  session_register("statestuff");
+  session_register("charstuff");
+  session_register("taxanames");
+  session_register("multimedia");
+  session_register("mediadir");
+  session_register("charimage");
+  session_register("pass_color");
+  session_register("fail_color");
+  session_register("depend");
+  session_register("subkey");
+  session_register("subkey_text");
+  session_register("stylesheet");
+  echo "<input type=hidden name=func value=convert>";
+    ?>
+    <script language="JavaScript"><!--
+    	document.play.submit();
+    //--></script>
+    <?  
+  exit;
+}
+
+
+
+
+
+
+
+
+
+if($func=="convert")
+{
+	make_xml_file();	
+	$filename = "./user_log/$sess_id" . ".xml";
+	$array = file($filename);
+	$num = count($array);
+	for($i=0 ; $i<$num ; $i++)
+	{
+		echo "$array[$i]";	
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+function make_xml_file()
+{
+  global $matrix;
+  global $user_selection;
+  global $charstuff;
+  global $statestuff;
+  global $family;
+  global $selected_state;
+  global $is_open;
+  global $func;
+  global $preferences;
+  global $taxa_scores;
+  global $webkey;
+  global $taxonmedia;
+  global $taxontext;
+  global $mediadir;
+  global $multimedia;
+  global $statemedia;
+  global $charimage;
+  global $taxanames;
+  global $depends;
+  global $tns_names;
+  global $nametype;
+  global $sess_id;
+  chdir("./user_log");
+  $filename = "$sess_id" . ".xml";
+  if(!$file = fopen($filename,"w"))
+  {
+    echo "Can't open test.xml for writing<br>";
+  }
+  fwrite($file,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+  fwrite($file,"<Datasets>\n");
+  fwrite($file,"\t<Dataset>\n");
+  
+  
+  fwrite($file,"\t\t<Derivation datetime=\"". date("Y-m-d\TH:i:s") ."\">\n");
+  fwrite($file,"\t\t\t<Transformations>\n");
+  fwrite($file,"\t\t\t\t<OnPublicObjects>\n");
+  fwrite($file,"\t\t\t\t\t<Action kindofchange=\"None\"/>\n");
+  fwrite($file,"\t\t\t\t</OnPublicObjects>\n");
+  fwrite($file,"\t\t\t\t<WithinPublicObjects>\n");
+  fwrite($file,"\t\t\t\t\t<Action kindofchange=\"None\"/>\n");
+  fwrite($file,"\t\t\t\t</WithinPublicObjects>\n");
+  fwrite($file,"\t\t\t</Transformations>\n");
+  fwrite($file,"\t\t\t<Generator name=\"X:ID Player\" version=\"0.6\"/>\n");
+  fwrite($file,"\t\t</Derivation>\n");
+  
+  
+  fwrite($file,"\t\t<ProjectMetadata>\n");
+  fwrite($file,"\t\t\t<Description>\n");
+  fwrite($file,"\t\t\t\t<Representation language=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t<Title>$preferences[0].LIF</Title>\n");
+  fwrite($file,"\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t</Description>\n");
+  fwrite($file,"\t\t\t<RevisionData>\n");
+  fwrite($file,"\t\t\t\t<Creators>\n");
+  fwrite($file,"\t\t\t\t\t<Agents role=\"aut\">\n");
+  fwrite($file,"\t\t\t\t\t\t<Agent ref=\"1\"/>\n");
+  fwrite($file,"\t\t\t\t\t</Agents>\n");
+  fwrite($file,"\t\t\t\t</Creators>\n");
+  fwrite($file,"\t\t\t\t<LastRevisionDate>". date("Y-m-d\TH:i:s", filectime("../Keys/$preferences[0]/$preferences[0].LIF")) ."</LastRevisionDate>\n");
+  fwrite($file,"\t\t\t</RevisionData>\n");
+  fwrite($file,"\t\t\t<IPRStatements>\n");
+  fwrite($file,"\t\t\t\t<Representation language=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t<Copyright>\n");
+  fwrite($file,"\t\t\t\t\t\t<ShortText>(c) 2004 uBio Project : Marine Biological Laboratories</ShortText>\n");
+  fwrite($file,"\t\t\t\t\t</Copyright>\n");
+  fwrite($file,"\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t</IPRStatements>\n");
+  fwrite($file,"\t\t</ProjectMetadata>\n");
+  
+  
+  
+  fwrite($file,"\t\t<ExternalDataInterface>\n");
+  fwrite($file,"\t\t\t<ClassNames>\n");
+  function compare($a,$b)
+  {
+    if($a < $b)
+    {
+      return -1;
+    }elseif($a==$b)
+    {
+      return ($taxa_scores[$a] < $taxa_scores[$b]) ? 1 : -1;
+    }else
+    {
+      return 1;
+    }
+  }
+  
+  if($taxa_scores)
+  {
+    $test=0;
+    $thelasttaxon=-1;
+    reset($taxa_scores);
+    uksort($taxa_scores,"compare");
+    while(list($key,$val)=each($taxa_scores))
+    {
+      if(get_score1($matrix[$key])==0)
+      {
+        $tid = $key+1;
+        $taxa = trim($taxanames[$key]);
+        fwrite($file,"\t\t\t\t<ClassName key=\"$tid\" xidremain=\"1\">\n");
+        fwrite($file,"\t\t\t\t\t<Label>\n");
+        fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+        fwrite($file,"\t\t\t\t\t\t\t<Text>$taxa</Text>\n");
+        fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+        fwrite($file,"\t\t\t\t\t</Label>\n");
+        fwrite($file,"\t\t\t\t</ClassName>\n");
+        if($test==0) $thelasttaxon = $key;
+        $test=1;
+      }
+    }
+    reset($taxa_scores);
+    uksort($taxa_scores,"compare");
+    while(list($key,$val)=each($taxa_scores))
+    {
+      if(get_score1($matrix[$key])!=0)
+      {
+        $tid = $key+1;
+        $taxa = trim($taxanames[$key]);
+        fwrite($file,"\t\t\t\t<ClassName key=\"$tid\" xidremain=\"0\">\n");
+        fwrite($file,"\t\t\t\t\t<Label>\n");
+        fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+        fwrite($file,"\t\t\t\t\t\t\t<Text>$taxa</Text>\n");
+        fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+        fwrite($file,"\t\t\t\t\t</Label>\n");
+        fwrite($file,"\t\t\t\t</ClassName>\n");
+      }
+    }
+  }
+  
+  else
+  {
+    $num = count($taxanames);
+    for($i=0 ; $i<$num ; $i++)
+    {
+      $tid = $i+1;
+      $taxa = trim($taxanames[$i]);
+      fwrite($file,"\t\t\t\t<ClassName key=\"$tid\" xidremain=\"1\">\n");
+      fwrite($file,"\t\t\t\t\t<Label>\n");
+      fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+      fwrite($file,"\t\t\t\t\t\t\t<Text>$taxa</Text>\n");
+      fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+      fwrite($file,"\t\t\t\t\t</Label>\n");
+      fwrite($file,"\t\t\t\t</ClassName>\n");
+    }
+  }
+  fwrite($file,"\t\t\t</ClassNames>\n");
+  
+  
+  
+  
+  
+  fwrite($file,"\t\t\t<Agents>\n");
+  fwrite($file,"\t\t\t\t<Agent key=\"1\">\n");
+  fwrite($file,"\t\t\t\t\t<Label>\n");
+  fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Text>Patrick Leary</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t</Label>\n");
+  fwrite($file,"\t\t\t\t</Agent>\n");
+  fwrite($file,"\t\t\t</Agents>\n");
+  
+  fwrite($file,"\t\t\t<MediaResources>\n");
+  
+  $numberofmedia = 1;
+  
+  $num = count($statestuff);
+  for($i=0 ; $i<$num ; $i++)
+  {
+  	$stid = $i+1;
+  	$media = imagestuff(state,$stid);
+      	$images = $media[0];
+      	$titles = $media[1];
+      	$image = $images[0];
+      	$title = $titles[0];
+      	if($image)
+      	{
+	      	if(!$title || (ereg("^[[:space:]]*$", $title))) $title = $image;
+	      	fwrite($file,"\t\t\t\t<MediaResource key=\"$numberofmedia\">\n");
+		fwrite($file,"\t\t\t\t\t<Label>\n");
+		fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+		fwrite($file,"\t\t\t\t\t\t\t<Text>$title</Text>\n");
+		fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+		fwrite($file,"\t\t\t\t\t</Label>\n");
+		fwrite($file,"\t\t\t\t\t<ObjectLink>\n");
+		fwrite($file,"\t\t\t\t\t\t<URL>$image</URL>\n");
+		fwrite($file,"\t\t\t\t\t</ObjectLink>\n");
+		fwrite($file,"\t\t\t\t\t<Type>Image</Type>\n");
+		fwrite($file,"\t\t\t\t</MediaResource>\n");
+		$numberofmedia++;
+	}
+  }
+
+  $num = count($taxanames);
+  for($i=0 ; $i<$num ; $i++)
+  {
+	$media = media($i+1);
+    	$titles = $media["text"];
+    	$images = $media["images"];
+    	if($images)
+    	{
+      		$num2 = count($images);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		$image = $images[$j];
+        		$title = $titles[$image];
+        		if(!$title) $title = $image;
+        		fwrite($file,"\t\t\t\t<MediaResource key=\"$numberofmedia\">\n");
+	  		fwrite($file,"\t\t\t\t\t<Label>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+	  		fwrite($file,"\t\t\t\t\t\t\t<Text>$title</Text>\n");
+	  		fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+	  		fwrite($file,"\t\t\t\t\t</Label>\n");
+	  		fwrite($file,"\t\t\t\t\t<ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<URL>$image</URL>\n");
+	  		fwrite($file,"\t\t\t\t\t</ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t<Type>Image</Type>\n");
+			fwrite($file,"\t\t\t\t</MediaResource>\n");
+		        $numberofmedia++;
+      		}
+    	}
+    	$videos = $media["video"];
+   	if($videos)
+    	{
+      		$num2 = count($videos);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		$video = $videos[$j];
+        		$title = $titles[$video];
+        		if(!$title) $title = $video;
+        		fwrite($file,"\t\t\t\t<MediaResource key=\"$numberofmedia\">\n");
+	  		fwrite($file,"\t\t\t\t\t<Label>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+	  		fwrite($file,"\t\t\t\t\t\t\t<Text>$title</Text>\n");
+	  		fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+	  		fwrite($file,"\t\t\t\t\t</Label>\n");
+	  		fwrite($file,"\t\t\t\t\t<ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<URL>$video</URL>\n");
+	  		fwrite($file,"\t\t\t\t\t</ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t<Type>Video</Type>\n");
+			fwrite($file,"\t\t\t\t</MediaResource>\n");
+        		$numberofmedia++;
+      		}
+    	}
+    	$sounds = $media["sounds"];
+    	if($sounds)
+    	{
+      		$num2 = count($sounds);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		$sound = $sounds[$j];
+        		$title = $titles[$sound];
+        		if(!$title) $title = $sound;
+        		fwrite($file,"\t\t\t\t<MediaResource key=\"$numberofmedia\">\n");
+	  		fwrite($file,"\t\t\t\t\t<Label>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+	  		fwrite($file,"\t\t\t\t\t\t\t<Text>$title</Text>\n");
+	  		fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+	  		fwrite($file,"\t\t\t\t\t</Label>\n");
+	  		fwrite($file,"\t\t\t\t\t<ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<URL>$sound</URL>\n");
+	  		fwrite($file,"\t\t\t\t\t</ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<Type>Sound</Type>\n");
+			fwrite($file,"\t\t\t\t\t</MediaResource>\n");
+        		$numberofmedia++;
+      		}
+    	}
+    	$htmls = $media["html"];
+    	if($htmls)
+    	{
+      		$num2 = count($htmls);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+       			$html = $htmls[$j];
+        		$title = $titles[$html];
+        		if(ereg("(\&)",$html,$arr))
+        		{
+          			$html = ereg_replace($arr[1],"&amp;",$html);
+        		}
+        		if(!$title) $title = $html;
+        		fwrite($file,"\t\t\t\t<MediaResource key=\"$numberofmedia\">\n");
+	  		fwrite($file,"\t\t\t\t\t<Label>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+	  		fwrite($file,"\t\t\t\t\t\t\t<Text>$title</Text>\n");
+	  		fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+	  		fwrite($file,"\t\t\t\t\t</Label>\n");
+	  		fwrite($file,"\t\t\t\t\t<ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t\t<URL>$html</URL>\n");
+	  		fwrite($file,"\t\t\t\t\t</ObjectLink>\n");
+	  		fwrite($file,"\t\t\t\t\t<Type>Web Page</Type>\n");
+			fwrite($file,"\t\t\t\t</MediaResource>\n");
+        		$numberofmedia++;
+      		}
+    	}
+    	$subkey = $media["subkey"];
+    	if($subkey)
+    	{
+    	  	$title = $titles[$subkey];
+      		if(!$title) $title = $subkey;
+      		fwrite($file,"\t\t\t\t<MediaResource key=\"$numberofmedia\">\n");
+  		fwrite($file,"\t\t\t\t\t<Label>\n");
+  		fwrite($file,"\t\t\t\t\t\t<Representation language=\"en\">\n");
+  		fwrite($file,"\t\t\t\t\t\t\t<Text>$title</Text>\n");
+  		fwrite($file,"\t\t\t\t\t\t</Representation>\n");
+  		fwrite($file,"\t\t\t\t\t</Label>\n");
+  		fwrite($file,"\t\t\t\t\t<ObjectLink>\n");
+  		fwrite($file,"\t\t\t\t\t\t<URL>$subkey</URL>\n");
+  		fwrite($file,"\t\t\t\t\t</ObjectLink>\n");
+  		fwrite($file,"\t\t\t\t\t<Type>Subkey</Type>\n");
+		fwrite($file,"\t\t\t\t</MediaResource>\n");
+      		$numberofmedia++;
+    	}
+  }
+  fwrite($file,"\t\t\t</MediaResources>\n");
+  fwrite($file,"\t\t</ExternalDataInterface>\n");
+  
+  
+  
+  
+  fwrite($file,"\t\t<DescriptiveData>\n");
+  fwrite($file,"\t\t\t<ConfigurationData>\n");
+  fwrite($file,"\t\t\t\t<PresentationDefaults>\n");
+  fwrite($file,"\t\t\t\t\t<Audience audience=\"en\"/>\n");
+  fwrite($file,"\t\t\t\t</PresentationDefaults>\n");
+  fwrite($file,"\t\t\t\t<CustomExtensions>\n");
+  fwrite($file,"\t\t\t\t\t<CustomExtension name=\"X:ID\">\n");
+  if($multimedia == "local")
+  {
+    if(@$a = fopen("../Keys/$preferences[0]/Header/header.jpg",r))
+    {
+      fwrite($file,"\t\t\t\t\t\t<Banner>$preferences[0]</Banner>\n");
+      fclose($a);
+    }else
+    {
+      fwrite($file,"\t\t\t\t\t\t<Banner>header</Banner>\n");
+    }
+  }else
+  {
+    fwrite($file,"\t\t\t\t\t\t<Banner>header</Banner>\n");
+  }
+  fwrite($file,"\t\t\t\t\t\t<Func>$func</Func>\n");
+  if($nametype)
+  {
+    fwrite($file,"\t\t\t\t\t\t<Nametype>$nametype</Nametype>\n");
+  }
+  fwrite($file,"\t\t\t\t\t\t<User_selection>$user_selection</User_selection>\n");
+  fwrite($file,"\t\t\t\t\t</CustomExtension>\n");
+  fwrite($file,"\t\t\t\t</CustomExtensions>\n");
+  fwrite($file,"\t\t\t</ConfigurationData>\n");
+  
+  fwrite($file,"\t\t\t<GeneralDeclarations>\n");
+  
+  fwrite($file,"\t\t\t\t<Audiences>\n");
+  fwrite($file,"\t\t\t\t\t<Audience audiencekey=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t\t<Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Text>English</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Description>English vocabulary (undefined expertise level of audience)</Description>\n");
+  fwrite($file,"\t\t\t\t\t\t</Label>\n");
+  fwrite($file,"\t\t\t\t\t\t<Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Language>en</Language>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<ExpertiseLevel>0</ExpertiseLevel>\n");
+  fwrite($file,"\t\t\t\t\t\t</Specification>\n");
+  fwrite($file,"\t\t\t\t\t</Audience>\n");
+  fwrite($file,"\t\t\t\t\t<Audience audiencekey=\"de\">\n");
+  fwrite($file,"\t\t\t\t\t\t<Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Text>Deutsch</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Description>Deutsch (erforderliches Fachwissen unbekannt, wurde nicht definiert)</Description>\n");
+  fwrite($file,"\t\t\t\t\t\t</Label>\n");
+  fwrite($file,"\t\t\t\t\t\t<Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Language>de</Language>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<ExpertiseLevel>0</ExpertiseLevel>\n");
+  fwrite($file,"\t\t\t\t\t\t</Specification>\n");
+  fwrite($file,"\t\t\t\t\t</Audience>\n");
+  fwrite($file,"\t\t\t\t</Audiences>\n");
+  
+  
+  fwrite($file,"\t\t\t</GeneralDeclarations>\n");
+  
+  fwrite($file,"\t\t\t<Terminology>\n");
+  
+ 
+  fwrite($file,"\t\t\t\t<Modifiers>\n");
+  fwrite($file,"\t\t\t\t\t<Certainty>\n");
+  fwrite($file,"\t\t\t\t\t\t<Modifier key=\"41\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<Representation audience=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Text>perhaps</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t\t<TextBefore>perhaps </TextBefore>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t</Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<Representation audience=\"de\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Text>eventuell</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t\t<TextBefore>eventuell </TextBefore>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t</Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t</Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<CertaintyRange lowerestimate=\"0\" upperestimate=\"0.5\"/>\n");
+  fwrite($file,"\t\t\t\t\t\t\t</Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t</Modifier>\n");
+  fwrite($file,"\t\t\t\t\t\t<Modifier key=\"42\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<Representation audience=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Text>(by misunderstanding)</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t\t<TextAfter> (by misunderstanding)</TextAfter>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t</Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<Representation audience=\"de\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Text>(durch Fehlinterpretation)</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t\t<TextAfter> (Fehlinterpretation)</TextAfter>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t</Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t</Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<CertaintyRange lowerestimate=\"0\" upperestimate=\"0\"/>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<IsTrueByMisinterpretation>true</IsTrueByMisinterpretation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t</Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t</Modifier>\n");
+  fwrite($file,"\t\t\t\t\t</Certainty>\n");
+  
+  fwrite($file,"\t\t\t\t\t<Frequency>\n");
+  fwrite($file,"\t\t\t\t\t\t<Modifier key=\"22\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<Representation audience=\"en\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Text>rarely</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t\t<TextBefore>rarely </TextBefore>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t</Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<Representation audience=\"de\">\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Text>selten</Text>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t<Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t\t<TextBefore>selten </TextBefore>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t\t</Wording>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t</Representation>\n");
+  fwrite($file,"\t\t\t\t\t\t\t</Label>\n");
+  fwrite($file,"\t\t\t\t\t\t\t<Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t\t\t<FrequencyRange lowerestimate=\"0.0001\" upperestimate=\"0.15\"/>\n");
+  fwrite($file,"\t\t\t\t\t\t\t</Specification>\n");
+  fwrite($file,"\t\t\t\t\t\t</Modifier>\n");
+  fwrite($file,"\t\t\t\t\t</Frequency>\n");
+  
+  fwrite($file,"\t\t\t\t</Modifiers>\n");
+  
+  $numberofmedia=1;
+  fwrite($file,"\t\t\t\t<Characters>\n");
+  $num = count($charstuff);
+  for ($i=0 ; $i < $num ; $i++)
+  {
+    $z=$i+1;
+    $char=$z;
+    $character=trim($charstuff[$z]);
+    $xmlopenC = '0';
+    $xmldependsC = '0';
+    if(check($is_open,$char) == 1) $xmlopenC = '1';
+    if($depends[$char]) $xmldependsC = '1';
+    fwrite($file,"\t\t\t\t\t<Character key=\"$z\" xidisopen=\"$xmlopenC\" xiddepends=\"$xmldependsC\">\n");
+    fwrite($file,"\t\t\t\t\t\t<Label>\n");
+    fwrite($file,"\t\t\t\t\t\t\t<Representation audience=\"en\">\n");
+    fwrite($file,"\t\t\t\t\t\t\t\t<Text>$character</Text>\n");
+    fwrite($file,"\t\t\t\t\t\t\t</Representation>\n");
+    fwrite($file,"\t\t\t\t\t\t</Label>\n");
+ 
+ 
+    fwrite($file,"\t\t\t\t\t\t<Categorical>\n");
+    fwrite($file,"\t\t\t\t\t\t\t<States>\n");
+    $num2=count($family);
+    $statesID=array();
+    for($j=0 ; $j<$num2 ; $j++)
+    {
+      $u=$j+1;
+      $char2=$family[$u];
+      if($char2==$char)
+      {
+        $statesID[]=$u;
+      }
+    }
+    $num2 = count($statesID);
+    for($j=0 ; $j<$num2 ; $j++)
+    {
+      $xmlimageS = '0';
+      $xmlchosenS = '0';
+      $stid = $statesID[$j];
+      $statename = trim($statestuff[$stid]);
+      $num3=count($selected_state);
+      $open=0;
+      for($d=0 ; $d<$num3 ; $d++)
+      {
+        if($stid==$selected_state[$d])
+        {
+          $open=1;
+          break;
+        }
+      }
+      $media = imagestuff(state,$stid);
+      $images = $media[0];
+      if($open==1) $xmlchosenS = '1';
+      if(isset($images[0])) $xmlimageS = '1';
+      fwrite($file,"\t\t\t\t\t\t\t\t<StateDefinition key=\"$stid\" xidchosen=\"$xmlchosenS\">\n");
+      fwrite($file,"\t\t\t\t\t\t\t\t\t<Label>\n");
+      fwrite($file,"\t\t\t\t\t\t\t\t\t\t<Representation audience=\"en\">\n");
+      fwrite($file,"\t\t\t\t\t\t\t\t\t\t\t<Text>$statename</Text>\n");
+      if($xmlimageS == '1')
+      {
+      		fwrite($file,"\t\t\t\t\t\t\t\t\t\t\t<MediaResources>\n");
+      		fwrite($file,"\t\t\t\t\t\t\t\t\t\t\t\t<MediaResource ref=\"$numberofmedia\"/>\n");
+      		fwrite($file,"\t\t\t\t\t\t\t\t\t\t\t</MediaResources>\n");
+      		$numberofmedia++;
+      }
+      fwrite($file,"\t\t\t\t\t\t\t\t\t\t</Representation>\n");
+      fwrite($file,"\t\t\t\t\t\t\t\t\t</Label>\n");
+      fwrite($file,"\t\t\t\t\t\t\t\t</StateDefinition>\n");
+    }
+    fwrite($file,"\t\t\t\t\t\t\t</States>\n");
+    fwrite($file,"\t\t\t\t\t\t</Categorical>\n");
+    fwrite($file,"\t\t\t\t\t</Character>\n");
+  }
+  fwrite($file,"\t\t\t\t</Characters>\n");
+  fwrite($file,"\t\t\t</Terminology>\n");
+  
+  fwrite($file,"\t\t\t<CodedDescriptions>\n");
+  $num = count($matrix);
+  for($i=0 ; $i<$num ; $i++)
+  {
+    	$a = $i+1;
+    	fwrite($file,"\t\t\t\t<CodedDescription key=\"$a\">\n");
+    	fwrite($file,"\t\t\t\t\t<Header>\n");
+        fwrite($file,"\t\t\t\t\t\t<ClassName ref=\"$a\"/>\n");
+    	fwrite($file,"\t\t\t\t\t</Header>\n");
+       	
+	$media = media($a);
+    	$titles = $media["text"];
+    	$images = $media["images"];
+    	fwrite($file,"\t\t\t\t\t<MediaResources>\n");
+    	if($images)
+    	{
+      		$num2 = count($images);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		fwrite($file,"\t\t\t\t\t\t<MediaResource ref=\"$numberofmedia\"/>\n");
+		        $numberofmedia++;
+      		}
+    	}
+    	$videos = $media["video"];
+   	if($videos)
+    	{
+      		$num2 = count($videos);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		fwrite($file,"\t\t\t\t\t\t<MediaResource ref=\"$numberofmedia\"/>\n");
+        		$numberofmedia++;
+      		}
+    	}
+    	$sounds = $media["sounds"];
+    	if($sounds)
+    	{
+      		$num2 = count($sounds);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		fwrite($file,"\t\t\t\t\t\t<MediaResource key=\"$numberofmedia\"/>\n");
+        		$numberofmedia++;
+      		}
+    	}
+    	$htmls = $media["html"];
+    	if($htmls)
+    	{
+      		$num2 = count($htmls);
+      		for($j=0 ; $j<$num2 ; $j++)
+      		{
+        		fwrite($file,"\t\t\t\t\t\t<MediaResource ref=\"$numberofmedia\"/>\n");
+        		$numberofmedia++;
+      		}
+    	}
+    	$subkey = $media["subkey"];
+    	if($subkey)
+    	{
+      		fwrite($file,"\t\t\t\t\t\t<MediaResource ref=\"$numberofmedia\"/>\n");
+      		$numberofmedia++;
+    	}
+    	fwrite($file,"\t\t\t\t\t</MediaResources>\n");       	
+       	fwrite($file,"\t\t\t\t\t<CodedData>\n");
+    	$num2 = count($charstuff);
+    	$unit=0;
+  	for ($j=0 ; $j<$num2 ; $j++)
+  	{
+    		$z=$j+1;
+    		$char=$z;
+    		$num3=count($family);
+    		fwrite($file,"\t\t\t\t\t\t<Character ref=\"$z\">\n");
+    		$statesID=array();
+	    	for($k=0 ; $k<$num3 ; $k++)
+	    	{
+	      		$u=$k+1;
+	      		$char2=$family[$u];
+	      		if($char2==$char)
+	      		{
+	        		$statesID[]=$u;
+	      		}
+	    	}
+	    	$num3 = count($statesID);
+	    	for($k=0 ; $k<$num3 ; $k++)
+	    	{
+    			$b = $unit+1;
+    			$stid = $statesID[$k];
+              		$matrix_value = substr($matrix[$i],$unit,1);
+              		switch($matrix_value)
+              		{
+              			case(0):
+              				break;
+              				
+              			case(1):
+              				fwrite($file,"\t\t\t\t\t\t\t<State ref=\"$b\"/>\n");
+              				break;
+              				
+              			case(2):
+              				fwrite($file,"\t\t\t\t\t\t\t<State ref=\"$b\">\n");
+              				fwrite($file,"\t\t\t\t\t\t\t\t<Certainty ref=\"41\"/>\n");
+              				fwrite($file,"\t\t\t\t\t\t\t</State>\n");
+              				break;
+              				
+              			case(3):
+              				fwrite($file,"\t\t\t\t\t\t\t<State ref=\"$b\">\n");
+              				fwrite($file,"\t\t\t\t\t\t\t\t<Frequency ref=\"22\"/>\n");
+              				fwrite($file,"\t\t\t\t\t\t\t</State>\n");
+              				break;
+              				
+              			case(4):
+              				fwrite($file,"\t\t\t\t\t\t\t<State ref=\"$b\"/>\n");
+              				break;
+              				
+              			case(5):
+              				fwrite($file,"\t\t\t\t\t\t\t<State ref=\"$b\">\n");
+              				fwrite($file,"\t\t\t\t\t\t\t\t<Certainty ref=\"42\"/>\n");
+              				fwrite($file,"\t\t\t\t\t\t\t</State>\n");
+              				break;
+              				
+              			case(6):
+              				fwrite($file,"\t\t\t\t\t\t\t<State ref=\"$b\" />\n");
+              				break;	
+              		}
+              		$unit++;
+		}
+    		fwrite($file,"\t\t\t\t\t\t</Character>\n");
+	}
+       	fwrite($file,"\t\t\t\t\t</CodedData>\n");
+        fwrite($file,"\t\t\t\t</CodedDescription>\n");
+  }
+  fwrite($file,"\t\t\t</CodedDescriptions>\n");
+  
+  fwrite($file,"\t\t</DescriptiveData>\n");
+  fwrite($file,"\t</Dataset>\n");
+  fwrite($file,"</Datasets>\n");
+  fclose($file);
+  chdir("..");
+}
+
+
+
+
+
+
+
+
+//    **When given a line of matrix, it returns the fail_value
+function get_score1($taxa) 
+{
+  if(ereg("\[(.*)\]",$taxa,$arr))
+  {
+    $fail_value=$arr[1];
+  }
+  return $fail_value;
+}
+
+
+
+
+
+
+
+//This function used to interpret the *.LIF file into our variables
+function read2blank($string,$arrayname,$LIF,$flag)
+{
+  global $statestuff;
+  global $family;
+  
+  $numchars = 0;
+  $numstates = 0;
+  if($flag=="matrix")
+  {
+    //**Making the tail for the matrix   i.e.:(:---:--:---:-:------:)
+    $num = count($statestuff);
+    $lastchar = 0;
+    unset($lineinfo);
+    unset($pf_record);
+    for($i=1 ; $i<=$num ; $i++)
+    {
+      $b=$family[$i];
+      $charval[]=$b;
+      $charid[$b]=5;
+    }
+    $num2= count($charid);
+    $newnum = $num + $num2 + 2;
+    for($i=1 ; $i<=$num ; $i++)
+    {
+      $currchar = $family[$i];
+      if($lastchar == $currchar)
+      {
+        $pf_record .= "-";
+        $lineinfo[] = $newnum;
+      }else
+      {
+        $newnum--;
+        $pf_record .= ":-";
+        $lineinfo[] = $newnum;
+      }
+      $lastchar = $currchar;
+    }
+    $pf_record .= ":";
+    session_register("lineinfo");
+  }
+  for ($i=0; $i< count($LIF); $i++) 
+  {			
+    if (ereg($string,$LIF[$i])) 
+    {
+      $reading=1;
+      continue;
+    }
+    if ((ereg("^[[:space:]]*$",$LIF[$i]) && ($reading==1)) || (($i == count($LIF)-1) && ($reading==1)))
+    {
+      $reading=0;
+      if($flag=="char")
+      {
+	$array[0] = $charstuff;
+	$array[1] = $statestuff;
+	$array[2] = $family;
+	return $array;
+      }
+      if($flag=="matrix")
+      {
+      	$array2[0] = $array;
+      	$array2[1] = $lineinfo;
+      	return $array2;
+      }
+      return $array;
+    }
+    if($reading) 
+    { 
+      if($flag=="matrix")
+      {
+        $temp = substr($LIF[$i],0,-1);
+        $array[]=$temp . "[0]" . $pf_record;
+      }elseif($flag=="char")
+      {
+	if(ereg("^[a-zA-Z0-9]",$LIF[$i]))
+        {
+          $numchars++;
+          $charstuff[$numchars] = $LIF[$i];
+        }else 
+        {
+          $numstates++;
+          $family[$numstates]=$numchars;
+          $statestuff[$numstates]=trim($LIF[$i]);
+        }
+      }elseif($flag=="metric" || $flag=="depend")
+      {
+	$temp = ereg_replace("[[:space:]]{1,}",":",$LIF[$i]);
+        $array[]=trim(substr($temp,0,-1));
+      }elseif($flag=="mediadir")
+      {
+	if(ereg("^Sounds",$LIF[$i],$arr))
+	{
+	  $curr = -1;
+	}
+	$curr++;
+	if(ereg("\"(.+)\"",$LIF[$i],$arr))
+	{
+	  $array[$curr]=$arr[1];
+	}
+	$curr5 = $curr + 5;
+	$pat = "[\\]";
+	$repl = "\\\\";
+	$array[$curr5] = ereg_replace($pat,$repl,$array[$curr]);
+	//$array[$curr5] = $array[$curr];
+	if(substr($array[$curr],-1)=="/")
+	{
+	  $array[$curr] = substr($array[$curr],0,-1);
+	}
+	$array[$curr] = ereg_replace($pat,$repl,$array[$curr]);
+      }
+      else
+      {
+	 $array[]=$LIF[$i];
+      }  
+    }
+  }
+}
+
+
+
+
+
+
+
+function media($id)
+{
+  global $taxonmedia;
+  global $preferences;
+  global $taxanames;
+  global $subkey;
+  global $subkey_text;
+  global $taxontext;
+  global $taxonmedia;
+  global $mediadir;
+  global $multimedia;
+
+  $taxa = $taxanames[$id-1];
+  $num = count($taxontext);
+  for($i=0 ; $i<$num ; $i++)
+  {
+    if(ereg("^($id) \"(.*)\" \"(.*)\"",$taxontext[$i],$arr))
+    {
+      $a = $arr[3];
+      $b = $arr[2];
+      if(eregi("(.htm|.html)",$a,$arrr))
+      {
+        $html[]=$a;
+        $text[$a]=$b;
+      }elseif(eregi("http://",$a,$arrr))
+      {
+        $html[]=$a;
+        $text[$a]=$b;
+      }
+    }
+  }
+  $num = count($taxonmedia);
+  for($i=0 ; $i<$num ; $i++)
+  {
+    if(ereg("^($id )\"(.*)\" \"(.*)\" \"(.*)\"",$taxonmedia[$i],$arr))
+    {
+      $a = $arr[3];
+      $b = $arr[2];
+      if(eregi("(.jpg|.gif|.png|.jpeg)",$a,$arrr))
+      {
+        if($multimedia=="local")
+        {
+          $na = "Keys/$preferences[0]/Images/$a";
+        }elseif($multimedia=="remote")
+        {
+          $na = "$mediadir[6]" . "$a";
+        }elseif($multimedia=="url")
+        {
+          $na = "$mediadir[1]/" . "$a";
+        }
+        $images[]=$na;
+        if($b)
+   	{
+   	  $text[$na]=$b;
+        }else
+        {
+          $text[$na]=$a;
+        }
+      }else if(eregi("(.mpeg|.avi|.mpg|.mov|.moov|.qt)",$a,$arrr))
+      {
+        if($multimedia=="local")
+        {
+          $na = "Keys/$preferences[0]/Video/$a";
+        }elseif($multimedia=="remote")
+        {
+          $na = "$mediadir[4]" . "$a";
+        }elseif($multimedia=="url")
+        {
+          $na = "$mediadir[4]/" . "$a";
+        }
+        $video[]=$na;
+   	if($b)
+   	{
+   	  $text[$na]=$b;
+        }else
+        {
+          $text[$na]=$a;
+        }
+      }else if(eregi("(.wav|.mp3|.midi)",$a,$arrr))
+      {
+        if($multimedia=="local")
+        {
+          $na = "Keys/$preferences[0]/Sounds/$a";
+        }elseif($multimedia=="remote")
+        {
+          $na = "$mediadir[0]" . "$a";
+        }elseif($multimedia=="url")
+        {
+          $na = "$mediadir[0]/" . "$a";
+        }
+        $sounds[]=$na;
+   	if($b)
+   	{
+   	  $text[$na]=$b;
+        }else
+        {
+          $text[$na]=$a;
+        }
+      }
+    }
+  }
+  $place = $subkey[$id];
+  if($subkey_text[$id])
+  {
+    $text[$place] = $subkey_text[$id];
+  }else
+  {
+    $text[$place] = $place;
+  }
+  $array["images"] = $images;
+  $array["video"] = $video;
+  $array["sounds"] = $sounds;
+  $array["html"] = $html;
+  $array["text"] = $text;
+  $array["subkey"] = $subkey[$id];
+  return $array;
+}
+
+
+
+
+
+function array_replace($array)
+{
+  $num = count($array);
+  if($array[0])
+  {
+    for($i=0 ; $i<$num ; $i++)
+    {
+      $array[$i] = replace($array[$i]);
+    }
+  }else
+  {
+    for($i=1 ; $i<=$num ; $i++)
+    {
+      $array[$i] = replace($array[$i]);
+    }
+  }
+  return $array;
+}
+
+
+
+
+function replace($name)
+{
+  if(ereg("&",$name))
+  {
+    $name = ereg_replace("&","&amp;",$name);
+  }
+  if(ereg("(ò|ó|ô|õ|ö)",$name))
+  {
+    $name = ereg_replace("(ò|ó|ô|õ|ö)","o",$name);
+  }
+  if(ereg("(é|è|ê|ë)",$name))
+  {
+    $name = ereg_replace("(é|è|ê|ë)","e",$name);
+  }
+  if(ereg("(ù|ú|û|ü|µ)",$name))
+  {
+    $name = ereg_replace("(ù|ú|û|ü|µ)","u",$name);
+  }
+  if(ereg("(à|á|â|ã|ä|å)",$name))
+  {
+    $name = ereg_replace("(à|á|â|ã|ä|å)","a",$name);
+  }
+  if(ereg("(ç)",$name))
+  {
+    $name = ereg_replace("(ç)","c",$name);
+  }
+  return $name;
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+function imagestuff($type,$number)
+{
+  global $taxonmedia;
+  global $statemedia;	
+  global $family;
+  if($type=="taxon")
+  {
+    $num = count($taxonmedia);
+    for($i=0 ; $i<$num ; $i++)
+    {
+      if(ereg("^($number )\"(.*)\" \"(.*)\" \"(.*)\"",$taxonmedia[$i],$arr))
+      {
+      	$a = $arr[3];
+      	$b = $arr[2];
+      	if(eregi("(.jpg|.gif|.png|.jpeg)",$a,$arrr))
+      	{
+ 	      $images[]=$a;
+ 	      $text[]=$b;
+ 	    }
+      }
+    }
+  }
+  if($type=="state")
+  {
+    $num = count($statemedia);
+    for($i=0 ; $i<$num ; $i++)
+    {
+      if(ereg("^($number )\"(.*)\" \"(.*)\" \"(.*)\"",$statemedia[$i],$arr))
+      {
+      	$a = $arr[3];
+      	$b = $arr[2];
+      	if(eregi("(.jpg|.gif|.png|.jpeg)",$a,$arrr))
+      	{
+ 	  $images[]=$a;
+ 	  $text[]=$b;
+ 	}
+      }
+    }
+  }
+  $new[0]=$images;
+  $new[1]=$text;
+  return $new;
+}
+
+
+
+
+
+
+function check($array,$cid)
+{
+  $num = count($array);
+  for($i=0 ; $i<$num ; $i++)
+  {
+    $a = $array[$i];
+    if($cid==$a)
+    {
+      return 1;	    
+      break;
+    } 
+  }
+  return 0;	
+}
+
+
+
+
+?>

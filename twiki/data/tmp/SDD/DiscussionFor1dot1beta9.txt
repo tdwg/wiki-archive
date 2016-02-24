@@ -1,0 +1,52 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146575350" format="1.0" version="1.9"}%
+%META:TOPICPARENT{name="WebHome"}%
+b9 should be ignored by all but Gregor, Bob and Jacob.
+
+I propose that Kevin begin documenting from b10 when it is released and the release SDD1_1 be whatever results from such small points or disaster fixes that are discovered in b10.
+
+
+Remarks (that we shouldn't do anything about, having taken the decisions reflected below):
+
+---+++Identity constraints and id-attribute
+
+	* optionality of language and audience attributes
+The cost of this is seen in this scenario: Consider an instance document with, say 300 state labels all 'blue' together with one state 'red' on a character "flower color". An application whose UI is automatically generated from the state list (as all conceivable applications will do), and which does not check the (several combinations of) possible non-uniqueness, will offer 300 choices of 'blue' and one of 'red'. I note, however, that a robust application would probably tolerate this _even_ if it were signalled by a schema validator, unless the application writer chose some kind of normalization strategy that would rewrite a semantically equivalent but valid document, e.g. in this case removing duplicates. -- Main.BobMorris - 26 Apr 2006
+		* I propose to use external validation, both to require uniqueness of labels for different objects, and require within any object to have only a single label for any combination of role, language, audience. -- Main.GregorHagedorn - 27 Apr 2006
+	* Jacob & Bob propose (tel.) to change xs:key to xs:unique, and change all xs:keyrefs to refer to these xs:unique instead of xs:key. This seems to be a very good idea to more appropriately reflect the optional nature of the id attribute for local (within-document) references. Gregor.
+	* Gregor: *I propose furthermore to require all id attributes in a document to be unique.* The within-object class (e.g. character) xs:unique should be maintained and should be the source of keyref validation, thus validating both object reference and type-safe class referencing. Background: the decision to only have within-object class identity constraints dates back to a time when SDD considered id and ref values to be persistent, potentially reflecting database identifiers. However, we have since rejected possible methods to express what kind of identifier is in the id, and decided to rather consider id and ref values as being non-persistent, optionally to be discarded after resolving all references. Under these conditions, it seems more in line with xml-ID usage in other standards (e.g. xhtml) to require document-wide uniqueness. Combining
+
+---+++From email exchanges:
+	* Bob, Jacob: 1.  !UnivariateStatMeasureElaboration/Specification/__FormatPattern vs .../__OrThisInstead.  I would go with the !FormatPattern. I think it is strong enough and corresponds to regex support in many programming language libraries. Use it now and see if anyone complains.
+		* Gregor: One problem I see is that I do not know how to make this culture specific. XSLT is US-English, so most Europeans (where the US "decimal point" is the comma, and the 1000-separator the period) can not use it for output. But perhaps to make sense to separate formatting structure from culture, and hope that culture is fixed by other means. My proposed changes inside Specification are:
+			* Delete the __OrThisInstead
+			* Change __FormatPattern to !FormatPattern, change annotation to following:
+			* "Format rules as used in the xslt format-number function. # = significant digits; 0 (zero) = signif. digits or insignif. leading/trailing zeros; '.' = decimal point, ',' = group separator. Note that xslt itself is using en-US culture, adjusting decimal and group separator to local culture has to be specified externally. - Examples: "0.0#" formats 5 / 0.591 as 5.0 / 0.59. "#,###.#" formats 5000 / 0.59 as 5,000 / .6. (Rules for exponential formats or percent may be added in later versions of SDD!)"
+			* If you can, adding information how to handle percent in the pattern would be very useful.
+			* Move the group: !SpecificExtension to the end (inside Specification)
+	* Bob, Jacob: 2. !TaxonHierarchyCoreExtensions/Scope/__TaxonomicScope.  If you remove it, you trip over the "no lookahead" validty constraint, because there are two potential things of the same name in the same namespace. Changing the namespace restriction on the extension element seems to violate the convention you use elsewhere.
+		* Gregor: Right, this is an error. Please replace the xs:any with the group: !SpecificExtension
+	* Bob: 3. !TaxonHierarchyNode/_TypeTaxon and _TypeSpecimens. I assume you are suggesting /neither/ for now, rather than asking for an opinion on which
+		* Gregor: Yes, both to be omitted and discussed in the future; the choice is a logic one based on the requirements of the taxonomic codes.
+	* Bob: 4. __ReferencePattern and all its associated __'s.  Well I admit to being now confused about whether we are in this release omitting all external references as alternative to local references. My understanding is that the conversation yields: yes, for SDD1_1 nothing that has a keyref also supports an external reference.
+		* Gregor: YES, sadly version 1.1 will support only document-internal references and no URI-based ones.
+
+---
+Bob: These email remarks of Main.DamienBarnier have not been examined yet with respect to b8
+	* UBIF_ObjectPattern.xsd has xpath's with unknown u: namespace prefix, need to add xmlns:u=...
+		* Gregor: seems already ok in beta 9
+	* !SimpleAgentRef extends __AbstractSimpleRef
+		* Gregor: fixed.
+	* !LabelText and !DetailText have audience references of type !AudienceIdentifier not !LocalInstanceID, is this intentional or was this an omission during the constraint refactoring.
+		* Gregor: !AudienceIdentifier removed, now all simply use !LocalInstanceID and type relationship only contained in identity constraints.
+	* !AudienceCore extends Audience, which extends !AbstractObjectType. Is there any need for the double extension as the first extension does not add anything to the base type. Similarly !MediaObjectCore extends !MediaObject, which extends !OwnedAbstractObject, again is there a need for the double extension.
+		* Gregor: Technically not, but the intention is to have semantic overloading of a base type for each class of the core ontology, and then allow different derivations from this.
+	* !OwnerRef has an attribute role with a no type, is this intentional?
+		* Gregor: Please check, I cannot follow this. In my files I find: xs:complexType name="OwnerRef" ... xs:complexContent xs:restriction base="RichAgentRef" xs:attribute name="role" type="AgentOwnerRoleEnum" use="required".
+	* Encoded_MIME complex type has a naming convention different to all other complex types, ie. an underscore, should this be renamed? 
+		* Gregor: renamed to !EncodedContent.
+
+I did make one additional change, isolating the object identifier from the link collection and move it to a single separate uri-attribute element. Commentators expressed surprise about the placement and concern about it occurring multiple times. Although the latter was by design (alternative url/lsid for same object) it equally possible to chose one as preferred and treat others in links as "Alternative".
+
+%META:FILEATTACHMENT{name="SDD1_1b9.zip" attr="h" comment="" date="1146031279" path="SDD1_1b9.zip" size="177760" user="BobMorris" version="1.1"}%

@@ -1,0 +1,531 @@
+head	1.24;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.24
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.23;
+
+1.23
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.24
+log
+@Revision 24
+@
+text
+@---+ Results from the Berlin Protocol Meeting
+---+++++ Minutes
+The BerlinMeetingMinutes are available in a brief table form.
+
+---+++++ Changes agreed in Berlin
+
+Improvement to the SecondProposal:
+
+   * Terminology
+      * provider=host: a whole provider software installation
+      * datasource=database="collection of objects": a single connected database or a datasubset e.g. visible through a view supporting different ConceptualSchemas
+      * resource: a single datasource bound to a single ConceptualSchema
+   * AccessPoints
+      * providers supporting all RequestTypes
+     * metadata response returns metadata for the provider and all its datasources
+     * capabilities response returns the capabilities for all datasources
+     * initially do not merge responses from several datasources, although it might be desireable in the future, esp. for inventories.
+      * datasources supporting all RequestTypes
+     * metadata response returns metadata for the provider and this datasource incl all "resources"=schemas with their record numbers
+     * capabilities response returns capability of this datasource. that is config&request type capabilities for each resource seperately
+   * Header
+      * leave request <type> attribute and generically name the element following header for all requests details "message"
+      * source repeatable with sequence important and the first source element being the original source
+     * source element keeps resource attribute to allow to specify origin of the data. might be repeated for a response of several datasources
+      * destination element repeatable to submit distributed queries to several and single providers
+     * destination element keeps resource attribute to allow adressing of several datasources within a single request to a provider
+      * remove compression element
+      * move detailed software/components complex type to provider related capability and just keep the overall versioning with <software name="xxx" version="xyz" BerlinMeetingResults>
+   * RequestTypes needed to be implemented:
+      * PingRequest
+      * CapabilitiesRequest
+      * MetadataRequest
+      * InventoryRequest
+      * SearchRequest (see below)
+      * *open issue:* CustomSearch needed?
+   * capabilities response, see CapabilitiesProposalThree
+   * metadata response, see MetadataProposalTwo
+      * drop IPR, insert supported schemas incl record count
+      * add logo URL
+      * attach date-last-updated to resource
+   * SearchRequest (see SearchProposalTwo)
+      * search based on the full/partial search for a single configured ConceptualSchema
+      * allows to combine several schemas for a response (to use extension schemas) by specifying a list of qualified concepts instead. See SearchProposalTwo for details.
+      * always returns a valid document. in case mandatory data is missing, drop the record or branch. dont use NULLs in response.
+      * when requesting no concept at all, return only the mandatory concepts.
+      * request the root node of a schema to retrieve the full document
+      * allow to ask for BranchNodes to implicitly request all child LeafNodes
+      * sorting is not appropiate nor doable
+      * specify the top level structure of the search response in the protocol with a slot for metadata and one for the content defined as records.
+     * allow the response of multiple "datasets" with different metadata from a single datasource to suit the needs of databases like fishbase and systax
+     * allow the
+     * allow the metadata definition to be chosen by the provider and make it a mandatory part of the reponse that cannot be altered by any request. Do so for all paging and subsequent responses to the same client.
+   * InventoryRequest
+      * allow multiple concepts to be scanned
+      * optionally request sorting of result list. order by sequence of requested concepts if multiple.
+   * ConceptualBindingProposalOne accepted. OK to use namespace declaration in xml manner. Concept identifier attribute is to be called "path".
+   * valid filter operators
+      * Logical: AND, OR, NOT with AND + OR taking multiple arguments while NOT is unary.
+      * Comparative: equals, lessThan, lessThanOrEquals, greaterThan, greaterThanOrEquals, like, in, isNull
+      * There is no need for an isMapped operator.
+   * Filters
+      * allow search requests without filters (affects both).
+      * evaluate to false if concept is not mapped but compared.
+      * always insert info/warn diagnostic if unmapped concept encountered in request.
+   * use common Error Codes and prefixes for classification of codes. To be specified in more detail.
+   * Using a single POST or GET parameter called "request" which contains either the XML message or an URL pointing to the XML message.
+
+---+++++ XQuery
+The XqueryLanguage seems not appropiate for now, as not enough free tools are availbale and writing parsers on our own would be too much work and hard to confine.
+
+---+++++ OpenGIS CQL etc.
+   * their filters are similar, more powerful in general, but are lacking some features:
+   * comparative operator IN is missing
+   * functions supported
+   * spatial operators supported
+   * real expressions supported in comparisons that can "use" arithmetic operations, functions, literals and concepts
+   * An InventoryRequest is missing
+
+---+++++ SOAP
+ ...
+@
+
+
+1.23
+log
+@Revision 23
+@
+text
+@d2 2
+@
+
+
+1.22
+log
+@Revision 22
+@
+text
+@a38 1
+attribute can be called "path".
+d54 1
+a54 1
+   * ConceptualBindingProposalOne accepted. OK to use namespace declaration in xml manner. Concept identifier 
+@
+
+
+1.21
+log
+@Revision 21
+@
+text
+@d40 1
+a40 1
+   * SearchRequest
+@
+
+
+1.20
+log
+@Revision 20
+@
+text
+@d27 1
+a27 1
+   * RequestTypes
+d32 1
+a32 1
+      * SearchRequest
+d34 1
+d39 1
+a39 2
+   * capabilities response, see CapabilitiesProposalThree
+   * ConceptualBindingProposalOne accepted. OK to use namespace declaration in xml manner. Concept identifier attribute can be called "path".
+d55 1
+d59 2
+a60 1
+   * filters
+d62 1
+a62 1
+      * evaluate to false if concept is not mapped but compared. There is no need for an isMapped operator.
+@
+
+
+1.19
+log
+@Revision 19
+@
+text
+@d12 1
+a12 1
+      * for providers supporting all RequestTypes
+d16 1
+a16 1
+      * for datasources supporting all RequestTypes
+@
+
+
+1.18
+log
+@Revision 18
+@
+text
+@a2 3
+---+++++ XQuery
+The XqueryLanguage seems not appropiate for now, as not enough free tools are availbale and writing parsers on our own would be too much work and hard to confine.
+
+d65 13
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@d60 1
+a60 1
+      * Comparative: equals, lessThan, lessThanOrEquals, greaterThan, greaterThanOrEquals, like, in, isNull, isMapped
+d63 2
+a64 2
+      * evaluate to false if concept is not mapped but compared
+      * insert info/warn diagnostic if unmapped concept encountered in request
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d17 1
+a17 1
+     * capabilities response returns ???
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d1 1
+a1 1
+---+ Proposal based on the changes from the Berlin Protocol Meeting
+d6 1
+a6 1
+---+++++ New Proposal
+d8 1
+a8 1
+Improvement of the SecondProposal:
+d67 1
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d1 1
+a1 1
+---+ Results from the Berlin Protocol Meeting
+d6 1
+a6 1
+---+++++ SecondProposal
+d8 1
+a8 1
+improvement of the SecondProposal:
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d44 6
+a49 5
+      * contains at least a combined full/partial search within a configured ConceptualSchema
+     * always returns a valid document. in case mandatory data is missing, drop the record or branch. dont use NULLs in response.
+     * always needs a list of requested concepts.
+     * request the root node of a schema to retrieve the full document
+     * allow to ask for BranchNodes to implicitly request all child LeafNodes
+d51 4
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d39 2
+a40 2
+      * *open issue:* add logo URL
+      * *open issue:* attach date-last-updated to resource
+d42 1
+a42 2
+   * ConceptualBindingProposalOne accepted. namespace declaration in xml manner OK, but needs more research/proof
+      * *open issue:* call it "path", "locator", "identifier" or something else?
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d12 1
+a12 1
+      * datasource=database="collection of objects": a single connected database or a subset e.g. visible through a view supporting different ConceptualSchemas
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d12 1
+a12 1
+      * datasource=database="collection of objects": a single connected database or view of a database supporting different ConceptualSchemas
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d12 1
+a12 1
+      * datasource=database="collection of objects": a single connected database or view of a database supporting different "views", resources or ConceptualSchemas
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d11 3
+a13 4
+      * have a 3 level hierarchy of terms for
+     * provider=host: a whole provider software installation
+     * datasource=database="collection of objects": a single connected database supporting different "views", resources or ConceptualSchemas
+     * resource: a single database accessible in a single ConceptualSchema standard
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d19 1
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d57 4
+a60 1
+   * allow search requests without filters (affects both).
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d14 1
+a14 1
+     * resource: a single database accessible in a single ConcetpualSchema standard
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d54 6
+a59 2
+
+   
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d42 12
+a53 2
+
+   * ....
+a55 1
+
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d8 2
+d23 1
+a23 1
+      * leave request <type> attribute
+d38 9
+a46 1
+      * drop IPR
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d23 1
+d25 11
+a35 3
+      * destination element keeps resource attribute to allow adressing of several datasources within a single request to a provider
+      * source element keeps resource attribute to allow to specify origin of the data. might be repeated for a response of several datasources
+   * metadata response
+@

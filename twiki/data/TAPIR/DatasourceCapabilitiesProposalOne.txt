@@ -1,0 +1,74 @@
+---+ Datasource Capabilities Proposal One
+
+---+++++ Request Example
+
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <capabilities DatasourceCapabilitiesProposalOne>
+</request>
+</verbatim>
+
+---+++++ Response Example
+<verbatim>
+<response>
+  <header>
+    <source accesspoint="http://www.myins.org/wrapper.php" sendtime="2001-12-17T09:30:47-05:00">
+      <software name="PHP Provider" version="1.1.4" DatasourceCapabilitiesProposalOne>
+    </source>
+    <destination accesspoint="http://www.client.org"/>
+  </header>
+  <capabilities>
+    <requestTypes>
+      <ping/>
+      <metadata/>
+      <inventory/>
+      <search/>
+      <docsearch/>
+    </requestTypes>
+    <operators>
+      <logical/>
+      <comparative>
+        <basicComparativeOperators DatasourceCapabilitiesProposalOne>
+        <in DatasourceCapabilitiesProposalOne>
+        <isNull DatasourceCapabilitiesProposalOne>
+        <like DatasourceCapabilitiesProposalOne>
+      </comparative>
+      <spatial>
+        <BBOX DatasourceCapabilitiesProposalOne>
+        <Within DatasourceCapabilitiesProposalOne>
+        ...
+      </spatial>
+      <basicArithmeticOperators DatasourceCapabilitiesProposalOne>
+      <functions>
+        <min DatasourceCapabilitiesProposalOne>
+        <max DatasourceCapabilitiesProposalOne>
+        <function name="xxx" nargs="1"/> *
+        ...
+      </functions>
+    </operators>
+    <metadataSchema namespace="http://www.tdwg.org/schemas/ubif/1.0"/>
+    <conceptualSchema namespace="http://www.tdwg.org/schemas/abcd/1.5"> *
+      <settings>
+        <minQueryTermLength>3</minQueryTermLength>
+        <maxSearchResponseRecords>100</maxSearchResponseRecords>
+        <maxInventoryResponseRecords>1000</maxInventoryResponseRecords>
+      </settings>
+      <recordDefinitions>
+        <recordDefinition path="/Units/Unit"/> *
+      </recordDefinitions>
+      <mappedConcepts>
+        <concept path="/Units/Unit/@id" searchable="1"/> *
+      </mappedConcepts>
+    </conceptualSchema>
+    <security>
+     ...
+    </security>
+  </capabilities>
+</response>
+
+with* indicating repeatable elements
+</verbatim>
+

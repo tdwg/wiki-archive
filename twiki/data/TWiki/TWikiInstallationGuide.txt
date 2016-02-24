@@ -1,0 +1,62 @@
+%META:TOPICINFO{author="TWikiContributor" date="1111929255" format="1.0" version="66"}%
+%TOC%
+%STARTINCLUDE%
+---# TWiki Installation Guide
+
+_Installation instructions for the TWiki 4.0 production release._
+
+If you are upgrading from a previous version of TWiki, you probably want to read TWikiUpgradeGuide instead.
+
+TWiki should be fine with any web server and OS that meet the [[TWikiSystemRequirements][system requirements]]. The following installation instructions are written for experienced system administrators; please review the AdminSkillsAssumptions before you install TWiki. If you need help, ask a question in the TWiki:Support web or on TWiki:Codev.TWikiIRC (irc.freenode.net, channel #twiki) 
+
+__%H% Hint:__ TWiki:TWiki.InstallingTWiki on TWiki.org has supplemental documentation that help you install TWiki on different platforms, environments and web hosting sites.
+
+#StandardInstallation
+---++ Basic Installation
+
+   1 *Download* the TWiki distribution from http://TWiki.org/download.html.
+   1 *Make a directory* for the installation and *unpack the distribution* in it.
+   1 *Make sure* the user that runs CGI scripts on your system can read and write all files in the distribution.
+     %BR% Detailed instructions on file permissions are beyond the scope of this guide, but in general:
+      * During installation and configuration, the CGI user needs to be able to read and write _everything_ in the distribution,
+      * Once installation and configuration is complete, the CGI user needs write access to everything under the =data= and =pub= directories and to =lib/LocalSite.cfg=. _Everything else_ should be read-only.
+      * Everybody else should be denied access to everything, always.
+   1 *Make sure* Perl 5 and the Perl CGI library are installed on your system. 
+     %BR% The default location of Perl is =/usr/bin/perl=. *If it's somewhere else*, change the path to Perl in the first line of each script in the =twiki/bin= directory.
+     %BR% %H% Some systems require a special extension on perl scripts (e.g. =.cgi= or =.pl=). If necessary, rename all files in =twiki/bin=  (i.e. rename =view= to =view.pl= etc). If you do this, make sure you set the =ScriptSuffix= option in [[%SCRIPTURLPATH{"configure"}%][configure]] (Step 6).
+   1 *Create the file* =/twiki/bin/LocalLib.cfg=.
+     %BR% There is a template for this file in =/twiki/bin/LocalLib.cfg.txt=.
+     %BR% The file must contain a setting for =$twikiLibPath=, which must point to the absolute file path of your =twiki/lib= e.g. =/home/httpd/twiki/lib=.
+     %BR% %H% If you need to install additional CPAN modules, but can't update the main Perl installation files on the server, you can set =$CPANBASE= to point to your personal CPAN install. Don't forget that the webserver user has to be able to read those files as well.
+   1 *Configure the webserver* so you can execute the =bin/configure= script from your browser.
+      * Explicit instructions for doing this are beyond the scope of this document, though there is a lot of advice on TWiki.org covering different configurations of webserver. To help you out, there's an example Apache =httpd.conf= file in =twiki_httpd_conf.txt= at the root of the package. This file also contains advice on securing your installation. Additionally, see TWiki:TWiki.ApacheConfigGenerator. There's also a script called =tools/rewriteshebang.pl= to help you in fixing up the shebang lines in your CGI scripts.
+   1 Run the =configure= script from your browser, and resolve any errors or warnings it tells you about.
+You now have a basic, unauthenticated installation running. At this point you can just point your Web browser at =http://yourdomain.com/twiki/bin/view= and start TWiki-ing away!
+
+#AuthenticationOfUsers
+---++ Next Steps
+Once you have your TWiki running, you can move on to customise it for your users.
+   * *Review TWikiPreferences settings* - read through it and set any additional settings you think you might need (you can click the 'Edit' button near the top to edit the settings in place)
+      * %I% It is recommended to *copy* any settings or variables that you want to customize from [[%TWIKIWEB%.TWikiPreferences]] and *paste* them into [[%LOCALSITEPREFS%]]. This will protect your local customizations from being overwritten in later upgrades. See notes at top of [[%TWIKIWEB%.TWikiPreferences]] for more information.
+   * *Customize user home pages* - read and change NewUserTemplate.
+   * *Enable authentication* - read TWikiUserAuthentication.
+   * *Clear admin notes* - some pages are meant to be customized after choice of authentication - check and update these topics (remove notice):
+      * ChangePassword
+      * ResetPassword
+      * ChangeEmailAddress
+      * TWikiRegistration fields can be customzied to the needs of your organization
+      * %MAINWEB%.TWikiAdminGroup
+   * *Enable e-mail notification* - read TWikiSiteTools#WebNotify to get WebChangesAlerts.
+   * *Automate update of site statistics* - read TWikiSiteTools#WebStatistics
+   * *Automate removal of expired sessions and lease files* - read TWikiScripts#tick_twiki_pl.
+   * *Install Plugins* if needed - TWiki:Plugins is an extensive library of Plugins for TWiki, that enhance functionality in a huge number of ways. A few Plugins are pre-installed in the TWiki distribution. Installation instructions are included in Plugins you download from TWiki:Plugins.PluginPackage on TWiki.org.
+   * *Review known issues* - visit TWiki:Codev.KnownIssuesOfTWiki04x00x00 and fix issues that apply to you.
+
+---++ Troubleshooting
+   * The first step is to re-run the =configure= script and make sure you have resolved all errors, and are happy that you understand any warnings.
+   * TWiki:TWiki.InstallingTWiki on TWiki.org has supplemental documentation that help you install TWiki on different platforms, environments and web hosting sites.
+   * If you need help, ask a question in the TWiki:Support web or on TWiki:Codev.TWikiIRC (irc.freenode.net, channel #twiki)
+
+%STOPINCLUDE%
+
+__Related Topics:__ AdminDocumentationCategory, TWiki:TWiki.InstallingTWiki

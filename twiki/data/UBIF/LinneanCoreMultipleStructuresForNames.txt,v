@@ -1,0 +1,61 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.03.09.06.42.24;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1110350544" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="LinneanCore"}%
+In discussion on the mailing list, Main.RichardPyle expressed the desire that the Name element in a Taxon Concept that has type="Nominal" have an enforceably (sensu XML Schema Validation) distinguishable structure from all other types. Main.GregorHagedorn pointed out that this is not directly possible in XML, but it _is_ possible if one is willing to permit the distinctions to be expressed with different element names, e.g. !NominalTaxonConcept, !NominalName, !NonNominalTaxonConcept, !NonNominalName, (not the names we used) or some other such distinction as would satisfy the community. In this case, the datatype inheritance mechanisms of XML Schema can solve the problem technically, leaving only the social question of whether this element name proliferation is acceptable or not. For that point, the arguments probably come down to which side of the "humans don't matter" debate you are on. If, as I, you believe that Schema readability is secondary, especially to other than Schema specialists, then probably it doesn't matter whether you have two names where you could have one if you are content (as I am not) to let annotations urge compliance, rather than have validating parsers detect non-compliance. As a secondary argument, note that schema compilers like Castor can not generate XML marshalling/unmarshalling source code that enforces dreams in the annotation, but certainly can do so for code where distinctions are enforced by the schema. 
+
+The basic design pattern in the attached documents is to have the enumeration for !TaxonConcept divided into two subsets, the one containing only "Nominal" and the one containing everything else. Then !TaxonConcept is refactored into two types and so is !Name, with each kind of Name attached to the corresponding kind of Concept. Finally, the !TaxonConcepts container is redefined to be an unbounded choice of either kinds of Concept objects, so that they can be freely intermixed.
+
+The solution was crafted by me and Main.JacobAsiedu on a plane ride back from the GBIF  Amsterdam !SpeciesBank workshop, and we haven't looked at it very critically beyond producing a small instance document, so please do so if the underlying problem is important. The schema is derived from Rich's(?) version of TCS0.85 and the type names we invented proved to be a little clumsy when making instance documents using XML Spy 2005. If the design pattern is useful, someone should rationalize the types. We tried to constrain the type proliferation to just the Concept types and kept bumping into issues of the Schema inheritance mechanisms. Possibly we gave up too early on that and there is perhaps a simplification of the design.
+
+TCS seems to eschew type definitions, so it is infeasable to extract small diagrammatic documentation for inclusion here. You'll just have to look at it with a tool like Spy. Sorry.
+
+
+-- Main.BobMorris - 09 Mar 2005
+	* [[%ATTACHURL%/v085d-RAM.xsd][v085d-RAM.xsd]]: Schema proposal
+
+	* [[%ATTACHURL%/Instancev085d-RAM.xml][Instancev085d-RAM.xml]]: Instance document
+
+	* [[%ATTACHURL%/ABCDNameTypes.xsd][ABCDNameTypes.xsd]]: Required by the schema
+
+%META:FILEATTACHMENT{name="v085d-RAM.xsd" attr="" comment="Schema proposal" date="1110350223" path="v085d-RAM.xsd" size="29256" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="Instancev085d-RAM.xml" attr="" comment="Instance document" date="1110350275" path="Instancev085d-RAM.xml" size="1111" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="ABCDNameTypes.xsd" attr="" comment="Required by the schema" date="1110350343" path="ABCDNameTypes.xsd" size="40335" user="BobMorris" version="1.1"}%
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+@

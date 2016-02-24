@@ -1,0 +1,251 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258685123" format="1.1" reprev="1.7" version="1.7"}%
+%META:TOPICPARENT{name="SchemaChangeLog09beta24to27"}%
+---+!! %TOPIC%
+
+I do not like the look of the tree definition in concept trees very much, it seems rather confusing. The following example from the example file (version 0.9 beta 27) defines a simple 3-by-3 presentation table (presentational concept, most trees define ontological concepts):
+
+<verbatim>
+<ConceptTree key="9">
+  <!-- Concept trees can also define presentation concepts, e.g. n-dimensional array arrangements: By default the innermost dimension is considered row, the next table (rows). Any further dimension can only be displayed as pages or when using a pivot viewer. Recommendation: applications may display 3 dimensions as multiple 2-dimensional tables one below the other. -->
+  <Label>
+    <Representation audience="en5">
+      <Text>Table of Growth diameter (by time and temperature)</Text>
+    </Representation>
+  </Label>
+  <Type>PresentationTable</Type>
+  <Roles>
+    <Role>NaturalLanguageReporting</Role>
+  </Roles>
+  <!-- rows -->
+  <Concept key="900" debugkey="table">
+    <Concepts>
+      <Concept key="901" debugkey="row1">
+        <!-- row (the keyref IDs are currently just dummies for formal validation, see debugref for the intended concepts!) -->
+        <Label>
+          <Representation audience="en5">
+            <Text>7 days</Text>
+          </Representation>
+        </Label>
+        <Concepts>
+          <!-- row -->
+          <Concept key="904">
+            <Character keyref="1" debugref="GrowthDiam15c7d_OA"/>
+          </Concept>
+          <Concept key="905">
+            <Character keyref="2" debugref="GrowthDiam15c7d_MA"/>
+          </Concept>
+          <Concept key="906">
+            <Character keyref="3" debugref="GrowthDiam15c7d_SNA"/>
+          </Concept>
+        </Concepts>
+      </Concept>
+      <Concept key="902" debugkey="row2">
+        <Label>
+          <Representation audience="en5">
+            <Text>14 days</Text>
+          </Representation>
+        </Label>
+        <Concepts>
+          <!-- row -->
+          <Concept key="907">
+            <Character keyref="1" debugref="GrowthDiam15c14d_OA"/>
+          </Concept>
+          <Concept key="908">
+            <Character keyref="2" debugref="GrowthDiam15c14d_MA"/>
+          </Concept>
+          <Concept key="909">
+            <Character keyref="3" debugref="GrowthDiam15c14d_SNA"/>
+          </Concept>
+        </Concepts>
+      </Concept>
+      <Concept key="903" debugkey="row3">
+        <Label>
+          <Representation audience="en5">
+            <Text>21 days</Text>
+          </Representation>
+        </Label>
+        <Concepts>
+          <!-- row -->
+          <Concept key="910">
+            <Character keyref="1" debugref="GrowthDiam15c21d_OA"/>
+          </Concept>
+          <Concept key="911">
+            <Character keyref="2" debugref="GrowthDiam15c21d_MA"/>
+          </Concept>
+          <Concept key="912">
+            <Character keyref="3" debugref="GrowthDiam15c21d_SNA"/>
+          </Concept>
+        </Concepts>
+      </Concept>
+      <!-- end rows -->
+    </Concepts>
+  </Concept>
+</ConceptTree>
+</verbatim>
+
+a) Inside a concept there is usually only a label and the collection of further concepts (or a single character). The element Concept must be named with a consistent name including the root, or xml schema does not allow us to define a key on it. 
+
+However, we could call Concepts something different, if this would help in making the tree more readable to humans (esp. for debugging purposes).
+
+Gregor Hagedorn - 26 Nov 2003
+
+---
+Would Node be better, since we are defining a tree after all (or are we using that already for the features tree (I don't have the schema open before me at the moment. If so, maybe <nop>ConceptTreeNode).
+
+-- Main.KevinThiele - 26 Nov 2003   
+---
+
+We can use Node only once (to have keys on nodes in trees the element name (not type name) must be globally unique within a schema). So far we have three trees, I believe:
+
+<ul>
+<li><nop>ConceptTrees with Concepts/Concept</li>
+<li><nop>ClassHierarchy with Node</li>
+<li>Keys with Leads/Lead</li>
+</ul>
+
+We can use the element name "Node" for any of them, but only for one. Note that <nop>ClassHierarchy has no key attributes on Node and no xs:key constraint. That means we can have another tree with non-key nodes using Node. However, another tree with keyed nodes would fail the xs:key, because that would require a key attribute on any element called Node anywhere in the schema.
+
+General Note why we call it <nop>ConceptTree: I proposed in Lisbon to change <nop>CharacterGrouping with <nop>CharacterGroup nodes to <nop>ConceptTree with Concept nodes, because these trees make a lot of sense without a single character in them (to express ontological knowledge about property or structural hierarchies). The characters are only needed to make the ontological knowledge operational. (The example is a bad one to prove this, a presentation concept for characters requires them).
+
+BTW, looking at the schema does help me at the moment. I only just realize that in the <nop>ClassHierarchy we have a tree/node structure without a collection container for nodes, whereas in <nop>ConceptTree and Key we have used containers for them.
+
+So, should we say in tree structures we forget the containers?
+
+This is urgent, please do a comparison of the three tree types, so that we are consistent. I believe I would like dropping the concepts from above, but that does mean that we have an exception from our general rule that we use collection container elements.
+
+Gregor Hagedorn - 26 Nov 2003
+---
+
+After talking with Bob on the phone, we agree that we have two options:
+
+<ol>
+<li>Using a container called "Children" in all three trees. That is consistent with our general rule to use containers, and perhaps does help because Children is not as easily confused with Concepts as is Concepts/Concept</li>
+<li>Abandon containers in all collections of nodes. The exception proves the rule: Collections have containers except in the case of Nodes.</li>
+</ol>
+
+Please compare the following 3 shortened versions of the tree above:
+
+<h3>Original</h3>
+
+<verbatim>
+<ConceptTree key="9">
+  <Type>PresentationTable</Type>
+  <Concept key="900" debugkey="table">
+    <Concepts>
+      <Concept key="901" debugkey="row1">
+        <Label><Representation audience="en5"><Text>7 days</Text></Representation></Label>
+        <Concepts>
+          <Concept key="904">
+            <Character keyref="1"/>
+          </Concept>
+          <Concept key="905">
+            <Character keyref="2"/>
+          </Concept>
+          <Concept key="906">
+            <Character keyref="3"/>
+          </Concept>
+        </Concepts>
+      </Concept>
+      <Concept key="902" debugkey="row2">
+        <Label><Representation audience="en5"><Text>14 days</Text></Representation></Label>
+        <Concepts>
+          <Concept key="907">
+            <Character keyref="1"/>
+          </Concept>
+          <Concept key="908">
+            <Character keyref="2"/>
+          </Concept>
+          <Concept key="909">
+            <Character keyref="3"/>
+          </Concept>
+        </Concepts>
+      </Concept>
+    </Concepts>
+  </Concept>
+</ConceptTree>
+</verbatim>
+
+
+<h3>Containers called Children</h3>
+
+<verbatim>
+<ConceptTree key="9">
+  <Type>PresentationTable</Type>
+  <Concept key="900" debugkey="table">
+    <Children>
+      <Concept key="901" debugkey="row1">
+        <Label><Representation audience="en5"><Text>7 days</Text></Representation></Label>
+        <Children>
+          <Concept key="904">
+            <Character keyref="1"/>
+          </Concept>
+          <Concept key="905">
+            <Character keyref="2"/>
+          </Concept>
+          <Concept key="906">
+            <Character keyref="3"/>
+          </Concept>
+        </Children>
+      </Concept>
+      <Concept key="902" debugkey="row2">
+        <Label><Representation audience="en5"><Text>14 days</Text></Representation></Label>
+        <Children>
+          <Concept key="907">
+            <Character keyref="1"/>
+          </Concept>
+          <Concept key="908">
+            <Character keyref="2"/>
+          </Concept>
+          <Concept key="909">
+            <Character keyref="3"/>
+          </Concept>
+        </Children>
+      </Concept>
+    </Children>
+  </Concept>
+</ConceptTree>
+</verbatim>
+
+
+<h3>No containers</h3>
+
+<verbatim>
+<ConceptTree key="9">
+  <Type>PresentationTable</Type>
+  <Concept key="900" debugkey="table">
+    <Concept key="901" debugkey="row1">
+      <Label><Representation audience="en5"><Text>7 days</Text></Representation></Label>
+      <Concept key="904">
+        <Character keyref="1"/>
+      </Concept>
+      <Concept key="905">
+        <Character keyref="2"/>
+      </Concept>
+      <Concept key="906">
+        <Character keyref="3"/>
+      </Concept>
+    </Concept>
+    <Concept key="902" debugkey="row2">
+      <Label><Representation audience="en5"><Text>14 days</Text></Representation></Label>
+      <Concept key="907">
+        <Character keyref="1"/>
+      </Concept>
+      <Concept key="908">
+        <Character keyref="2"/>
+      </Concept>
+      <Concept key="909">
+        <Character keyref="3"/>
+      </Concept>
+    </Concept>
+  </Concept>
+</ConceptTree>
+</verbatim>
+
+I am undecided. The extra Children still look a bit confusing, but then the </Concept></Concept></Concept> at the end will also be difficult. Note that the entire discussion is only about easy of debugging. Nobody is expected to hand-code these things!
+
+What do you think?
+
+Gregor Hagedorn - 27 Nov 2003
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085764183" from="SDD.StructureAndNameOfConceptTreeElements" to="SDD.ClosedTopicStructureOfConceptTree"}%

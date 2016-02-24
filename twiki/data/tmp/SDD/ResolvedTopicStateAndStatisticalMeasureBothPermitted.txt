@@ -1,0 +1,64 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741988" format="1.0" version="1.10"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+The 0.9 permits a character value to have both a State and a <nop>StatisticalMeasure. Is that reasonable?
+
+(example: generally blue except when 4.0  ??? )
+
+-- Main.BobMorris - 09 Mar 2004
+
+---
+
+Surely the only statistic that would sensibly apply to a state is a frequency (e.g. blue @95%, red@5%) - but this is handled elsewhere is it not?
+
+-- Main.KevinThiele - 10 Mar 2004	
+
+---
+
+Ah, I was thinking of the state applying to the statistic, not the statistic applying to the state. I wonder if this distinction is important.
+
+No, wait, I was thinking of both the state _and_ the statistic as applying to the character.
+
+I wonder if these discinctions are important...
+
+-- Main.BobMorris - 10 Mar 2004
+
+---
+
+The latter (both state and statistic apply to character) is present in 0.9. Kevin's scenario is handled by the Frequency modifiers.
+
+I have two scenarios for allowing a character to have both categorical and numeric (and, derived from that, statistical) data:
+
+
+1. counts are often counted, but treated categorical ("many") when a certain threshold of "practical countability" is reached. This can occur within a single dataset.
+
+2. When combining data from different sources, incl. your own observations you will often have a mixture of categorical expression (legacy flowers:
+ "less than 1 cm", "1-2 cm", "2-3", "larger than 3 cm") and statistical measures (mean = 2.3 cm) and your own repeated measurements  (2.0, 2.5, 2.2, 2.1) from which the mean is automatically calculated.
+
+These scenarios are real, but I am happy for any criticism whether the current parallelism that I introduced is the best solution for the problem. The way it is handled in DELTA is to have two characters. <nop>DeltaAccess does it that way since 1995. People usually don't realize that they can do it, but when they encounter the problem and figure it out so far I had no negative responses that it was not working. Still we could also solve it with a two character solution.
+
+Bob's example: "wings generally blue except when more than 4.0 cm long" is actually a second problem. It expresses a relationship between two characters -- and we currently have no means implemented in SDD to describe objects through such logical expressions or knowledge. We have only means of enlisting factual observations. So, do we need this additional power? 
+
+We do already experience this need in the Key/*/Lead/CodedStatements expression when linking the unconstrained language of key-statements to states in the terminology.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 12-16 Mar 2004
+---
+So:
+	* recording a frequency for a state can be done
+	* recording a mix of numerical and categorical data in parallel can be done (the question of how a consuming application would handle this is open, but I suppose that's Somebody Else's Problem)
+
+The most interesting question is Gregor's latter example of a logical restriction on a state when a condition is met - an IF-THEN statement. These are surprisingly common, particularly in dichotomous keys.
+
+I've wondered how to handle such contingencies in Lucid - in fact this is exactly the ContingencyProblem that bedevils matrix-based keys. I'd really like a solution for this one (but not for SDD1.0!).
+
+One obvious issue is that the contingency applied needs to tie in several states - that is, the obvious question when faced with "wings generally blue except when more than 4.0 cm long" is "so what colour are they when less than 4 cm long?" We need IF-THEN-ELSE statements, surely (although these will be too restrictive also to help in real circumstances).
+
+-- Main.KevinThiele - 22 Mar 2004	
+---
+
+As a final note to the above: In versions after 0.9, character is now treated not as a real abstract entity, but as a concrete variable that has a single possible data type. The advantage is that the character matches directly to data analysis, the disadvantage is that data integration of numerical and categorical data for the same abstract entity (e.g. leaf length) are less obvious. However, since they are defined in the mapping sections, they can be obtained from the terminology.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 5 July 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1097052084" from="SDD.StateAndStatisticalMeasureBothPermitted" to="SDD.ResolvedTopicStateAndStatisticalMeasureBothPermitted"}%

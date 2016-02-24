@@ -1,0 +1,179 @@
+%META:TOPICINFO{author="BartMeganck" date="1175727529" format="1.1" reprev="1.8" version="1.8"}%
+%META:TOPICPARENT{name="GeoAppInter"}%
+---++ Pre-Workshop Meeting
+
+A pre workshop meeting will be held on Wed 21 March 2007 at 14h00 GMT. Logs of this meeting are available [[http://linfiniti.com/irclogs/%23biogeosdi.21-03-2007.log][here]] Important points from the meeting follow:
+
+   * GBIF are planning a funded implementation similar to what we will be doing at the workshop, so the products from this workshop will be useful to inform their decisions in their project.
+   * There will be two key outputs from the workshop
+      1. A document describing problems, issues etc. when trying to use standard web services to carry out our simple NicheAnalysisProcess
+      2. A web based prototype that exposes our basic workflow through a simple we interface.
+   * Before the meeting participants are asked to identify a suitable taxonomic group for testing that will have a decent amount of data in each of the services we plan to use.
+   * We will try to document our progress as we go, though we dont expect the document to be completed at the end of the workshop.
+
+
+---++ Core expertise
+
+Bart : 
+
+	* PL/I (3rd gen. language) on TSO on IBM OS-390 mainframe (not sure if that comes in handy though... ;-)
+	* MySQL, PostGres, general database and SQL 
+	* PHP with postgres/XML/DOM libraries
+	* XML,UML,GML : some experience, no guru yet
+	* Perl : a little dabbling around
+	* good Linux experience (Ubuntu), MacOSX as well
+	* WMS/WFS install & configuration (DeeGree)
+	* QuantumGIS, PostGIS
+	* HTML/CSS
+
+Tim : 
+
+	* GUI programming with Qt3/4 and C++
+	* PHP
+	* PostgreSQL / MySQL (yuk) / SQLite3
+	* Bash scripting & Linux Sysadmin (Ubuntu :-)  but lots of experience with RH :-( )
+	* MacOSX
+        * QGIS, openModeller Desktop
+        * HTML / CSS
+        * Mapserver
+        
+
+---++ Things to bring out in the report
+
+   1. Advantages / Disadvantages / Issues / Support for LSIDs
+   2. Concept schema support in Catologue of Life
+   3. What was the quality of documentation like for each service - did it provide examples, clearly laid out etc
+   4. WCS / WFS etc do they work well in our scenarion (e.g. latency when iterating through a WCS coverage with OM)
+   5. What existing client libraries are out there and how easy were they to adapt to our needs?
+
+---++ Services to Include/Expose
+   1. openModeller
+   2. WMS/WFS/WCS
+   3. Spice
+   4. GBIF Rest occurrences service
+   5. WMS
+   6. LSID Service
+
+
+---++ Resources 
+
+---+++ Rapid application development frameworks
+  
+   * [[http://cakephp.org/][CAKE for php]]
+
+---+++ Darwin Core Related
+
+   * DarwinCore v1.12: http://digir.net/schema/conceptual/darwin/manis/1.21/darwin2.xsd 
+   * DarwinCore v1.2: http://digir.net/schema/conceptual/darwin/2003/1.0/darwin2.xsd 
+   * DarwinCore v1.30: http://digir.sourceforge.net/schema/conceptual/darwin/core/2.0/darwincoreWithDiGIRv1.3.xsd
+   * other DwC versions & extensions: http://digir.sourceforge.net
+
+---+++ Useful scripts
+
+   * [[%ATTACHURL%/kml.pl.txt][kml.pl]] : Bart has a small Perl script that produces a KML file for each input line of a comma separated file with   Name,Description,Decimal_longitude,Decimal_latitude. The KML files get their names from the Name field.
+   * [[%ATTACHURL%/curl_from_CoL.php.txt][curl_from_CoL.php]]
+   * [[%ATTACHURL%/parse_CoL_output.php.txt][parse_CoL_output.php]]
+
+---+++ openModeller Related
+
+   * [[http://openmodeller.sf.net][openModeller Home Page]]
+   * [[http://openmodeller.cria.org.br/wikis/omgui/OpenModeller_Standard_Web_Services_API][openModeller Web Services API]]
+   * [[http://modeller.cria.org.br/cgi-bin/om_soap_server.cgi][OMWSI Test Server]]
+   * [[http://openmodeller.cria.org.br/ws/1.0/openModeller.wsdl][The wsdl is here]]
+
+The web service is soap using document / literal style.
+
+---+++ Catologue of Life
+
+There are basically two ways to access the CoL programmatically:
+
+   1. Use the SOAP webservice to the Dynamic Checklist
+   2. Use the GET > XML response style wrapper to the Annual Checklist
+
+There is a webservice to the Annual Checklist being developed/completed but I
+haven't seen it yet and so I'm not sure if i'll have access to it before next
+week!
+
+Seeing as the Annual Checklist is superior in both quality and quantity of
+data, Peter Brewer suggest for us to use the GET > XML response style wrapper.
+Documents of interest are:
+
+   * [[http://www.sp2000.org/index.php?option=com_content&task=view&id=41&Itemid=31][Standard dataset document:]]
+   * [[http://documents.sp2000.org/DC/spicexmlschemav1.4beta.xsd][XML Schema]]
+   * [[http://documents.sp2000.org/DC/sp2000wrapperguidelinesv1.3jan2006.doc][Wrapper writing guidelines which describe the behaviour of the Annual Checklist Wrapper]]
+
+
+
+---+++ PHP Resources
+
+   * cURL in PHP : http://us3.php.net/curl
+   * PHP manuals : http://www.php.net
+   * PHP pattern syntax : http://be2.php.net/manual/en/reference.pcre.pattern.syntax.php
+   * PHP Lucene integration : http://java2.5341.com/msg/95888.html
+
+---+++ OGC standards : 
+
+   * http://www.opengeospatial.org/standards/wcs
+   * http://www.opengeospatial.org/standards/wms
+   * http://www.opengeospatial.org/standards/wfs
+   * http://www.opengeospatial.org/standards/wmc
+
+---+++ test databases mapped to the new Darwin Core, Geospatial, and Curatorial extensions here:
+( Please don't hurt them badly, they are real providers. )
+ 
+   * http://128.32.146.144/tapir/tapir.php/MVZDwC (big ~700,000 records) 
+   * http://128.32.146.144/tapir/tapir.php/NMMNHMammalsDwC (small 5067 records)
+
+
+---+++ Example WMS URLs : 
+
+   * DEMIS  : http://www2.demis.nl/mapserver/request.asp?
+   * Geoscience Australia :  http://www.ga.gov.au/bin/getmap.pl?dataset=national&
+   * NASA JPL  : http://wms.jpl.nasa.gov/wms.cgi?
+   * NSW CANRI  : http://atlas.canri.nsw.gov.au/proxy/wms?
+   * USGS EROS Data Center WMS Map Server: USGS_EDC_Trans_BTS_Roads 
+   * http://ims.cr.usgs.gov/servlet/com.esri.wms.Esrimap/USGS_EDC_Trans_BTS_Roads?  
+
+---+++ Web mapping toolkits
+   * [[http://openlayers.org][openlayers]]
+   * [[http://docs.codehaus.org/display/GEOS/Home][GeoServer]]
+
+
+---+++ LSIDs
+
+   * [[http://bioguid.info/][The Bio GUID project]]
+
+---++ Who does what?
+
+   Architecture design:
+
+   Python Framework:
+
+   Web UI design:
+
+   Web UI Coupling to  python:
+
+   
+
+
+---++ How do we work
+(Tim) 
+   I would suggest we form 2 man teams and 'buddy program'.  Day 1 we will do some planning. My suggestion would be that we hive off into smaller groups to mock up web ui, api etc.  The following days we start implementing.  Because the time is short we can do everything 'live' dropping code and web stuff into svn as we create it and deploy it on a test server at the same time. Pretty much I am suggesting some 'extremely extreme' programming.
+
+I'd suggest we start on the planning day with mockup of the web ui (perhaps people could bring along their ideas if they have time?) and then work out how the framework should look.
+
+
+-- Main.AimeeStewart - 15 Feb 2007
+
+
+
+-- Main.TimSutton - 21 Mar 2007
+
+   
+
+%META:FILEATTACHMENT{name="curl_from_CoL.php.txt" attachment="curl_from_CoL.php.txt" attr="" comment="PHP that makes a search on CoL, via cURL" date="1175009829" path="curl_from_CoL.php" size="769" stream="curl_from_CoL.php" user="Main.BartMeganck" version="1"}%
+%META:FILEATTACHMENT{name="parse_CoL_output.php.txt" attachment="parse_CoL_output.php.txt" attr="" comment="PHP to parse a CoL tab delimited file" date="1175009901" path="parse_CoL_output.php" size="668" stream="parse_CoL_output.php" user="Main.BartMeganck" version="1"}%
+%META:FILEATTACHMENT{name="kml.pl.txt" attachment="kml.pl.txt" attr="" comment="Perl script : takes in a csv, writes out kml for Google Earth" date="1175010120" path="kml.pl" size="1358" stream="kml.pl" user="Main.BartMeganck" version="1"}%
+%META:FILEATTACHMENT{name="world_adm0.shp" attachment="world_adm0.shp" attr="" comment="SHPworld" date="1175727469" path="world_adm0.shp" size="1537144" stream="world_adm0.shp" user="Main.BartMeganck" version="1"}%
+%META:FILEATTACHMENT{name="world_adm0.dbf" attachment="world_adm0.dbf" attr="" comment="shpworld2" date="1175727500" path="world_adm0.dbf" size="14551" stream="world_adm0.dbf" user="Main.BartMeganck" version="1"}%
+%META:FILEATTACHMENT{name="world_adm0.shx" attachment="world_adm0.shx" attr="" comment="shpworld.shx" date="1175727528" path="world_adm0.shx" size="1772" stream="world_adm0.shx" user="Main.BartMeganck" version="1"}%

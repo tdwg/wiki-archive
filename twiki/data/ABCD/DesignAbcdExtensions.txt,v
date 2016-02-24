@@ -1,0 +1,385 @@
+head	1.14;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.14
+date	2010.05.13.11.44.12;	author WalterBerendsohn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.07.23.01.00.15;	author PeterNeish;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.14
+log
+@none
+@
+text
+@%META:TOPICINFO{author="WalterBerendsohn" date="1273751052" format="1.1" version="1.14"}%
+---+++ What are ABCD2 extensions?
+ABCD2 covers a lot of concepts. But still there are specific community needs which are not represented in the current schema. In order to add new things to ABCD, it takes some time. For people who really need additional concepts in ABCD _extension schemas_ are the way to go. Once an extension stabilized and proves useful to many people they should become integrated into a new ABCD release in the future.
+
+Extensions are*seperate schemas* with their own*distinct namespace*. ABCD2 defines several extension slots where any other namespace than ABCD2 is allowed. Those slots are:
+
+   * Identification Extension: AbcdConcept1456 
+   * Unit Extension: AbcdConcept1437
+
+See also these links for more on extensions in ABCD2:
+   * Self:AbcdIntroduction#UnitExtensions
+   * Self:AbcdIntroduction#Purpose
+
+---+++ Examples of extensions
+   * [[http://ww3.bgbm.org/abcdefg/FrontPage][ExtensionForGeosciences]]
+      * [[http://eim.metapath.org/ABCDEFGWeb/EFG-1.XSD.html][docs]] 
+      * [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/EFG.XSD][schema]]
+      * Complete [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/ABCD_2.06_impEFG.XSD][ABCDEFG schema]]. That is ABCD importing and using EFG. Used to create the respective [[http://ww2.biocase.org/svn/bps2/trunk/configuration/templates/cmf/cmf_ABCDEFG_2.06.xml][CMFile]] to be used with the BiocaseProviderSoftware.
+      * [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/abcd2_efg.xml][Example instance ]] document (not too meaningful)
+
+---+++ Guidelines for schema developers
+The extension slots in ABCD are of type _xsd:any_. The extension schema therefore should:
+   * have a targetnamespace different from ABCD
+   * provide global elements that can be used within the extension slots. Every element that should appear directly under one of the two abcd:extension elements needs to be a global element in the extension schema. If you want to fill the UnitExtension slot AND the IdentificationExtension slot, you have to have at least 2 global elements for this.
+   * Every concept that you want to make available for mapping must have a simple data type defined (tree leaf element or attribute in the schema).
+   * Avoid recursive structures (global elements or complex types calling itself at some point, e.g. Person/Parent/Person/Parent/Person...)in your schema.
+
+Other best practices which are not required but recommended:
+   * use CamelCase for element names
+   * dont reinvent concepts that exist in ABCD already
+
+---+++ Use the BioCASE provider software with your new extension schema
+To share data on the basis of your new extension schema you first have to create a file used as a template and for mappings. Its called the _Concept Mapping File_ or CMF. There is an online service available that creates CMFiles from existing XML Schemas. But to be able to use this service you will first have to create yet another schema, the ABCD2.06+Extension schema.
+
+Go and get the [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCD_2.06/ABCD_2.06.XSD][ABCD2.06 schema]] and modify it as follows:
+ 1 import your new extension schema
+ 1 add new elements that reference your global extension elements to the ABCD schema inside the extension. For example like this (with efg being the namespace prefix of the EFG extension schema):
+<verbatim>
+<xs:schema targetNamespace="http://www.tdwg.org/schemas/abcd/2.06"
+           xmlns="http://www.tdwg.org/schemas/abcd/2.06"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:efg="http://www.synthesys.info/ABCDEFG/1.0">
+  <xs:import namespace="http://www.synthesys.info/ABCDEFG/1.0" schemaLocation="EFG.XSD"/>
+  ...
+  <xs:element name="UnitExtension" minOccurs="0">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="efg:EarthScienceSpecimen" minOccurs="0"/>
+        <xs:element ref="efg:RockUnit" minOccurs="0"/>
+        <xs:element ref="efg:PalaeontologicalUnit" minOccurs="0"/>
+        <xs:element ref="efg:MineralogicalUnit" minOccurs="0"/>
+        <xs:element ref="efg:AllocthonousMaterial" minOccurs="0"/>
+        <xs:element ref="efg:UnitHostRock" minOccurs="0"/>
+        <xs:element ref="efg:Alteration" minOccurs="0"/>
+        <xs:element ref="efg:NamedGeologicalFeature" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  ...
+</verbatim>
+ 3. save it, place it somewhere on a webserver to be accessible to the CMF service: http://ww3.bgbm.org/bps2/GenerateCmFiles 
+
+
+---+++ Questions?
+If you have any more questions please contact Jörg Holetschek, Berlin
+ mailto:j.holetschek@@bgbm.org
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PeterNeish" date="1185152415" format="1.1" version="1.13"}%
+d65 2
+a66 2
+If you have any more questions please contact Markus Döring, Berlin
+ mailto:m.doering@@bgbm.org
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d1 66
+a66 65
+---+++ What are ABCD2 extensions?
+ABCD2 covers a lot of concepts. But still there are specific community needs which are not represented in the current schema. In order to add new things to ABCD, it takes some time. For people who really need additional concepts in ABCD _extension schemas_ are the way to go. Once an extension stabilized and proves useful to many people they should become integrated into a new ABCD release in the future.
+
+Extensions are*seperate schemas* with their own*distinct namespace*. ABCD2 defines several extension slots where any other namespace than ABCD2 is allowed. Those slots are:
+
+   * Unit Extension: AbcdConcept1456 
+   * Identification Extension: AbcdConcept1437
+
+See also these links for more on extensions in ABCD2:
+   * Self:AbcdIntroduction#UnitExtensions
+   * Self:AbcdIntroduction#Purpose
+
+---+++ Examples of extensions
+   * [[http://ww3.bgbm.org/abcdefg/FrontPage][ExtensionForGeosciences]]
+      * [[http://eim.metapath.org/ABCDEFGWeb/EFG-1.XSD.html][docs]] 
+      * [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/EFG.XSD][schema]]
+      * Complete [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/ABCD_2.06_impEFG.XSD][ABCDEFG schema]]. That is ABCD importing and using EFG. Used to create the respective [[http://ww2.biocase.org/svn/bps2/trunk/configuration/templates/cmf/cmf_ABCDEFG_2.06.xml][CMFile]] to be used with the BiocaseProviderSoftware.
+      * [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/abcd2_efg.xml][Example instance ]] document (not too meaningful)
+
+---+++ Guidelines for schema developers
+The extension slots in ABCD are of type _xsd:any_. The extension schema therefore should:
+   * have a targetnamespace different from ABCD
+   * provide global elements that can be used within the extension slots. Every element that should appear directly under one of the two abcd:extension elements needs to be a global element in the extension schema. If you want to fill the UnitExtension slot AND the IdentificationExtension slot, you have to have at least 2 global elements for this.
+   * Every concept that you want to make available for mapping must have a simple data type defined (tree leaf element or attribute in the schema).
+   * Avoid recursive structures (global elements or complex types calling itself at some point, e.g. Person/Parent/Person/Parent/Person...)in your schema.
+
+Other best practices which are not required but recommended:
+   * use CamelCase for element names
+   * dont reinvent concepts that exist in ABCD already
+
+---+++ Use the BioCASE provider software with your new extension schema
+To share data on the basis of your new extension schema you first have to create a file used as a template and for mappings. Its called the _Concept Mapping File_ or CMF. There is an online service available that creates CMFiles from existing XML Schemas. But to be able to use this service you will first have to create yet another schema, the ABCD2.06+Extension schema.
+
+Go and get the [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCD_2.06/ABCD_2.06.XSD][ABCD2.06 schema]] and modify it as follows:
+ 1 import your new extension schema
+ 1 add new elements that reference your global extension elements to the ABCD schema inside the extension. For example like this (with efg being the namespace prefix of the EFG extension schema):
+<verbatim>
+<xs:schema targetNamespace="http://www.tdwg.org/schemas/abcd/2.06"
+           xmlns="http://www.tdwg.org/schemas/abcd/2.06"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:efg="http://www.synthesys.info/ABCDEFG/1.0">
+  <xs:import namespace="http://www.synthesys.info/ABCDEFG/1.0" schemaLocation="EFG.XSD"/>
+  ...
+  <xs:element name="UnitExtension" minOccurs="0">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="efg:EarthScienceSpecimen" minOccurs="0"/>
+        <xs:element ref="efg:RockUnit" minOccurs="0"/>
+        <xs:element ref="efg:PalaeontologicalUnit" minOccurs="0"/>
+        <xs:element ref="efg:MineralogicalUnit" minOccurs="0"/>
+        <xs:element ref="efg:AllocthonousMaterial" minOccurs="0"/>
+        <xs:element ref="efg:UnitHostRock" minOccurs="0"/>
+        <xs:element ref="efg:Alteration" minOccurs="0"/>
+        <xs:element ref="efg:NamedGeologicalFeature" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  ...
+</verbatim>
+ 3. save it, place it somewhere on a webserver to be accessible to the CMF service: http://ww3.bgbm.org/bps2/GenerateCmFiles 
+
+
+---+++ Questions?
+If you have any more questions please contact Markus Döring, Berlin
+ mailto:m.doering@@bgbm.org
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d39 3
+a41 3
+    xmlns="http://www.tdwg.org/schemas/abcd/2.06"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:efg="http://www.synthesys.info/ABCDEFG/1.0">
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d38 21
+a58 14
+<xs:element name="UnitExtension" minOccurs="0">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="efg:EarthScienceSpecimen" minOccurs="0"/>
+      <xs:element ref="efg:RockUnit" minOccurs="0"/>
+      <xs:element ref="efg:PalaeontologicalUnit" minOccurs="0"/>
+      <xs:element ref="efg:MineralogicalUnit" minOccurs="0"/>
+      <xs:element ref="efg:AllocthonousMaterial" minOccurs="0"/>
+      <xs:element ref="efg:UnitHostRock" minOccurs="0"/>
+      <xs:element ref="efg:Alteration" minOccurs="0"/>
+      <xs:element ref="efg:NamedGeologicalFeature" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d36 1
+a36 1
+ 1 add new elements that reference your global extension elements to the ABCD schema inside the extension. For example like this:
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d38 14
+d53 1
+a53 1
+ 1 save it, place it somewhere on a webserver to be accessible to the CMF service: http://ww3.bgbm.org/bps2/GenerateCmFiles 
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d34 1
+a34 1
+Go and get the [[ABCD2.06][schema]] and modify it as follows:
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d21 24
+a44 1
+The extension slots in ABCD are of type _xsd:any_. In the
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d18 1
+a18 1
+      * An example instance document: 
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d18 1
+a18 1
+An example instance document for ABCDEFG can be found here:
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d14 3
+a16 1
+   * [[http://ww3.bgbm.org/abcdefg/FrontPage][ExtensionForGeosciences]] [[http://eim.metapath.org/ABCDEFGWeb/EFG-1.XSD.html][docs]] [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/EFG.XSD][schema]]
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d14 6
+a19 2
+   * [[http://ww3.bgbm.org/abcdefg/FrontPage][ExtensionForGeosciences]] [[http://eim.metapath.org/ABCDEFGWeb/EFG-1.XSD.html][docs]] [[http://www.bgbm.org/TDWG/CODATA/Schema/ABCDEFG_1.0/EFG.XSD][schema]] [[http://ww2.biocase.org/svn/bps2/trunk/configuration/templates/cmf/cmf_ABCDEFG_2.06.xml][CMF]]
+===  ===
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 1
+a1 2
+---++ How to create an ABCD extension
+---+++ what are extensions?
+d12 4
+@

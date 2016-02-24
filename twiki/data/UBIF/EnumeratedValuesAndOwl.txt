@@ -1,0 +1,16 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147811335" format="1.1" version="1.1"}%
+%META:TOPICPARENT{name="EnumeratedValues"}%
+Certain enumerations are considered necessary to provide for data integration and application interoperability. There is some competition in this area between ontologies/vocabularies and schema enumerations. There seems to be [[http://www.stylusstudio.com/xmldev/200309/post80600.html][no current solution]] to integrate semantic web aspects (using RDF, OWL, etc.) and the flat but practical enumerated value lists in schema (see e.g. http://www2002.org/CDROM/refereed/231/).
+
+TDWG / GBIF schemata have three options:
+   1 They only define structure and not vocabulary. Things like taxonomic rank, sex status, editorial status, statistical method may be any of simple natural language term in any language of the world, or uris (which may or may not be resolvable).
+   2 They specify that the values must be xs:anyuri (which is usually no enforced by parsers) and in accompanying documentation specify that the values must be derived from the uris present in a specific OWL-based vocabulary.
+   3 They define a flat list as xs:enumeration inside the schema and optionally annotation informs that an OWL vocabulary using the same terms is provided at a specific location.
+
+Solution 1 is preferred whereever no interoperability is required, i.e. the information is only for human consumption and machine processing is either not relevant, or expected to be able to cope with natural language processing. Solution 2 has the advantage that the list of values is easier to extend, separately from the main schema. It has the disadvantage that tools that are not programmed sufficiently general (i.e. able to deal with anything expressable in OWL) may break if the list is extended. Solution 3 has the advantage that software knows exactly what to expect, that the interoperability scope is well defined (changes in vocabulary require an update in schema version) and that it is easy to implement with all kind of software (including relational databases). Furthermore, wherea in solution 2 the vocabulary and the schema are decoupled, at the same time the schema is fully coupled with a specific semantic language.
+
+Solution 3 may at present be most pragmatic. Since it is more difficult to extend the vocabulary, many of the following vocabularies are fairly large, assuming it is less relevant to include a few rarely used terms than the other way round.
+
+-- Main.GregorHagedorn -  19. July 2004 (refactored from [[http://wiki.tdwg.org/twiki/bin/edit/UBIF/EnumeratedValues?rev=11][EnumeratedValues, r.11]])

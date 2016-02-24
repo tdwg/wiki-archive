@@ -1,0 +1,178 @@
+Until now, output models were only used with leaf node/property mappings. In theory it would also be possible to map concepts representing classes, however the <mapping> section needs to be changed if we want to somehow express relationships between classes.
+
+This page explores new ideas to improve the output model mapping so that it can express richer and clearer semantics.
+
+Following the same approach started in the SemanticMapping page, TAPIR output models will now need to consider properties, classes and relationships between classes. Output models don't contain filters, which are addressed in another part of the protocol. Without any filter conditions and without any restriction on the number of elements to be returned, an output model will potentially return the whole set of interrelated objects satisfying clear relationships between them. That's something that distinguishes this approach from MDL, which supports filter conditions as part of the mapping.
+
+The following rules are an initial attempt to fulfill the basic requirements of semantic mapping at the output model level:
+
+_General principles_
+
+   * Instead of only "concepts", mapping now needs to distinguish properties, classes and relationships.
+   * Node identifications is still done by simplified XPaths (matching only elements along a single path).
+   * The set of conditions (classes, relationships and one or more properties) that determines when and how a node should be rendered is the set of conditions specified across its ancestor axis plus any conditions in the self axis.
+   * Any output model mapping must consider at least one class.
+
+_Property mapping_
+
+   * Properties are directly related to content, so they can be mapped to simple elements or attributes. When mapped to simple elements, they refer only to their content.
+   * Simple elements and attributes can be mapped to more than one property, in which case the resulting value will be the concatenation of all corresponding values.
+   * A property can only be mapped when its class has been either previously mapped or previously related to another mapped class at any level of the ancestor axis or the self axis.
+
+_Class mapping and relationships_
+
+   * Classes can be mapped to simple or complex elements, and they are only related to the meaning and to the number of occurrences of those elements.
+   * A class can be directly mapped to an element, or it can be part of a set of relationships that starts from a class directly mapped to an element.
+   * A class that is directly mapped to an element can specify a set of relationships with other classes.
+   * When a class specifies one or more relationships with other classes, the number of resulting objects must not exceed the maximum occurrences for the element, in which case an error (warning?) must be raised by the provider implementation.
+   * A class that is directly mapped to an element must specify at least one relationship with any of the previously mapped classes (or with one of their related classes), unless it's the root class.
+   * Classes can specify a local alias when mapped or when related to other classes. Classes with an alias must be identified by the alias when further referred by relationships or properties. 
+   * A simple element can therefore be mapped to a class and one or more properties.
+
+_Additional rules_
+
+   * Elements and attributes can also be unmapped, in which case they will just be seen as grouping elements with no meaning in the ontology.
+   * Elements cannot be directly mapped to classes that were already mapped at any level of the ancestor or self axis.
+   * Since each class referenced by a relationship can specify more relationships with other classes (recursiveness), implementations must limit the number of nested relationships and raise an error if the output model exceeds that limit.
+
+The changes suggested in the protocol schema can be found at ProposedChangesToOutputModelMapping. 
+
+Examples:
+
+*1) Single class with single property*
+
+Desired output:
+<verbatim>
+<records>
+  <specimen catalogNumber="1"/>
+  <specimen catalogNumber="2"/>
+  <specimen catalogNumber="3"/>
+</records>
+</verbatim>
+
+Respective mapping:
+<verbatim>
+<mapping>
+  <node path="/records/specimen" >
+    <class id="SpecimenRecord"/>
+  </node>
+  <node path="/records/specimen/@catalogNumber" >
+    <property id="CatalogNumber" class="SpecimenRecord"/>
+  </node>
+</mapping>
+</verbatim>
+
+If the catalog number was the element value instead of an attribute, then the mapping would be:
+<verbatim>
+<mapping>
+  <node path="/records/specimen" >
+    <class id="SpecimenRecord"/>
+    <property id="CatalogNumber" class="SpecimenRecord"/>
+  </node>
+</mapping>
+</verbatim>
+
+*2) Two interrelated classes*
+
+Desired output:
+<verbatim>
+<records>
+  <specimen catalogNumber="1" scientificName="x" OutputModelMappingRules>
+  <specimen catalogNumber="2" scientificName="y" OutputModelMappingRules>
+  <specimen catalogNumber="3" scientificName="x" OutputModelMappingRules>
+</records>
+</verbatim>
+
+Respective mapping:
+<verbatim>
+<mapping>
+  <node path="/records/specimen" >
+    <class id="SpecimenRecord">
+      <relationshipLink id="hasIdentification" myRole="domain" othersRole="range">
+        <class id="Identification"/>
+      </relationshipLink>
+    </class>
+  </node>
+  <node path="/records/specimen/@catalogNumber" >
+    <property id="CatalogNumber" class="SpecimenRecord"/>
+  </node>
+  <node path="/records/specimen/@scientificName" >
+    <property id="name" class="Identification"/>
+  </node>
+</mapping>
+</verbatim>
+
+Notice that the previous example assumes a one-to-one relationship between SpecimenRecord and Identification. So providers should raise an error if the local cardinality doesn't match this assumption. A better output model in this case would be:
+
+Desired output:
+<verbatim>
+<records>
+  <specimen catalogNumber="1">
+    <identification scientificName="x"/>
+  </specimen>
+  <specimen catalogNumber="2">
+    <identification scientificName="y"/>
+  </specimen>
+  <specimen catalogNumber="3">
+    <identification scientificName="x"/>
+  </specimen>
+</records>
+</verbatim>
+
+Respective mapping:
+<verbatim>
+<mapping>
+  <node path="/records/specimen" >
+    <class id="SpecimenRecord"/>
+  </node>
+  <node path="/records/specimen/@catalogNumber" >
+    <property id="CatalogNumber" class="SpecimenRecord"/>
+  </node>
+  <node path="/records/specimen/identification" >
+    <class id="Identification">
+      <relationshipLink id="hasIdentification" myRole="range" othersRole="domain">
+        <class id="SpecimenRecord"/>
+      </relationshipLink>
+    </class>
+  </node>
+  <node path="/records/specimen/identification/@scientificName" >
+    <property id="name" class="Identification"/>
+  </node>
+</mapping>
+</verbatim>
+
+*3) Two classes in separate axis*
+
+Desired output:
+<verbatim>
+<dataset>
+  <specimens>
+    <specimen catalogNumber="1"/>
+    <specimen catalogNumber="2"/>
+    <specimen catalogNumber="3"/>
+  </specimens
+  <collectors>
+    <collector name="x"/>
+    <collector name="y"/>
+    <collector name="z"/>
+  </collectors>
+</dataset>
+</verbatim>
+
+Respective mapping:
+<verbatim>
+<mapping>
+  <node path="/records/specimens/specimen" >
+    <class id="SpecimenRecord"/>
+  </node>
+  <node path="/records/specimens/specimen/@catalogNumber" >
+    <property id="CatalogNumber" class="SpecimenRecord"/>
+  </node>
+  <node path="/records/collectors/collector" >
+    <class id="Collector"/>
+  </node>
+  <node path="/records/collectors/collector/@name" >
+    <property id="name" class="collector"/>
+  </node>
+</mapping>
+</verbatim>

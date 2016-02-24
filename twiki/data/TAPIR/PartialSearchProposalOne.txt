@@ -1,0 +1,83 @@
+---+ PartialSearchProposalOne
+
+A proposal for the PartialSearch.
+The parameters needed are the namespace of the ConceptualSchema and the list of concepts for it.
+
+Instead of listing only LeafNodeConcepts one could also allow to list BranchNodeConcepts to implicitly retrieve all child nodes of that branch without having to list all of them in the request. You could for example specify all Identification related information in ABCD just by passing the concept !/DataSets/DataSet/Units/Unit/Identifications
+
+---+++++ Request
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <search>
+      <partialDocument schema="http://www.tdwg.org/schemas/abcd/1.2">
+         <concept path="/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString"/> *
+      </partialDocument>
+   </search>
+</request>
+
+with* indicating repeatable elements
+</verbatim>
+
+---+++++ Response
+
+A response would be like this. 
+Compare it with the FullSearchProposalOne response to see the difference.
+
+<verbatim>
+<response>
+   <header>
+      ...
+   </header>
+   <content>
+      <DataSets xmlns='http://www.tdwg.org/schemas/abcd/1.2'>
+        <DataSet>
+          <OriginalSource>
+            <SourceInstitutionCode>BGBM</SourceInstitutionCode>
+            <SourceName>Lichen DB</SourceName>
+            <SourceLastUpdatedDate>2001-01-01</SourceLastUpdatedDate>
+          </OriginalSource>
+          <DatasetDerivations>
+            <DatasetDerivation>
+         <DateSupplied>2003-08-11</DateSupplied>
+         <Supplier>
+           <Organisation>
+             <OrganisationName>Botanic Garden and Botanical Museum Berlin-Dahlem</OrganisationName>
+           </Organisation>
+         </Supplier>
+            </DatasetDerivation>
+          </DatasetDerivations>
+          <Units>
+            <Unit>
+         <UnitID>11802</UnitID>
+         <Identifications>
+           <Identification PreferredIdentificationFlag='1'>
+             <TaxonIdentified>
+               <NameAuthorYearString>Astrothelium</NameAuthorYearString>
+             </TaxonIdentified>
+           </Identification>
+         </Identifications>
+            </Unit>
+            <Unit>
+         <UnitID>12464</UnitID>
+         <Identifications>
+           <Identification PreferredIdentificationFlag='1'>
+             <TaxonIdentified>
+               <NameAuthorYearString>Gyalectidium</NameAuthorYearString>
+             </TaxonIdentified>
+           </Identification>
+           <Identification PreferredIdentificationFlag='0'>
+             <TaxonIdentified>
+               <NameAuthorYearString>Asterothyrium?</NameAuthorYearString>
+             </TaxonIdentified>
+           </Identification>
+         </Identifications>
+            </Unit>
+          </Units>
+        </DataSet>
+      </DataSets>
+   </content>
+</response>
+</verbatim>

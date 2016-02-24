@@ -1,0 +1,88 @@
+%META:TOPICINFO{author="ArlinStoltzfus" date="1289401939" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="PhylogeneticsStandardsWorkshop"}%
+%TOC%
+
+---+ TDWG2010 phylogenetic standards working group project: Linking Trees
+
+---++ Project Overview
+At the TDWG meeting in Woods Hole, a small group (Dan, Arlin, Jamie, Torsten, Elena) decided to work out current best practices for publishing a tree electronically, via an archive such as [[http://www.treebase.org TreeBase]] or [[http://datadryad.org Dryad]], or via the semantic web (presumably using CDAO).  After the meeting, this evolved into a more specific plan (see below) to produce an initial report, solicit feedback, and then generate a more extensive report for publication.  
+
+---+++ Contributors
+   * Arlin Stoltzfus 
+   * Dan Rosauer 
+   * Torsten Eriksson 
+   * Bill Piel provided instructions for TreeBase and examples 
+   * Christian Zmasek provided feedback on phyloXML and NHX
+   * Rutger Vos provided feedback on nexml encodings
+   * Todd Vision provide some suggestions about using Dryad
+
+Others who have expressed interest in being kept in the loop
+   * Nico Franz (interested in: )
+   * Jamie Whitacre (interested in: technical writing, survey analysis, publishing needs for large-scale phylogeny producers)
+
+---+++ work plan 
+This plan is continually under revision
+   1.  Finish TDWG phylogenetics standards report (target: *October 29, 2010*)
+      * decide on form and scope for TDWG report (can be narrower than eventual publication)
+      * Write up rationale for these approaches focusing on integration (*done*)
+      * Work up a toy case of the same 4 taxon tree in 5 different formats (*done*)
+      * Explore options for embedded LSIDs and technology to resolve them _Dan_
+      * Investigate [[http://datadryad.org Dryad]] as an alternative archive _Dan_
+   1.  Release TDWG report, obtain feedback from developers & stakeholders (target: *November 15*)
+      * develop and refine survey instrument (google docs) 
+      * evoldir and tdwg lists 
+      * syst biol, cipres (other projects, journals, communities?)
+      * developers of relevant software & standards (Christian, Rutger, David & Wayne)
+      * archive developers (Bill, Todd)
+   1.  As needed, explore additional issues, including issues arising from stakeholders (*October*, *November*)
+      * Novice workflows for users to get their data into standard formats
+      * tools to annotate and edit files to make the information more linkable
+      * tools that illustrate cool things that can be done with properly formed input files 
+      *  TOLWEB as an alternative destination for published trees _Arlin_
+   1.  Write a manuscript for publication (target: *November 30*)
+      * recruit additional authors as appropriate
+      * estimate number of users and trees per year using citations or other means
+
+---++ Preliminary Report 
+
+The [[http://wiki.tdwg.org/twiki/bin/view/Phylogenetics/LinkingTrees2010 Preliminary Report]] has been moved to a separate page.
+
+---++ Appendix 2.  Data archives
+Most of this material has been moved to the report 
+
+---++++ Examples of metadata in [[http://www.treebase.org TreeBase]] (via Bill Piel)
+
+Accession numbers 
+   * Under the Matrices tab, enter 4953 and click "Matrix ID"
+   * Click either the M4953 link or the  image
+   * Under the "Row Segments" column, you should see a "View" link -- click one of them
+
+Now you should see any attached metadata -- in this case it is a Genbank accession number that applies to the set of columns 1-992.  You can do the same for the following matrices:
+   * 831 = example of a matrix with a single set of row segments with Genbank accession numbers.
+   * 5572 = example of a matrix with multiple row segments, and both Genbank and locality info. Unfortunately the lat/long data is not showing up even though I know the metadata are in there (sorry -- bugzilla)
+   * 5212 = example of a matrix with a single set of row segments, with both Genbank numbers and locality metadata (Unfortunately the lat/long data is not showing up even though I know the metadata are in there)
+
+---++++ how to expose these data on treebase
+Rutger Vos writes that "the way forward would be a two-step process:
+   1. the CQL query interface would need to be re-designed/expanded such that more predicates are recognized and supported for searching. Whether this would be on a predicate-by-predicate basis or something more generic remains to be seen. Hopefully the latter, but it's not immediately obvious to me how that would work.
+   1. a simple search box (a bit like the clever entrez search (Rod Page has been begging for this)) would need to be developed that knows how to construct any relevant CQL search queries and call them, returning all hits from the different search sections. I have some ideas for how to do this, but it wouldn't be trivial." 
+
+---++ Appendix 5.  Tools and tips 
+
+---+++ Maintaining alternative naming schemes
+
+Dan says that he often creates 2 column tables with one column containing the name used in the nexus file, the other the name used for the same taxon or OTU in the spatial data. Arlin also encounters this kind of name-reconciliation problem.
+
+Bio::NEXUS provides tools to safely change the names in NEXUS files using a mapping provided in a simple 2-column input file.
+<verbatim>
+ your_shell$ perl -MCPAN -e'install Bio::NEXUS'
+ your_shell$ nextool.pl my_nexus_infile rename_otus my_name_mapping > my_nexus_outfile
+</verbatim>
+
+where the mapping file (my_name_mapping in the example above) just has lines, each with the old OTU name, followed by whitespace, followed by the new OTU name.
+
+[While a user generated mapping file provides a one-off solution, including an LSID or other GUID for each tree tip could provide a more general solution if the ID resolves to either a) a taxon in a recognised taxon repository such as ITIS or b) to a curated specimen whose taxonomy can be updatred to stay current. In either case the creator of the taxonomy specifies this link rather than leaving the user to interpret. - Dan R]
+
+
+
+-- Main.ArlinStoltzfus - 10 Nov 2010

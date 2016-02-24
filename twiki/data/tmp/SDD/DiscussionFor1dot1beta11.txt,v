@@ -1,0 +1,286 @@
+head	1.12;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.12
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.05.15.08.02.53;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.05.12.14.04.44;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.05.12.10.30.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.05.11.11.25.21;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.05.10.15.25.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.05.10.11.22.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.05.10.09.53.45;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.05.09.12.38.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.05.09.10.37.58;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.05.09.08.17.58;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.05.08.18.57.54;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.12
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147680173" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="WebHome"}%
+[[%ATTACHURL%/SDD1.1b11.zip][SDD1.1b11.zip]] is ready for removal of double "_" elements. It is agreed that there will be no more substantive changes, other than those required by Tapir. It is expected that this will result in beta12, a generally public release. -- Main.BobMorris - 08 May 2006
+
+Markus Döring on TAPIR: any kind of anonymous complex types (collection-wrappers or other) are supported, no constraints. However, Markus notes that at the TAG-1 meeting a recommendation was given that for reasons of TDWG architecture, all complex types should be named. -- Main.GregorHagedorn - 09 May 2006
+
+Changes from this beta 11 to SDD 1.1 rc 1:
+   * On the basis of the TAG recommendation, all anonymous "Specification" elements (= inner classes, without reuse) removed. This simplifies SDD slightly. This affects, e.g., Audience, !TaxonHierarchy, !CharacterTree. The "Assumptions" inner classes have been maintained and changed to named complex types (with annotation explaining their use as inner classes).
+   * Yet more anonymous complex types named; in addition to "Assumptions" also the mechanism 
+   * !NatLangPhraseRoleEnum: comments updated, one value (Single) removed.
+   * !CharacterTreeRoleEnum: comments updated, one value (!BuildingStoredIdentificationKeys) removed.
+   * Sample files are updated or added.
+   * A few types are renamed, most notably the use of the prefix "Abstract" made more consistent, and  !StringLtd changed to !ShortString.
+   * Sorry, and finally one more (semi-)substantial change: In !URIRefRequired/Optional the attribute "uri" changed to more conventional "href" - this is corollary of earlier change to put uri attribute into main object. "uri" is now used only for the identifier, "href" for reference (apologies for forgetting this while we talked on the phone...). Several advantages result from this, including closer correspondence with xlink, xhtml, and RDF/A. This also resulted in minor changes in !MediaObjectCore, where the object data are referenced rather than being included in encoded form.
+
+*Currently release is put on hold for another day, Damian is about to report further problems/criticism*
+
+----
+
+Gregor: Trying to re-implement the Schema-enumeration-to-data tool, I found a problem I find hard to solve in xslt. I attach a zip file containing: "UBIF_EnumLib.xsd", the input file, "UBIF_EnumerationTool1_xsd2xml.xsl" the xslt, and "Resulting-Enum-data.xml" the output from that transformation. The issue is that in the input, the sequence of human readable elements is organized by language, then, Label, then detailed description. A straightforward output thus creates something like:
+<verbatim>
+<Representation>
+  <Label role="Full" xml:lang="en-us">giga</Label>
+  <Label role="Abbrev" xml:lang="en-us">G</Label>
+  <Detail>Prefix of measurement units, denoting 10 to the power of 9. Example: GV, gigavolt.</Detail>
+  <Label role="Full" xml:lang="de">Giga</Label>
+  <Label role="Abbrev" xml:lang="de">G</Label>
+  <Detail>Prefix wissenschaftlicher Maßeinheiten, entspricht einem Faktor von 10 hoch 9.</Detail>
+</Representation>
+</verbatim>
+which is invalid under 1.1 beta 12, because first ALL Label, then ALL Detail (and then all MediaObject) must come in sequence.
+
+Consequences: a) Remove the sequence constraint and let the Representation elements come in any sequence (using a repeated choice). Personally I believe this is a good idea, we are using choices for similar reasons to allow subtypes of characters (Categorical, Quantitative) come in any sequence. b) Keep current design - Jacob can modify xslt to make it sort it properly? If this is fairly simple, then the current sequence constraint is not cost to developers.
+
+----
+See also previous DiscussionFor1dot1beta10 and *next  DiscussionFor1dot1RC1*
+
+
+%META:FILEATTACHMENT{name="SDD1.1b11.zip" attachment="SDD1.1b11.zip" attr="h" comment="" date="1147114623" path="SDD1.1b11.zip" size="163065" stream="SDD1.1b11.zip" user="Main.BobMorris" version="1"}%
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147442684" format="1.1" version="1.10"}%
+d36 1
+a36 1
+See also previous DiscussionFor1dot1beta10 and *next DiscussionFor1dot1beta12andRC1*
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147429803" format="1.1" version="1.9"}%
+d36 1
+a36 1
+See also previous DiscussionFor1dot1beta10
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147346721" format="1.1" version="1.8"}%
+d18 18
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147274729" format="1.1" version="1.7"}%
+d16 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147260121" format="1.1" version="1.6"}%
+d8 1
+a8 1
+   * On the basis of the TAG recommendation, all anonymous "Specification" elements (= inner classes, without reuse) removed. This simplifies SDD slightly. This affects, e.g., Audience, !TaxonHierarchy, !CharacterTree. The "Assumptions" inner classes remain unchanged, except that they are no longer anonymous.
+a13 1
+   * The attribute "type" in Measures renamed from "type" to "class" to make more consistent with other types (!CodingStatus, Sex, !TaxonomicRank all use "class" now). Note that "type" was introduced only after the meeting in Berlin, and I did not check enough for correspondence with usage elsewhere.
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147254825" format="1.1" version="1.5"}%
+d14 1
+a14 1
+   * The attribute "type" in Measures renamed from "type" to "code" to make more consistent with other types (!CodingStatus, Sex, !TaxonomicRank all use "code"). Note that "type" was introduced only after the meeting in Berlin, and I did not check enough for correspondence with usage elsewhere.
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147178330" format="1.1" version="1.4"}%
+d14 2
+a15 2
+   * The attribute "type" in Measures renamed from "type" to "code" to make more consistent with other types (!CodingStatus, Sex, !TaxonomicRank all use "code")
+   * Sorry, and finally one more (semi-)substantial change: In !URIRefRequired/Optional the attribute "uri" changed to more conventional "href" - this is corollary of earlier change to put uri attribute into main object. uri is now the identifier, href the reference (apologies for forgetting this while we talked on the phone...). This also resulted in minor changes in !MediaObjectCore, where the object data are referenced rather than being included in encoded form.
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147171078" format="1.1" version="1.3"}%
+d8 2
+a9 1
+   * On the basis of the TAG recommendation, all anonymous "Specification" elements (= inner classes, without reuse) removed. This simplifies SDD slightly. Specification occurred in Audience, TaxonHierarchy, !CharacterTree
+d11 1
+a11 1
+   * !CharacterTreeRoleEnum: comments updated, one value (BuildingStoredIdentificationKeys) removed.
+d13 3
+a15 2
+   * Some types are renamed, most notably !StringLtd to !ShortString
+   * Sorry, one semi-substantial change: URIRefRequired/Optional: attribute name changed from uri to more conventional href - this is corollary of earlier change to put uri attribute into main object. uri is now the identifier, href the reference (apologies for forgetting this while we talked on the phone...). This also resulted in minor changes in MediaObjectCore, where the object data are referenced rather than being included in encoded form.
+d20 1
+a20 1
+%META:FILEATTACHMENT{name="SDD1.1b11.zip" attachment="SDD1.1b11.zip" attr="" comment="" date="1147114623" path="SDD1.1b11.zip" size="163065" stream="SDD1.1b11.zip" user="Main.BobMorris" version="1"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147162678" format="1.1" version="1.2"}%
+d7 7
+d15 1
+a15 1
+Previous: DiscussionFor1dot1beta10
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1147114674" format="1.1" version="1.1"}%
+d3 1
+d5 1
+a5 1
+ [[%ATTACHURL%/SDD1.1b11.zip][SDD1.1b11.zip]]
+a6 4
+   This release is ready for removal of "_" elements. It is agreed that there will be no more substantive changes, other than those required by Tapir. It is expected that this will result in beta12, a generally public release.
+
+
+-- Main.BobMorris - 08 May 2006
+d8 1
+@

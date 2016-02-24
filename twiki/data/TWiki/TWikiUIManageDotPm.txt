@@ -1,0 +1,59 @@
+---+ Package =TWiki::UI::Manage=
+
+UI functions for web, topic and user management
+
+
+%TOC%
+
+---++ StaticMethod *manage* <tt>($session)</tt>
+
+=manage= command handler.
+This method is designed to be
+invoked via the =TWiki::UI::run= method.
+
+
+
+---++ StaticMethod *rename* <tt>($session)</tt>
+
+=rename= command handler.
+This method is designed to be
+invoked via the =TWiki::UI::run= method.
+Rename the given topic. Details of the new topic name are passed in CGI
+parameters:
+
+| =skin= | skin(s) to use |
+| =newweb= | new web name |
+| =newtopic= | new topic name |
+| =breaklock= | |
+| =attachment= | |
+| =confirm= | if defined, requires a second level of confirmation |
+| =currentwebonly= | if defined, searches current web only for links to this topic |
+| =nonwikiword= | if defined, a non-wikiword is acceptable for the new topic name |
+
+
+
+---++ StaticMethod *move* <tt>($session,$oldWeb,$oldTopic,$newWeb,$newTopic,$attachment,\@refs)</tt>
+
+Move the given topic, or an attachment in the topic, correcting refs to the topic in the topic itself, and
+in the list of topics (specified as web.topic pairs) in the \@refs array.
+
+   * =$session= - reference to session object
+   * =$oldWeb= - name of old web - must be untained
+   * =$oldTopic= - name of old topic - must be untained
+   * =$newWeb= - name of new web - must be untained
+   * =$newTopic= - name of new topic - must be untained
+   * =$attachment= - name of the attachment to move (from oldtopic to newtopic) (undef to move the topic) - must be untaineted
+   * =\@refs= - array of webg.topics that must have refs to this topic converted
+Will throw TWiki::OopsException or TWiki::AccessControlException on an error.
+
+
+
+---++ StaticMethod *getReferringTopics* <tt>($session,$web,$topic,$allWebs) -> \%matches</tt>
+
+   * =$session= - the session
+   * =$web= - web to search for
+   * =$topic= - topic to search for
+   * =$allWebs= - 0 to search $web only. 1 to search all webs _except_ $web.
+Returns a hash that maps the web.topic name to a summary of the lines that matched. Will _not_ return $web.$topic in the list
+
+

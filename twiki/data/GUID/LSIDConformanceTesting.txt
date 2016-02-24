@@ -1,0 +1,52 @@
+---++ LSID Conformance Testing 
+
+*Coordinator(s):* Ricardo Pereira (so far)
+
+*Participants:* Roger Hyam, Donald Hobern, Bob Morris, Roderic Page.
+
+----
+---+++ Description
+
+This (tentative) task group will discuss and ultimately implement conformance testing tools to check whether LSID resolvers conform to the specification.
+
+
+----
+---+++ Discussion
+
+RicardoPereira suggests the following features for a conformance test tool:
+   * It would take one or more LSIDs, it would try and resolve them;
+   * It would report both server conformance to standards and general server information. 
+   * It would output a full report about the LSID authority, including:
+      1.  LSID syntax break up: authority id, namespace, id, version (trivial);
+      1.  Information about the authority DNS SRV record. If none is found, it would use the Launchpad http fallback mechanism to move on (it would issue a warning regarding that fact, though);
+      1.  Information about the WSDL found at /authority/ path (WSDL and human readable report if possible)
+      1.  Information about the getAvailableServices() call (list of available services, WSDLs and again, a human readable report if possible)
+      1.  Information on calls to all available (data and metadata) services, with links to the results.
+      1.  What else?
+
+   RicardoPereira also suggests the implementation of a client conformance test as well. An outstanding issue would be how to keep track of calls made by the same client. [BobMorris: Not sure what you intend by this, but I wonder if you have in mind human-centric clients like Launchpad? I guess that in the end, if LSID (or any resolvable GUIDs) are of any consequential use, most resolution requests will be from some kind of application that has an LSID in data that _it_ acquires, and for which it seeks something about the underlying object. Do you suggest that an arbitrary consumer of LSID resolution service might be expected to offer some specific kind of information about itself that the resolver could record? Something like this would be rather specific to the authority, and would require a protocol for negotiating what is required (or would require the LSID standard to provide for such a thing universally)...BobMorris]
+
+
+BobMorris highlights some potential issues:
+   * It would be nice to have at least two independent testbeds, preferably coded in different programming languages. Otherwise, you run the risk of memorializing as correct whatever a single one accepts. Further, don't assume that two randomly chosen clients selected as a base are independent. They may be using common assumptions, e.g. common rdf parsers. It was quite a while before the SDD team realized that XML Spy was accepting as correct some schema syntax that wasn't. We didn't discover this until we began building tools that depended on having valid schemas.
+   * A conformance tool may incorporate assumptions that are not part of the LSID standard, but that were created by a community of LSID users (like TDWG, for example). But there is risk that this might happen unintentionally. For example, the test tool might assume that the LSID Resolution Services are conflated with LSID Resolution Discovery Services and that the former might get DNS notions inappropriately ingrained in them merely because such notions are ingrained in the only current Resolution Discovery Service scheme ever mentioned by anybody, the DDDS/DNS scheme of Section 8.3 of the LSID spec. [In particular, a resolution client like Launchpad which is standalone must, ipso facto, have some Resolution Discovery Service imbedded in it. But this might not be true of all resolution clients.]
+
+RodericPage sprung into action and implemented a web application to test LSIDs:
+   * URL: http://linnaeus.zoology.gla.ac.uk/~rpage/lsid/tester/
+
+Here are some comments about it:
+   * http://listserv.nhm.ku.edu/cgi-bin/wa.exe?A2=ind0603&L=tdwg-guid&F=&S=&P=1520
+   * http://listserv.nhm.ku.edu/cgi-bin/wa.exe?A2=ind0603&L=tdwg-guid&F=&S=&P=1732
+   * http://listserv.nhm.ku.edu/cgi-bin/wa.exe?A2=ind0603&L=tdwg-guid&F=&S=&P=3332
+
+----
+---+++ Recommendations
+
+
+
+
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryPrototypingWG

@@ -1,0 +1,123 @@
+%META:TOPICINFO{author="RichardPyle" date="1173170740" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="GUIDsForZoologicalNames"}%
+See also UsageInstanceProposal.
+
+_The following is was cut directly from Rich Pyle's message on mailing list._
+
+There is going to be an issue regarding how GUIDs (e.g., LSIDs) are assigned
+to taxon names to botanical vs. zoological names.  This comes down to the
+fundamental difference in how zoologists and botanists think of a "name" (or
+as we informatics nerds would say, a "name object" -- the thing to which a
+GUID is attached and/or represents).  Consider these hypothetical names:
+
+_Aus_ L.
+_Xus_ Jones
+_Aus bus_ Smith
+_Xus bus_ (Smith)
+
+The first clue to the differences between zoological and botanical practice
+is that the last of these would be represented as "_Xus bus_ (Smith) Jones",
+where Jones is credited as the first to have placed the species epithet
+"bus" within the genus "Xus".
+
+In our (zoological) realm, we would certainly think of the "original genus"
+as an attribute of a species epithet (at the very least so that we know
+whether to put parentheses around the author), but otherwise we don't track
+combinations under ICZN (rules governing gender matching notwithstanding).
+To a zoologist, the combination is an attribute of the particular usage
+instance.  For example, there may by five publications citing the species
+epithet "bus" and placing it in the genus "Aus" (one of these being the
+original description), and there may be five others placing "bus" within the
+genus "Xus". While it may very well be that Jones was the first to create
+this "Xus bus" combination, we in Zoology do not ascribe any special status
+to that event -- that is, we do not regard it as a Code-governed
+nomenclatural act.
+
+Thus, from the Zoological perspective, there are three GUIDs (LSIDs) needed
+to accommodate the four items above:
+
+<verbatim>
+LSID1: Aus L.
+LSID2: Xus Jones
+LSID3: bus Smith [original genus: LSID1]
+</verbatim>
+
+We would then keep track of combinations through name-usage instances.  For
+example, we might have ten records in out "usage instances" database to
+represent the five published citations of "Aus bus" and the five published
+citations of "Xus bus".  These would all be thought of as usage intances of
+"bus" (LSID3), and an attribute each usage instance would be which genus
+combination it was placed with (five would point to LSID1 as the parent
+genus, and the other five would point to LSID2 as the parent genus). E.g.:
+
+<verbatim>
+Usage#	NameID	ParentID
+--------------------------------
+  1		LSID3		LSID1
+  2		LSID3		LSID1
+  3		LSID3		LSID1
+  4		LSID3		LSID1
+  5		LSID3		LSID1
+  6		LSID3		LSID2
+  7		LSID3		LSID2
+  8		LSID3		LSID2
+  9		LSID3		LSID2
+ 10		LSID3		LSID2
+</verbatim>
+
+From the botanical perspective, however, each combination is treated as a
+distinct (code-governed) "name" (Name-object).  Thus, for botanists, there
+would be four GUIDs, instead of three:
+
+<verbatim>
+LSID1: Aus L.
+LSID2: Xus Jones
+LSID3: Aus bus Smith
+LSID4: Xus bus (Smith) Jones [basionym: LSID3]
+</verbatim>
+
+For usage instance records, instead of having pointers to two GUIDs per
+record (one for the species epithet, one for the genus) there would simply
+be a pointer to the combination as used. E.g.:
+
+<verbatim>
+Usage#	NameID
+-------------------
+  1		LSID3	
+  2		LSID3	
+  3		LSID3	
+  4		LSID3	
+  5		LSID3	
+  6		LSID4	
+  7		LSID4	
+  8		LSID4	
+  9		LSID4	
+  10		LSID4	
+</verbatim>
+
+I'll make two observations about this fundamental difference between the
+botanical and zoological approaches to "names" (name-objects):
+
+1) It may be that this difference ends up being transparent, once we get
+this stuff implemented.  In other words, there may be no problem with
+ZooBank assigning GUIDs by the zoological tradition, and IPNI/IF assigning
+GUIDs by the botanical tradition -- as long as the informatics architecture,
+standards, and protocols are done right, there should be little difficulty
+aggregating botanical and zoological names data together.  On the other
+hand, I can't help but think it will ultimately be to everyone's advantage
+to all be on the "same page" in terms of GUID issuance, so that there is no
+question how a GUID under one code corresponds to a GUID under another (in
+terms of what you do with the metadata attached to that GUID).
+
+2) At first glance, the botanical approach might seem preferable because it
+leads to a (seemingly) simpler way of tracking the relationship between
+"names" and other data (like usages, specimens, etc.) However, I think there
+is compelling reason from an information management perspective (outside of
+personal biases of different taxonomic traditions) to treat "name objects"
+as monomial units (ala zoological tradition), and then layer everything else
+on top of usage instances (without the need to GUID-ify name-combination
+units in-between these two layers).  But I'll save the details of this
+perspective for another discussion.
+
+
+-- Main.RogerHyam - 02 Mar 2007

@@ -1,0 +1,898 @@
+head	1.17;
+access	;
+symbols;
+locks; strict;
+comment	@@;
+
+1.17
+date	2006.09.07.07.20.49;	author DonovanSharp;	state Exp;
+branches;	
+next	1.16;
+1.16
+date	2006.08.30.01.34.05;	author DonovanSharp;	state Exp;
+branches;	
+next	1.15;
+1.15
+date	2006.07.25.02.30.02;	author DonovanSharp;	state Exp;
+branches;	
+next	1.14;
+1.14
+date	2006.07.13.05.20.41;	author DonovanSharp;	state Exp;
+branches;	
+next	1.13;
+1.13
+date	2006.07.13.02.10.34;	author DonovanSharp;	state Exp;
+branches;	
+next	1.12;
+1.12
+date	2006.07.06.05.53.04;	author DonovanSharp;	state Exp;
+branches;	
+next	1.11;
+1.11
+date	2006.07.05.04.35.58;	author DonovanSharp;	state Exp;
+branches;	
+next	1.10;
+1.10
+date	2006.07.05.02.08.11;	author DonovanSharp;	state Exp;
+branches;	
+next	1.9;
+1.9
+date	2006.06.19.04.10.42;	author DonovanSharp;	state Exp;
+branches;	
+next	1.8;
+1.8
+date	2006.06.15.05.09.09;	author DonovanSharp;	state Exp;
+branches;	
+next	1.7;
+1.7
+date	2006.06.15.01.30.46;	author DonovanSharp;	state Exp;
+branches;	
+next	1.6;
+1.6
+date	2006.06.14.07.33.05;	author DonovanSharp;	state Exp;
+branches;	
+next	1.5;
+1.5
+date	2006.06.09.04.54.34;	author DonovanSharp;	state Exp;
+branches;	
+next	1.4;
+1.4
+date	2006.06.09.01.42.35;	author DonovanSharp;	state Exp;
+branches;	
+next	1.3;
+1.3
+date	2006.06.06.06.33.13;	author DonovanSharp;	state Exp;
+branches;	
+next	1.2;
+1.2
+date	2006.06.02.07.28.42;	author DonovanSharp;	state Exp;
+branches;	
+next	1.1;
+1.1
+date	2006.06.01.06.00.04;	author DonovanSharp;	state Exp;
+branches;	
+next	;
+
+
+desc
+@@
+
+
+1.17
+log
+@@
+text
+@%META:TOPICINFO{author="DonovanSharp" date="1157613649" format="1.1" reprev="1.17" version="1.17"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.6 Characters
+
+Characters and their states are fundamental elements used in SDD to describe a taxon, specimen or other entity. Characters and states (and their arrangement into a hierarchy) provide the ontology for the SDD document. Sdd employs a single flat character list containing states. The order of characters in SDD is not informative and is instead defined exclusively in the [[CharacterHierarchies][&lt;CharacterHierarchies&gt;]] element. This enables different character sequences for different reporting purposes and splitting characters into multiple files or reusing characters from different terminologies.
+
+SDD States may be defined either locally within a character or enabled by reference to <noautolink>ConceptStates</noautolink>.
+
+SDD supports four character types, dealt with individually below.
+
+%ATTACHURL%/characters.gif
+
+---+++3.6.1 Categorical characters
+
+Categorical characters express either naturally discontinuous states or categories defining parts of a continuous range. Examples include presence (present/absent), colour (red/blue) and shape (round/ovate). 
+
+A simple SDD code instance representing a categorical character definition has the basic structure shown below, Example 3.6.1.1 shows two categorical characters as traditionally expressed; Example 3.6.1.2 shows the same characters and states represented in SDD.
+
+%ATTACHURL%/categoricalcharacter.gif
+
+---+++++Example 3.6.1.1 - Traditional representation of categorical characters.
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+	Wing Number
+		four
+		two
+		none (wings absent)
+	
+	Wing Shape
+		broad
+		narrow
+
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+---+++++Example 3.6.1.2 - SDD representation of the categorical characters in 3.6.1.1.
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+    <Characters>
+      <CategoricalCharacter id="c1">
+        <Representation>
+          <Label>Wing Number</Label>
+        </Representation>
+        <States>
+          <StateDefinition id="s1">
+            <Representation>
+              <Label>four</Label>
+            </Representation>
+          </StateDefinition>
+          <StateDefinition id="s2">
+            <Representation>
+              <Label>two</Label>
+            </Representation>
+          </StateDefinition>
+          <StateDefinition id="s3">
+            <Representation>
+              <Label>Absent</Label>
+            </Representation>
+          </StateDefinition>
+        </States>
+      </CategoricalCharacter>
+      <CategoricalCharacter id="c2">
+        <Representation>
+          <Label>Wing Shape</Label>
+        </Representation>
+        <States>
+          <StateDefinition id="s4">
+            <Representation>
+              <Label>broad</Label>
+            </Representation>
+          </StateDefinition>
+          <StateDefinition id="s5">
+            <Representation>
+              <Label>narrow</Label>
+            </Representation>
+          </StateDefinition>
+        </States>
+      </CategoricalCharacter>
+    </Characters>
+</verbatim>
+	
+</td>
+</tr>
+
+</table>
+
+Characters and their states are represented using a label, perhaps in a [[SddLanguage][defined language]]  and for a [[SddAudiences][defined audience]]. States for a categorical character are listed under their appropriate character. Elsewhere in SDD documents, characters and states are referred to by their id values rather than by their labels.
+
+Note that characters and states defined in the &lt;Characters&gt; element form a flat list. The [[CharacterHierarchies][&lt;CharacterHierarchies&gt;]] element is used to arrange characters defined here into a hierarchy.
+
+Note that a &lt;CategoricalCharacter&gt; element must have one or more state elements
+
+&lt;Assumptions&gt; allows properties of the character (such as whether the states are ordered or unordered and whether the states are naturally discrete) to be set
+
+[[SddMapping][&lt;Mapping&gt;]] allows characters and states to be mapped to each other (e.g. the states narrowly ovate and broadly ovate may be mapped as substates of the state ovate)
+
+
+---+++3.6.2 Quantitative characters
+
+Quantitative states record an actual measurement (e.g. number of legs = 8; leaf length = 6.8 cm), range of measurements (e.g. leaf length=4.5-10.6), or statistical parameter for a set of measurements (e.g.). Extended ranges (e.g. wing length= (5-)10-40(-50) mm, interpreted as wings usually between 10 and 40mm but occasionally down to 5mm or up to 50mm) are supported.
+
+A simple SDD code instance representing a quantitative character definition has the basic structure shown below and in Example 3.6.2.1. 
+
+%ATTACHURL%/quantitativecharacter.gif
+
+---++++Example 3.6.2.1 - SDD definition of a simple quantitative character &#8220;Leaf length&#8221;.
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+    <Characters>
+      <QuantitativeCharacter id="c4">
+        <Representation>
+          <Label>leaf length</Label>
+        </Representation>
+      </QuantitativeCharacter>
+    </Characters>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+
+&lt;Assumptions&gt; allows properties of the character to be set. Properties include whether the values are expected to be integers, discrete or continuous etc, and whether there is an expected plausible range). Any measure used in a description constitutes valid information. However, a list of recommended measures for sets of characters may be defined in concept nodes.
+ 
+[[SddMapping][&lt;Mapping&gt;]] allows numeric states to be mapped to categorical character states (e.g. the range 0-10 may be mapped to small, and the range 10-20 to medium).
+
+&lt;MeasurementUnit&gt; defines a measurement unit (mm, inch, kg, °C, m/s, etc.) or dimensionless scaling factor (such as '%') applying to all values of this character. If a Default <noautolink>MeasurementUnitPrefix</noautolink> is defined (see below), this must be entered without a prefix (e. g., 'm' instead of 'mm').
+(Measurement units apply only to values plus those statistical measures not marked as <noautolink>IsDimensionless</noautolink>='true'.).
+
+&lt;Default&gt; provides a default value to be used for the character if no value is specifically recorded in a description.
+
+
+---+++3.6.3 Text characters
+
+Text characters record information not easily ascribed to a measurement or atomised into characters and states. Examples include place of publication (e.g. &#8220;Smith 1998. Flora of Erehwon, Z-Publ.&#8221;), derivations (e.g. &#8220;acuta- from the Latin acuo (sharpen), alluding to the sharply pointed glumes (Aristida acuta)&#8221;) or general notes (e.g. &#8220;One record for tropical Queensland but mainly recorded from subtropical coastal Queensland to northern New South Wales. Eucalyptus woodlands and forests on poor soil&#8221;).
+
+The content of quantitative characters simply exists as plain text within a  &lt;Representation&gt; element  as in Example 3.6.2.1 below.
+
+
+---+++++3.6.3.1 Sdd representation of text characters
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+<Characters>
+    <TextCharacter id="text1">
+		<Representation>
+			<Label>Original publication</Label>
+		</Representation>
+	</TextCharacter>
+</Characters>
+<CodedDescriptions>
+	<CodedDescription id="cd1">
+		<Representation>
+			<Label>Perotis</Label>
+        </Representation>
+		<Scope>
+          <TaxonName ref="t1"/>
+        </Scope>
+        <SummaryData>
+        	<TextChar ref="text1">
+				<Content>Hort. Kew. 1: 85 (1789)</Content>
+			</TextChar>
+        </SummaryData>
+	</CodedDescription>
+</CodedDescriptions>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+---+++3.6.4 Sequence characters
+
+Sequence characters record the coding of genes or proteins  for use in molecular analysis. The basic structure od SDD code for sequence characters has the basic structure shown below and in example 3.6.4.1.
+
+%ATTACHURL%/sequencecharacter.gif
+
+---+++++3.6.3.1 Sdd representation of sequence characters
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+			<SequenceCharacter id="seq1">
+				<Representation>
+					<Label>test DNA sequence</Label>
+				</Representation>
+				<SequenceType> Nucleotide</SequenceType>
+				<GapSymbol>-</GapSymbol>
+				<SymbolLength>1</SymbolLength>
+				<EnableAmbiguitySymbols>true</EnableAmbiguitySymbols>
+			</SequenceCharacter>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+&lt;SequenceType&gt; is currently limited to 'Nucleotide' and 'Protein', but future SDD versions may expand this after appropriate discussion. The special nucleotide type RNA/DNA are currently not considered necessary. The symbols U (RNA) and T (DNA) should be considered equal for the purpose of analysis.
+
+&lt;SymbolLength&gt; refers to the number of letters in each symbol. Nucleotides are always codes with 1-letter symbols, but proteins may use 1 or 3-letter codes (A or Ala for alanine). In NEXUS <noautolink>SymbolLength</noautolink> is implicit in the Token command.
+
+&lt;GapSymbol&gt; is a string identifying the 'gap' symbol used in aligned sequences. The gap symbol must always be <noautolink>SymbolLength</noautolink> long. A gap is a place where no data exist, but where a position must be filled because it is assumed that sequence symbols were inserted or deleted during evolution.
+
+&lt;EnableAmbiguitySymbols&gt; provides support for ambiguity symbols such as R, Y, S, W for nucleotides, or B,Z for proteins in the sequence string.
+
+
+
+-- Main.DonovanSharp - 01 Jun 2006
+
+%META:FILEATTACHMENT{name="sequencecharacter.gif" attr="" autoattached="1" comment="" date="1152767210" path="sequencecharacter.gif" size="12659" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="characters.gif" attr="" autoattached="1" comment="" date="1152755064" path="characters.gif" size="17468" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="quantitativecharacter.gif" attr="" autoattached="1" comment="" date="1152755957" path="quantitativecharacter.gif" size="11455" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="categoricalcharacter.gif" attr="" autoattached="1" comment="" date="1152755383" path="categoricalcharacter.gif" size="8735" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.16
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1156901645" format="1.1" version="1.16"}%
+d15 1
+a15 1
+---++++3.6.1 Categorical characters
+d155 1
+a155 1
+---++++3.6.3 Text characters
+d199 1
+a199 1
+---++++3.6.4 Sequence characters
+@
+
+
+1.15
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153794602" format="1.1" version="1.15"}%
+d5 1
+a5 1
+---+++3.5 Characters
+d15 1
+a15 1
+---++++3.5.1 Categorical characters
+d19 1
+a19 1
+A simple SDD code instance representing a categorical character definition has the basic structure shown below, Example 3.5.1.1 shows two categorical characters as traditionally expressed; Example 3.5.1.2 shows the same characters and states represented in SDD.
+d23 1
+a23 1
+---+++++Example 3.5.1.1 - Traditional representation of categorical characters.
+d47 1
+a47 1
+---+++++Example 3.5.1.2 - SDD representation of the categorical characters in 3.5.1.1.
+d114 1
+a114 1
+---+++3.5.2 Quantitative characters
+d118 1
+a118 1
+A simple SDD code instance representing a quantitative character definition has the basic structure shown below and in Example 3.5.2.1. 
+d122 1
+a122 1
+---++++Example 3.5.2.1 - SDD definition of a simple quantitative character &#8220;Leaf length&#8221;.
+d155 1
+a155 1
+---++++3.5.3 Text characters
+d159 1
+a159 1
+The content of quantitative characters simply exists as plain text within a  &lt;Representation&gt; element  as in Example 3.5.2.1 below.
+d162 1
+a162 1
+---+++++3.5.3.1 Sdd representation of text characters
+d199 1
+a199 1
+---++++3.5.4 Sequence characters
+d201 1
+a201 1
+Sequence characters record the coding of genes or proteins  for use in molecular analysis. The basic structure od SDD code for sequence characters has the basic structure shown below and in example 3.5.4.1.
+d205 1
+a205 1
+---+++++3.5.3.1 Sdd representation of sequence characters
+@
+
+
+1.14
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152768041" format="1.1" reprev="1.14" version="1.14"}%
+d9 1
+a9 1
+SDD States may be defined either locally within a character or enabled by reference to ConceptStates.
+d149 2
+a150 2
+&lt;MeasurementUnit&gt; defines a measurement unit (mm, inch, kg, °C, m/s, etc.) or dimensionless scaling factor (such as '%') applying to all values of this character. If a Default/MeasurementUnitPrefix is defined (see below), this must be entered without a prefix (e. g., 'm' instead of 'mm').
+(Measurement units apply only to values plus those statistical measures not marked as IsDimensionless='true'.).
+d231 1
+a231 1
+&lt;SymbolLength&gt; refers to the number of letters in each symbol. Nucleotides are always codes with 1-letter symbols, but proteins may use 1 or 3-letter codes (A or Ala for alanine). In NEXUS SymbolLength is implicit in the Token command.
+d233 1
+a233 1
+&lt;GapSymbol&gt; is a string identifying the 'gap' symbol used in aligned sequences. The gap symbol must always be SymbolLength long. A gap is a place where no data exist, but where a position must be filled because it is assumed that sequence symbols were inserted or deleted during evolution.
+@
+
+
+1.13
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152756634" format="1.1" reprev="1.13" version="1.13"}%
+d118 1
+a118 1
+A simple SDD code instance representing a quantitative character definition has the basic structure shown below. 
+d157 1
+a157 1
+Text characters record information not easily ascribed to a measurement or atomised into characters and states. Examples include place of publication (e.g. &#8220;Smith 1998. Flora of Erehwon, Z-Publ.&#8221;), derivations (e.g. &#8220;acuta- from the Latin acuo (sharpen), alluding to the sharply pointed glumes (Aristida acuta)&#8221;) or general notes (e.g. &#8220;One record for tropical Queensland but mainly recorded from subtropical coastal Queensland to northern New South Wales. Eucalyptus woodlands and forests on poor soil&#8221;.
+d159 1
+d161 1
+d201 1
+a201 1
+%ATTACHURL%/sequencecharacter.jpg
+d203 1
+a203 1
+&lt;SequenceCharacter&gt; supports 'nucleotide' (both DNA and RNA) and 'protein' serquences and is expandable to support other types of sequence data in the future.
+d205 1
+d207 1
+a207 1
+---++++3.5.4.1 Assumptions
+d209 2
+a210 1
+Provides support for assumptions however these are currently not explicitly defined within SDD.
+d212 11
+a222 1
+---++++3.5.4.2 SequenceType
+d224 2
+a225 1
+Currently limited to 'Nucleotide' and 'Protein', but future SDD versions may expand this after appropriate discussion. The special nucleotide type RNA/DNA are currently not considered necessary. The symbols U (RNA) and T (DNA) should be considered equal for the purpose of analysis.
+d227 1
+a227 1
+---++++3.5.4.3 SymbolLength
+d229 1
+a229 1
+The number of letters in each symbol. Nucleotides are always codes with 1-letter symbols, but proteins may use 1 or 3-letter codes (A or Ala for alanine). In NEXUS SymbolLength is implicit in the Token command.
+d231 1
+a231 1
+---++++3.5.4.4 SGapSymbol
+d233 1
+a233 1
+A string identifying the 'gap' symbol used in aligned sequences. The gap symbol must always be SymbolLength long. A gap is a place where no data exist, but where a position must be filled because it is assumed that sequence symbols were inserted or deleted during evolution.
+d235 1
+a235 1
+---++++3.5.4.5 EnableAmbiguitySymbols
+a236 1
+Support for ambiguity symbols such as R, Y, S, W for nucleotides, or B,Z for proteins in the sequence string.
+a238 1
+d241 1
+a242 1
+%META:FILEATTACHMENT{name="sequencecharacter.jpg" attr="" autoattached="1" comment="" date="1150347383" path="sequencecharacter.jpg" size="16697" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.12
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152165184" format="1.1" version="1.12"}%
+d11 1
+a11 1
+SDD supports four character types.
+d13 1
+a13 1
+%ATTACHURL%/characters2.jpg
+d17 1
+a17 1
+%ATTACHURL%/categoricalcharacter.jpg
+d19 4
+a22 2
+Categorical characters express either naturally discontinuous states or categories defining parts of a continuous range. Examples include presence (present/absent), colour (red/blue) and shape (round/ovate). Example 3.5.1.1 shows two categorical characters as traditionally expressed; Example 3.5.1.2 shows the same characters and states represented in SDD.
+d231 1
+a108 2
+&lt;CategoricalCharacter&gt; has the following optional subelements:
+d118 2
+d118 1
+a118 1
+A simple SDD code instance representing a quantitative character definition has the basic structure shown below, 
+d120 1
+a120 1
+%ATTACHURL%/quantitativecharacter.jpg
+a143 1
+&lt;QuantitativeCharacter&gt; has the following optional subelements:
+d145 1
+a145 1
+&lt;Assumptions&gt; allows properties of the character to be set. Properties include whether the values are expected to be integers, discrete or continuous etc, and whether there is an expected plausible range). Unlike the states in categorical characters, the applicability of statistical measures to a character is not defined in the character. Any measure used in a description constitutes valid information. However, a list of recommended measures for sets of characters may be defined in concept nodes.
+d228 1
+a228 3
+%META:FILEATTACHMENT{name="characters2.jpg" attr="" autoattached="1" comment="" date="1149572140" path="characters2.jpg" size="17866" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="quantitativecharacter.jpg" attr="" autoattached="1" comment="" date="1150333806" path="quantitativecharacter.jpg" size="12459" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="categoricalcharacter.jpg" attr="" autoattached="1" comment="" date="1150269716" path="categoricalcharacter.jpg" size="9578" user="Main.DonovanSharp" version="1"}%
+d230 2
+a231 1
+%META:FILEATTACHMENT{name="characters.gif" attachment="characters.gif" attr="" comment="" date="1152755063" path="characters.gif" size="17468" stream="characters.gif" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.11
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152074158" format="1.1" version="1.11"}%
+d23 4
+d40 2
+a41 1
+	
+d43 2
+d47 4
+d96 5
+d122 4
+d137 2
+a138 1
+	
+d140 2
+d161 5
+d190 5
+@
+
+
+1.10
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152065291" format="1.1" reprev="1.10" version="1.10"}%
+d87 1
+a87 1
+Note that characters and states defined in the &lt;Characters&gt; element form a flat list. The [[CharacterHierarchies][&lt;CharacterHierarchies %gt;]] element is used to arrange characters defined here into a hierarchy.
+@
+
+
+1.9
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150690242" format="1.1" reprev="1.9" version="1.9"}%
+d7 1
+a7 1
+Characters and their states are fundamental elements used in SDD to describe a taxon, specimen or other entity. Characters and states (and their arrangement into a hierarchy) provide the ontology for the SDD document. Sdd employs a single flat character list containing states. The order of characters in SDD is not informative and is instead defined exclusively in the CharacterHierarchies. This enables different character sequences for different reporting purposes and splitting characters into multiple files or reusing characters from different terminologies.
+d72 1
+a72 1
+              <Label xml:lang="en-us">broad</Label>
+d77 1
+a77 1
+              <Label xml:lang="en-us">narrow</Label>
+d87 1
+a87 1
+Note that characters and states defined in the &lt;Characters&gt; element form a flat list. The CharacterHierarchies element is used to arrange characters defined here into a hierarchy.
+d89 1
+a89 1
+Note that a CategoricalCharacter element must have one or more state elements
+d91 1
+a91 1
+CategoricalCharacter has the following optional subelements:
+d95 1
+a95 1
+[[SddMapping][Mapping]] allows characters and states to be mapped to each other (e.g. the states narrowly ovate and broadly ovate may be mapped as substates of the state ovate)
+d119 1
+a119 1
+QuantitativeCharacter has the following optional subelements:
+d123 1
+a123 1
+[[SddMapping][Mapping]] allows numeric states to be mapped to categorical character states (e.g. the range 0-10 may be mapped to small, and the range 10-20 to medium).
+d167 1
+a167 1
+SequenceCharacter supports 'nucleotide' (both DNA and RNA) and 'protein' serquences and is expandable to support other types of sequence data in the future.
+@
+
+
+1.8
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150348149" format="1.1" reprev="1.8" version="1.8"}%
+d135 28
+d172 1
+a172 1
+provides support for assumptions however these are currently not explicitly defined within SDD.
+@
+
+
+1.7
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150335046" format="1.1" reprev="1.7" version="1.7"}%
+d137 1
+a137 1
+not done yet
+d139 1
+d142 22
+d169 1
+@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150270385" format="1.1" reprev="1.6" version="1.6"}%
+d102 2
+d121 7
+a127 3
+&lt;Assumptions&gt; allows properties of the character to be set. Properties include whether the values are expected to be integers, discrete or continuous etc, and whether there is an expected plausible range) 
+[[SddMapping][Mapping]] allows numeric states to be mapped to categorical character states (e.g. the range 0-10 may be mapped to small, and the range 10-20 to medium)
+&lt;MeasurementUnit&gt; defines the units used for the character (e.g. cm, degrees Celsius etc)
+d144 1
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149828874" format="1.1" reprev="1.5" version="1.5"}%
+d17 2
+d93 1
+a93 1
+&lt;Assumptions&gt; allows properties of the character (such as whether the states are ordered or unordered) to be set
+d138 1
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149817355" format="1.1" version="1.4"}%
+d7 3
+a9 1
+Characters and their states are fundamental elements used in SDD to describe a taxon, specimen or other entity. Characters and states (and their arrangement into a hierarchy) provide the ontology for the SDD document.
+@
+
+
+1.3
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149575593" format="1.1" reprev="1.3" version="1.3"}%
+d9 1
+a9 1
+SDD supports four character types of characters.
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149233322" format="1.1" reprev="1.2" version="1.2"}%
+d7 1
+a7 1
+There are 5 character types supported by SDD.
+d9 1
+a9 1
+%ATTACHURL%/characters.jpg
+d11 2
+d15 1
+a15 1
+Categorical characters express either naturally discontinuous states or categories defining a partirioning of a continuous range. Examples include presence (present/absent), colour (red/blue) and shape (round/ovate). Categorical characters are generally expressed as:
+d22 3
+a24 4
+		Four
+		Two, hind pair reduced to tiny clubs or absent
+		Two, fore pair reduced to small clubs
+		Absent
+d27 2
+a28 3
+		Broad, lacking a fringe of long hairs
+		Narrow, with a fringe of long hairs
+		Narrow, lacking a fringe of long hairs
+d34 1
+a34 1
+---+++++Example 3.5.1.2 - SDD representation of same.
+d41 1
+a41 1
+          <Label xml:lang="en-us">Wing Number</Label>
+d46 1
+a46 1
+              <Label xml:lang="en-us">Four</Label>
+d51 1
+a51 1
+              <Label xml:lang="en-us">Two, hind pair reduced to tiny clubs or absent</Label>
+d56 1
+a56 1
+              <Label xml:lang="en-us">Two, fore pair reduced to small clubs</Label>
+a58 5
+          <StateDefinition id="s4">
+            <Representation>
+              <Label xml:lang="en-us">Absent</Label>
+            </Representation>
+          </StateDefinition>
+d63 1
+a63 1
+          <Label xml:lang="en-us">Wing Shape</Label>
+d66 1
+a66 1
+          <StateDefinition id="s5">
+d68 1
+a68 1
+              <Label xml:lang="en-us">Broad, lacking a fringe of long hairs</Label>
+d71 1
+a71 1
+          <StateDefinition id="s6">
+d73 1
+a73 1
+              <Label xml:lang="en-us">Narrow, with a fringe of long hairs</Label>
+a75 5
+          <StateDefinition id="s7">
+            <Representation>
+              <Label xml:lang="en-us">Narrow, lacking a fringe of long hairs</Label>
+            </Representation>
+          </StateDefinition>
+d81 1
+d83 11
+d96 1
+a96 1
+Quantitative states are those recorded as measurements. Entries may be consist of whole numbers (i.e number of legs = 8) or a range (length of leg 10 to 40 mm). Extended ranges such as (5-)10-40(-50)mm are supported (generally between 10 and 40mm but occasionally down to 5mm or up to 50mm).
+d98 1
+a98 1
+---++++Example 3.5.2.1 - SDD simple representation of quantitative characters.
+d105 1
+a105 1
+          <Label xml:lang="en-us">leaf length</Label>
+d113 1
+a113 1
+Elements nested within QuantitativeCharacter allow definition of measurement units and the mapping of ranges to categorical characters. This allows a categorical character, for example;
+d115 4
+a118 7
+<verbatim>
+ Leaf area
+     nanophyll
+     microphyll
+     mesophyll
+     macrophyll
+</verbatim>
+a119 1
+to be automatically generated using data from the quantitative character 'Leaf area'.
+a120 36
+---++++Example 3.5.2.2 - Units and mapping within quantitative characters.
+
+    
+<verbatim>
+<QuantitativeCharacter id="c2">
+  <Representation>
+    <Label>Leaf length</Label>
+  </Representation>
+  <Assumptions>
+    <MeasurementScale>Ratio</MeasurementScale>
+  </Assumptions>
+  <Mappings>
+    <Mapping>
+      <From lower="0" upper="3"/>
+      <ToState ref="s1"/>
+    </Mapping>
+    <Mapping>
+      <From lower="3" upper="10"/>
+      <ToState ref="s2"/>
+    </Mapping>
+    <Mapping>
+      <From lower="4" upper="10000000"/>
+      <ToState ref="s3"/>
+    </Mapping>
+  </Mappings>
+  <MeasurementUnit>
+    <Label role="Abbrev">m</Label>
+  </MeasurementUnit>
+  <Default>
+    <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
+  </Default>
+</QuantitativeCharacter>
+</verbatim>
+
+	
+a128 1
+d123 1
+a123 1
+Coding for information not easily ascribed a measurement or atomised into characters and states. Examples include place of publication (e.g. Smith 1998. Flora of Erehwon, Z-Publ.) derivation (acuta- from the Latin acuo (sharpen), alluding to the sharply pointed glumes (Aristida acuta)) or general notes (One record for tropical Queensland but mainly recorded from subtropical coastal Queensland to northern New South Wales. Eucalyptus woodlands and forests on poor soil (again for Aristida acuta).
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149141604" format="1.1" version="1.1"}%
+d3 1
+d5 1
+a5 1
+SDD Part 0: Introduction and Primer to the SDD Standard 
+a6 1
+3.5 Characters
+d9 1
+a9 1
+ 
+d11 2
+a12 1
+3.5.1 Categorical characters
+d15 1
+a15 1
+Example 3.5.1.1 - Traditional representation of categorical characters.
+d18 1
+a18 1
+d30 1
+a31 1
+d37 1
+d34 1
+a34 1
+Example 3.5.1.2 - SDD representation of same.
+a37 1
+d89 1
+a89 1
+d169 3
+d92 2
+a93 1
+3.5.2 Quantitative characters
+d96 1
+a96 1
+Example 3.5.2.1 - SDD simple representation of quantitative characters.
+d99 1
+a99 1
+d107 1
+a108 1
+d111 1
+a111 1
+Elements nested within <QuantitativeCharacter> allow definition of measurement units and the mapping of ranges to categorical characters. This allows a categorical character, for example;
+d113 1
+d119 1
+d123 1
+a123 1
+Example 3.5.2.2 - Units and mapping within quantitative characters.
+d126 1
+a126 1
+d155 1
+a156 1
+d159 2
+a160 1
+3.5.3 Text characters
+d163 2
+a164 1
+3.5.4 Sequence characters
+d167 2
+a168 1
+3.5.5 Color range characters
+@
+

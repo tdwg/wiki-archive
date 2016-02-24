@@ -1,0 +1,28 @@
+---+ Package =TWiki::Client::TemplateLogin=
+
+This is a login manager that you can specify in the security setup section of
+[[%SCRIPTURL{"configure"}%][configure]]. It provides users with a
+template-based form to enter usernames and passwords, and works with the
+PasswordManager that you specify to verify those passwords.
+
+Subclass of TWiki::Client; see that class for documentation of the
+methods of this class.
+
+
+%TOC%
+
+---++ ObjectMethod *login* <tt>($query,$twiki)</tt>
+
+If a login name and password have been passed in the query, it
+validates these and if authentic, redirects to the original
+script. If there is no username in the query or the username/password is
+invalid (validate returns non-zero) then it prompts again.
+
+The password handler is expected to return a perl true value if the password
+is valid. This return value is stored in a session variable called
+VALIDATION. This is so that password handlers can return extra information
+about the user, such as a list of TWiki groups stored in a separate
+database, that can then be displayed by referring to
+%<nop>SESSION_VARIABLE{"VALIDATION"}%
+
+

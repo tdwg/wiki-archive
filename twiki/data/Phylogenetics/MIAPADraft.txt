@@ -1,0 +1,188 @@
+%META:TOPICINFO{author="HilmarLapp" date="1320965135" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="MIAPAWorkshop2011"}%
+---+!! Development of a draft checklist for a Minimum Information About a Phylogenetic Analysis (MIAPA) Standard 
+
+%TOC%
+---++ Break-out subgroup results
+In the morning of day 2, we broke into subgroups to create checklists of terms and categorize these into minimum reporting requirements and ideal reporting practices. 
+
+---+++ Group 1
+Participants: Nico Cellinese (U. Florida), Nicky Anthony (UNO), Chuck Bell (UNO), Son Tran (NMSU), Hilmar Lapp (NESCent)
+
+   * OTUs: All terminal nodes should be labelled, internal need not be.
+      * A meaningful external identifier (a combination of database or resource and identifier/accession within that database).
+      * For specimens, museum, collection (if applicable), and specimen identifier.
+      * Sometimes, specimens aren't deposited in a museum collection; in that case, provide the laboratory, laboratory collection, and accession within that collection.
+      * Precise (GPS) georeferences for specimens are highly desirable, but may not always be available. 
+   * Branch length: some measure of branch length required. Further semantics of the measure should be implied by the tree inference method.
+   * Branch support: some value of branch support should be provided, for example posterior probability, or bootstrap value
+      * This would be highly desirable in most cases, but there is some controversy as to whether this can always be reasonably provided.
+   * Character matrix: aligned data matrix that is the basis for the tree (by having been the input for the tree inference method)
+      * Data type must be provided, for example DNA, RNA, protein, morphology, etc
+   * Alignment method: name of algorithm or method, version of program, parameters (or default if default values were used)
+   * Alignment correction: manual ("by eye")?
+   * Tree inference method: name of algorithm or method, version of program, parameters (including model of evolution, and optimality criterion)
+      * If (normally then morphological) characters were weighted, character weights need to be provided. (Typically, inference programs provide these in their log files, and thus the information could be copied from there.)
+
+---+++ Group 2
+Participants: Bill Piel, Jim Leebens-Mack, Karen Cranston, Teodor Georgiev
+
+Our list of terms from initial brainstorming, which we them categorized into agreed-upon minimum and those that generated discussion (below). Note that we ran out of time to discuss our whole list, and the terms after specimen number never got categorized into minimum and non-minimum.
+   * topology in digital format
+   * branch lengths 
+   * support values
+   * method of analysis (ML / MP / Bayes)
+   * samples with valid taxon names
+   * character data
+   * excluded characters
+   * character sets / partitions
+   * biorepository collection code
+   * specimen number
+   * (NB: everything below not categorized during discussion)
+   * locality data
+   * !GenBank accession number
+   * tissue sequenced
+   * molecular or morphological
+   * alignment method
+   * consensus method
+   * software & version
+   * character labels and states for morphological data
+   * evolutionary model
+   * heuristic search parameters / MCMC settings
+   * random seed
+   * input trees for consensus / composite trees
+
+Agreed-upon minimums
+   * topology
+   * support values
+   * method of analysis (ML / MP / Bayes)
+   * unique and valid OTU label (valid species name, or specimen identifier that could be found in a database somewhere - using some informatics magic)
+   * alignment used to construct the tree
+   * raw data (pre-cleaning and alignment, e.g. !GenBank ID) 
+   * alignment method
+   * data assembly (how did we go from databased sequence data to final alignment); in the short to medium term, this would likely be text, not machine readable
+
+Discussed:
+   * branch lengths with units: ideal, but not required; morphological data may not produce meaningful branch lengths
+   * metadata about OTU label
+   * specimen data: if a study did new sequencing, specimen data should be included
+
+Other interesting discussion:
+   * distinction between what data should be available (the best practices) and how this information should be communicated (in text of paper, as digital object)
+   * issue of something being required that might not be relevant for all studies (i.e. support values for a glommogram, valid species names for environmental samples)
+   * best practices for analysis and data management: i.e. better to include all characters in matrix and exclude using software settings than removing those characters from the matrix itself
+
+---+++ Group 3
+Participants:
+
+Group 3
+Participants: Susan Perkins (AMNH), Rob Guralnick (U Colorado), Maryam Panahiazar (U Georgia), Michael Donoghue (Yale), and 
+
+We discussed the seven points of the draft RFC first.
+1.  Informatics processing context: seems straightforward
+2.  Scientific context: What is the need for context?  Did study add new data?  or reanalysis?
+3.  Reusable trees: seems fine
+4.  Identifiable OTU's: basic concept seems fine but what about the source material?  vouchers?  
+5.  Explicit uncertainty: a controlled vocabulary will be needed here - how to implement this best?
+6.  Represented inputs: seems straightforward - alignments, character matrix, etc.  Will come back to this for checklist.
+7.  Described methods: As above.
+
+
+We had a lengthy discussion about the OTU aspect of the information including points of:
+- sometimes tips are not specimens or species, but rather just sequences.  Is it necessary to handle all of these things?
+- Darwin Core terms can handle much of the OTU info - is it necessary to duplicate or can it be integrated?
+- GenBank info - many terms encompassed in this format, but not many provide this info.
+- these points relate to the context of the study
+
+We then began to discuss the checklist terms and Mary shared that she had done several concept maps of the phylogenetic process by searching publications.
+---++ Reconciled draft checklist
+This is mostly based on Group 1's report, with modifications based on results from Group 2 and 3.
+
+   * Topology
+      * The topology itself, possibly as an identifier of a database (such as a !TreeBASE) record 
+      * Is this a gene tree or species tree?
+      * It is a tree or a network?
+      * Is topology rooted or not?
+      * The type of consensus if this a consensus topology (that summarizes the topology inference in some way, rather than being directly provided by the inference method)?
+      * The topology should be "well described", as applicable to the inference method being used. For example, a likelihood for maximum likelihood analysis. For Bayesian analyses this should also include the burn-in period excluded, and the convergence of the chain(s). This may also include more then one topology, for example a sample from the posterior probability distribution for Bayesian, or equally scoring topologies for a maximum parsimony analysis. 
+   * OTUs: All terminal nodes should be appropriately labelled and referenced in one of the following ways. Internal nodes need not be.
+      * A meaningful external identifier (a combination of database or resource and identifier/accession within that database).
+      * For specimens, museum, collection (if applicable), and specimen identifier. Alternatively, if a specimen is not in a museum collection, use the laboratory, laboratory collection, and accession within that collection.
+      * Precise (GPS) georeferences for specimens are highly desirable (but not always available). 
+   * Branch lengths: Some measure of branch length required unless it is not applicable to the analysis method.. Further semantics of the measure should be implied by the tree inference method. 
+   * Branch support: Some value of branch support should be provided, for example posterior probability, or bootstrap value, unless it is not applicable to the analysis method.
+   * Character matrix: aligned data matrix that is the basis for the tree (by having been the input for the tree inference method)
+      * Data type must be provided, for example DNA, RNA, protein, morphology, etc.
+      * For molecular matrices, the accession numbers (and respective database(s) if different from Genbank) of the sequences used for each row must be provided.
+      * a mapping that relates each row identifier to a tip of the topology
+      * a mapping that relates each accession number or specimen identifier to a row label
+   * Alignment method
+      * name of software used, version of program
+      * parameters used (or default if default values were used).
+      * whether alignment was manually corrected or edited
+   * Tree inference method
+      * name of software used, version of program
+      * parameters used, including model of evolution, and optimality criterion
+      * character weights if (normally then morphological) characters were weighted. (Typically, inference programs provide these in their log files, and thus the information could be copied from there.)
+
+We may want to think abut writing importers for common file types to extract parameters - paup blocks, mrbayes blocks, beast xml files, etc.
+
+We also want to think carefully about simulated data (no identifiers for OTU, no specimen identifiers, can we say it is type=DNA?, etc)
+
+---++ Community survey
+
+The purpose of the community survey would be to get input from both prospective data producers (or providers) and data consumers (such as for reuse purposes) for each proposed metadata attribute i) how difficult it would be for producers to provide a value for the attribute, and ii) how useful or necessary it would be for consumers to have a value. For example, for each of the attribute questions (see below) one could have two scales of 1-5 (easy to difficult, and useless to must have, respectively) for the answers from the producer's and from the consumer's perspective, respectively. 
+
+   1. Context of respondent: How do you characterize yourself? (Choose all that apply)
+      * Producer of phylogenetic trees
+      * Consumer of phylogenetic trees created by others
+   1. Information about topology
+      a. Topology
+      a. Is rooted?
+      a. Type of consensus
+      a. Method-dependent description 
+   1. OTUs:
+      a. All terminal nodes appropriately labeled and referenced
+         a. Taxon name
+         a. A meaningful external identifier
+         a. Specimen identifier
+         a. Precise (GPS) georeferences
+   1. Branch lengths 
+   1. Branch support
+   1. Character matrix:
+      a. Data type
+      a. Database accession numbers
+      a. Mapping from matrix rows to tip nodes
+   1. Alignment method
+      a. Name of algorithm or method
+      a. Name and version of program
+      a. Parameters used
+      a. Was alignment manually corrected or edited?
+   1. Tree inference method
+      a. Name of algorithm or method
+      a. Name and version of program
+      a. Parameters used
+      a. Model of evolution used
+      a. Optimality criterion used
+      a. Character weights if characters were weighted. (Typically, inference programs provide these in their log files, and thus the information could be copied from there.)
+
+All attribute questions should be accompanied with definitions and examples so as to reduce ambiguity as much as possible for survey takers.
+
+Survey should point out when and whether the information would already be exported by most tools.
+
+---++ Scope discussion
+
+Scoping questions from [[MIAPAWorkshop2011Ideas#Scoping_questions][Ideas Page]]:
+
+| # | Scoping question | Consensus response |
+| 1. | Will MIAPA cover cases other than publication-associated archiving, i.e., will it provide coverage for trees generated by an online resource separate from any specific publication? | MIAPA could cover unpublished phylogenies, but <ul><li>What about non-evolutionary journals?</li><li>MIAPA is designed for data that will be accessible for databases</li><li>MIAPA is designed for published phylogenies</li></ul> |
+| 2. | Is MIAPA restricted to studies involving molecular sequence data (as the MIAPA paper sometimes implies with its references to "alignments", as opposed to the more general term of "character-state data")? | No - both types of data and combined |
+| 3. | Is it restricted only to reports of branching phylogenies, as opposed to reports of comparative analyses that use evolutionary principles but do not derive a conventional tree (related: the Bayesian question below)? What if a method generates only splits, not (conventional) trees? | both types are graphs.  May be challenges to splits. |
+| 4. | Is the scope restricted to reports deriving a phylogeny from comparative biological data, as opposed to <ol><li>studies that use an existing tree (perhaps pruned or grafted) to test models of character evolution, reconstruct ancestral states, or infer dates?</li><li>studies that derive phylogenies from simulated (not observed) data?</li></ol> | This one is tougher.  Simulated data has meaningless OTUs.  !TreeBASE just sent one to DRYAD.  However, no reason someone couldn't create a MIAPA-compliant dataset.  Ancestral state reconstruction?  may be outside of the scope, as with studies of molecular evolution.  Trees used to do these downstream studies should be reported on.  A chronogram is another specific case. |
+| 5. | Does it apply to Bayesian studies that integrate over a phylogenetic distribution to compute some statistic (e.g., [[http://dx.doi.org/10.1126/science.288.5475.2349][a gain-loss ratio]]) but do not construe any token tree or modal tree to be representative of this distribution? | Seems outside the scope - reported in the literature |
+| 6. | Does it apply to population studies for sexual organisms, where tree-like constructs are used, but have a somewhat different meaning, and different typical rules? | Networks are still graphs, within the scope.  !TreeBASE does not. |
+| 7. | Does it apply to tree-like constructs that can be construed as something other than a graph representing an inferred history (e.g., in the simplest case, a phenogram; or in a more complex case, a neighbor-joining tree, which some cladists don't accept as a "phylogeny" on the grounds of having been inferred using distances) | Yes.  If it's a tree worth publishing, should be compliant. |
+| 8. | Is it restricted to cases of phylogenetic inference, as opposed to cases in which a phylogeny is observed, generated (via computer simulations), or imposed as an experimental regime (e.g., in lab cultures)? | Not restricted. |
+| 9. | In general, will MIAPA arbitrarily exclude rare cases that clearly fall into the domain of phylogenetic analysis, but do not fit a standard workflow, e.g., Warnow and colleagues have developed an efficient method to infer a phylogeny from tens or hundreds of thousands of sequences without inferring an alignment of all the sequences.  No alignment, therefore no MIAPA-compliant record?  | Alignment is not required for all.  Can be reported for those that create an implied alignment. |
+
+*Scope Draft:*  MIAPA is intended to be applied to any phylogeny, including bifurcating tree topologies and other graphs depicting relationships amongst biological entities (e.g. organisms, genes), including network diagrams and phenograms.  Other evolutionary inferences, (e.g. ancestral state reconstruction, tests of selection, gain-loss ratios, etc.) are not under the scope of MIAPA.  Due to the multiplicity of methods currently in practice and types of phylogenies produced, not all elements of the checklist may apply to each case, however users of particular methods will be asked to supply information specific to those algorithms that allow other users to interpret, use, or repeat these analyses.  

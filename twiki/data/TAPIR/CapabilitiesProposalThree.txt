@@ -1,0 +1,93 @@
+---+ Capabilities Proposal III
+
+A third proposal for the CapabilitiesRequest as discussed in the BerlinProtocolMeeting.
+It is part of the BerlinMeetingResults.
+
+---+++++ Request Example
+
+<verbatim>
+<request>
+   <header>
+      ...
+      <type>capabilities</type>
+   </header>
+</request>
+</verbatim>
+
+---+++++ Provider Response Example
+provider capability returns a list of capabilities for all datasources.
+
+<verbatim>
+<response>
+  <header>
+    ...
+  </header>
+  <content>
+    <capabilities>
+      <datasource name="xxx"> *
+        ---> see datasource response below ...
+      </datasource name="xxx">
+    </capabilities>
+  </content>
+</response>
+
+with* indicating repeatable elements
+</verbatim>
+
+
+---+++++ Datasource Response Example
+
+<verbatim>
+<response>
+  <header>
+    ...
+  </header>
+  <content>
+    <capabilities>
+      <datasource name="xyz"> 
+        <conceptualSchema ns="http://www.tdwg.org/schemas/abcd"> *
+          <software name="PyWrapper" version="1.3.6">
+            <component name="Python Interpreter" version="2.3 (#46, Jul 29 2003, 18:54:32) [[MSC][v.1200 32 bit (Intel)]]"/> *
+            <component name="OS" version="nt"/>
+            <component name="DB module" version="MS SQL Server module v0.95 using mxODBC 2.0.1"/>
+          </software>
+          <mappedConcepts>
+            <concept searchable="1" path="/abcd/efg/@h"/> *
+          </mappedConcepts>
+          <settings>
+            <minQueryTermLength>3</minQueryTermLength>
+            <maxSearchResponseRecords>100</maxSearchResponseRecords>
+            <maxInventoryResponseRecords>1000</maxInventoryResponseRecords>
+          </settings>
+          <requestTypes>
+            <ping/>
+            <capabilities/>
+            <metadata/>
+            <inventory/>
+            <search/>
+            <customSearch/>
+          </requestTypes>
+          <filterOperators>
+            <logicalOperators CapabilitiesProposalThree>
+            <comparativeOperators>
+              <basicComparativeOperators>
+              <in CapabilitiesProposalThree>
+              <like CapabilitiesProposalThree>
+              <isNull CapabilitiesProposalThree>
+            </comparativeOperators>
+            <spatialOperators>
+              ...
+            </spatialOperators>
+            <functions>
+                <function name="MIN" nargs="1" CapabilitiesProposalThree> *
+                ...
+            </functions>
+          </filterOperators>
+        </conceptualSchema>
+      </datasource> 
+    </capabilities>
+  </content>
+</response>
+
+with* indicating repeatable elements
+</verbatim>

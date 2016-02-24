@@ -1,0 +1,71 @@
+---+++ Current way of dealing with concepts in DiGIR
+
+All concepts should be defined in a separate schema and be derived from one of the DiGIR abstract content elements (searchableData, returnableData and searchableReturnableData). Since this derivation is done through the substitutionGroup mechanism, all concept elements need to be globally declared in the conceptual schema.
+
+In the protocol messages, the concepts can be directly used as elements*inside filters*:
+<verbatim>
+ <filter>
+   <like>
+     <darwin:Genus>Rubus%</darwin:Genus> 
+   </like>
+ </filter>
+</verbatim>
+
+Or they can be referenced*inside record structures*:
+<verbatim>
+ <xsd:element name="record">
+   <xsd:complexType>
+     <xsd:sequence>
+       <xsd:element ref="darwin:InstitutionCode" DifferencesInConceptualBinding> 
+       <xsd:element ref="darwin:CollectionCode" DifferencesInConceptualBinding> 
+       <xsd:element ref="darwin:CatalogNumber" DifferencesInConceptualBinding> 
+       <xsd:element ref="darwin:ScientificName" DifferencesInConceptualBinding> 
+       <xsd:element name="coordinates">
+         <xsd:complexType>
+           <xsd:sequence>
+             <xsd:element ref="darwin:Latitude" DifferencesInConceptualBinding> 
+             <xsd:element ref="darwin:Longitude" DifferencesInConceptualBinding> 
+           </xsd:sequence>
+         </xsd:complexType>
+       </xsd:element>
+     </xsd:sequence>
+   </xsd:complexType>
+ </xsd:element>
+</verbatim>
+
+Advantages of this approach are:
+
+   * Record structures use a well-know specification: XML schema.
+   * It's possible to guarantee (via XML schema validation) that only searchable elements are present inside filters (although there are no real examples of non-searchable elements).
+   * It could be possible to somehow enforce (via XML schema validation) that only returnable elements are present inside record structures (although their content have no restriction now due to the "lax" directive).
+   * Other validations could be performed considering the comparative operators if the abstract elements were extended to alphaSearchableData, numericSearchableData, etc.
+   * It's possible to reference concepts from different conceptual schemas at the same time.
+
+Disadvantages of this approach are:
+
+   * Record structures cannot instruct data providers to rename elements or to return data inside attributes, therefore it cannot generate an xml response that could conform to other XML schemas external to the protocol.
+   * Concepts are forced to be defined as global elements in a schema derived from DiGIR.
+
+---+++ Current way of dealing with concepts in BioCASE
+
+Concepts are referenced through xpath-like expressions, and right now they're only used*inside filters*:
+
+<verbatim>
+ <filter>
+   <like path="/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString">Ast*</like> 
+ </filter>
+</verbatim>
+
+Advantages of this approach are:
+
+   * Concepts can part of external schemas completely independent from the protocol.
+   * Concepts could have a different referencing format inside the path in case they need to point to some other conceptual representation (different than XML schema).
+
+Disadvantages of this approach are:
+
+   * It's not possible to do any kind of XML validation related to concepts (e.g. if a concept exists, or if it is being properly used, etc).
+   * It's not possible to reference concepts from different conceptual schemas at the same time.
+
+---+++ Alternatives
+
+ConceptualBindingProposalOne

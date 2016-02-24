@@ -1,0 +1,796 @@
+head	1.18;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.18
+date	2007.07.16.16.11.07;	author TimSutton;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.07.06.20.26.32;	author TimSutton;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.07.06.17.30.17;	author TimSutton;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.06.05.14.52.25;	author TimSutton;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.04.05.19.16.08;	author AimeeStewart;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.04.05.13.42.21;	author TimSutton;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.04.04.22.20.55;	author TimSutton;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.04.02.20.27.04;	author TimSutton;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.04.02.20.01.42;	author AimeeStewart;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.04.02.19.20.25;	author TimSutton;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.04.02.15.36.01;	author JavierTorre;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.04.02.15.07.55;	author TimSutton;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.04.02.13.35.50;	author AimeeStewart;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.04.02.13.34.57;	author TimSutton;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.03.30.17.45.02;	author JavierTorre;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.03.30.15.15.52;	author JavierTorre;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.03.29.17.23.32;	author TimSutton;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.03.29.15.59.00;	author TimSutton;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.18
+log
+@none
+@
+text
+@%META:TOPICINFO{author="TimSutton" date="1184602267" format="1.1" version="1.18"}%
+%META:TOPICPARENT{name="GeoAppInter"}%
+---+++ Debian Install
+
+Install Debian Etch on a clean machine (everything from here on assumes you have a clean install to start with. With minor variations these same instructions should work on Ubuntu.
+
+Install ssh
+
+<verbatim>
+sudo apt-get install openssh-server
+sudo /etc/init.d/ssh restart
+</verbatim>
+
+Enable all repositories in apt by editing /etc/apt/sources.list and uncommenting all lines starting with # deb. Also add the following:
+
+<verbatim>
+deb http://ftp.us.debian.org/debian/ etch main contrib non-free
+</verbatim>
+
+Then do:
+
+<verbatim>
+sudo apt-get update
+</verbatim>
+
+---+++ Install apache2, php5 and postgresql / postgis
+
+<verbatim>
+sudo apt-get install php5-pgsql php5-cgi php5 php5-curl php5-xsl postgresql-8.1-postgis libapache2-mod-php5
+</verbatim>
+
+Create a new admin user for PostgreSQL so you dont need to use the postgres admin account. Do this for each user you want to have access to pg, giving them suitable permissions.
+
+<verbatim>
+sudo su - postgres
+createuser -s -d -r -P -E timlinux
+Enter password for new role:
+Enter it again:
+</verbatim>
+
+
+Create the database backend and enable postgis extensions
+
+<verbatim>
+createdb biogeosdi
+createlang plpgsql biogeosdi
+psql biogeosdi < /usr/share/postgresql-8.1-postgis/lwpostgis.sql
+psql biogeosdi < /usr/share/postgresql-8.1-postgis/spatial_ref_sys.sql
+</verbatim>
+
+Open PostgreSQL so that it is accesible from any location trough TCP. Edit the pg_hba.conf and postgresql.conf
+<verbatim>
+vim /etc/postgresql/8.1/main/postgresql.conf 
+</verbatim>
+
+edit line 49 to 
+listen_addresses = '*'
+
+
+<verbatim>
+vim /etc/postgresql/8.1/main/pg_hba.conf
+</verbatim>
+
+Add this line to the end of the file to allow connections from any host in the cria network
+host    all         all         200.144.120.0 255.255.255.0      trust
+
+---+++ Install JAVA jdk5 and geoserver
+
+First the jdk
+
+<verbatim>
+sudo apt-get install sun-java5-jdk tomcat5
+</verbatim>
+
+Set the java home var so we can find it:
+
+<verbatim>
+sudo vim /etc/profile
+</verbatim>
+
+Add to the bottom of the file this line then save
+
+<verbatim>
+export JAVA_HOME=/usr
+export GEOSERVER_HOME=/opt/geoserver
+</verbatim>
+
+Then resource that file:
+
+<verbatim>
+source /etc/profile
+</verbatim>
+
+Now get geoserver with jetty
+<verbatim>
+cd /tmp
+wget http://ufpr.dl.sourceforge.net/sourceforge/geoserver/geoserver-1.5.0-RC3-bin.zip
+unzip geoserver-1.5.0-RC3-bin.zip
+cd /opt
+mv /tmp/geoserver .
+geoserver/bin/startup.sh
+</verbatim>
+
+The deployed geoserver is now online at: [[http://omtest.cria.org.br:8080/geoserver/preview/topp_states.html][http://omtest.cria.org.br:8080 example]]
+
+---+++ Install Flex SDK and compiler
+To be able to automatically deploy Flex applications when committing to the subversion directory we have to install the free flex SDK on the server to compile the source code. You can get a copy of the Flex SDK and compiler at Adobe (http://www.adobe.com/products/flex/).
+
+First I have downloaded the SDK and compiler at /home/jatorre/flex2/flex_sdk_2.zip
+
+Uncompress it:
+
+<verbatim>
+unzip flex_sdk_2.zip
+</verbatim>
+
+We will place at /usr/local/
+
+<verbatim>
+sudo mv flex2 /usr/local/
+</verbatim>
+
+Add it to the path
+
+<verbatim>
+export PATH=$PATH:/usr/local/flex2/bin/
+</verbatim>
+
+Now it should be working, try with:
+<verbatim>
+mxmlc --version
+</verbatim>
+
+You should get something like Version 2.0.1 build 155542
+
+---+++ Install subversion client
+
+Easy, just
+
+<verbatim>
+sudo apt-get install subversion
+</verbatim>
+
+
+---+++ Deploy script for Flex application
+In order to automatically compile the latest version from source in the server a new script called deploy_flex.sh has been created in /home/jatorre (need to find a better place for it). This isthe content:
+
+<verbatim>
+#!/bin/sh
+#Update the local repository to get the latest source
+svn update /home/jatorre/biogeosdiRepo/
+#compile the software
+/usr/local/flex2/bin/mxmlc /home/jatorre/biogeosdiRepo/trunk/frontend/flex/BioGeoSDI.mxml
+cp -R /home/jatorre/biogeosdiRepo/trunk/frontend/flex /var/www/
+</verbatim>
+
+As you can see there is a subverison working copy of the biogeosdi repository on the server that was before created using:
+
+<verbatim>
+svn co https://biogeosdi.ecoforge.net/svn/biogeosdi/ /home/jatorre/biogeosdiRepo
+</verbatim>
+
+It would be better to have a cleaner script that actually compiles an export of the source code, but we dont find it neccessary for this prototype and the export from the Kansas server can be quite slow, so this is more productive.
+
+Finally I had to change the permissions of the /var/www/flex folder to 777 to allow anybody to run the deploy_flex.sh script (that is for example to be able to run it from a PHP script called from apache)
+
+
+---+++ Install mapserver with python mapscript
+
+
+---++ From apt (currently we are using this way)
+
+<verbatim>
+sudo apt-get  python-mapscript
+</verbatim>
+
+Test the initial install is working by pointing your browser to : [[http://omtest.cria.org.br/cgi-bin/mapserv][http://omtest.cria.org.br/cgi-bin/mapserv]]
+
+
+
+
+
+---++ Install Mapserver Data Files
+
+<verbatim>
+cd /opt
+svn co https://biogeosdi.ecoforge.net/svn/biogeosdi/trunk/data/
+sudo chmod +x /opt
+sudo chmod +wx /opt/data
+</verbatim>
+
+or create a symbolic link from the /opt directory to the previously checked out biogeosdi/data:
+<verbatim>
+cd /opt
+sudo ln -s <workspace>/biogeosdi/data
+</verbatim>
+
+Note: you should remove the .svn working directories or do an svn export above.
+
+---+++ Install Test Environmental data layers
+
+Test environmental data layers are available in subversion in the data directory
+
+Check the WCS service by using the following URLs:
+
+Capabilities:
+http://omtest.cria.org.br/cgi-bin/mapserv?map=/opt/data/mapfiles/hadley1990to1999.map&request=GetCapabilities&service=WCS
+
+!GetCoverage (right click and 'Save Link As', then open with an image viewer program):
+http://omtest.cria.org.br/cgi-bin/ogcdata.cgi/envlayers?request=GetCoverage&service=WCS&version=1.0.0&bbox=-180,-90,180,90&Coverage=annualTmpRange&crs=EPSG:4326&format=image/tiff&resx=1&resy=1
+
+---+++ Install openModeller Web Service
+
+Lets install the mapserver build deps as they will mostly cater for the build deps of openModeller
+
+<verbatim>
+sudo apt-get build-dep python-mapscript
+</verbatim>
+
+Now we can go ahead and build openModeller itself....
+
+<verbatim>
+sudo apt-get install cmake libsqlite3-dev libgsl0-dev
+cd ~
+mkdir -p dev/cpp
+cd dev/cpp
+svn co https://openmodeller.svn.sourceforge.net/svnroot/openmodeller/trunk/openmodeller
+cd openmodeller
+mkdir build
+cd build
+cmake ..
+make
+sudo make install 
+</verbatim>
+
+Add the /usr/local/lib dir to ldconfig.
+
+<verbatim>
+sudo vim /etc.ld.so.conf
+</verbatim>
+
+Now add this line:
+
+<verbatim>
+/usr/local/lib
+</verbatim>
+
+Now update:
+
+<verbatim>
+sudo ldconfig
+</verbatim>
+
+Now we can set up the openModeller soap server cgi. This is a bit ugly because we need to copy the server conf file into /usr/lib when it would be better in /etc
+
+<verbatim>
+sudo cp /usr/local/bin/om_soap_server  /usr/lib/cgi-bin/om_soap_server.cgi
+sudo mkdir /usr/lib/config
+sudo cp /usr/local/share/openmodeller/server.conf /usr/lib/config
+sudo chmod +x /usr/local/bin/scheduler.sh
+</verbatim>
+
+Now you need to edit the server config for openModeller in /usr/lib/config/server.conf
+
+<verbatim>
+#########################################################
+## Configuration file for the openModeller SOAP server ##
+#########################################################
+
+## Directory where tickets should be stored 
+## (user running the SOAP server needs write access to it!)
+TICKET_DIRECTORY = /tmp/om/tickets/
+
+## Directory containing the available layers to be exposed to the public
+LAYERS_DIRECTORY = /opt/data/envdata
+
+## Associated label for the root layers' directory
+LAYERS_LABEL = OmTest Remote layers
+
+## Directory where the map files should be created
+## (user running the SOAP server needs write access to it!)
+## (should be a directory exposed to the web)
+DISTRIBUTION_MAP_DIRECTORY = /opt/data/models
+
+## URL related to the directory where maps are created
+BASE_URL = http://omtest.cria.org.br/models/
+
+BASE_WCS_URL = http://omtest.cria.org.br/cgi-bin/ogctemp.cgi/
+
+## Cache directory
+CACHE_DIRECTORY = /tmp/om/cache/
+</verbatim>
+
+We defined some temporary working dirs above so we need to make sure they actually exist:
+
+<verbatim>
+mkdir -p /opt/data/models
+mkdir /tmp/ms_tmp
+mkdir -p /tmp/om/models
+mkdir -p /tmp/om/cache/
+mkdir -p /tmp/om/tickets/
+sudo chown www-data.www-data -R /tmp/om
+sudo chown www-data.www-data -R /tmp/ms_tmp
+</verbatim>
+
+Whenever the machine is rebooted the contents of /tmp are purged so edit /etc/rc.local and add these commands to make sure everything is ready on machine startup:
+
+
+<verbatim>
+#added by Tim to make sure tmp dirs etc are available on startup
+mkdir -p /opt/data/models
+mkdir /tmp/ms_tmp
+mkdir -p /tmp/om/models
+mkdir -p /tmp/om/cache/
+mkdir -p /tmp/om/tickets/
+chown www-data.www-data -R /tmp/om
+chown www-data.www-data -R /tmp/ms_tmp
+#this is an ugly hack to solve permissions problems
+chmod -R a+rw /tmp/om
+/opt/geoserver/bin/startup.sh &
+</verbatim>
+
+Make sure you add them before the 'exit 0' command.
+
+Now we need to set up a cron job (as www-data user) to ensure that models are queued properly
+
+<verbatim>
+sudo su - www-data
+crontab -e
+</verbatim>
+
+Now add the following line to the cron file
+
+<verbatim>
+# m h  dom mon dow   command
+0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 10
+0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 20
+0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 30
+0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 40
+0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /tmp/om/models 50
+#Delete the temporary datasets created by DPS service every 2 hours
+0 2 * * * php5-cgi /opt/biogeosdiTrunk/backend/util/dps/delDatasetsWrapper.php
+</verbatim>
+
+Create symbolic links in /usr/local/bin for python script to pull WCS data and register models and environmental layers
+<verbatim>
+cd /usr/local/bin
+sudo ln -s /opt/biogeosdiTrunk/backend/util/rasterDps/http.py
+sudo ln -s /opt/biogeosdiTrunk/backend/util/rasterDps/mapservice.py
+sudo ln -s /opt/biogeosdiTrunk/backend/util/rasterDps/template.map
+sudo ln -s /opt/biogeosdiTrunk/backend/util/rasterDps/template.layer
+sudo ln -s /opt/biogeosdiTrunk/backend/util/rasterDps/getAndRegisterEnvlayer.py 
+sudo ln -s /opt/biogeosdiTrunk/backend/util/rasterDps/getAndRegisterModel.py
+</verbatim>
+
+
+---+++ Additional notes for deploying on a different server
+
+   * Edit /usr/local/share/openmodeller/server.conf and set the host name(s) in that file appropriately
+   * Edit /opt/biogeosdi/config.inc.php and set the host name appropriately and add a google maps key generated for your host
+   * Edit /usr/local/bin/scheduler.sh and replace om_create with /usr/local/bin/om_create and om_project with /usr/local/bin/om_project
+   * If you update the data files from SVN you must remove teh .svn dirs in the env data dirs (though I suggest to use svn export rather):
+
+<verbatim>
+sudo rm -rf /opt/data/envdata/.svn
+sudo rm -rf /opt/data/envdata/hadley1990to1999/.svn/
+</verbatim>@
+
+
+1.17
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1183753592" format="1.1" reprev="1.17" version="1.17"}%
+d198 2
+d318 2
+d361 2
+a362 1
+   * If you update the sources from SVN you must remove teh .svn dirs in the env data dirs:
+d365 3
+a367 3
+sudo rm -rf /opt/biogeosdiTrunk/data/envdata/.svn
+sudo rm -rf /opt/biogeosdiTrunk/data/envdata/hadley1990to1999/.svn/
+</verbatim>
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1183743017" format="1.1" version="1.16"}%
+d3 1
+a3 1
+---+++ Ubuntu Install
+d5 1
+a5 1
+Install Ubuntu Edgy (6.06) on a clean machine (everything from here on assumes you have a clean install to start with.
+d14 7
+a20 1
+Enable all repositories in apt by editing /etc/apt/sources.list and uncommenting all lines starting with # deb. Then do
+d67 1
+a67 1
+---+++ Install JAVA jdk6 and geoserver
+d72 1
+a72 1
+sudo apt-get install sun-java6-jdk and tomcat
+d84 2
+a85 1
+export JAVA_HOME=/usr/share/java
+d97 1
+a97 1
+http://ufpr.dl.sourceforge.net/sourceforge/geoserver/geoserver-1.5.0-RC3-bin.zip
+d304 17
+d331 8
+a338 1
+0-59/1 * * * * /usr/local/bin/scheduler.sh /tmp/om/tickets /opt/data/models
+d343 1
+d350 13
+a362 1
+</verbatim>@
+
+
+1.15
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1181055145" format="1.1" version="1.15"}%
+d23 1
+a23 1
+sudo apt-get install php5-pgsql php5-cgi php5 php5-curl php5-xsl postgresql-8.1-postgis
+d214 1
+a214 1
+sudo apt-get install cmake libsqlite3-dev
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AimeeStewart" date="1175800568" format="1.1" reprev="1.14" version="1.14"}%
+d288 1
+a288 1
+mkdir /opt/data/models
+d290 1
+a290 1
+mkdir /tmp/om/models
+d293 2
+d318 1
+a318 1
+</verbatim>
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175780541" format="1.1" version="1.13"}%
+d185 5
+d201 1
+a201 1
+http://omtest.cria.org.br/cgi-bin/mapserv?map=/opt/data/mapfiles/hadley1990to1999.map&request=GetCoverage&service=WCS&version=1.0.0&bbox=-180,-90,180,90&Coverage=annualTmpRange&crs=EPSG:4326&format=image/tiff&resx=1&resy=1
+d279 1
+a279 1
+BASE_WCS_URL = http://omtest.cria.org.br/cgi-bin/mapserv?map=/opt/data/models
+d290 1
+d306 11
+a316 1
+</verbatim>@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175725255" format="1.1" version="1.12"}%
+d246 1
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175545624" format="1.1" version="1.11"}%
+d273 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AimeeStewart" date="1175544102" format="1.1" reprev="1.10" version="1.10"}%
+d222 18
+d297 1
+a297 1
+</verbatim>
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175541625" format="1.1" reprev="1.9" version="1.9"}%
+d182 1
+a182 1
+sudo chmod +x /opt/data
+d186 1
+a186 1
+---+++ Install Test Gis data
+d188 1
+a188 1
+Put your test environmental layers in /opt/gisdata
+d190 7
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JavierTorre" date="1175528161" format="1.1" version="1.8"}%
+a171 1
+---++ For Source installs (not used at the moment)
+a172 1
+Install all the build requirements for mapserver with python mapscript
+a173 10
+<verbatim>
+sudo apt-get build-dep python-mapscript
+</verbatim>
+
+We didnt install mapserver itself from apt since we wanted a more recent version.
+
+<verbatim>
+wget http://cvs.gis.umn.edu/dist/mapserver-4.10.1.tar.gz
+cd /usr/local/src
+</verbatim>
+a174 3
+<verbatim>
+./configure --with-jpeg --with-gd --with-freetype --with-png --with-pdf --with-tiff --with-proj --with-threads --with-geos --with-ogr --with-gdal --with-postgis=/usr/local/pgsql/bin/pg_config --with-wfs --with-wcs --with-wmsclient --with-wfsclient --with-curl-config -enable-debug
+</verbatim>
+d193 2
+d196 7
+a202 1
+sudo apt-get install cmake
+d207 59
+d268 5
+a272 1
+-- Main.JavierTorre - 30 Mar 2007@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175526475" format="1.1" reprev="1.7" version="1.7"}%
+d45 15
+d216 1
+a216 1
+-- Main.JavierTorre - 30 Mar 2007
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AimeeStewart" date="1175520950" format="1.1" version="1.6"}%
+d51 1
+a51 1
+sudo apt-get install sun-java6-jdk
+d148 11
+d176 26
+a201 1
+-- Main.JavierTorre - 30 Mar 2007@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175520897" format="1.1" reprev="1.5" version="1.5"}%
+d161 3
+d165 1
+a165 2
+
+-- Main.JavierTorre - 30 Mar 2007
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JavierTorre" date="1175276702" format="1.1" reprev="1.4" version="1.4"}%
+d122 1
+d145 18
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JavierTorre" date="1175267752" format="1.1" reprev="1.3" version="1.3"}%
+d23 1
+a23 1
+sudo apt-get install php5-pgsql php5 php5-curl php5-xsl postgresql-8.1-postgis
+d114 30
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175189012" format="1.1" version="1.2"}%
+d84 2
+d87 28
+a114 1
+-- Main.TimSutton - 29 Mar 2007@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimSutton" date="1175183940" format="1.1" reprev="1.1" version="1.1"}%
+d82 1
+d85 1
+a85 1
+-- Main.TimSutton - 29 Mar 2007
+@

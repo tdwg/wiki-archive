@@ -1,0 +1,170 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1099564874" format="1.0" version="1.15"}%
+%META:TOPICPARENT{name="LinneanCoreDefinitions"}%
+Discussion on [[LinneanCoreDefinitions#NameStringDefinition][Name-string]]
+
+Note Gregor: I summarized the first part of the discussion to refocus; please go back on the wiki to version 1.14 to see the full original discussion:
+	* James and Rich discuss whether to distinguish between printed on paper (glyph) and its digital representation in a character coding scheme. The resolution was to limit string to character coding schemes (due to xml from the unicode family) and introduce [[LinneanCoreDefinitions#NameLiteralDefinition][Name-literal]] as an abstraction layer between Unicode string and name in general (including digital/electronic representations like a name on a JPEG of a label).
+	* Some discussion about the use of "context" in the definition; the phrase in the definition is now replaced with "name within the scope of LinneanCore's domain". Rich: "Perhaps we need a different definition for "Code-compliant name-string" to accomodate the machine-generated "corrected" (= canonicalized, Gregor) strings? The Machine-generated instance might be considered as a [[LinneanCoreDefinitions#NameUsageDefinition][Name-usage]], and therefore its corrected nomenclatural representation could be considered as a *Name-string*.  
+	* Rich and Gregor discussed name comparability and identity, from which a discussion resulted whether Name-string should be limited to scientific-name-without-authors, or should be a super term for all kind of scientific names, with or without author. There seems to be a feeling that many botanists in a name usage context consider the "natural" name to include authors, even though the ICBN defines the name object as without authors. Gregor proposed to have name-string, and introduce two new definitions: 
+		* Nomenclatural-disambiguation: part of a name-string that disambiguates nomenclatural homonyms. This may include authors, publication year, or reference title.
+		* Conceptual-disambiguation: part of a name-string that disambiguates concept usage. This may include fuzzy concept suffixes like "s. str.", "sensu lat.", "non author", and exact like "sensu/secundum publication reference".
+End of summary
+---
+
+Richard: For clarity, please complete the following table (using a zoological name, with botanical authorship conventions to transcend Code issues):
+<table border=1 cellpadding=1>
+ <tr valign="top">
+  <th>#</th>
+  <th align=left>String &nbsp;&nbsp;&nbsp;Terms:</th>
+  <th align=left>Richard </th>
+  <th align=left>Gregor</th>
+  <th align=left>James</th>
+  <th align=left>LC Discussions</th>
+ </tr>
+ <tr valign="top">
+  <td><b>1</b></td>
+  <td>Pseudanthias ventralis<br/>
+subsp. hawaiiensis (Randall) Hoover sensu Pyle 2003</td>
+  <td>Concept-string</td>
+  <td>Linnean Name-string<br/>
+(with nomenclatural and concept disambiguation)</td>
+  <td>human readable representation of a name usage from unknown source because w/o auct. or sec.</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>2</b></td>
+  <td>Pseudanthias ventralis<br/>
+subsp. hawaiiensis s. latissimo</td>
+  <td>Concept string<br/>
+(ambiguous "AccordingTo")</td>
+  <td>Linnean Name-string<br/>
+(with (fuzzy) concept disambiguation)</td>
+  <td>human readable representation of a name usage from unknown source because w/o auct. or sec.</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>3</b></td>
+  <td>Pseudanthias ventralis<br/>
+subsp. hawaiiensis (Randall) Hoover </td>
+  <td>Name-string with authorship</td>
+  <td>Linnean Name-string<br/>
+(with nomenclatural disambiguation)</td>
+  <td>Linnean name literal</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>4</b></td>
+  <td>Pseudanthias<br/>
+ventralis (1999)</td>
+  <td>Name-string with year</td>
+  <td>Linnean Name-string<br/>
+(with nomenclatural disambiguation)</td>
+  <td>human readable representation of a name usage from unknown source because w/o auct. or sec.</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>5</b></td>
+  <td>Pseudanthias ventralis<br/>
+subsp. hawaiiensis</td>
+  <td>Name-string</td>
+  <td>Linnean Name-string<br/>
+(without authors/disambiguation)</td>
+  <td>Linnean name literal</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>6</b></td>
+  <td>Pseudanthias</td>
+  <td>Name-unit (genus)</td>
+  <td>Name part:<br/>
+Genus name</td>
+  <td>name token (genus)</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>7</b></td>
+  <td>ventralis</td>
+  <td>Name-unit (species)</td>
+  <td>Name part:<br/>
+species epithet</td>
+  <td>name token (specific epithet)</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>8</b></td>
+  <td>hawaiiensis</td>
+  <td>Name-unit (subspecies)</td>
+  <td>Name part:<br/>
+infraspecific epithet</td>
+  <td>name token (infraspecific epithet)</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>9</b></td>
+  <td>sensu Pyle 2003</td>
+  <td>Concept Authorship</td>
+  <td>Name part:<br/>
+concept suffix (or concept disambiguation)</td>
+  <td>human readable representation of pointer to another name usage</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>10</b></td>
+  <td>Pyle 2003</td>
+  <td>Citation</td>
+  <td>Citation</td>
+  <td>citation summary</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>11</b></td>
+  <td>(Randall) Hoover</td>
+  <td>[Name] Authorship</td>
+  <td>Name part: nomenclatural authorship</td>
+  <td>authorship summary</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>12</b></td>
+  <td>Randall</td>
+  <td>Agent Surname</td>
+  <td>Canonical<sup>1</sup> Author Name<br/>
+role under ICBN: basionym author</td>
+  <td>surname</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>13</b></td>
+  <td>Hoover</td>
+  <td>Agent Surname</td>
+  <td>Canonical<sup>1</sup> Author Name<br/>
+role under ICBN: combining author</td>
+  <td>surname</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>14</b></td>
+  <td>Pyle</td>
+  <td>Agent Surname</td>
+  <td>Canonical<sup>1</sup> Author Name<br/>
+role: concept citation</td>
+  <td>surname</td>
+  <td>-</td>
+ </tr>
+ <tr valign="top">
+  <td><b>14</b></td>
+  <td>s. lato</td>
+  <td>-</td>
+  <td>concept suffix (ambiguous)</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+</table>
+
+Footnotes: <sup>1</sup>: Canonical Author name = this may be an abbreviation like "L.", an standardized inherited name ("family name, surname, father's name, depending on culture), or "given + inherited name". -- Gregor
+
+Richard:  Thanks to Gregor & James for adding their terms.  If others wish to contribute, please insert your own column.  I've re-named the last column "LC Discussions", with the intention of populating this column with selected terms that we can all agree to use in future discussions.  I think we will have reason to discuss several of the items in the table above at one point or another, so it would be good if we could agree on a short (1-3 words) term for each of the most important items in the "String Term" column.  At this point, I honestly don't care what the terms are -- but it would be helpful I think if we could come up with clear terms for each, so we don't need to embed too many qualifications to terms in the course of our discussions. -- 2 Nov 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1099215570" from="UBIF.NameString" to="UBIF.LCNameStringDiscussion"}%

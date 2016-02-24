@@ -1,0 +1,86 @@
+---+ Datasource Search Proposal I
+
+A search request asking for a document based on a single xml root element that contains records defined by the ConceptualSchema and not by the protocol. For a record based search using a record envelope of the protocol see the SearchProposalTwo.
+
+To be able to handle paging and counting a RecordDefinition is needed. This should be defined by each ConceptualSchema and not freely by the requestor. The RecordDefinition should also be represented in a datasource capabillities response as shown in the DatasourceCapabilitiesProposalOne. The definition could be a list of concepts as discussed in RecordDefinition.
+
+There is no extension mechanism proposed for the docsearch. It would be possible to do something like the idea explained in RecordVsDocumentApproach, but it is not picked up here because of its complexity. People that need to extend their schemas can always define their own based on an existing one and extend it with their needs. But this should be treated with care and always result in a new namespace for the new extended schema!
+
+---+++++ Request
+The request is based on the PartialSearchProposalOne and the SearchProposalTwo.
+A request that combines concepts from more than one namespace should be considered as a wrong request and not be processed by a datasource!
+
+<verbatim>
+<request>
+  <header>
+    ...
+  </header>
+  <docsearch>
+    <concepts xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.2">
+      <concept path="abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString"/> *
+    </concepts>
+  </docsearch>
+  <filter>
+   ...
+  </filter>
+</request>
+
+with* indicating repeatable elements
+</verbatim>
+
+---+++++ Response
+<verbatim>
+<response xmlns='http://www.tdwg.org/schemas/newprotocol'>
+        <header>
+                ...
+        </header>
+        <docsearch>
+                <DataSets xmlns='http://www.tdwg.org/schemas/abcd/1.2'>
+                  <DataSet>
+                    <OriginalSource>
+                      <SourceInstitutionCode>BGBM</SourceInstitutionCode>
+                      <SourceName>Lichen DB</SourceName>
+                      <SourceLastUpdatedDate>2001-01-01</SourceLastUpdatedDate>
+                    </OriginalSource>
+                    <DatasetDerivations>
+                      <DatasetDerivation>
+                        <DateSupplied>2003-08-11</DateSupplied>
+                        <Supplier>
+                          <Organisation>
+                            <OrganisationName>Botanic Garden and Botanical Museum Berlin-Dahlem</OrganisationName>
+                          </Organisation>
+                        </Supplier>
+                      </DatasetDerivation>
+                    </DatasetDerivations>
+                    <Units>
+                      <Unit>
+                        <UnitID>11802</UnitID>
+                        <Identifications>
+                          <Identification PreferredIdentificationFlag='1'>
+                            <TaxonIdentified>
+                              <NameAuthorYearString>Astrothelium</NameAuthorYearString>
+                            </TaxonIdentified>
+                          </Identification>
+                        </Identifications>
+                      </Unit>
+                      <Unit>
+                        <UnitID>12464</UnitID>
+                        <Identifications>
+                          <Identification PreferredIdentificationFlag='1'>
+                            <TaxonIdentified>
+                              <NameAuthorYearString>Gyalectidium</NameAuthorYearString>
+                            </TaxonIdentified>
+                          </Identification>
+                          <Identification PreferredIdentificationFlag='0'>
+                            <TaxonIdentified>
+                              <NameAuthorYearString>Asterothyrium?</NameAuthorYearString>
+                            </TaxonIdentified>
+                          </Identification>
+                        </Identifications>
+                      </Unit>
+                    </Units>
+                  </DataSet>
+                </DataSets>
+        </docsearch>
+</response>
+</verbatim>

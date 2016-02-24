@@ -1,0 +1,195 @@
+%META:TOPICINFO{author="RicardoPereira" date="1168433493" format="1.1" version="1.34"}%
+---+ Third proposal, based on SOAP
+
+---+++++ General strategy
+
+To accommodate our needs to the SOAP standard, by using WSDL to define basic operations like GetMetadata and to create SpecificXMLRequests where simple parameters are not enough.
+Following the SOAP standard will give us the possibility to use all the existing resources for it and will make a programmers life easier.
+Most of our future needs, like access control, are being achieved by other communities using SOAP so we can take advantage of this.  
+
+---+++++ Details
+
+SOAP is a lightweight XML-based messaging protocol used to encode the information in Web service request and response messages before sending them over a network. SOAP messages are independent of any operating system or protocol and may be transported using a variety of Internet protocols, including SMTP, MIME, and HTTP (http://www.webopedia.com/TERM/S/SOAP.html).
+
+I recommend you to go to http://www.bindingpoint.com/default.aspx see some examples of web services implemented with SOAP. That is much easier than going directly to the W3 specifications.
+
+In a web service (for example http://ws.keyfortravel.com/webservices/k4thotelavail.asmx) you must define the different operations that you can do. This description of the different operations is done using the WSDL standard. So we would have to define our RequestMethods in WSDL.
+For the simple ones like the MetadataRequest or the ScanRequest this is possible and easy because only simple parameters are transmitted. But for the SearchRequest we will have to continue defining our own format that will be defined as an ThirdProposalXmlRequest. This is something commonly done (look the example above).
+
+Using SOAP and WSDL for defining the basic RequestMethods will make a very simple task to retrieve the metadata while it will not complicate more to do advance searches like the ones we are dealing already.
+
+
+
+---+++++ Examples
+
+
+*Example 1 SOAP 1.1 Request/Response via HTTP*
+
+The next example, request and response, are based completly in the SecondProposal. From the WSDL file that are available above this messages are created automatically using a SOAP library.
+This seach is invoking the doFullABCDSearch operation in the web serice, that is a FullDocumentSearch in the SecondProposal, that query using a filter and gets a full qualified ABCD document.
+
+<verbatim>
+POST http://dbio105.univ.trieste.it/biocase/databases/TSB/dbwrapper.py HTTP/1.1
+Host: www.soapclient.com
+Content-Type: text/xml; charset=utf-8
+Content-Length: 678
+SOAPAction: "http://dbio105.univ.trieste.it/biocase/databases/TSB/DoFullSearch"
+
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:DigirCase="http://www.gbif.org/schemas/protocol2">
+        <soapenv:Header>
+                <DigirCase:version>0.93</DigirCase:version>
+                <DigirCase:sendTime>2001-09-11T09:30:47-05:00</DigirCase:sendTime>
+                <DigirCase:source>192.168.1.105</DigirCase:source>
+                <DigirCase:destination>http://www.collection.org/myCollection.py</DigirCase:destination>    
+        </soapenv:Header>
+        <soapenv:Body>
+            <doFullABCDSearch xmlns="http://www.gbif.org/GBIFDataProvider.wsdl">
+                   <filter xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.2">
+                       <like "abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString">Bra%                         </like>
+                   </filter>
+                <start>0</start>
+                <limit>10</limit>
+                <count>0</count>
+                <responseNS>http://www.tdwg.org/schemas/abcd/1.2</responseNS>
+            </doFullABCDSearch>
+        </soapenv:Body>
+</soapenv:Envelope>
+</verbatim>
+
+<verbatim>
+HTTP/1.1 200 OK
+Content-Type: text/xml
+Content-Length: 763
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<soapenv:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:DigirCase="http://www.gbif.org/schemas/protocol2"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soapenv:Header>
+      <DigirCase:version software="Python Interpreter">2.3 (#46, Jul 29 2003, 18:54:32) [[MSC][v.1200 32 bit (Intel)]]</version> 
+      <DigirCase:version software="Wrapper">1.3.6</version> 
+      <DigirCase:sendTime>2004-07-05T12:22:15+02:00</sendTime> 
+      <DigirCase:source>192.168.1.12</source> 
+      <DigirCase:destination>192.168.1.174</destination>
+   </soapenv:Header>
+   <soapenv:Body>
+      <content>
+         <DataSets xmlns="http://www.tdwg.org/schemas/abcd/1.2">
+               <Dataset>
+                                 ....This is ABCD
+                              </Dataset>
+         </DataSets>
+      </content>
+                <recordStart>1</recordStart>
+                <recordCount>10</recordCount>
+                <recordDropped>0</recordDropped>
+                <totalMatchedRecords>230</totalMatchedRecords>
+   </soapenv:Body>
+</soapenv:Envelope>
+</verbatim>
+
+
+
+
+---+++++ WSDL
+
+
+
+WSDL stands for Web Services Description Language. http://www.w3.org/TR/wsdl
+
+WSDL is a document written in XML. The document describes a Web service. It specifies the location of the service and the operations (or methods) the service exposes.
+
+So, the logic thing would be to create a WSDL that describes the function of the provider software, describing first of all the different services available in this data provider (follow the discussion about ProtocolFeatures/AccessPoint) and then the different operations that this services support (follow the ProtocolFeatures/RequestMethods discussion).
+
+Basically in a WSDL file you define 4 major elements:
+ 
+&lt;portType&gt;:      The operations performed by the web service
+
+&lt;message&gt;:       The messages used by the web service 
+
+&lt;types&gt;:         The data types used by the web service 
+
+&lt;binding&gt;:       The communication protocols used by the web service 
+
+
+Comparing in our case:
+   
+*&lt;portType&gt;*   
+
+Definition of the ProtocolFeatures/RequestMethods .Operations that our web service can do. The &lt;portType&gt; element can be compared to a function library (or a module, or a class) in a traditional programming language.
+
+*&lt;message&gt;*   
+
+Messages that will be used in the web service, for example to do a scan. The message can contain <parts> that can be compared to the parameters of a function call in a traditional programming language. For example there could be a message called doScanRequest with a <part> (parameter) to specify the schema and antoher the concept.
+
+*&lt;types&gt;*      
+
+We will discuss this later. Probably is the most controversial part.
+
+*&lt;bindings&gt;*      
+In our case we are only working with HTTP and Digir or BioCASE protocol, but in SOAP is also posible to use SMTP or other protocols to transfer the data. In bindings you specify the different messages and protocols for every port. Most web services implement three protocols, SOAP, HTTPGet and HTTPPost, we could do the same, for example to access directly a Unit with a URL with a UnitID parameter.
+
+
+Next a proposal of a WSDL file for a web service like our is shown (created with XMLSpy):
+
+http://www.biocase.org/temp/diagram_wsdl.gif
+
+Go to the next location to get the WSDL http://www.biocase.org/temp/wsdl_digircase.wsdl
+
+You can try it on-line with QuickTry (http://www.bindingpoint.com/quicktryv2.aspx?wsdl=http://www.biocase.org/temp/wsdl_digircase.wsdl). This tool reads the WSDL file and create automatically forms to invoke the web service.
+
+In the picture you can see that there are three Services in this Data Provider, let's take the BGBM as example. In the BGBM we have three databases, Bobo, HerbariumImages and Pontaurus. All the three services (databases conneced) supports to be access trough the Soap. In the bindings window is shown the relations between the communications protocols used by the web service.
+
+You can see that all responses messages but doCustomDocumentSOAPout and doPartialXXXXSearchSoapOut have a type assigned so that they can be invoke in a RPC-Style. For this other two, the client is suposse to know what is the structure that he is asking for.
+One question here is if it would be possible to make better the doPartialXXXXSearchSoapOut. This message will contain a piece of the schema, probably a complex type in the schema. The problem is that the type of the response depends on what is asked for so we can not asssined directly a type. I do not know if there is any solution for this, more research should be done. If is not possible it will have to be treate as the Custom structure.
+
+You can see that the WSDL has declared 3 different schemas in its Type part. ABCD and Darwin Core for being able to return this kind of documents and another called protocol. The protocol schema is directly imported from Markus and Renato work on the proposal of the SecondProposal.
+In this protocol are declared types that represent a filter, what a ping return, capabilities, etc...
+For this SOAP approach there are some things that are not needed in this protocol schema, like the definition of the headers and the structure of the messages, this all done with WSDL in SOAP.
+
+
+---++++ "Dynamic" WSDL
+
+A central point in this proposal architecture is that the WSDL file for a data provider will be "dynamic". That means that if a data provider maps his database to ABCD then a new set of operations will be available from it (and consequently a change in the WSDL) because now the data provider can return ABCD documents. If later, this data provider map his database to Darwin Core the WSDL will have to be update again to expose the new operation that will be available. This was already mention before, for example could be doABCDFullSearch or doDCFullSearch.
+
+In some way we are doing this already, at least in the BioCASE software, with the configuration tool. If a data provider is mapped to a new schema then we create a new mapping file for it and the data provider starts to be able to answer documents in this new schema. So the configuration tool will have to modify also the WSDL file of the data provider to include the new operations that are open.
+
+---+++++ Integration with UDDI
+
+WSDL is used to describe the interface of a web service. <tModel> UDDI documents provide metadata descriptions of a web service and pointers to specifications that describe their implementation. Given this provision, WSDL documents tie into the UDDI data structures in a couple of places:
+
+   * A <tModel> document should be created for each WSDL document supported by a web service. The <tModel> describes the abstract service type, not the service instance; if appropriate, the WSDL file pointed to by the <tModel> should not contain the <service> and <port> elements. Omitting the <service> and <port> elements allows a WSDL document to describe many web services located in several different places. The WSDL document's URL should be listed as the value of the <overviewURL> element. A <tModel> that references a WSDL document should have a categorization taxonomy of uddi-org:types; a categorization value of wsdlSpec should be applied to it by using a <categoryBag> element. 
+
+   * A <bindingTemplate> structure is created for each unique URL access point used by the web service. The <bindingTemplate> document references one or more <tModel> documents containing the WSDL definitions supported at this access point. 
+
+   * A <businessService> document is created for each web service. The document contains one <bindingTemplate> for each of the access points supported by the web service. 
+
+For example, if you implement one web service that has a single access point and is defined by a single WSDL document, you would create a single <tModel>, a single <bindingTemplate>, and a single <businessService>. Also, if you implement one web service that has two separate access points, each defined by a different WSDL document, you would create two <tModel> documents (one for each interface), two <bindingTemplate> documents (one for each access point), and a single <businessService> document. Each <bindingTemplate> document must point to the <tModel> that references its interface. 
+
+
+---+++++ Java examples on consuming this service
+
+   ** To be continued**
+
+---+++++ Error handling with SOAP
+
+Error handling is nice with SOAP. There is an element called Fault with an specific structure to define errors (take a look to the link below). Optionally inside this Fault structure you can create your own detail messages that can contain your own structure poiting to your schema, for example our protocol schema and even inside this we can include another structure for program specific errors (the errors from a Python wrapper could be different to the ones from a PHP wrapper).
+Most of SOAP parsers take care already of the error messages.
+
+http://www.vbip.com/books/1861005091/chapter_5091_03.asp
+
+---+++++ Security mechanism in SOAP
+
+http://www.nwfusion.com/news/tech/2002/1216techupdate.html
+
+---+++++ Headers
+
+The SOAP headers could be taken from the proposal
+
+
+   ** To be continued**
+Javier de la Torre (12/7/04)
+
+-----
+*Comments:*
+

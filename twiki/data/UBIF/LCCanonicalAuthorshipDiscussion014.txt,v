@@ -1,0 +1,507 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.12.13.16.04.11;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.11.09.12.26.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.11.09.10.53.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.11.09.09.11.37;	author SallyHinchcliffe;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.11.08.20.59.59;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.11.08.17.46.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.11.08.16.17.20;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.11.08.14.55.32;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1102953851" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="LinneanCoreCanonicalAuthorship"}%
+	1 Probably an oversight: <nop>CanonicalAuthorship itself probably should not have the <nop>AuthorRelationship attribute on it, which is also on the Atomized element inside that type.
+	2 I really like the Text element at the start for all authorship together, and propose to use the same structure for <nop>CanonicalName. I dislike the analogous semi-parsed "AuthorsAsText" of Proposal 1. To me this offers to much variability to atomization. Especially, you could have to Proposal1.Atomized elements, only one of which contains a "AuthorsAsText" label text.
+	3 In general  dislike the repeated sequence of 0 to 2 times "Atomized" with <nop>AuthorRelationship attribute having values either "parenthetical" or "primary".<br/> Sally writes in the schema: "The parsed out author team. This allows two levels of parsing - separating parenthetical author(s) from original authors, or the full monty where every author is completely atomised out. I'm not wedded to this structure (it happens to be how we do it in IPNI) but I think there should be _some_ way of atomising out author names".<br/> I think, it would easier to express this through two element names. This is not logical necessity, just preference because I believe this is easier seen-through when mapping from flat-file data.<br/> Secondly, I wonder whether to equate "non-parenthetical" with "primary" makes sense (as implied in opposing "parenthetical" with "primary"). In botany I rather think of the parenthetical author (= basionym-author) as the primary author. For the moment I propose to replace the two types with Protonym and Combining citation, following the original usage by Jerry Cooper in the first LC draft.
+	4 A bit of a problem is the case of "ex" and ":" (= sanctioning in fungi) citations. This must be nested within the Protonym and Combining structure - and then within those each list of authors must have multiple authors. Sally's proposal adding a prefix to the first author of the team that needs to be marked with an ":" or "ex"could work. It seems a bit odd that a prefix that belongs to a multi-author team should be tied to the first, but I certainly do not like the alternative of providing another structural layer as well. Just for the sake of variety, I propose to recognize ":" and "ex" as special values and simply treat them in the authors list. Not sure which is more elegant!
+
+Note that in version 0.1.4 I have inserted into LC a preliminary version of the not-yet-really existing "Alexandria core". The Citation elements handle the "in" authorsComments on that are most welcome - this is kind of the first community who might care.
+
+To facilitate the discussion, I attach two schema diagrams. Note that the Proposal 2 is much longer because it shows selected details of the publication / reference system of Alexandria core, to make clear where year, in-authors etc. may end up.
+
+-- Main.GregorHagedorn - 08 Nov 2004
+---
+<h3>Proposal 1</h3>
+	 <img src="%ATTACHURLPATH%/AuthorshipP1.png" alt="AuthorshipP1.png"  />
+---
+<h3>Proposal 2</h3>
+	 <img src="%ATTACHURLPATH%/AuthorshipP2.png" alt="AuthorshipP2.png"  />
+---
+<h3>Discussion</h3>
+
+Gregor: I think in *Proposal 2* the Protonym/Combining citation structure does not work for zoology yet. In botany, if a name is not an original name or a nomen novum, i.e. if the name is recombined, the combining author can be expected to be known. Consequently, the distinginction between rendering "Genus species <nop>ProtonymAuthors" and "Genus species (<nop>ProtonymAuthors) <nop>CombiningAuthors" is easily recognized. This is not so for zoology, where the distinction must be made regardless of whether <nop>CombiningAuthors are known or not. Do we need a flag? Or is <nop>ProtonymAuthors not the correct concept? I rather prefer it over the distinguishing two author types on the basis of whether they would be formatted with or without parenthesis. But then we probably need, in addition, a flag "IsRecombinedName" or else. - 8. Nov. 2004
+	* Thinking again about this, and my critique of the ambiguity of "Primary" when contrasting "Parenthetical" and "Primary", an improvement over "Parenthetical" and "Nonparenthetical" could be "Parenthetical" and "Immediate" rather than "primary". I still don't like the whole parenthetical approach very much, though...
+
+Sally: I'm not against this proposal. Some examples would be helpful, particularly of zoological names, and also some of the more complicated author strings (in and ex authors or the fungal equivalents). Our guiding principle should be that there's enough structure to prevent nonsense, but enough simplicity to make the structure readable to the naked eye - so having explicit container names (protonym or combining citation structures) helps with this. For consistency, should the 'Text' element actually be 'Label' - as we have done for the name itself?
+Main.SallyHinchcliffe - 09 Nov 2004	
+	* Gregor: I agree about examples - just too much work for yesterday. Label: perhaps. However, Label itself in the AlexandriaCore contains another element Text. Reason for this is that Label is a structure containing Text, Abbreviation, and in other cases even more, including Details, URIs, Icons. Abbreviation for literature is quite important - see TL2 abbreviations. Not sure LC needs to be burdened with it, but at the moment I think ultimately it may be nice to have consistency here across the different cores, so perhaps we should use Label/Text as well. - 09 Nov 2004	
+
+---
+
+Rich (from email): Maybe <nop>CanonicalAuthorship needs to move into Alexandria/Gutenberg Core (= AC), instead of LC? My main question is, why do we need a "NameCitation" wrapper for "SimpleCitation"?  I believe we can make a case that Subreferences *can* exist outside the context of taxon names (maybe this is just a difference in style of citation, but I would cite an authored "sidebar" in a book as "Smith in Jones 1999", rather than "Smith, 1999" -- especially if the sidebar had no title). That way, "Authors" and "IsSubreference" elements of <nop>NameCitation can be inherited from within <nop>SimpleCitation.  Maybe we need it just to establish Location -- but I can also see "ProtonymLocation" as an element of  <nop>CanonicalAuthorship. - 09 Nov 2004
+	* Gregor: In principle the <nop>NameCitation (any better name for this?) is related with the citation element already provided by AC. However, this one is very specific to the purpose of taxonomic authorship citation. There is no equivalent to marking an "IsIn" outside taxonomy, the authors here follow entirely different rules (in that they are abbreviated according to taxonomic rules rather than to literature citation rules!!!), there is no equivalent for the "ex" and ":" (= sanctioning) problem that has to be by some method (not necessarily the proposed one!) taken care of here. All together, this makes me believe that this is an original LC type rather than belonging in AC. - 09 Nov 2004
+
+Rich (from email, continued): Also on this topic, I would prefer to embrace the "authors of Publications, rather than names" approach completely, and change "CanonicalAuthorship" to "SourcePublications" -- of which there may be two (Protonym & Combination; the latter optional). - 09 Nov 2004
+	* Gregor: Similar to the above, I believe this expresses much more than simply "SourcePublications" - at least in botany the authorship indicates much about nomenclatural relations (recombination, validation, sanctioning, etc.). Also the problem of author abbreviations (and perhaps of title abbreviations as well, which for the moment I still try to deal with in AC) is another piece that has nothing to do with publication. Note that in botany the "in" authors are explicitly to be abbreviated differently than the taxon authors! - 09 Nov 2004
+
+---
+
+Another problem I just notice: although in AlexandriaCore it is desirable that the Label of the reference exists, this is probably impossible for the embedded AC part in the citation. You may know the publication year or true publication date, but nothing more. - Gregor - 9 Nov 2004
+
+---
+
+<h3>Examples</h3>
+
+
+<h4>Single author example</h4>
+
+_Original Proposal 1 (vers. 0.1.3 = schema 2c):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>Vell.</Text> 
+  <Atomized AuthorRelationship="Primary">
+	 <AuthorsAsText>Vell.</AuthorsAsText> 
+	 <Author>
+		<AuthorName>Vell.</AuthorName>
+	 </Author>
+  </Atomized>
+</CanonicalAuthorship>
+</verbatim> 
+
+_Alternative Proposal 2 (= see in ver. 0.1.4):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>Vell.</Text>
+  <ProtonymCitation>
+	 <Authors><!-- no equivalent to unparsed AuthorsAsText from Proposal 1! -->
+		<Name>Vell.</Name>
+	 </Authors>
+  </ProtonymCitation>
+</CanonicalAuthorship>
+</verbatim> 
+
+
+<h4>Complex author example</h4>
+
+For a complex example I use the artificial "<i>Genus species</i> (A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2) D.I.D. Recombination &amp; T.O. Gether-With (1999 [2000])". Note: examples are handwritten and may contain errors.
+
+_Original Proposal 1 (vers. 0.1.3 = schema 2c):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>(A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2) D.I.D. Recombination &amp; T.O. Gether-With (1999 [2000])</Text> 
+  <Atomized AuthorRelationship="Parenthetical">
+	 <AuthorsAsText>A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2</AuthorsAsText> 
+	 <Author>
+		<AuthorName>A. Invalid</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>B. Publication</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>A. Protonym-Author1</AuthorName>
+		<NamePrevix>ex</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>B. Author2</AuthorName>
+	 </Author>
+  </Atomized>
+  <Atomized AuthorRelationship="Primary">
+	 <AuthorsAsText>D.I.D. Recombination &amp; T.O. Gether-With</AuthorsAsText> 
+	 <Author>
+		<AuthorName>D.I.D. Recombination</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>T.O. Gether-With</AuthorName>
+	 </Author>
+	 <PublicationYear>1999 [2000]</PublicationYear> 
+  </Atomized>
+</CanonicalAuthorship>
+</verbatim> 
+
+_Alternative Proposal 2 (= see in ver. 0.1.4):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>(A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2) D.I.D. Recombination &amp; T.O. Gether-With (1999 [2000])</Text> 
+  <ProtonymCitation>
+	 <Authors>
+		<Name>A. Invalid</Name>
+		<Name>B. Publication</Name>
+		<Name>A. Protonym-Author1</Name>
+		<Name>ex</Name>
+		<Name>B. Author2</Name>
+	 </Authors>
+  </ProtonymCitation>
+  <CombinationCitation>
+	 <Authors>
+		<Name>D.I.D. Recombination</Name>
+		<Name>T.O. Gether-With</Name>
+	 </Authors>
+	 <Publication><!-- note: title, etc. may be given here as well -->
+		<Year>1999</Year>
+		<TruePublicationDate year="1999"/><!-- optionally also month, day -->
+	 </Publication>
+  </CombinationCitation>
+</CanonicalAuthorship>
+</verbatim> 
+
+Please do comment or correct. Maybe someone would like to create an even more complex real example, involving "in" citation and publication details, including protologue/original description page?
+
+-- Gregor Hagedorn, 9. Nov. 2004
+---
+
+%META:FILEATTACHMENT{name="AuthorshipP1.png" attr="h" comment="Proposal 1" date="1099935821" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\OtherSchemata\LC\AuthorshipP1.png" size="12202" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="AuthorshipP2.png" attr="h" comment="Proposal 2" date="1099935859" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\OtherSchemata\LC\AuthorshipP2.png" size="43994" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1102953851" from="UBIF.LCCanonicalAuthorshipDiscussionGH" to="UBIF.LCCanonicalAuthorshipDiscussion014"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1100003160" format="1.0" version="1.7"}%
+d3 143
+a145 143
+	1 Probably an oversight: <nop>CanonicalAuthorship itself probably should not have the <nop>AuthorRelationship attribute on it, which is also on the Atomized element inside that type.
+	2 I really like the Text element at the start for all authorship together, and propose to use the same structure for <nop>CanonicalName. I dislike the analogous semi-parsed "AuthorsAsText" of Proposal 1. To me this offers to much variability to atomization. Especially, you could have to Proposal1.Atomized elements, only one of which contains a "AuthorsAsText" label text.
+	3 In general  dislike the repeated sequence of 0 to 2 times "Atomized" with <nop>AuthorRelationship attribute having values either "parenthetical" or "primary".<br/> Sally writes in the schema: "The parsed out author team. This allows two levels of parsing - separating parenthetical author(s) from original authors, or the full monty where every author is completely atomised out. I'm not wedded to this structure (it happens to be how we do it in IPNI) but I think there should be _some_ way of atomising out author names".<br/> I think, it would easier to express this through two element names. This is not logical necessity, just preference because I believe this is easier seen-through when mapping from flat-file data.<br/> Secondly, I wonder whether to equate "non-parenthetical" with "primary" makes sense (as implied in opposing "parenthetical" with "primary"). In botany I rather think of the parenthetical author (= basionym-author) as the primary author. For the moment I propose to replace the two types with Protonym and Combining citation, following the original usage by Jerry Cooper in the first LC draft.
+	4 A bit of a problem is the case of "ex" and ":" (= sanctioning in fungi) citations. This must be nested within the Protonym and Combining structure - and then within those each list of authors must have multiple authors. Sally's proposal adding a prefix to the first author of the team that needs to be marked with an ":" or "ex"could work. It seems a bit odd that a prefix that belongs to a multi-author team should be tied to the first, but I certainly do not like the alternative of providing another structural layer as well. Just for the sake of variety, I propose to recognize ":" and "ex" as special values and simply treat them in the authors list. Not sure which is more elegant!
+
+Note that in version 0.1.4 I have inserted into LC a preliminary version of the not-yet-really existing "Alexandria core". The Citation elements handle the "in" authorsComments on that are most welcome - this is kind of the first community who might care.
+
+To facilitate the discussion, I attach two schema diagrams. Note that the Proposal 2 is much longer because it shows selected details of the publication / reference system of Alexandria core, to make clear where year, in-authors etc. may end up.
+
+-- Main.GregorHagedorn - 08 Nov 2004
+---
+<h3>Proposal 1</h3>
+	 <img src="%ATTACHURLPATH%/AuthorshipP1.png" alt="AuthorshipP1.png"  />
+---
+<h3>Proposal 2</h3>
+	 <img src="%ATTACHURLPATH%/AuthorshipP2.png" alt="AuthorshipP2.png"  />
+---
+<h3>Discussion</h3>
+
+Gregor: I think in *Proposal 2* the Protonym/Combining citation structure does not work for zoology yet. In botany, if a name is not an original name or a nomen novum, i.e. if the name is recombined, the combining author can be expected to be known. Consequently, the distinginction between rendering "Genus species <nop>ProtonymAuthors" and "Genus species (<nop>ProtonymAuthors) <nop>CombiningAuthors" is easily recognized. This is not so for zoology, where the distinction must be made regardless of whether <nop>CombiningAuthors are known or not. Do we need a flag? Or is <nop>ProtonymAuthors not the correct concept? I rather prefer it over the distinguishing two author types on the basis of whether they would be formatted with or without parenthesis. But then we probably need, in addition, a flag "IsRecombinedName" or else. - 8. Nov. 2004
+	* Thinking again about this, and my critique of the ambiguity of "Primary" when contrasting "Parenthetical" and "Primary", an improvement over "Parenthetical" and "Nonparenthetical" could be "Parenthetical" and "Immediate" rather than "primary". I still don't like the whole parenthetical approach very much, though...
+
+Sally: I'm not against this proposal. Some examples would be helpful, particularly of zoological names, and also some of the more complicated author strings (in and ex authors or the fungal equivalents). Our guiding principle should be that there's enough structure to prevent nonsense, but enough simplicity to make the structure readable to the naked eye - so having explicit container names (protonym or combining citation structures) helps with this. For consistency, should the 'Text' element actually be 'Label' - as we have done for the name itself?
+Main.SallyHinchcliffe - 09 Nov 2004	
+	* Gregor: I agree about examples - just too much work for yesterday. Label: perhaps. However, Label itself in the AlexandriaCore contains another element Text. Reason for this is that Label is a structure containing Text, Abbreviation, and in other cases even more, including Details, URIs, Icons. Abbreviation for literature is quite important - see TL2 abbreviations. Not sure LC needs to be burdened with it, but at the moment I think ultimately it may be nice to have consistency here across the different cores, so perhaps we should use Label/Text as well. - 09 Nov 2004	
+
+---
+
+Rich (from email): Maybe <nop>CanonicalAuthorship needs to move into Alexandria/Gutenberg Core (= AC), instead of LC? My main question is, why do we need a "NameCitation" wrapper for "SimpleCitation"?  I believe we can make a case that Subreferences *can* exist outside the context of taxon names (maybe this is just a difference in style of citation, but I would cite an authored "sidebar" in a book as "Smith in Jones 1999", rather than "Smith, 1999" -- especially if the sidebar had no title). That way, "Authors" and "IsSubreference" elements of <nop>NameCitation can be inherited from within <nop>SimpleCitation.  Maybe we need it just to establish Location -- but I can also see "ProtonymLocation" as an element of  <nop>CanonicalAuthorship. - 09 Nov 2004
+	* Gregor: In principle the <nop>NameCitation (any better name for this?) is related with the citation element already provided by AC. However, this one is very specific to the purpose of taxonomic authorship citation. There is no equivalent to marking an "IsIn" outside taxonomy, the authors here follow entirely different rules (in that they are abbreviated according to taxonomic rules rather than to literature citation rules!!!), there is no equivalent for the "ex" and ":" (= sanctioning) problem that has to be by some method (not necessarily the proposed one!) taken care of here. All together, this makes me believe that this is an original LC type rather than belonging in AC. - 09 Nov 2004
+
+Rich (from email, continued): Also on this topic, I would prefer to embrace the "authors of Publications, rather than names" approach completely, and change "CanonicalAuthorship" to "SourcePublications" -- of which there may be two (Protonym & Combination; the latter optional). - 09 Nov 2004
+	* Gregor: Similar to the above, I believe this expresses much more than simply "SourcePublications" - at least in botany the authorship indicates much about nomenclatural relations (recombination, validation, sanctioning, etc.). Also the problem of author abbreviations (and perhaps of title abbreviations as well, which for the moment I still try to deal with in AC) is another piece that has nothing to do with publication. Note that in botany the "in" authors are explicitly to be abbreviated differently than the taxon authors! - 09 Nov 2004
+
+---
+
+Another problem I just notice: although in AlexandriaCore it is desirable that the Label of the reference exists, this is probably impossible for the embedded AC part in the citation. You may know the publication year or true publication date, but nothing more. - Gregor - 9 Nov 2004
+
+---
+
+<h3>Examples</h3>
+
+
+<h4>Single author example</h4>
+
+_Original Proposal 1 (vers. 0.1.3 = schema 2c):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>Vell.</Text> 
+  <Atomized AuthorRelationship="Primary">
+	 <AuthorsAsText>Vell.</AuthorsAsText> 
+	 <Author>
+		<AuthorName>Vell.</AuthorName>
+	 </Author>
+  </Atomized>
+</CanonicalAuthorship>
+</verbatim> 
+
+_Alternative Proposal 2 (= see in ver. 0.1.4):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>Vell.</Text>
+  <ProtonymCitation>
+	 <Authors><!-- no equivalent to unparsed AuthorsAsText from Proposal 1! -->
+		<Name>Vell.</Name>
+	 </Authors>
+  </ProtonymCitation>
+</CanonicalAuthorship>
+</verbatim> 
+
+
+<h4>Complex author example</h4>
+
+For a complex example I use the artificial "<i>Genus species</i> (A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2) D.I.D. Recombination &amp; T.O. Gether-With (1999 [2000])". Note: examples are handwritten and may contain errors.
+
+_Original Proposal 1 (vers. 0.1.3 = schema 2c):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>(A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2) D.I.D. Recombination &amp; T.O. Gether-With (1999 [2000])</Text> 
+  <Atomized AuthorRelationship="Parenthetical">
+	 <AuthorsAsText>A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2</AuthorsAsText> 
+	 <Author>
+		<AuthorName>A. Invalid</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>B. Publication</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>A. Protonym-Author1</AuthorName>
+		<NamePrevix>ex</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>B. Author2</AuthorName>
+	 </Author>
+  </Atomized>
+  <Atomized AuthorRelationship="Primary">
+	 <AuthorsAsText>D.I.D. Recombination &amp; T.O. Gether-With</AuthorsAsText> 
+	 <Author>
+		<AuthorName>D.I.D. Recombination</AuthorName>
+	 </Author>
+	 <Author>
+		<AuthorName>T.O. Gether-With</AuthorName>
+	 </Author>
+	 <PublicationYear>1999 [2000]</PublicationYear> 
+  </Atomized>
+</CanonicalAuthorship>
+</verbatim> 
+
+_Alternative Proposal 2 (= see in ver. 0.1.4):_
+
+<verbatim>
+<CanonicalAuthorship>
+  <Text>(A. Invalid &amp; B. Publication ex A. Protonym-Author1 &amp; B. Author2) D.I.D. Recombination &amp; T.O. Gether-With (1999 [2000])</Text> 
+  <ProtonymCitation>
+	 <Authors>
+		<Name>A. Invalid</Name>
+		<Name>B. Publication</Name>
+		<Name>A. Protonym-Author1</Name>
+		<Name>ex</Name>
+		<Name>B. Author2</Name>
+	 </Authors>
+  </ProtonymCitation>
+  <CombinationCitation>
+	 <Authors>
+		<Name>D.I.D. Recombination</Name>
+		<Name>T.O. Gether-With</Name>
+	 </Authors>
+	 <Publication><!-- note: title, etc. may be given here as well -->
+		<Year>1999</Year>
+		<TruePublicationDate year="1999"/><!-- optionally also month, day -->
+	 </Publication>
+  </CombinationCitation>
+</CanonicalAuthorship>
+</verbatim> 
+
+Please do comment or correct. Maybe someone would like to create an even more complex real example, involving "in" citation and publication details, including protologue/original description page?
+
+-- Gregor Hagedorn, 9. Nov. 2004
+---
+
+d148 1
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099997580" format="1.0" version="1.6"}%
+d3 4
+a6 1
+1. Probably an oversight: <nop>CanonicalAuthorship itself probably should not have the <nop>AuthorRelationship attribute on it, which is also on the Atomized element inside that type.
+d8 1
+a8 11
+2. I really like the Text element at the start for all authorship together, and propose to use the same structure for <nop>CanonicalName. I dislike the analogous semi-parsed "AuthorsAsText" of Proposal 1. To me this offers to much variability to atomization. Especially, you could have to Proposal1.Atomized elements, only one of which contains a "AuthorsAsText" label text.
+
+3. In general  dislike the repeated sequence of 0 to 2 times "Atomized" with <nop>AuthorRelationship attribute having values either "parenthetical" or "primary". First I think, it would easier to express this through two element names. This is not logical necessity, just preference because I believe this is easier seen-through when mapping from flat-file data. Secondly, I wonder whether to equate "non-parenthetical" with "primary" makes sense (as implied in opposing "parenthetical" with "primary"). In botany I rather think of the parenthetical author (= basionym-author) as the primary author.
+
+Sally writes: "The parsed out author team. This allows two levels of parsing - separating parenthetical author(s) from original authors, or the full monty where every author is completely atomised out. I'm not wedded to this structure (it happens to be how we do it in IPNI) but I think there should be _some_ way of atomising out author names"
+
+For the moment I propose to replace the two types with Protonym and Combining citation, following the original usage by Jerry Cooper in the first LC draft.
+
+A bit of a problem is the case of "ex" and ":" (= sanctioning in fungi) citations. This must be nested within the Protonym and Combining structure - and then within those each list of authors must have multiple authors. Sally's proposal adding a prefix to the first author of the team that needs to be marked with an ":" or "ex"could work. It seems a bit odd that a prefix that belongs to a multi-author team should be tied to the first, but I certainly do not like the alternative of providing another structural layer as well. Just for the sake of variety, I propose to recognize ":" and "ex" as special values and simply treat them in the authors list. Not sure which is more elegant!
+
+Note that in version 0.1.4 I have built in a preliminary version of the not-yet-really existing "Alexandria core". The Citation elements handle the "in" authorsComments on that are most welcome - this is kind of the first community who might care.
+d23 1
+d31 2
+a32 2
+Rich (from email): Maybe CanonicalAuthorship needs to move into Alexandria/Gutenberg Core (= AC), instead of LC? My main question is, why do we need a "NameCitation" wrapper for "SimpleCitation"?  I believe we can make a case that Subreferences *can* exist outside the context of taxon names (maybe this is just a difference in style of citation, but I would cite an authored "sidebar" in a book as "Smith in Jones 1999", rather than "Smith, 1999" -- especially if the sidebar had no title). That way, "Authors" and "IsSubreference" elements of NameCitation can be inherited from within SimpleCitation.  Maybe we need it just to establish Location -- but I can also see "ProtonymLocation" as an element of  CanonicalAuthorship. - 09 Nov 2004
+	* Gregor: In principle the NameCitation (any better name for this?) is related with the citation element already provided by AC. However, this one is very specific to the purpose of taxonomic authorship citation. There is no equivalent to marking an "IsIn" outside taxonomy, the authors here follow entirely different rules (in that they are abbreviated according to taxonomic rules rather than to literature citation rules!!!), there is no equivalent for the "ex" and ":" (= sanctioning) problem that has to be by some method (not necessarily the proposed one!) taken care of here. All together, this makes me believe that this is an original LC type rather than belonging in AC. - 09 Nov 2004
+d37 109
+a145 2
+---
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="SallyHinchcliffe" date="1099991497" format="1.0" version="1.5"}%
+d32 12
+a43 1
+Main.SallyHinchcliffe - 09 Nov 2004	
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099947599" format="1.0" version="1.4"}%
+d29 4
+a32 1
+Gregor: I think in *Proposal 2* the Protonym/Combining citation structure does not work for zoology yet. In botany, if a name is not an original name or a nomen novum, i.e. if the name is recombined, the combining author can be expected to be known. Consequently, the distinginction between rendering "Genus species <nop>ProtonymAuthors" and "Genus species (<nop>ProtonymAuthors) <nop>CombiningAuthors" is easily recognized. This is not so for zoology, where the distinction must be made regardless of whether <nop>CombiningAuthors are known or not. Do we need a flag? Or is <nop>ProtonymAuthors not the correct concept? I rather prefer it over the distinguishing two author types on the basis of whether they would be formatted with or without parenthesis. But then we probably need, in addition, a flag "IsRecombinedName" or else. - 8. Nov. 2004
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099935960" format="1.0" version="1.3"}%
+d11 1
+a11 1
+For the moment I propose to replace the two types with Protonym and Combining citation. 
+d13 1
+a13 1
+A bit of a problem is the case of "ex" and ":" (= sanctioning in fungi) citations. This must be nested within the Protonym and Combining structure - and then within those each list of authors must have multiple authors. Sally's proposal with the prefix could work, although it is somewhat sequence dependent. It seems a bit odd that a prefix that belongs to multiple authors should be tied to one. Just for the sake of variety, I propose to recognize ":" and "ex" as special values and simply treat them in the authors list. Not sure which is more elegant!
+d21 1
+a21 1
+Proposal 1: <br />
+d24 1
+a24 1
+Proposal 2: <br />
+d27 4
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099930640" format="1.0" version="1.2"}%
+d5 1
+a5 1
+2. I really like the Text element at the start, and propose to use the same structure for <nop>CanonicalName.
+d7 1
+a7 1
+3. I dislike the repeated sequence of 0 to 2 times "Atomized" with <nop>AuthorRelationship attribute having values either "parenthetical" or "primary". First I think, it would easier to express this through two element names, secondly, I wonder whether to equate non-parenthitical with primary makes sense. In botany I rather think of the parenthetical author (= basionym-author) as the primary author.
+d11 1
+a11 1
+For the moment I propose to replace the two types with Protonym and Combining citation. I further believe we need more in there to cover the case of "ex" and ":" (= sanctioning in fungi) citations.
+d13 1
+a13 1
+Sally's proposal with the prefix could work, although it is somewhat sequence dependent. It seems odd that a prefix that belongs to multiple authors should be tied to one.
+d15 3
+d20 9
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099925732" format="1.0" version="1.1"}%
+d3 12
+a14 1
+probably an oversight: CanonicalAuthorship itself probably should not have the AuthorRelationship attibute on it, which is also on the Atomized element inside that type
+@

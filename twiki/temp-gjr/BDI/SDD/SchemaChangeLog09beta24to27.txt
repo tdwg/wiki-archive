@@ -1,0 +1,92 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118877" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+---
+
+<h2>Changes in BDI.SDD_ 0.9 beta 24 (sent only to Kevin)</h2>
+
+Kevin pointed out some gross bugs I had introduced into <nop>CodedDescriptions while editing the type hierarchy, fixed.
+
+Added Expertise level "0" for undefined expertise level. Expertise level can not be made optional if referenced in identity constraints, so we need a real null-value instead of absence.
+
+Gregor Hagedorn - 19 Nov 2003
+----
+
+<h2>Changes in BDI.SDD_ 0.9 beta 25 (sent only to Jacob & Bob)</h2>
+
+In <nop>ProjectDefinition changed <nop>DefaultAudiences element to an attribute on the Audiences collection.
+
+Fixed the identity constraint for <nop>StatisticalMeasures within characters.
+
+Changed all keys from integer to xs:nonNegativeInteger. That can be changed in later versions, but not the other way round.
+
+Added optional debugkey attributes in addition to the debugref. Each debugref now uniquely corresponds with a debugkey. As a consequence, the place where a debugref points to can be found with a simple text search.
+
+Gregor Hagedorn - 20 Nov 2003
+
+----
+
+<h2>Changes in BDI.SDD_ 0.9 beta 26 (sent only to Regine)</h2>
+
+Added discussion structures (everything denoted with leading underscores and optional) for:
+- Generic operator wording for or, and, to, etc. DELTA calls this "Vocabulary"
+- Reporting of numeric values: <nop>FormatString or <nop>LeadingZero, <nop>DecimalSeparator, <nop>DecimalPlaces, etc.? For the latter, I really don't like that <nop>StatisticalMeasures are so separate from the single values... Can we use a single structure for both?
+
+Gregor Hagedorn - 21 Nov 2003
+
+---
+
+<h2>Changes in BDI.SDD_ 0.9 beta 27 (general distribution)</h2>
+
+<nop>CodingStatus in <nop>CharacterNLDType had the wrong type (an abstract base type), corrected to <nop>CharacterCodingStatusNLDType.
+
+<nop>StatisticalMeasures completely revised. 
+
+Previously anonymous types <nop>StatisticalMeasureMethodEnum and <nop>StatisticalMeasureReportingClassEnum now typed and the enumerations revised.
+
+No formatting information for statistical measures (decimal separator, leading zero, number of decimal places) was available so far.
+The logical place is not character as in DELTA, but statistical measure. 
+Question: At project-wide generic definitions, or inside character? (Not yet finished!)
+
+Question: <nop>Statistical Measure is currently a single-Wording type, like states, but perhaps Before/After would be more appropriate?
+
+In a <strong>telephone conference</strong> on Nov. 22, Bob, Kevin, and Gregor changed:
+
+<ul>
+<li>root element "Project" to "Document" (alternatives were Data, or name of BDI.SDD_ Standard (BDI.SDD_, <nop>DescriptionML, etc.)</li>
+
+<li>Generator to <nop>GenerationMetadata. This element combines Generator self-description and information on the generation process (= Timestamp, ...IsExcerpt, <nop>UpdateQueryURI).</li>
+
+<li><nop>InternalNotes to Annotation (alternatives were <nop>DesignNotes (would be ok, but again peculiar/special to BDI.SDD_), Documentation (too narrow, not lick yellow sticky notes), Notes)
+<li><nop>ReportedNotes versus <nop>FreeFormText. <nop>FreeFormText was disapproved by Bob, since it only informs about the format, but not about the role in the model. Bob preferred private/public notes. gh: private not to author, in an application that would be likely to be misunderstood. We have no user-specific private information at all!
+  Other proposals were <nop>TextData, Elaboration. I tentatively tried to change it to Notes but don't really like it. Schema annotations and BDI.SDD_ documentation have to clarify the meaning of it. It is not fully appropriate in text states 
+  (i. e. states with <nop>UnconstrainedText="true")</li>
+
+
+<li>We did *not* change Agent to Contributor. Contributor is already a role name. 
+  If type is to be reused, elements in collection must have same name;
+  Authors (Contributor, Contributor), Editors (Contributor, Contributor), Contributors (Contributor, Contributor) looks strange.
+  Also Agent may in the future be a software agent, rather than a person or organization.</li>
+</ul>
+
+
+Changes not yet agreed in the telephone conference:
+
+Adding Resources/Geography/Location as a new resource section for geographical names. Resources/Locations/Location seemed rather vague. Any better ideas?
+
+Changed <nop>ProjectDefinition (was String intended as a list), and added <nop>GeographicalScope added to the <nop>DescriptionBaseType. 
+
+Added a discussion topic "__OtherScope" om the schema as string. Do we need such further scope definitions? Please see the separate topic: GeographicalRestrictions!
+
+
+Gregor Hagedorn - 26 Nov 2003
+---
+
+PS: Please take a look at the following topics:
+
+ClosedTopicFreeFormNotesInDescriptions<br/>
+ClosedTopicStructureOfConceptTree
+
+%META:FILEATTACHMENT{name="Lisbon2003-SDD_09beta27.zip" attr="" comment="" date="1069953698" path="C:\Data\Desktop\DESCR\SDD\2003Lisbon\SchemaVersions\Lisbon2003-SDD_09beta27.zip" size="55698" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1069837717" from="SDD.SchemaChangeLog09beta27" to="SDD.SchemaChangeLog09beta24to27"}%

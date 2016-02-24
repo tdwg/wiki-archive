@@ -1,0 +1,58 @@
+---+ Metadata Response, Proposal I
+
+---+++++ General Idea
+
+This proposal is based on the current DiGIR metadata response but removes all items that are machine readable and especifically related to the work of the PyWrapper MetadataResponseProposalOne ProviderSoftware. These items (conceptualSchema, minQueryTermLength, maxSearchResponseRecords, maxInventoryResponseRecords) were moved to the CapabilitiesRequest.
+
+Additionally all items that focussed on resources' content were removed. These items ("recordBasis", "recordIdentifier") would be treated by some ConceptualSchema and would be retrieved through inventory or search requests.
+
+The former DiGIR element "implementation" is already part of the standard ProtocolHeader called version, so it was dropped.
+
+The host grouping element was seen as the provider itself, so it has been removed and its contacts and code were moved to the provider level.
+
+As far as possible, UDDI elements were mapped to this metadata definition with a provider being treated as a BusinessEntity and a single resource as a UDDI ServiceEntity. Both provider and resources now have their own AccessPoints.
+
+The element "useRestrictions" has been substituted by "IPR". (*pending issue: * Is IPR broader than useRestrictions?)
+
+*Pending issue: *Should we keep numberOfRecords? (could be retrived through count requests)
+
+---+++++ Example
+<verbatim>
+<metadata>
+  <provider>
+    <name>String</name>
+    <code>String</code>
+    <accessPoint>http://xx</accessPoint>
+    <relatedInformation>http://xx</relatedInformation> *
+    <contact type="technical"> *
+      <name>String</name>
+      <title>String</title>
+      <emailAddress>a@a</emailAddress>
+      <phone>String</phone>
+    </contact>
+    <abstract>String</abstract>
+  </provider>
+  <resources>
+    <resource> *
+      <name>String</name>
+      <code>String</code>
+      <accessPoint>http://xx</accessPoint>
+      <relatedInformation>http://xx</relatedInformation> *
+      <contact type="administrative"> *
+        <name>String</name>
+        <title>String</title>
+        <emailAddress>a@a</emailAddress>
+        <phone>String</phone>
+      </contact>
+      <abstract>String</abstract>
+      <keywords>String</keywords>
+      <citation>String</citation>
+      <IPR>String</IPR>
+      <numberOfRecords>1</numberOfRecords>
+      <dateLastUpdated>2001-12-17T09:30:47-05:00</dateLastUpdated>
+    </resource>
+  </resources>
+</metadata>
+
+with* indicating repeatable elements
+</verbatim>

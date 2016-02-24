@@ -1,0 +1,94 @@
+%TMPL:INCLUDE{"page"}%
+%TMPL:INCLUDE{"logo"}%
+%TMPL:INCLUDE{"viewtoolbar"}%
+%TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%TMPL:INCLUDE{"viewbottombar"}%
+
+
+
+%TMPL:DEF{"templatescript"}%<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_attach.js"></script>
+%TMPL:END%
+
+
+
+%TMPL:DEF{"bodyclassname"}%patternNoViewPage patternAttachPage%TMPL:END%
+
+
+
+%TMPL:DEF{"titleaction"}%%MAKETEXT{"(attach)"}% %TMPL:END%
+
+
+
+%TMPL:DEF{"pagetitle"}%<h1 class="patternTemplateTitle"> %TMPL:P{"pagetitlecontents"}% </h1>%TMPL:END%
+
+%TMPL:DEF{"pagetitlecontents"}%%MAKETEXT{"Attach image or document on [_1]" args="[[%TOPIC%]]"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"toolbar"}%<div class="patternTop">%TWISTYSHOW{id="attachhelp" link="%MAKETEXT{"Show help"}%" imgleft="%ICONURLPATH{toggleopen-small}%"}%%TWISTYHIDE{id="attachhelp" link="%MAKETEXT{"Hide help"}%" imgleft="%ICONURLPATH{toggleclose-small}%"}%
+</div><!--//patternTop-->%TMPL:END%
+
+
+
+%TMPL:DEF{"pagehelp"}%%TWISTYTOGGLE{id="attachhelp" mode="div" class="twikiHelp" remember="on" noscript="hide"}%%TMPL:P{"notes"}%%TMPL:P{"extranotes"}%%ENDTWISTYTOGGLE%%TMPL:END%
+
+%TMPL:DEF{"pagehelp_nojavascript"}%<br />%TWISTYTOGGLE{id="pagehelp_nojavascript" mode="div" class="twikiHelp" start="hide"}%%TMPL:P{"notes"}%%TMPL:P{"extranotes"}%%ENDTWISTYTOGGLE%%TMPL:END%
+
+
+
+%TMPL:DEF{"notes"}%
+   * %MAKETEXT{"*Help:* Please see <a target='TWikiVariables' onclick=\"return launchWindow('[_1]','FileAttachment')\" href='' rel='nofollow'>FileAttachment</a> for more information about attaching files." args="%TWIKIWEB%"}%
+   * %MAKETEXT{"*Bug:* Internet Explorer 4.0 or earlier: If you get an \"Internal Server Error\" message when you upload a file, you need to try again. It should work the second time."}%
+%TMPL:END%
+
+
+
+%TMPL:DEF{"existingattachments"}%%META{"attachments" all="on" title="<h3>%MAKETEXT{"Other attachments of [_1]" args="<nop>%TOPIC%"}%</h3>"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"formstart"}%<div class="patternAttachForm"><form name="main" enctype="multipart/form-data" action="%SCRIPTURLPATH{"upload"}%/%INTURLENCODE{"%WEB%/%TOPIC%"}%" method="post">%TMPL:END%
+
+%TMPL:DEF{"formend"}%</div><!-- /patternAttachForm-->
+</form>%TMPL:END%
+
+
+
+%TMPL:DEF{"attachform"}%<div class="twikiFormSteps">
+<div class="twikiFormStep">
+---+++ %MAKETEXT{"Attach new file"}%
+
+%TMPL:P{"previous"}%%IF{"$ATTACHFILESIZELIMIT > 0" then="%MAKETEXT{"Upload up to [_1] KB." args="%ATTACHFILESIZELIMIT%"}%" else="%MAKETEXT{"There is no size limit for uploaded files."}%"}%
+
+<input class="twikiInputField" type="file" name="filepath" value="%FILEPATH%" size="50" /><input type="hidden" name="filename" value="%FILENAME%" />
+</div><!-- /twikiFormStep-->
+<div class="twikiFormStep">
+---+++ %MAKETEXT{"Comment"}%
+
+%MAKETEXT{"Describe the file so other people know what it is."}%
+
+<input class="twikiInputField" type="text" name="filecomment" value="%FILECOMMENT%" maxlength="256" size="50" />
+</div><!-- /twikiFormStep-->
+%TMPL:P{"twikiFormStepproperties"}%
+---+++ %MAKETEXT{"Properties"}%
+
+<input type="checkbox" class="twikiCheckbox" id="createlink" name="createlink" %ATTACHLINKBOX% /><label for="createlink">%MAKETEXT{"Create a link to the attached file"}%</label> <span class="twikiGrayText">%MAKETEXT{"Images will be displayed, for other attachments a link will be created."}%</span>
+
+<input type="checkbox" class="twikiCheckbox" id="hidefile" name="hidefile" %HIDEFILE% /><label for="hidefile">%MAKETEXT{"Do not show attachment in table"}%</label> <span class="twikiGrayText">%MAKETEXT{"Attachments will not be shown in topic view page."}%</span>
+</div><!-- /twikiFormStep-->%TMPL:P{"changepropertiesaction"}%
+</div><!-- /twikiFormSteps-->%TMPL:END%
+
+
+
+%TMPL:DEF{"content"}%<div class="patternTopic">
+%TMPL:P{"pagetitle"}%%TMPL:P{"actionheader"}%
+%TMPL:P{"toolbar"}%
+%TMPL:P{"pagehelp"}%
+%TMPL:P{"formstart"}%
+%TMPL:P{"attachform"}%
+%TMPL:P{"topicaction"}%
+%TMPL:P{"movedelete"}%
+%TMPL:P{"pagehelp_nojavascript"}%
+</div><!-- /patternTopic-->
+%TMPL:P{"versions"}%
+%TMPL:P{"existingattachments"}%%TMPL:END%

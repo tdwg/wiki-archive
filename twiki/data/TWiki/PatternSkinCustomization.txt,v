@@ -1,0 +1,898 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2007.01.16.04.12.02;	author TWikiContributor;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.04.01.05.55.31;	author TWikiContributor;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.02.01.12.01.23;	author TWikiContributor;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.08.28.22.59.17;	author ArthurClemens;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.08.17.04.44.48;	author PeterThoeny;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.08.16.05.36.15;	author ArthurClemens;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.6
+log
+@buildrelease
+@
+text
+@%META:TOPICINFO{author="TWikiContributor" date="1130019100" format="1.1" version="6"}%
+
+---+!! %TWIKIWEB%.PatternSkin Customization
+
+*Questions and answers on configuring page elements.* For styling your TWiki, see PatternSkinCssCookbook.
+
+%TOC%
+
+---++ First Read: How to modify !PatternSkin templates
+
+If you need to change any of the elements that are visible on the common 'view' pages, you need to change the 'view' _template_: =/templates/view.pattern.tmpl=. The quickest way would be to simply change the text in the template. A safer way -  strongly recommended, because it will survive a TWiki update - is to create your own custom skin. That may sound like an awful lot of work, but in reality a skin may be as much as 1 file that consists of only a few lines of code.
+
+*Example* %BR%
+Let's say you want to simplify the bottom toolbar and remove all links except for "More topic actions". You would need to target =%<nop>TMPL:DEF{"topicactionbuttons"}%=, which is located in =view.pattern.tmpl=.
+
+*The steps you would need:*
+   1 Think up a name for your skin. Let us use =myskin= for now.
+   1 Create a new (empty) view template file in =/templates= called =view.myskin.tmpl=.
+   1 In =view.myskin.tmpl= you write: %BR%
+   =%<nop>TMPL:INCLUDE{"view"}%= %BR%
+   =%<nop>TMPL:DEF{"topicactionbuttons"}%%<nop>TMPL:P{"activatable_more"}%%<nop>TMPL:END%=
+   1 Now the skin is set. For testing, view any topic and append to the topic name: =?cover=myskin=. You should see an effect now.
+   1 To make the changes visible on all pages, go to [[Main.TWikiPreferences]] (to keep %WIKIPREFSTOPIC% intact) and write:
+<blockquote><pre>
+   * <nop>Set COVER = myskin
+</pre>
+or write
+<pre>
+   * <nop>Set SKIN = myskin,pattern
+</pre></blockquote>
+
+
+---++ Logo
+
+---+++ How can I change the web logo?
+
+By default the logo at the top left of each web points to the image with name =logo.gif= that is attached to each web's WebPreferences. <br />
+The default variables that cause this behavior are defined in [[%WIKIPREFSTOPIC%]].
+
+Redefine your custom variables in [[%LOCALSITEPREFS%]] (to keep %WIKIPREFSTOPIC% intact):
+<blockquote><pre>
+   * Set <nop>WEBLOGONAME = logo.gif
+   * Set <nop>WEBLOGOIMG = %<nop>PUBURLPATH%/%<nop>BASEWEB%/%<nop>WEBPREFSTOPIC%/%<nop>WEBLOGONAME%
+   * Set <nop>WEBLOGOURL = %<nop>SCRIPTURLPATH{"view"}%/%<nop>BASEWEB%/%<nop>HOMETOPIC%
+   * Set <nop>WEBLOGOALT = Home
+</pre></blockquote>
+
+There are 2 ways to change the logo in a web:
+
+*Using logo.gif:*
+<blockquote>
+   * Create a new image named =logo.gif= and attach it to the web's WebPreferences topic. %TWIKIWEB%.PatternSkin's stylesheet assumes the logo is 40px high. More about that later.
+   * You can also upload the image with FTP to =/pub/YourWeb/WebPreferences/=.
+   * Copy the above instructions ("Redefine your custom variables") and insert your logo name.
+</blockquote>
+*Using a new filename:*
+<blockquote>
+   * Attach whatever image and attach it to the web's WebPreferences topic. Then add to the WebPreferences (under _Custom web preferences_):
+<pre>
+      * Set <nop>WEBLOGONAME = your-logo-name.gif-or-png
+</pre>
+   * Copy the above instructions ("Redefine your custom variables") and insert your logo name.
+</blockquote>
+
+---+++ How do I set a site-wide logo?
+
+There is a bunch of site-wide logo variables in [[%LOCALSITEPREFS%]]: =WIKILOGOIMG=, =WIKILOGOURL= and =WIKILOGOALT=.
+To change only the web logo image to site-wide, in [[%LOCALSITEPREFS%]] set:
+<blockquote><pre>
+   * Set <nop>WEBLOGOIMG = %<nop>WIKILOGOIMG%
+</pre></blockquote>
+
+---+++ My logo does not fit the top bar
+
+The top bar is 64 pixels high by default.
+
+*Using templates:*
+<blockquote>
+Change the height of the top bar in =templates/viewtopbar.pattern.tmpl=:
+
+<pre>
+%TMPL:DEF{"topbardimensions"}%
+#patternTopBar,
+#patternClearHeaderCenter,
+#patternClearHeaderLeft,
+#patternClearHeaderRight,
+#patternTopBarContentsOuter {
+	height:64px; /* top bar height; make room for header columns */
+	overflow:hidden;
+}
+%TMPL:END%
+</pre>
+
+Only change the number from 64px to another value.
+</blockquote>
+
+*Using style sheets:*
+<blockquote>
+Create a new stylesheet with above definition in it, attach it to a topic and point =USERLAYOUTURL= to that topic attachment. See %TWIKIWEB%.PatternSkinCssCookbook about creating custom styles.
+</blockquote>
+
+---+++ I want to change the white space above and below the logo
+
+Change the table style in topic %TWIKIWEB%.WebTopBar. The default top padding is 11px.
+
+---++ Top bar
+
+---+++ I want to set or change the top background image
+
+The image at the top is called "header art" - commonly the top image found on blog sites. The image that is displayed by default is set by the variable =WEBHEADERART=, defined in [[%WIKIPREFSTOPIC%]].
+
+Redefine your custom variables in [[%LOCALSITEPREFS%]] (to keep %WIKIPREFSTOPIC% intact):
+<blockquote><pre>
+   * Set WEBHEADERART = %<nop>PUBURLPATH%/%<nop>TWIKIWEB%/PatternSkin/TWiki_header.gif
+   * Set WEBHEADERBGCOLOR = somehexcolor (no quotes, for example: #ffffff)
+</pre></blockquote>
+
+You can also set =WEBHEADERART= per web, by defining the variable in the Web's !WebPreferences.
+
+---+++ I want to have the web color in the top bar
+
+Redefine =WEBHEADERBGCOLOR= in [[%LOCALSITEPREFS%]] (to keep %WIKIPREFSTOPIC% intact):
+<blockquote><pre>
+   * Set WEBHEADERBGCOLOR = %<nop>WEBBGCOLOR%
+</pre></blockquote>
+
+---+++ I want to remove the Jump and Search boxes from the top bar 
+
+If you have localization enabled, you will also see a language dropdown box at the far right.
+
+You can remove these items from %TWIKIWEB%.WebTopBar.
+
+---+++ I want to hide the top bar
+
+*Using templates:*
+
+The view template is populated with page elements using template inclusions:
+
+<pre>
+%<nop>TMPL:INCLUDE{"page"}%
+%<nop>TMPL:INCLUDE{"viewtopbar"}%
+%<nop>TMPL:INCLUDE{"viewtoolbar"}%
+%<nop>TMPL:INCLUDE{"viewleftbar"}%
+%<nop>TMPL:INCLUDE{"viewrightbar"}%
+%<nop>TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%<nop>TMPL:INCLUDE{"viewbottombar"}%
+</pre>
+
+Each included template draws a part of the screen.%BR%
+Omit =%<nop>TMPL:INCLUDE{"viewtopbar"}%= to hide the top bar.
+
+Another approach is to clear the contents of module =topbar=; for example in =view.myskin.tmpl=:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:INCLUDE{"topbar"}%%TMPL:END%
+</pre>
+
+and add:
+
+<pre>
+%<nop>TMPL:DEF{"topbardimensions"}%#patternTopBar,
+#patternClearHeaderCenter,
+#patternClearHeaderLeft,
+#patternClearHeaderRight,
+#patternTopBarContentsOuter {
+	height:0px;
+}%<nop>TMPL:END%
+</pre>
+</blockquote>
+
+*Using style sheets:*
+<blockquote>
+See PatternSkinCssCookbookNoTopBar.
+</blockquote>
+
+---++ Left bar
+
+---+++ I want to hide the left bar
+
+*Using templates:*
+<blockquote>
+Omit =%<nop>TMPL:INCLUDE{"viewleftbar"}%= to hide the left bar, or in a view template clear it using =%<nop>TMPL:DEF{"viewleftbar"}%%TMPL:END%=
+</blockquote>
+
+*Using style sheets:*
+<blockquote>
+See PatternSkinCssCookbookNoLeftBar.
+</blockquote>
+
+---++ Other page parts
+
+---+++ I want to hide the edit buttons from certain users
+
+It may defy the wiki-ness of your TWiki installation, but in certain circumstances it could be useful to hide the edit buttons from users that are not logged in, for instance for customers.
+
+Create in the template directory the file =view.customer.tmpl=. 'Empty' =topicaction= and =toolbar= by writing in the template:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+%<nop>TMPL:DEF{"topicaction"}%%TMPL:END%
+%<nop>TMPL:DEF{"toolbar"}%%TMPL:END%
+</pre></blockquote>
+
+In %MAINWEB%.TWikiGuest, set the cover to
+<blockquote><pre>
+   * <nop>Set COVER = customer
+</pre></blockquote>
+
+By default this topic is editable only by !TWikiAdminGroup members.
+
+---+++ I want to remove the History button from the bottom
+
+All action buttons are defined in =viewtopicactionbuttons.pattern.tmpl=. Remove module =revisions= from =%<nop>TMPL:DEF{"topicactionbuttons"}%=. %BR%
+<blockquote><code style="white-space:pre">
+%<nop>TMPL:DEF{"topicactionbuttons"}%%<nop>TMPL:P{"activatable_raw_edit"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{context="WysiwygPluginEnabled" then="activatable_edit_wysiwyg"}%%<nop>TMPL:P{context="WysiwygPluginEnabled" then="sep"}%
+%<nop>TMPL:P{"activatable_attach"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{"printable"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{"raw"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{"backlinks"}%%<nop>TMPL:P{"sep"}%
+<span style="color:red"><s>%<nop>TMPL:P{"revisions"}%%<nop>TMPL:P{"sep"}%</s></span>
+%<nop>TMPL:P{"activatable_more"}%%<nop>TMPL:END%
+</code>
+</blockquote>
+In your =view.myskin.tmpl= file (see above) you write:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:DEF{"topicactionbuttons"}%%TMPL:P{"activatable_raw_edit"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{context="WysiwygPluginEnabled" then="activatable_edit_wysiwyg"}%%TMPL:P{context="WysiwygPluginEnabled" then="sep"}%
+%<nop>TMPL:P{"activatable_attach"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"printable"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"raw"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"backlinks"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"activatable_more"}%%TMPL:END%
+</pre>
+
+Remove all newlines if you copy-paste above text.
+</blockquote>
+Test by appending =?cover=myskin= to any topic.
+
+---+++ I want to insert text outside of the topic content
+
+!PatternSkin has 2 'buckets' to write additional content to: =beforetextcontents= and =aftertextcontents=, both defined in =view.pattern.tmpl=. These containers can contain text or html and are placed directly before and after the topic text.
+
+Both modules are wrapped in CSS containers:
+   * =beforetextcontents= - wrapped in =div= of class =twikiBeforeText=
+   * =aftertextcontents= - wrapped in =div= of class =twikiAfterText=
+   
+To put contents before the main text, use the custom skin approach as described above.%BR%
+So our =view.myskin.tmpl= file contains:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:DEF{"beforetextcontents"}%This is the text before%TMPL:END%
+</pre></blockquote>
+Test by appending =?cover=myskin= to any topic.
+
+Use the same procedure for contents to be put after the topic text:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:DEF{"aftertextcontents"}%This is the text after%TMPL:END%
+</pre></blockquote>
+@
+
+
+1.5
+log
+@buildrelease
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TWikiContributor" date="1130019100" format="1.1" version="5"}%
+d9 25
+a33 1
+---++ Logo questions
+d41 6
+a46 6
+<pre>
+      * Set <nop>WEBLOGONAME = logo.gif
+      * Set <nop>WEBLOGOIMG = %<nop>PUBURLPATH%/%<nop>BASEWEB%/%<nop>WEBPREFSTOPIC%/%<nop>WEBLOGONAME%
+      * Set <nop>WEBLOGOURL = %<nop>SCRIPTURLPATH{"view"}%/%<nop>BASEWEB%/%<nop>HOMETOPIC%
+      * Set <nop>WEBLOGOALT = Home
+</pre>
+d54 1
+d62 1
+d69 1
+a69 1
+<pre>
+d71 1
+a71 2
+</pre>
+
+d80 2
+a81 1
+<verbatim>
+d92 3
+a94 2
+</verbatim>
+Only change the number.
+d104 1
+a104 1
+Change the table style in %TWIKIWEB%.WebTopBar. Default top padding is 11px.
+d106 1
+a106 1
+---++ Top bar questions
+d113 1
+a113 1
+<pre>
+d116 1
+a116 1
+</pre>
+d123 1
+a123 1
+<pre>
+d125 1
+a125 1
+</pre>
+d136 34
+a169 12
+<blockquote>
+The view template is populated like this:
+<verbatim>
+%TMPL:INCLUDE{"page"}%
+%TMPL:INCLUDE{"viewtopbar"}%
+%TMPL:INCLUDE{"viewtoolbar"}%
+%TMPL:INCLUDE{"viewleftbar"}%
+%TMPL:INCLUDE{"viewrightbar"}%
+%TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%TMPL:INCLUDE{"viewbottombar"}%
+</verbatim>
+Each included template draws a part of the screen. Omit =%<nop>TMPL:INCLUDE{"viewtopbar"}%= to hide the top bar, or in a view template clear it using =%<nop>TMPL:INCLUDE{"viewtopbar"}%%TMPL:END%=
+d177 1
+a177 1
+---++ Left bar questions
+d183 1
+a183 1
+Omit =%<nop>TMPL:INCLUDE{"viewleftbar"}%= to hide the left bar, or in a view template clear it using =%<nop>TMPL:INCLUDE{"viewleftbar"}%%TMPL:END%=
+d198 10
+a207 10
+<verbatim>
+%TMPL:INCLUDE{"view.pattern"}%
+%TMPL:DEF{"topicaction"}%%TMPL:END%
+%TMPL:DEF{"toolbar"}%%TMPL:END%
+</verbatim>
+
+In %MAINWEB%.TWikiGuest, set the cover to 
+<verbatim>
+   * Set COVER = customer
+</verbatim>
+d211 51
+d263 2
+@
+
+
+1.4
+log
+@buildrelease
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TWikiContributor" date="1130019100" format="1.1" version="4"}%
+d18 4
+a21 4
+		* Set <nop>WEBLOGONAME = logo.gif
+		* Set <nop>WEBLOGOIMG = %<nop>PUBURLPATH%/%<nop>BASEWEB%/%<nop>WEBPREFSTOPIC%/%<nop>WEBLOGONAME%
+		* Set <nop>WEBLOGOURL = %<nop>SCRIPTURLPATH{"view"}%/%<nop>BASEWEB%/%<nop>HOMETOPIC%
+		* Set <nop>WEBLOGOALT = Home
+d24 10
+a33 5
+There are several ways to change the logo in a web:
+	* Create a new image named =logo.gif= and attach it to the web's WebPreferences topic. %TWIKIWEB%.PatternSkin's stylesheet assumes the logo is 40px high. More about that later.
+	* You can also upload the image with FTP to =/pub/YourWeb/WebPreferences/=.
+or:
+	* Attach whatever image and attach it to the web's WebPreferences topic. Then add to the WebPreferences (under _Custom web preferences_):
+d35 1
+a35 1
+		* Set <nop>WEBLOGONAME = your-logo-name.gif-or-png
+d37 1
+d44 1
+a44 1
+	* Set <nop>WEBLOGOIMG = %<nop>WIKILOGOIMG%
+d50 5
+a54 1
+The top bar is 64 pixels high by default. If you have a bigger logo you might want to change the height of the top bar in [[%PUBURLPATH%/%TWIKIWEB%/PatternSkin/layout.css][layout.css]]:
+d56 1
+a56 4
+/* height of the top bar */
+#patternLeftBar {
+	top:64px; /*C3*/
+}
+d58 6
+a63 2
+#patternTopBar table.patternTopBarContents {
+	height:64px; /*C3*/
+d65 1
+d67 2
+d70 4
+a73 3
+(C3 is used as reference to all occurrences with the same value)
+
+You can change these numbers in [[%PUBURLPATH%/%TWIKIWEB%/PatternSkin/layout.css][layout.css]] directly, or create a new stylesheet, attach it to a topic and point =USERLAYOUTURL= to that topic attachment. See %TWIKIWEB%.PatternSkinCssCookbook about creating custom styles.
+d77 1
+a77 28
+The logo is centered vertically be default. If you want to align it to the top, change the style in [[%PUBURLPATH%/%TWIKIWEB%/PatternSkin/style.css][style.css]].
+
+Change:
+<verbatim>
+table.patternTopBarContents td {
+	height:100%;
+	width:100%;
+	vertical-align:middle;
+}
+</verbatim>
+to:
+<verbatim>
+table.patternTopBarContents td {
+	height:100%;
+	width:100%;
+	vertical-align:top;
+}
+</verbatim>
+
+You can also define an offset like this:
+<verbatim>
+table.patternTopBarContents td {
+	height:100%;
+	width:100%;
+	vertical-align:top;
+	padding-top:12px;
+}
+</verbatim>
+d83 1
+a83 1
+The image at the top is called "header art" - after the traditional top image found on blog sites. The image that is displayed by default is set by the variable =WEBHEADERART=, defined in [[%WIKIPREFSTOPIC%]].
+d87 2
+a88 2
+	* Set WEBHEADERART = %<nop>PUBURLPATH%/%<nop>TWIKIWEB%/PatternSkin/TWiki_header.gif
+	* Set WEBHEADERBGCOLOR = somehexcolor
+d97 1
+a97 1
+	* Set WEBHEADERBGCOLOR = %<nop>WEBBGCOLOR%
+d100 1
+a100 1
+---+++ I want other items in the top bar
+d102 1
+a102 1
+In %TWIKIWEB%.WebTopBar shows a logo, but that does not mean you cannot put other things in there. You can put a table, or divs or images.
+d104 1
+a104 2
+<div class="twikiHelp">
+You probably don't need the following information unless you are encountering a strange problem.
+d106 1
+a106 1
+The !WebTopBar contents is placed inside a table that is written by =twiki.pattern.tmpl= (the gray text is from the template):
+d108 21
+a128 13
+<code><span class="twikiGrayText">
+&lt;div id="patternTopBar"><br />
+&lt;table class="patternTopBarContents" border="0" cellpadding="0" cellspacing="0"><br />
+&lt;tr><br />
+&lt;td></span><br />
+&lt;span class="patternTopBarLogo twikiLeft"><br />
+&lt;a href="%<nop>WEBLOGOURL%">&lt;img src="%<nop>WEBLOGOIMG%" border="0" alt="%<nop>WEBLOGOALT%"/>&lt;/a><br />
+&lt;/span><br />
+<span class="twikiGrayText">&lt;/td><br />
+&lt;/tr><br />
+&lt;/table><br />
+&lt;/div></span></code>
+</div>
+d130 1
+d132 4
+a135 1
+---+++ I want to have the language selection in the top bar
+d137 4
+a140 14
+If you want to have the language selection more prominent, you can put a language selection dropdown box in the top bar. Put this in %TWIKIWEB%.WebTopBar:
+<verbatim>
+<div class="twikiRight" style="margin-right:2em;">
+<form id="topBarChangeLanguage" action="%SCRIPTURLPATH{"oops"}%/%WEB%/%TOPIC%" method="get">
+<select name="language" onchange="document.getElementById('topBarChangeLanguage').submit()">
+%LANGUAGES{format="<option $marker value='$langtag'>$langname</option>" selection="%LANGUAGE%"}%
+</select>
+<input type="hidden" name="template" value="oopslanguagechanged" />
+<noscript>
+<input type="submit" value="%MAKETEXT{"Change language"}%" />
+</noscript>
+</form>
+</div>
+</verbatim>
+d142 1
+a142 1
+This will render:
+d144 1
+a144 16
+<div style="padding:10px 0 10px 10px; border:1px solid #ddd; height=64px;">
+<table class="patternTopBarContents" border="0" cellpadding="0" cellspacing="0"><tr><td>
+<span class="patternTopBarLogo twikiLeft"><a href="%WEBLOGOURL%"><img src="%WEBLOGOIMG%" border="0" alt="%WEBLOGOALT%" /></a></span>
+<div class="twikiRight" style="margin-right:2em;">
+<form id="topBarChangeLanguage" action="%SCRIPTURLPATH{"oops"}%/%WEB%/%TOPIC%" method="get">
+<select name="language" onchange="document.getElementById('topBarChangeLanguage').submit()">
+%LANGUAGES{format="<option $marker value='$langtag'>$langname</option>" marker="selected=\"selected\"" selection="%LANGUAGE%"}%
+</select>
+<input type="hidden" name="template" value="oopslanguagechanged" />
+<noscript>
+<input type="submit" value="%MAKETEXT{"Change language"}%" />
+</noscript>
+</form>
+</div>
+</td></tr></table>
+</div>
+d146 1
+a146 1
+---+++ I want to hide the top bar
+d148 6
+a153 1
+See PatternSkinCssCookbookNoTopBar
+d155 4
+a158 1
+---++ Left bar questions
+d160 1
+a160 1
+---+++ I want to hide the left bar
+a161 1
+See PatternSkinCssCookbookNoLeftBar
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 2
+%META:TOPICINFO{author="ArthurClemens" date="1093733957" format="1.0" version="1.3"}%
+---+!! Customization of !PatternSkin
+d3 1
+a3 1
+This page describes ways to change the layout, fonts and colors of PatternSkin.
+d5 1
+a5 1
+%TOC{title="Page contents:"}%
+d7 1
+a7 1
+---++ Your own TWiki look
+d9 6
+a14 11
+You can easily create your own TWiki look by attaching modified css files to your home page:
+	* If you want to change the layout of the page, download layout.css from TWiki.PatternSkin
+	* If you want to change the spacing or colors, download style.css from TWiki.PatternSkin
+	* modify the CSS in either style sheet, using tips from this page
+	* [[%SCRIPTURL%/attach%SCRIPTSUFFIX%/%MAINWEB%/%WIKINAME% attach]] your modified !layout.css and/or !style.css to your home page 
+	* as shown below, add the =USERLAYOUTURL= and =USERSTYLEURL= settings to [[%MAINWEB%.%WIKINAME%][your home page]]
+<verbatim>
+	* Personal TWiki.PatternSkin CSS settings
+		* Set USERLAYOUTURL = %PUBURL%/%MAINWEB%/%WIKINAME%/layout.css
+		* Set USERSTYLEURL = %PUBURL%/%MAINWEB%/%WIKINAME%/style.css
+</verbatim>
+d16 7
+a22 1
+---++ Screen parts
+d24 8
+a31 5
+The !PatternSkin view template uses four screen parts:
+	* The topic part - contains besides the topic content: action buttons, form table, attachment table, topic info  
+	* Top bar - used for a logo, contains Go box
+	* Left bar - site and web navigation, contains a personal link block; may contain a Go box
+	* Bottom bar - copyright, disclaimer
+d33 1
+a33 5
+These parts are dynamically included topics:
+	* Top bar: TWiki.WebTopBar 
+	* Left bar: included topic WebLeftBar (one !WebLeftBar topic per web)
+		* Personal links block: %MAINWEB%.%<nop>USERNAME%LeftBar. Your own personal leftbar: %MAINWEB%.%USERNAME%LeftBar
+	* Bottom bar: included topic TWiki.WebBottomBar
+d35 5
+a39 1
+---+++ Top bar
+a40 1
+The top bar is mainly used as branding space. To change the screen room for the logo, see below, [[%TOPIC%#Customizing_the_logo][Customizing the logo]].
+d42 1
+a42 1
+---+++ Left bar
+d44 1
+a44 1
+The menu items are css-formatted bullet lists. So in WebLeftBar you write:
+d46 8
+a53 4
+	* *Group*
+	* [[SomeTopic][Link 1]]
+	* [[AnotherTopic][Link 2]]
+	* [[ThirdTopic][Link 3]]
+d56 1
+a56 4
+The left bar may contain a Go box instead of the top bar. Use:
+<verbatim>
+	* <input type="text" name="topic" size="16" />
+</verbatim>
+d58 1
+a58 1
+The personal left bar block is formatted like the rest of the left bar.
+d60 1
+a60 1
+---++++ Putting the left bar at the right
+d62 1
+a62 1
+If you have a low screen resolution of say, 640 by 480 pixels, it can be useful to put the left bar "out of the way", at the right side of the page - at the cost of a horizontal scroll bar to access the left (now right) bar. This CSS does this:
+d64 1
+a64 3
+<blockquote>
+Add this to layout.css:
+<!-- /* -->
+d66 4
+a69 10
+.twikiMain {
+	margin-left:0px;
+}
+.twikiLeftBar {
+	margin-left:100%;
+}
+.twikiBottomBar {
+	margin-left:1em;
+	margin-right:0;
+	padding:0;
+d72 1
+a72 3
+<!-- */ -->
+Add this to style.css:
+<!-- /* -->
+d74 4
+a77 6
+.twikiMain {
+	padding-left:1em;
+	padding-right:1em;
+}
+.twikiBottomBarContents {
+	padding-left:0em;
+a79 2
+<!-- */ -->
+</blockquote>
+d81 1
+a81 1
+This CSS is also attached to this topic, [[%ATTACHURL%/LowRes.css][LowRes.css]]. To use this style, add this to your home page:
+d83 6
+a88 2
+	* Personal TWiki.PatternSkin CSS settings
+		* Set USERLAYOUTURL = %PUBURL%/%SYSTEMWEB%/PatternSkinCustomization/LowRes.css
+d91 1
+a91 16
+---+++ Bottom bar
+
+The bottom bar contains the copyright disclaimer, but may contain other information, perhaps a web list.
+
+---++ Customizing the logo
+
+The top bar is 60 pixels high, and has a padding of 5 pixels on top, bottom and left, so the logo should be 50 pixels high. If your logo image has a different size, you can either alter the padding in =style.css= (.twikiTopBarContents) or change the top bar height in =layout.css= (look for the comment _setting the height of the top bar_).
+
+You can also choose to set a background image for the top bar. In =style.css=, add this to .twikiTopBar:
+<verbatim>
+	background-position:top left;
+	background-attachment:fixed;
+	background-repeat:no-repeat;
+	background-image:url(http://absolute_path_to_your_image);
+</verbatim>
+and set the correct image file path.
+d93 1
+a93 1
+---++ Fonts
+d95 1
+a95 1
+---+++ Font style
+d97 5
+a101 27
+Font styles are defined in =style.css= in these places:
+<!--
+/*
+-->
+<verbatim>
+html body {
+	font-family:"Lucida Grande", verdana, lucida, helvetica, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family:"Lucida Grande", helvetica, lucida, verdana, sans-serif;
+}
+textarea {
+	font-family:monospace;
+}
+input, select {
+	font-family:verdana,arial,sans-serif;
+}
+.twikiSeparator {
+	font-family:Arial,sans-serif;
+}
+.twikiEditPage .twikiSig input {
+	font-family:monospace;
+}
+</verbatim>
+<!--
+*/
+-->
+d103 1
+a103 1
+---+++ Font size
+d105 1
+a105 1
+Font sizes in !PatternSkin are scalable. This means that even on Windows Explorer, the text in the browser can scale with the user settings (in contrast to many sites where texts have a fixes pixel size, these cannot be changed by the user).
+d107 4
+a110 14
+Scalable text is a big accessibility asset. If you notwithstanding want to have a fixed font, or if you want to set the default size smaller or bigger, the easiest way is to make a new entry for body, below the 2 other entries:
+<!-- /* -->
+<verbatim>
+html body {
+	... (keep)
+}
+html>body {
+	... (keep)	
+}
+html body {
+	font-size:11px;
+}
+</verbatim>
+<!-- */ -->
+d112 1
+a112 1
+---++ Colors
+d114 1
+a114 1
+<span style="background:#000000" >&nbsp;</span><span style="background:#041d3a" >&nbsp;</span><span style="background:#05264d" >&nbsp;</span><span style="background:#333333" >&nbsp;</span><span style="background:#334455" >&nbsp;</span><span style="background:#880000" >&nbsp;</span><span style="background:#990000" >&nbsp;</span><span style="background:#844f0c" >&nbsp;</span><span style="background:#22638c" >&nbsp;</span><span style="background:#666666" >&nbsp;</span><span style="background:#3db234" >&nbsp;</span><span style="background:#1559b3" >&nbsp;</span><span style="background:#1e5bbd" >&nbsp;</span><span style="background:#808080" >&nbsp;</span><span style="background:#888888" >&nbsp;</span><span style="background:#e24628" >&nbsp;</span><span style="background:#698fa8" >&nbsp;</span><span style="background:#9e9e70" >&nbsp;</span><span style="background:#888e9c" >&nbsp;</span><span style="background:#8490a1" >&nbsp;</span><span style="background:#ff0000" >&nbsp;</span><span style="background:#ff3000" >&nbsp;</span><span style="background:#98a2b0" >&nbsp;</span><span style="background:#aaaaaa" >&nbsp;</span><span style="background:#bbbbbb" >&nbsp;</span><span style="background:#a3bcf1" >&nbsp;</span><span style="background:#cccccc" >&nbsp;</span><span style="background:#ffff00" >&nbsp;</span><span style="background:#b9d6fa" >&nbsp;</span><span style="background:#dadada" >&nbsp;</span><span style="background:#b4d5ff" >&nbsp;</span><span style="background:#dddddd" >&nbsp;</span><span style="background:#e9e9e9" >&nbsp;</span><span style="background:#e0e9f7" >&nbsp;</span><span style="background:#efedea" >&nbsp;</span><span style="background:#f3ede7" >&nbsp;</span><span style="background:#dfedfd" >&nbsp;</span><span style="background:#eeeeee" >&nbsp;</span><span style="background:#ebf7ea" >&nbsp;</span><span style="background:#efefef" >&nbsp;</span><span style="background:#ffeae5" >&nbsp;</span><span style="background:#e8f1f9" >&nbsp;</span><span style="background:#f1f1f1" >&nbsp;</span><span style="background:#f2f2f2" >&nbsp;</span><span style="background:#f8f8f8" >&nbsp;</span><span style="background:#f5f7fd" >&nbsp;</span><span style="background:#fcfaf7" >&nbsp;</span><span style="background:#ffffff" >&nbsp;</span>
+d116 2
+a117 1
+To create a customised palette of colors, see PatternSkinPalette.
+d119 1
+a119 1
+---++ Tables
+d121 13
+a133 1
+---+++ Tables in topic text
+a134 1
+If you have TablePlugin installed, tables in topics take on the properties from =TABLEATTRIBUTES=. Without TablePlugin (if not installed, or disabled in TWikiPreferences under =DISABLEDPLUGINS=), the tables have a default appearance that is hardcoded in Render.pm. Styles of topic text tables are not set in a style sheet. If you want to have control over the design of tables, for instance if you work with a style guide, you should add table styles under =.twikiTopic=. See for an example below.
+d136 1
+a136 1
+---++++ Topic text table example
+d138 1
+a138 2
+This is an example css to give tables in topic text a similar appearance. This will override settings in TablePlugin. This code should be added below the other =.twikiTopic= code in style.css:
+<!-- /* -->
+d140 11
+a150 40
+.twikiTopic table {
+	border-collapse:collapse;
+	padding:0px;
+	border-spacing:0px;
+	empty-cells:show;
+	border:0px;
+}
+.twikiTopic table th {
+	background-color:#ccc;
+	padding:0.5em 1em;
+}
+.twikiTopic table td {
+	border:1px solid #eee;
+}
+/* override hardcoded font color */
+.twikiTopic table font {
+	color:#1e5bbd;
+}
+.twikiTopic table th a:link,
+.twikiTopic table th a:visited {
+	color:#1e5bbd;
+	text-decoration:none;
+}
+/* don't show hover background color because we have a table header background */
+.twikiTopic table th a:hover {
+	background-color:transparent;
+	text-decoration:underline;
+	border-width:1px;
+}
+/* no underline if a sort indicator (line) is displayed */
+.twikiTopic table th.twikiSortedDescendingCol a:hover,
+.twikiTopic table th.twikiSortedAscendingCol a:hover {
+	text-decoration:none;
+}
+/* hide sort icons */
+.twikiTopic table th img,
+.twikiTopic table th a:link img,
+.twikiTopic table th a:visited img {
+	display:none;
+}
+a151 1
+<!-- */ -->
+d153 18
+a170 1
+---+++ Attachment table, Form table
+d172 1
+a172 1
+The appearance of the form table and the attachment table are set in style.css under =.twikiForm= and =.twikiAttachments=. Text in these tables is set to wrap, so often the dates are wrapped to two lines. If you prefer to have text on one line and are not disturbed by an extra wide attachment table (or when you screen resolution is big enough), add this code to =.twikiAttachments td, .twikiForm td {=:
+d174 1
+a174 5
+<!-- /* -->
+<verbatim>
+	white-space:nowrap;
+</verbatim>
+<!-- */ -->
+d176 1
+a176 1
+---+++ Other templates
+d178 1
+a178 1
+Other templates than =view= use the style =.twikiVersatileTable= for, as the name says, tables with versatile functions. Versatile tables appear a little diffent in each template page (differences are created using multiple classes). Versatile tables are mostly used to format forms to highlight important parts and to dim less important parts. See =style.css= for specific settings for each template.
+d180 1
+a180 1
+-- TWiki:Main.ArthurClemens - 28 Aug 2004
+a181 1
+%META:FILEATTACHMENT{name="LowRes.css" attr="" comment="CSS to put the left bar at the right, with horizontal scroll bar" date="1093734017" path="LowRes.css" size="287" user="ArthurClemens" version="1.1"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PeterThoeny" date="1092717888" format="1.0" version="1.2"}%
+d8 14
+d57 41
+d166 75
+a240 1
+-- TWiki:Main.ArthurClemens - 15 Aug 2004
+d242 1
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="ArthurClemens" date="1092634575" format="1.0" version="1.1"}%
+d111 1
+a111 1
+-- Main.ArthurClemens - 15 Aug 2004
+@

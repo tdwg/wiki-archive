@@ -1,0 +1,25 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1105029764" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="WebHome"}%
+You only care about this topic if you are using XSLT to transform instance documents for some reason, and if you want to use XML Spy to do so.
+One such case is a tool written by Main.JacobAsiedu to help debug the key/keyref attributes in instance documents (see DebugRef).
+XML Spy's XSLT engine has a bug that sometimes causes inappropriate input to be put into an output document in the case where the input document's _xsi:schemaLocation_ attribute has a newline separating the two required parts of the attribute value. This is not too fatal if you don't care about validating the output document, but sometimes you do.  Thus, instead of 
+<verbatim>
+xsi:schemaLocation="http://www.tdwg.org/2003/SDD.09 
+SDD.09.xsd"
+</verbatim>
+
+you should have 
+<verbatim>
+xsi:schemaLocation="http://www.tdwg.org/2003/SDD.09 SDD.09.xsd"
+</verbatim>
+
+Symptom: the constructed document will have the entity refrence &#xA; between the two parts of the xsi:schemaLocation attribute. This will cause validation to fail immediately (because Spy attempts to validate newly created documents if they have a schema named in them).
+
+Cure: You must replace &#xA; with any whitespace, including a newline, unless you don't care about validation (which is often a dangerous position...)
+
+Workaround: avoid newline inside the _xsi:schemaLocation_ in your instance documents.
+
+-- Main.BobMorris - 26 Nov 2003
+

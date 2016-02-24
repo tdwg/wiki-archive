@@ -1,0 +1,44 @@
+---+ Inventory Proposal Two
+
+A proposal for an InventoryRequest that accepts multiple concepts.
+
+---+++++ Request
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <inventory count="true" xmlns:ns1="http://www.somenamespace.org" xmlns:ns2="http://www.anothernamespace.org">
+      <filter>
+         ...
+      </filter>
+      <concepts>
+         <concept path="ns1:/record/taxon/fullname"/> *
+         <concept path="ns2:/Gazeteer/Location/ISOcountry"/>
+      </concepts>
+   </inventory>
+</request>
+
+with* being repeatable elements
+</verbatim>
+
+---+++++ Response
+
+<verbatim>
+<inventory xmlns:ns1="http://www.somenamespace.org" xmlns:ns2="http://www.anothernamespace.org">
+   <concepts>
+      <concept id="ID01">ns1:/record/taxon/fullname</concept>
+      <concept id="ID02">ns2:/Gazeteer/Location/ISOcountry</concept>
+   </concepts>
+   <record count="13"> *
+      <value concept="ID01">Abies alba Mill.</value> *
+      <value concept="ID02">DE</value>
+   </record>
+   <record count="45"> *
+      <value concept="ID01">Quercus robur L.</value> *
+      <value concept="ID02">DE</value>
+   </record>
+</inventory>
+
+with* being repeatable elements
+</verbatim>

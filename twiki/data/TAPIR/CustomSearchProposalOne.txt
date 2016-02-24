@@ -1,0 +1,69 @@
+---+ CustomSearchProposalOne
+
+A proposal to fit the CustomSearch requirements.
+
+The ResponseStructure (starting with <structure>) is defined here in a simple xml schema alike way.
+
+The PyWrapper already uses a simliar structure as the ResponseStructure proposed here to store and map any ConceptualSchema. The implemented PyWrapperAlgorithm for creating a valid xml output for a given ResponseStructure has proven to work when substituting the ConceptualBinding with an actual database mapping (table.attribute) of a specific provider.
+
+For counting matches and returned records as well as the paging mechanism we need to give a RecordDefinition here, listing concepts from within our custom record structure. See RecordDefinition for more details. 
+
+---+++++ Request
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <search start="0" limit="2" count="true">
+      <customDocument schema="http://default.response.namespace.org" xmlns:temp="http://unknown.namespace.org">
+         <recordDefinition>/Taxon</recordDefinition> *
+         <structure>
+            <element name="Taxon" min="0" max="unbounded"> *
+               <attributes>
+                  <attribute name="FullName" datatype="String" min="1" datatype="string" path="abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString" CustomSearchProposalOne> *
+                  <attribute name="HigherTaxon" datatype="String" min="0" datatype="string" path="abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon" CustomSearchProposalOne>
+               </attributes>
+               <subelements>
+                  <element name="temp:Coordinates" min="0" max="unbounded"> *
+                     <subelements>
+                        <element name="temp:lat" min="0" max="1" datatype="string" path="abcd:/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal" CustomSearchProposalOne> *
+                        <element name="temp:long" min="0" max="1" datatype="string" path="abcd:/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal" CustomSearchProposalOne>
+                     </subelements>
+                  </element>
+               </subelements>
+            </element>
+         </structure>
+      </customDocument>
+      <filter xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.2">
+         <like path="abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString">Ast*</like>
+      </filter>
+   </search>
+</request>
+
+with* indicating repeatable elements
+</verbatim>
+
+
+---+++++ Response
+<verbatim>
+<response>
+   <header>
+      ...
+   </header>
+   <content xmlns="http://default.response.namespace.org" xmlns:temp="http://unknown.namespace.org">
+      <Taxon FullName="Abies alba Mill." HigherTaxon="Pinaceae"> *
+         <temp:Coordinates> *
+            <temp:lat>45.40</temp:lat>
+            <temp:long>13.10</temp:long>
+         </temp:Coordinates>
+         <temp:Coordinates>
+            <temp:lat>43.10</temp:lat>
+            <temp:long>12.70</temp:long>
+         </temp:Coordinates>
+      </Taxon>
+   </content>
+</response>
+
+with* indicating repeatable elements
+</verbatim>
+

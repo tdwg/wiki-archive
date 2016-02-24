@@ -1,0 +1,37 @@
+%TMPL:INCLUDE{"twiki"}%
+
+%TMPL:DEF{"templatescript"}%
+<script type="text/javascript">
+//<![CDATA[
+	var pageElem = document.rename;
+//]]>
+</script>
+<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_renamebase.js"></script>
+%TMPL:END%
+
+%TMPL:DEF{"content"}%
+<form method="post" name="rename" action="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%">
+---+ %TMPL:P{"webaction"}% <code>%TOPIC%</code>
+
+| |  *Web:* | *&nbsp;Topic:* |
+|  *From:* |    <nop>%WEB%. | &nbsp;%TOPIC% |
+|  *To:* |  %TMPL:P{"newweb"}%. | %TMPL:P{"newtopic"}% |
+%TMPL:P{"notes"}%
+
+---++ Change links in topics that refer to <nop>%TOPIC% in the <nop>%WEB% Web:
+
+%LOCAL_SEARCH%
+
+---++ Change links in topics that refer to <nop>%WEB%.<nop>%TOPIC% in any Web:
+
+%GLOBAL_SEARCH%
+
+<input type="button" value="Select all" onclick="checkAll(true);" />&nbsp;<input type="button" value="Clear" onclick="checkAll(false);" /> checkboxes of referenced topics
+
+__Note:__
+   * Get help on
+     <a target="ManagingTopics" onclick="return launchWindow('%TWIKIWEB%','ManagingTopics')" href="%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/ManagingTopics" rel='nofollow'>Renaming and moving topics</a>.
+   * Select the %TRASHWEB% Web to delete the topic.
+   * The checkmarked topics will be updated (another form will appear which will _eventually_ allow you to rename any topics that were locked)
+%TMPL:P{"topicinfo"}%
+</form>%TMPL:END%

@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+<body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<h2><a name="SDD_Part_0_Introduction_and_Prim"></a> SDD Part 0: Introduction and Primer to the SDD Standard </h2>
+<p />
+<h3><a name="4_1_Coded_Descriptions"></a> 4.1 Coded Descriptions </h3>
+<p />
+The &lt;CodedDescription&gt; element contains the actual data associated with each dataset.
+<p />
+SDD deals with two distinct subtypes of coded data, summary data and raw observational data. Summary data is data representative of recognised taxonomic entities (family, genus, species), while raw observation data is that representative of a single specimen or occurence.
+<p />
+The <a href="codeddescription.html">&lt;CodedDescription&gt;</a> element also contains a <a href="sddscope.html">&lt;Scope&gt;</a> element, where the entities covered by the description may be defined.
+<p />
+<img alt="codeddescription.gif" src="http://wiki.tdwg.org/twiki/static/_publish/codeddescription.gif" />
+<p />
+<h4><a name="4_1_1_SDD_for_summary_data"></a> 4.1.1 SDD for summary data </h4>
+<p />
+Summary data records occurence for a related group of individuals (i.e. species, genus). Data may be aggregated from sample data using statistical measures, state distributions, etc. The element is optional to support descriptions containing only sample data or media objects. Characters are NOT required to have unique ref attributes! Data for one character may be recorded with different modifications (in spring/autumn, at tip/base).
+<p />
+<img alt="summarydata.gif" src="http://wiki.tdwg.org/twiki/static/_publish/summarydata.gif" />
+<p />
+<h5><a name="Example_4_1_1_1_A_simple_summary"></a> Example 4.1.1.1 - A simple summary data description </h5>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<pre>
+    &#60;CodedDescriptions&#62;
+      &#60;CodedDescription id&#61;&#34;cd1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Korthalsella&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;Scope&#62;
+          &#60;TaxonName ref&#61;&#34;t2&#34;/&#62;
+        &#60;/Scope&#62;
+        &#60;SummaryData&#62;
+          &#60;Categorical ref&#61;&#34;c3&#34;&#62;
+            &#60;State ref&#61;&#34;s7&#34;/&#62;
+          &#60;/Categorical&#62;
+          &#60;Categorical ref&#61;&#34;c1&#34;&#62;
+            &#60;State ref&#61;&#34;s2&#34;/&#62;
+          &#60;/Categorical&#62;
+          &#60;Quantitative ref&#61;&#34;c4&#34;&#62;
+            &#60;Measure type&#61;&#34;Min&#34; value&#61;&#34;5.0&#34;/&#62;
+            &#60;Measure type&#61;&#34;UMethLower&#34; value&#61;&#34;10.0&#34;/&#62;
+            &#60;Measure type&#61;&#34;UMethUpper&#34; value&#61;&#34;20.0&#34;/&#62;
+            &#60;Measure type&#61;&#34;Max&#34; value&#61;&#34;25.0&#34;/&#62;
+          &#60;/Quantitative&#62;
+        &#60;/SummaryData&#62;
+      &#60;/CodedDescription&#62;
+    &#60;/CodedDescriptions&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+In this example the taxon Korthalsella (taxon t2) is scored present for character c3 state s7, present for character c1 state s2 and (5-)10-20(-25) for the quantitative character c4. The names assigned to these character and state names can be found within the <a href="sddcharacters.html">&lt;Characters&gt;</a> element.
+<p />
+<h4><a name="4_1_2_SDD_for_SampleData"></a> 4.1.2 SDD for <a href="sampledata.html">&lt;SampleData&gt;</a> </h4>
+<p />
+Raw sample data are recorded here. The analysed and generalized (e. g. using statistical measures) results are normally also reflected under <a href="summarydata.html">&lt;SummaryData&gt;</a> (with origin = 'calculated' and &lt;BasedOnSample&gt; referring to a sample ID.
+<p />
+<img alt="sampledata.gif" src="http://wiki.tdwg.org/twiki/static/_publish/sampledata.gif" />
+<p />
+<h4><a name="Example_4_1_2_1_A_simple_raw_dat"></a> Example 4.1.2.1 - A simple raw data description </h4>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<p />
+<p />
+<pre>
+&#60;CodedDescriptions&#62;
+  &#60;CodedDescription id&#61;&#34;cd1&#34;&#62;
+   &#60;Representation&#62;
+    &#60;Label&#62;Korthalsella &#60;/Label&#62;
+   &#60;/Representation&#62;
+   &#60;Scope&#62;
+    &#60;TaxonName ref&#61;&#34;t2&#34;/&#62;
+   &#60;/Scope&#62;
+   &#60;SampleData&#62;
+    &#60;SamplingEvent id&#61;&#34;sev1000&#34;&#62;
+     &#60;DateTime/&#62;
+     &#60;SamplingUnit&#62;
+      &#60;Categorical ref&#61;&#34;c1&#34;&#62;
+       &#60;State ref&#61;&#34;s2&#34;/&#62;
+      &#60;/Categorical&#62;
+      &#60;Quantitative ref&#61;&#34;c2&#34; value&#61;&#34;110&#34;/&#62;
+     &#60;/SamplingUnit&#62;
+     &#60;SamplingUnit&#62;
+      &#60;Categorical ref&#61;&#34;c1&#34;&#62;
+       &#60;State ref&#61;&#34;s1&#34;/&#62;
+      &#60;/Categorical&#62;
+      &#60;Quantitative ref&#61;&#34;c2&#34; value&#61;&#34;112&#34;/&#62;
+     &#60;/SamplingUnit&#62;
+     &#60;SamplingUnit&#62;
+      &#60;Categorical ref&#61;&#34;c1&#34;&#62;
+       &#60;State ref&#61;&#34;s1&#34;/&#62;
+      &#60;/Categorical&#62;
+      &#60;Quantitative ref&#61;&#34;c2&#34; value&#61;&#34;110&#34;/&#62;
+     &#60;/SamplingUnit&#62;
+     &#60;SamplingUnit&#62;
+      &#60;Categorical ref&#61;&#34;c1&#34;&#62;
+       &#60;State ref&#61;&#34;s1&#34;/&#62;
+      &#60;/Categorical&#62;
+      &#60;Quantitative ref&#61;&#34;c2&#34; value&#61;&#34;118&#34;/&#62;
+     &#60;/SamplingUnit&#62;
+    &#60;/SamplingEvent&#62;
+   &#60;/SampleData&#62;
+  &#60;/CodedDescription&#62;
+ &#60;/CodedDescriptions&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+<p />
+This example records the results of five sampling events for a categorical and a quantitative character. The names assigned to these character and state names can be found within the <a href="sddcharacters.html">&lt;Characters&gt;</a> element.
+<p />
+<p />
+-- DonovanSharp - 02 Jun 2006
+<p />
+<p />
+</body></html> 

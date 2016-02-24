@@ -1,0 +1,50 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741987" format="1.0" version="1.14"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+Sometimes different sexes have radically different descriptions. Are they different classes? Or do we have two Descriptions of the same class? In the latter case, where do we indicate which sex? (For that matter, same question in the former case).
+
+Is there a similar problem for life stages?
+
+-- Main.BobMorris - 02 Mar 2004
+
+---
+
+As a more general question, can we have two descriptions for one entity under any circumstance?
+
+-- Main.KevinThiele - 10 Mar 2004
+
+---
+
+In the Main.PrometheusII project we can have multiple descriptions of the same specimen (equivalent to your entity?) by different authors (or even the same author at different times). The specimen has an identity based on its provenance (barcode, institution, collector etc) and each description has a (database) identity, and author etc. In our _proposed_ model a description can be composed either of description statements, or (and ?) other descriptions. So that someone may perhaps create a species level description that is composed of several specimen descriptions, or create a new specimen description that contains the descriptions of several previous authors. This would allow people to reuse existing descriptions. 
+
+-- Main.TrevorPaterson - 10 Mar 2004  
+
+SDD has a very similar model. Yes, you can have many descriptions both for a specimen = SDD.Object and a taxon = SDD.Class. What we don't have is an explicit mechanism to collect descriptions together, that sounds very interesting. We have the automatic mechanism based on the class name, but we are still unfinished how to contradict false information in that case. Explicitly selecting may be an alternative.
+
+However, would you not also need to select a subset of descriptors from a description? After all I cannot change the granularity of your descriptions, so the description container may inadequate.
+
+-- Gregor Hagedorn - 10 Mar 2004
+
+Yes, our ideas are still somewhat theoretical - we have concentrated on implementing tools for specimen description so far. But our Main.PrometheusI model of taxonomy uses specimens to circumbscribe species (and higher taxa) - so that is why we are interested in merging descriptions, and possibly generating taxon level descriptions automatically. As the basic unit of our descriptions is a Description Element (roughly an atomic character state: with structure/property/score or state) we could allow descriptions to be created by one author from a mixture of description elements recorded previously by others. One deficiency in current practice is that descriptions tend not to be reused - because they only record details on a few characters of interest and a later author may want to look at different characters (even if he can interpret the previous descriptions.....) - we have been focussing on how descriptions can be reused - which would includetaking a subset of the DEs for the new later description. As we have modelled and implemented from a relational database point of view - the data is all stored granularly as DEs anyway. At the moment these reference an owning description, but an alternative mechanism would be for a  description to reference a list of composite DEs. Obviously we could generate an XML format/view of a description corresponding to SDD Schema (but dont ask me... ;-) ) from our relational data - but if your store your descriptions in an XML repository there must be ways to shred the individual characters and join them into new descriptions.... (I think)
+
+-- Main.TrevorPaterson - 10 Mar 2004 
+---
+
+By the way, don't some people just address this problem by saying that sex is a subspecific rank? For SDD 0.9 it would then come out rather oddly that _Mechanitis polymnia male_ is a class whose rank is male.
+
+-- Main.BobMorris - 10 Mar 2004
+
+Some people may do that because the model does not support anything better, but I think treating sex or stage as a taxonomic rank is a bad idea. I have not seen any argument in favor of it. I argued against it when raised in BestPractices and ResolvedTopicRankLevelBogosity. Please, if nobody starts arguing why it makes sense to treat sex as a class, please let us close this option. 
+
+Which leaves us to decide how to deal with sex otherwise... Please see SecondaryClassifiersWithinClasses!
+
+-- Gregor Hagedorn - 10 Mar 2004
+---
+
+*A proposed solution to <nop>TheProblemOfSex*:
+
+Please see the new subtopic SecondaryClassifiersProposal of SecondaryClassifiersWithinClasses!
+
+-- Main.BobMorris - 30 Apr 2004
+

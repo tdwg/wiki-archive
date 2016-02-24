@@ -1,0 +1,511 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.16.04.12.04;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.10.25.00.22.00;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.06.25.16.26.31;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@buildrelease
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@%META:TOPICINFO{author="TWikiContributor" date="1166310108" format="1.0" version="3"}%
+%META:TOPICPARENT{name="CommentPlugin"}%
+
+---+!! Templates for CommentPlugin
+
+See [[%TWIKIWEB%.CommentPlugin#Customisation][CommentPlugin: Customisation]] for help.
+
+While this topic can be viewed as a TWiki topic, it is used by the CommentPlugin as a template file - see TWikiTemplates. The important content in here is in the verbatim blocks. The rest of the topic is just comments.
+
+%ICON{"hand"}% See CommentPluginExamples to view rendered templates
+
+<div class="twikiBroadcastMessage" style="background-color:#ffc;">WARNING: THIS FILE WILL BE OVERWRITTEN WHEN YOU UPGRADE THE COMMENT PLUGIN</div>
+
+Put your local templates into %TWIKIWEB%.UserCommentsTemplate (create if it does not exist yet). *Local templates defined in that topic will override templates defined below.*
+
+%TOC{title="Table of Contents"}%
+
+---++ Template definitions
+---+++ Templates used in rest of file
+Generic prompt box used by other templates
+<verbatim>
+%TMPL:DEF{promptbox}%<div class="commentPlugin commentPluginPromptBox"><table border="0" cellpadding="0" cellspacing="0"><tr valign="middle"><td><textarea %DISABLED% rows="%rows|3%" cols="%cols|70%" name="comment" class="twikiInputField" wrap="soft" onfocus="if(this.value=='%MESSAGE%')this.value=''" onblur="if(this.value=='')this.value='%MESSAGE%'">%MESSAGE%</textarea></td><td>&nbsp;<input %DISABLED% type="submit" value="%button|Add comment%" class="twikiButton" /></td></tr></table></div><!--/commentPlugin-->%TMPL:END%
+</verbatim>
+Short comment, signed and dated
+<verbatim>
+%TMPL:DEF{outputoneliner}%   * %URLPARAM{"comment"}% -- %WIKIUSERNAME% - %GMTIME{"$day $month $year"}%%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#Default][Default]]
+
+
+
+
+---+++ User templates
+---++++ top
+Comments, signed and dated, added at top of file
+<verbatim>
+%TMPL:DEF{PROMPT:top}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+
+<verbatim>
+%TMPL:DEF{OUTPUT:top}%%TMPL:P{outputoneliner}%%POS:TOP%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#top][top]]
+
+
+
+
+---++++ bottom
+Comments, signed and dated, added at end of file
+<verbatim>
+%TMPL:DEF{PROMPT:bottom}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:bottom}%%POS:BOTTOM%%TMPL:P{outputoneliner}%%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#bottom][bottom]]
+
+
+
+
+---++++ above
+Comments, signed and dated, added immediately before anchor
+<verbatim>
+%TMPL:DEF{PROMPT:above}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:above}%%POS:BEFORE%%TMPL:P{OUTPUT:threadmode}%%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#above][above]]
+
+
+
+
+---++++ bulletabove
+Bullet item added immediately before anchor. The input field width is passed with variable =inputsize=, for example:
+<blockquote><verbatim>
+%COMMENT{type="bulletabove" inputsize="20"}%
+</verbatim></blockquote>
+
+<verbatim>
+%TMPL:DEF{PROMPT:bulletabove}%<input class="twikiInputField" name="bullet_above_item" id="bullet_above_item" type="text" size="%inputsize|40" value="%URLPARAM{"bullet_above_item"}%" />&nbsp;<input %DISABLED% type="submit" value="%button|Add item%" class="twikiButton" />%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:bulletabove}%   * %URLPARAM{"bullet_above_item"}%%POS:BEFORE%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#bulletabove][bulletabove]]
+
+
+
+
+---++++ threadmode
+Wiki thread mode comment, signed and dated
+<verbatim>
+%TMPL:DEF{PROMPT:threadmode}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:threadmode}%%POS:BEFORE%
+
+%URLPARAM{"comment"}%
+
+-- %WIKIUSERNAME% - %DATE%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#threadmode][threadmode]]
+
+
+
+
+---++++ belowthreadmode
+Comments, signed and dated, added recurse after comment box.
+
+<verbatim>
+%TMPL:DEF{PROMPT:belowthreadmode}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:belowthreadmode}%%POS:AFTER%
+---++++ %WIKIUSERNAME% - %SERVERTIME%
+
+%URLPARAM{"comment"}%
+
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#belowthreadmode][belowthreadmode]]
+
+
+
+
+---++++ below
+Comments, signed and dated, added immediately below anchor
+<verbatim>
+%TMPL:DEF{PROMPT:below}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:below}%%POS:AFTER%%TMPL:P{outputoneliner}%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#below][below]]
+
+
+
+
+---++++ tableprepend
+Comments, signed and dated, added at top of table below the
+anchor/location/COMMENT
+<verbatim>
+%TMPL:DEF{PROMPT:tableprepend}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:tableprepend}%%POS:AFTER%| %URLPARAM{"comment" newline="<br />"}% | %WIKIUSERNAME% | %SERVERTIME% |
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#tableprepend][tableprepend]]
+
+
+
+
+---++++ tableappend
+Comments, signed and dated, added at end of table above the anchor/location/COMMENT
+<verbatim>
+%TMPL:DEF{PROMPT:tableappend}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:tableappend}%%POS:BEFORE%| %URLPARAM{"comment" newline="<br />"}% | %WIKIUSERNAME% | %SERVERTIME% |
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#tableappend][tableappend]]
+
+
+
+
+---++++ after: Add before the comment box, after the last comment
+<verbatim>
+%TMPL:DEF{PROMPT:after}%%TMPL:P{promptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:after}%%NOP%%TMPL:P{outputoneliner}%
+%POS:BEFORE%%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#after][after]]
+
+
+
+
+---++++ action
+Action added to action table directly above comment box
+(requires TWiki:Plugins/ActionTrackerPlugin)
+<verbatim>
+%TMPL:DEF{PROMPT:action}%
+
+%TABLE{databg="#ffffff" tableborder="0" cellborder="0"}%
+|        <label for="action_who">Action for</label>| <input class="twikiInputField" name="action_who" id="action_who" type="text" size="50" value="%URLPARAM{"who"}%" /> |
+| <label for="action_due">Due date</label>| <input class="twikiInputField" name="action_due" id="action_due" type="text" size="30" value="%URLPARAM{"due"}%" /> |
+|    <label for="action_comment">Comment</label>| <textarea %DISABLED% rows="%rows|3%" cols="%cols|50%" name="action_comment" id="action_comment" class="twikiInputField" wrap="soft" onfocus="if(this.value=='%MESSAGE%')this.value=''" onblur="if(this.value=='')this.value='%MESSAGE%'">%MESSAGE%</textarea> |
+|| <input %DISABLED% type="submit" class="twikiButton" value="Add action" /> |
+%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:action}%%POS:BEFORE%%AC%NOP%TION{who="%URLPARAM{"action_who"}%" due="%URLPARAM{"action_due"}%"}% %URLPARAM{"action_comment" newline="<br />"}%<br />- Created by %WIKIUSERNAME%, %SERVERTIME%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#action][action]]
+
+
+
+
+---++++ table
+Tablerows adding on end - TWiki:Main/FranzJosefSilli
+<verbatim>
+%TMPL:DEF{PROMPT:table}%
+%TABLE{databg="#ffffff" tableborder="0" cellborder="0"}%
+|        <label for="comment_date">Date</label>| <input class="twikiInputField" %DISABLED% type="text" size="40" name="comment_date" id="comment_date" /> |
+|        <label for="comment_city">City</label>| <input class="twikiInputField" %DISABLED% type="text" size="40" name="comment_city" id="comment_city" value="" /> |
+|| <input %DISABLED% type="submit" class="twikiButton" value="%button|Add entry%" /> |
+%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:table}%%POS:BEFORE%| %URLPARAM{"comment_date"}% | %WIKIUSERNAME% | %URLPARAM{"comment_city" }% |
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#table][table]]
+
+
+
+
+---++++ toctalk
+Talk using TOC adding on end - TWiki:Main/FranzJosefSilli
+<verbatim>
+%TMPL:DEF{PROMPT:toctalk}%
+%TABLE{databg="#ffffff" tableborder="0" cellborder="0"}%
+|        <label for="comment_summary">Summary</label>| <input class="twikiInputField" %DISABLED% type="text" size="40" name="comment_summary" id="comment_summary" /> |
+|        <label for="toctalk_comment_text">Message</label>| <textarea %DISABLED% rows="%rows|3%" cols="%cols|50%" name="toctalk_comment_text" id="toctalk_comment_text" class="twikiInputField" wrap="soft" onfocus="if(this.value=='%MESSAGE%')this.value=''" onblur="if(this.value=='')this.value='%MESSAGE%'">%MESSAGE%</textarea> |
+|| <input %DISABLED% type="submit" value="%button|Add%" class="twikiButton" /> |
+%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:toctalk}%
+%POS:BEFORE%---++++ %SERVERTIME% %WIKIUSERNAME%: %URLPARAM{"comment_summary"}%
+%POS:BEFORE%%URLPARAM{"toctalk_comment_text" }%
+%POS:BEFORE%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#toctalk][toctalk]]
+
+
+
+
+---++++ bookmark
+Talk using TOC adding on end - TWiki:Main/FranzJosefSilli
+<verbatim>
+%TMPL:DEF{PROMPT:bookmark}%
+%TABLE{databg="#ffffff" tableborder="0" cellborder="0"}%
+|        <label for="comment_url">Url</label>| <input class="twikiInputField" %DISABLED% type="text" size="40" name="comment_url" id="comment_url" value="http://" /> |
+| <label for="comment_link">Link label</label>| <input class="twikiInputField" %DISABLED% type="text" size="40" name="comment_link" id="comment_link" /> |
+|    <label for="bookmark_comment_text">Comment</label>| <input class="twikiInputField" %DISABLED% type="text" size="40" name="bookmark_comment_text" id="bookmark_comment_text" value="%MESSAGE%" /> |
+|| <input %DISABLED% type="submit" value="%button|Add bookmark%" class="twikiButton" /> |
+%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:bookmark}%%POS:BEFORE%   * [[%URLPARAM{"comment_url" encode="entity"}%][%URLPARAM{"comment_link" encode="entity"}%]] %IF{" '%URLPARAM{"bookmark_comment_text" encode="entity"}%' = '' " then="" else="- "}%%URLPARAM{"bookmark_comment_text" encode="entity"}%
+%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#bookmark][bookmark]]
+
+
+
+
+---++++ return
+Post to a different topic and return to here. The comment =target= is set in the =PROMPT=. In the form below the =redirectto= is set to the current (including) topic. %RED% Available with TWiki 4.1. %ENDCOLOR%
+
+<verbatim>
+%TMPL:DEF{returnpromptbox}%
+<input type="hidden" name="redirectto" value="%BASEWEB%.%BASETOPIC%" />
+%TMPL:P{promptbox}%
+%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{PROMPT:return}%%TMPL:P{returnpromptbox}%%TMPL:END%
+</verbatim>
+<verbatim>
+%TMPL:DEF{OUTPUT:return}%%POS:BEFORE%%TMPL:P{OUTPUT:threadmode}%%TMPL:END%
+</verbatim>
+
+%ICON{"hand"}% See rendered template [[CommentPluginExamples#return][return]]
+
+
+
+
+---++ Include !UserComments
+
+Including UserComments:
+
+%TMPL:INCLUDE{"UserComments"}%
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d1 2
+a2 1
+%META:TOPICINFO{author="TWikiContributor" date="1111929255" format="1.0" version="2"}%
+d4 3
+a6 1
+Templates for CommentPlugin - See %TWIKIWEB%.CommentPlugin#Customisation for help.
+d10 3
+a12 1
+*WARNING: THIS FILE WILL BE OVERWRITTEN WHEN YOU UPGRADE THE COMMENT PLUGIN*
+d14 1
+a14 2
+Put your local templates into %TWIKIWEB%.UserCommentsTemplate.
+*LOCAL TEMPLATES WILL OVERRIDE TEMPLATES DEFINED IN THIS FILE*
+d16 1
+a16 1
+%TOC%
+d18 2
+a19 2
+---+ Template definitions
+---++ Templates used in rest of file
+d22 1
+a22 5
+%TMPL:DEF{promptbox}%
+<div class="commentPlugin commentPluginPromptBox">
+<table><tr valign="middle"><td><textarea %DISABLED% rows="%rows|3%" cols="%cols|70%" name="comment" wrap="soft" onfocus="if(this.value=='%MESSAGE%')this.value=''" onblur="if(this.value=='')this.value='%MESSAGE%'">%MESSAGE%</textarea></td><td><input %DISABLED% type="submit" value="%button|Add comment%" /></td></tr></table>
+</div><!--/commentPlugin-->
+%TMPL:END%
+d26 1
+a26 1
+%TMPL:DEF{outputoneliner}%   * %URLPARAM{"comment"}% -- %WIKIUSERNAME% - %SERVERTIME%%TMPL:END%
+d28 8
+a35 3
+---------------------------------------------------------------------------
+---++ User templates
+---+++ top
+d45 7
+a51 2
+---------------------------------------------------------------------------
+---+++ bottom
+d59 7
+a65 2
+---------------------------------------------------------------------------
+---+++ above
+d71 19
+a89 1
+%TMPL:DEF{OUTPUT:above}%%POS:BEFORE%%TMPL:P{outputoneliner}%
+d92 7
+a98 2
+---------------------------------------------------------------------------
+---+++ threadmode
+d111 27
+a137 2
+---------------------------------------------------------------------------
+---+++ below
+d146 7
+a152 2
+---------------------------------------------------------------------------
+---+++ tableprepend
+d159 1
+a159 1
+%TMPL:DEF{OUTPUT:tableprepend}%%POS:AFTER%| %URLPARAM{"comment" newline="<br />"}% </td><td> %WIKIUSERNAME% </td><td> %SERVERTIME% |
+d162 7
+a168 2
+---------------------------------------------------------------------------
+---+++ tableappend
+d177 7
+a183 2
+---------------------------------------------------------------------------
+---+++ after: Add before the comment box, after the last comment
+d188 2
+a189 2
+%TMPL:DEF{OUTPUT:after}%%NOP%
+%TMPL:P{outputoneliner}% %POS:BEFORE%%TMPL:END%
+d191 7
+a197 2
+----------------------------------------------------------------------------
+---+++ action
+d199 1
+d202 6
+a207 20
+<table>
+ <tr>
+  <td align="right">Action for (%TWIKIWEB%.WikiName):</td>
+  <td><input name="who" type="text" size="50" value="%URLPARAM{"who"}%" /></td>
+ </tr>
+ <tr>
+  <td align="right">Due date:</td>
+  <td>
+	<input name="due" id="idDue" type="text" size="30" value="%URLPARAM{"due"}%" />
+  </td>
+ </tr>
+ <tr>
+  <td colspan="2">
+	<textarea %DISABLED% rows="5" cols="120" name="comment" wrap="soft"></textarea>
+  </td>
+ </tr>
+ <tr>
+  <td colspan=2 align=middle><input %DISABLED% type="submit" value="Add action" /></td>
+ </tr>
+</table>
+d211 1
+a211 1
+%TMPL:DEF{OUTPUT:action}%%POS:BEFORE%%AC%NOP%TION{who="%URLPARAM{"who"}%" due="%URLPARAM{"due"}%"}% %URLPARAM{"comment" newline="<br />"}%<br />- Created by %WIKIUSERNAME%, %SERVERTIME%
+d214 7
+a220 2
+----------------------------------------------------------------------------
+---+++ table
+d224 4
+a227 1
+<hr width="60%" /> Date: <input %DISABLED% type="text" size="40" name="comment_date" /> <br /> City: <input %DISABLED% type="text" size="40" name="comment_city" value="" /> <input %DISABLED% type="submit" value="%button|Add%" /> entry <hr width="90%" />
+d231 1
+a231 2
+%TMPL:DEF{OUTPUT:table}%
+%POS:BEFORE%| %URLPARAM{"comment_date"}% | %WIKIUSERNAME% | %URLPARAM{"comment_city" }% |
+d234 7
+a240 2
+---------------------------------------------------------------------------
+---+++ toctalk
+d244 4
+a247 1
+<hr width="60%" /> Summary: <input %DISABLED% type="text" size="40" name="comment_summary" /> <br /> <textarea %DISABLED% rows="%rows|3%" cols="%cols|50%" name="comment_text" wrap="soft" onfocus="if(this.value=='%MESSAGE%')this.value=''" onblur="if(this.value=='')this.value='%MESSAGE%'">%MESSAGE%</textarea> <br /> <input %DISABLED% type="submit" value="%button|Add%" /> <hr width="90%" />
+d252 2
+a253 2
+%POS:BEFORE%---+++ %SERVERTIME% %WIKIUSERNAME%: %URLPARAM{"comment_summary"}%
+%POS:BEFORE%%URLPARAM{"comment_text" }%
+d257 7
+a263 2
+---------------------------------------------------------------------------
+---+++ bookmark
+d267 9
+a275 1
+<hr width="60%" /> URL: <input %DISABLED% type="text" size="40" name="comment_url" value="http://" /> <br /> Link: <input %DISABLED% type="text" size="40" name="comment_link" /> <br /> Text: <input %DISABLED% type="text" size="40" name="comment_text" value="%MESSAGE%" /> <input %DISABLED% type="submit" value="%button|Add%" /> bookmark <hr width="90%" />
+d278 9
+d288 3
+a290 2
+%TMPL:DEF{OUTPUT:bookmark}%
+%POS:BEFORE%	* [[%URLPARAM{"comment_url"}%][%URLPARAM{"comment_link"}%]] - %URLPARAM{"comment_text" }%
+d293 9
+a302 1
+---+ Include !UserCommentsTemplate
+d304 4
+a307 1
+Including UserCommentsTemplate:
+a309 2
+
+<!-- Do _not_ attempt to edit this topic; it is auto-generated. Please add comments/questions/remarks to the Dev topic instead. -->
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TWikiContributor" date="1111929255" format="1.0" version="1"}%
+d26 1
+a26 1
+%TMPL:DEF{outputoneliner}%<span class="commentPlugin commentPluginOutputOneliner">	* %URLPARAM{"comment"}% -- %WIKIUSERNAME% - %SERVERTIME%</span></span><!--/commentPlugin-->%TMPL:END%
+@

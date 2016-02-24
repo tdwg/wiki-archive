@@ -1,0 +1,199 @@
+---+ Datasource Search Proposal I
+
+This proposal for a general search request unifies the FullSearch and the PartialSearch.
+It defines the search request and response on a RecordBasedApproach as opposed to the DocumentBasedApproach.
+
+---+++++ Request Definition
+Based on the PartialSearch we suggest this structure for a request (ABCD example):
+<verbatim>
+<request>
+  <header>
+    ...
+    <type>search</type>
+  </header>
+  <search count="true">
+    <concepts>
+      <concept path="abcd:/unit/Identifications"/> *
+      <concept path="micro:/Strain"/>
+      <concept path="micro:/Temperature"/>
+    </concepts>
+    <filter>
+      ...
+    </filter>
+  </search>
+</request>
+</verbatim>
+
+There is no need to give a RecordDefinition as the RecordBasedApproach considers global elements of a ConceptualSchema to represent a single record. If multiple global elements are requested in order to extend a schema (as in the example above), all global elements refering to the same record internally (related inside the database) should be grouped by the protocol defined <record> element.
+
+
+---+++++ Schema Extension & Record Response
+The record based response presented below will be embedded in the SearchResponseTopStructure.
+This page only explains the record part of the search to be used within the top level structure including metadata defined by the SearchResponseTopStructure.
+
+The search is also meant for integrating data in a response from different ConceptualSchemas to support e.g. extension schemas for DarwinCore. The idea is to leave the structure below a root element definition immutable and only allow the addition ("inheritance") of new root elements within a RecordObject.
+
+So for example a RecordObject of DarwinCore looking like this:
+<verbatim>
+<record xmlns:dwc="http://www.namespaceTBD.org/darwin2">
+   <dwc:DateLastModified>2001-12-17T09:30:47-05:00</DateLastModified>
+   <dwc:InstitutionCode>String</InstitutionCode>
+   <dwc:CollectionCode>String</CollectionCode>
+   <dwc:CatalogNumber>String</CatalogNumber>
+   <dwc:ScientificName>String</ScientificName>
+   <dwc:BasisOfRecord>String</BasisOfRecord>
+   <dwc:Genus>String</Genus>
+   <dwc:Species>String</Species>
+   <dwc:ScientificNameAuthor>String</ScientificNameAuthor>
+   <dwc:Notes>String</Notes>
+</record>
+</verbatim>
+
+could be extended with microbial data taken from another ConceptualSchema definition like this:
+<verbatim>
+<record xmlns:dwc="http://www.namespaceTBD.org/darwin2" xmlns:micro="http://www.namespaceTBD.org/microbial">
+   <dwc:DateLastModified>2001-12-17T09:30:47-05:00</DateLastModified>
+   <dwc:InstitutionCode>String</InstitutionCode>
+   <dwc:CollectionCode>String</CollectionCode>
+   <dwc:CatalogNumber>String</CatalogNumber>
+   <dwc:ScientificName>String</ScientificName>
+   <dwc:BasisOfRecord>String</BasisOfRecord>
+   <dwc:Genus>String</Genus>
+   <dwc:Species>String</Species>
+   <dwc:ScientificNameAuthor>String</ScientificNameAuthor>
+   <dwc:Notes>String</Notes>
+   <micro:Strain>String</Strain>
+   <micro:Temperature>String</Temperature>
+</record>
+</verbatim>
+
+Complex data types (objects) like a ABCD unit would be immutable, as the ABCD schema would have to define slots for extending it with other elements. It would only be possible to extend the RecordObject at the same level as the ABCD unit, thus adding RecordObjectProperties. 
+
+Imagine a ABCD unit RecordObject as this:
+
+<verbatim>
+<record xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.46">
+  <abcd:unit>
+    <abcd:SourceInstitutionID>String</abcd:SourceInstitutionID>
+    <abcd:SourceID>normalizedString</abcd:SourceID>
+    <abcd:UnitID>normalizedString</abcd:UnitID>
+    <abcd:LastEditor>normalizedString</abcd:LastEditor>
+    <abcd:DateLastEdited>1967-08-13</abcd:DateLastEdited>
+    <abcd:UnitIPRStatements Language="en-us">
+      <abcd:General>
+        <abcd:ShortText>normalizedString</abcd:ShortText>
+      </abcd:General>
+    </abcd:UnitIPRStatements>
+    <abcd:RecordBasis>Specimen</abcd:RecordBasis>
+    <abcd:Identifications>
+      <abcd:Identification>
+        <abcd:IdentificationResult>
+          <abcd:TaxonIdentified>
+            <abcd:ScientificName>
+              <abcd:FullScientificNameString>normalizedString</abcd:FullScientificNameString>
+              <abcd:NameAtomized>
+                <abcd:Bacterial>
+                  <abcd:Genus>String</abcd:Genus>
+                  <abcd:Subgenus>String</abcd:Subgenus>
+                  <abcd:SubgenusAuthorAndYear>normalizedString</abcd:SubgenusAuthorAndYear>
+                  <abcd:SpeciesEpithet>String</abcd:SpeciesEpithet>
+                  <abcd:SubspeciesEpithet>String</abcd:SubspeciesEpithet>
+                  <abcd:ParentheticalAuthorTeamAndYear>normalizedString</abcd:ParentheticalAuthorTeamAndYear>
+                  <abcd:AuthorTeamAndYear>normalizedString</abcd:AuthorTeamAndYear>
+                  <abcd:NameApprobation>normalizedString</abcd:NameApprobation>
+                </abcd:Bacterial>
+              </abcd:NameAtomized>
+            </abcd:ScientificName>
+          </abcd:TaxonIdentified>
+        </abcd:IdentificationResult>
+        <abcd:Identifier>
+          <abcd:IdentifierPersonName>
+            <abcd:PersonName>normalizedString</abcd:PersonName>
+          </abcd:IdentifierPersonName>
+        </abcd:Identifier>
+        <abcd:IdentificationDate>
+          <abcd:ISODateTimeBegin>0000-01-01T00:00</abcd:ISODateTimeBegin>
+        </abcd:IdentificationDate>
+      </abcd:Identification>
+    </abcd:Identifications>
+    <abcd:Gathering>
+      <abcd:GatheringDateTime>
+        <abcd:ISODateTimeBegin>0000-01-01T00:00</abcd:ISODateTimeBegin>
+      </abcd:GatheringDateTime>
+      <abcd:GatheringAgents>
+        <abcd:GatheringAgent PrimaryCollectorFlag="1">
+          <abcd:Person>
+            <abcd:PersonName>normalizedString</abcd:PersonName>
+          </abcd:Person>
+        </abcd:GatheringAgent>
+      </abcd:GatheringAgents>
+    </abcd:Gathering>
+  </abcd:unit>
+</record>
+</verbatim>
+
+Extending this RecordObject with the same concepts as above in DarwinCore, you would get:
+
+<verbatim>
+<record xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.46" xmlns:micro="http://www.namespaceTBD.org/microbial">
+  <abcd:unit>
+    <abcd:SourceInstitutionID>String</abcd:SourceInstitutionID>
+    <abcd:SourceID>normalizedString</abcd:SourceID>
+    <abcd:UnitID>normalizedString</abcd:UnitID>
+    <abcd:LastEditor>normalizedString</abcd:LastEditor>
+    <abcd:DateLastEdited>1967-08-13</abcd:DateLastEdited>
+    <abcd:UnitIPRStatements Language="en-us">
+      <abcd:General>
+        <abcd:ShortText>normalizedString</abcd:ShortText>
+      </abcd:General>
+    </abcd:UnitIPRStatements>
+    <abcd:RecordBasis>Specimen</abcd:RecordBasis>
+    <abcd:Identifications>
+      <abcd:Identification>
+        <abcd:IdentificationResult>
+          <abcd:TaxonIdentified>
+            <abcd:ScientificName>
+              <abcd:FullScientificNameString>normalizedString</abcd:FullScientificNameString>
+              <abcd:NameAtomized>
+                <abcd:Bacterial>
+                  <abcd:Genus>String</abcd:Genus>
+                  <abcd:Subgenus>String</abcd:Subgenus>
+                  <abcd:SubgenusAuthorAndYear>normalizedString</abcd:SubgenusAuthorAndYear>
+                  <abcd:SpeciesEpithet>String</abcd:SpeciesEpithet>
+                  <abcd:SubspeciesEpithet>String</abcd:SubspeciesEpithet>
+                  <abcd:ParentheticalAuthorTeamAndYear>normalizedString</abcd:ParentheticalAuthorTeamAndYear>
+                  <abcd:AuthorTeamAndYear>normalizedString</abcd:AuthorTeamAndYear>
+                  <abcd:NameApprobation>normalizedString</abcd:NameApprobation>
+                </abcd:Bacterial>
+              </abcd:NameAtomized>
+            </abcd:ScientificName>
+          </abcd:TaxonIdentified>
+        </abcd:IdentificationResult>
+        <abcd:Identifier>
+          <abcd:IdentifierPersonName>
+            <abcd:PersonName>normalizedString</abcd:PersonName>
+          </abcd:IdentifierPersonName>
+        </abcd:Identifier>
+        <abcd:IdentificationDate>
+          <abcd:ISODateTimeBegin>0000-01-01T00:00</abcd:ISODateTimeBegin>
+        </abcd:IdentificationDate>
+      </abcd:Identification>
+    </abcd:Identifications>
+    <abcd:Gathering>
+      <abcd:GatheringDateTime>
+        <abcd:ISODateTimeBegin>0000-01-01T00:00</abcd:ISODateTimeBegin>
+      </abcd:GatheringDateTime>
+      <abcd:GatheringAgents>
+        <abcd:GatheringAgent PrimaryCollectorFlag="1">
+          <abcd:Person>
+            <abcd:PersonName>normalizedString</abcd:PersonName>
+          </abcd:Person>
+        </abcd:GatheringAgent>
+      </abcd:GatheringAgents>
+    </abcd:Gathering>
+  </abcd:unit>
+  <micro:Strain>String</Strain>
+  <micro:Temperature>String</Temperature>
+</record>
+</verbatim>
+

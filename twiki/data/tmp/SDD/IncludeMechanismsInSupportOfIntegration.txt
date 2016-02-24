@@ -1,0 +1,121 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1097062639" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="FederationOfTerminology"}%
+In the Berlin meeting, Main.DonaldHobern and Main.BobMorris agreed to discuss the use of simple XInclude mechanisms in an instance document as the main(?) (sole?) support of shared terminology. Discussion of short- and long-term pros and cons of such use:
+
+	* Pros:
+		* Useful almost anywhere, in principle
+		* Architecturally simple
+	* Cons:
+		* Requires external fragments to be clearly identifiable as to where they can go and they must be valid when inserted there.
+		* Difficult to make a local extension. Any extensions probably have to be made at the source. This creates versioning issues.
+		* XInclude and validation are independent of one another See [[http://www.xml.com/lpt/a/2002/07/31/xinclude.html][Using XInclude]]. This means that a given validator is not obliged to run an XInclude processor before it attempts to validate. In particular, XML Spy 2004 v 3 seems to have no way to force an XInclude, so at least if there are forward keyrefs to stuff in the include target, the references will fail to correspond to any key that is visible at the time the reference is read, and the file will be signalled as invalid even if imposing the inclusion (e.g. by hand) would result in a valid file. There is experimental support for XInclude in apache2. I haven't tried it against the example.
+
+-- Main.BobMorris - 07 Jun 2004
+
+---
+
+Example of xs:include under 0.91b16.
+
+This abbreviated dataset illustrates how one might use xi:xinclude for shared vocabulary. Represented in it are three species of Ithomid butterflies.In the (unrealistic!) data, the (real!) species  have a single diagnostic character: "wing color". The species Aeria eurimedea, Ithomia patilla, and Greta ono  have, respectively Entities/ClassNames/ClassName@key=1, 2, 3.  
+
+The species are distinguished by wing color which is (in English), respectively  _chartreuse,  pink, and white._ However, each of these colors comes from a different one of the three ways that categorical characters can be defined:
+	* chartreuse is purely local to the wing color character,
+	* pink is shared across the dataset by the <nop>ConceptTrees mechanism in a Concept labeled "datasetSharedColors", and 
+	* white is a color imported with xi:xinclude in another concept labeled "gbifSharedColors".
+	 
+Each of these gets a key, so can be referenced in Descriptions. Pending further discussion begun in Berlin of the key syntax, the first two of these get standard numeric keys, and the external one gets an LSID, _urn:LSID:lsid.gbif.net:sdd.standardColorsConcept:1_
+
+While it may not be entirely natural to spread such related categorical states across these three mechanisms, it is not difficult to imagine cases where, say, an author wishes to override an imported notion of some particular color with a more local one. 
+
+Pending schema discussion about key representation in support of shared terminology, this example is accompanied by a version of 091b16 in which several changes are made to accommodate the xi:xinclude proposal. Its details should largely survive specific changes to the key representation as may be decided. First,  I changed the <nop>KeyType to be xs:string to accommodate the proposed LSIDs as keys. Second, some omissions in some relevant  b16 identity constraints are fixed.  
+
+Finally, note that  XInclude and validation are independent of one another (See http://www.xml.com/lpt/a/2002/07/31/xinclude.html). This means that a given validator is not obliged to run an XInclude processor before it attempts to validate. In particular, XML Spy 2004 v 3 seems to have no way to force an XInclude, so at least if there are forward keyrefs to stuff in the include target (as there are iin this example) the references will fail to correspond to any key that is visible at the time the reference is read, and the file will be signalled as invalid even if imposing the inclusion (e.g. by hand) would result in a valid file. In practice, this means that authoring with XML Spy will entail putting in place whatever you are going to xi:xinclude until you have it all right, then cutting it into an external file to be replaced by the xi:xinclude. This may be less onerous than it sounds, because in reality instance documents would rarely be generated with an XML editor other than for purposes of testing the Schema or of designing or testing instance document production and consumption applications. In production, one would expect to run an XInclude processor before parsing. Using Spy, I have found nothing to do but develop with the xincluded stuff, then cut and paste it and insert the xs:include element.
+
+		%RED% Keep in mind that Spy will try to validate the example document upon open, and will fail for the reasons above. %ENDCOLOR% If you don't like this, replace the line 
+<verbatim>
+<xi:xinclude href="sdd.standardColors.xml"/> 
+</verbatim> 
+with the contents of the file sdd.standardColors.xml, or turn this function off in the Tools-Options-File menu dialog of Spy.
+
+	There is experimental support for XInclude in apache2. I haven't tried it against this example. 
+
+If this example is satisfactory, it might be worth adding a few more colors, say to the external list, and testing out some of the ontology relations to see if something like "pink is a kind of red" survives the proposal.
+
+	* [[%ATTACHURL%/xincludeExample.zip][xincludeExample.zip]]: xinclude example of shared terminology
+
+-- Main.BobMorris - 07 Jun 2004
+
+The most important aspects to me are:
+
+	* a simple include as proposed carries no metadata, e.g. about version, copyright, etc.
+		* At the meeting, Donald proposed to include entire datasets and modify the key/keyref mechanism so that the nested keys are also found in the xpath.
+	* should the key always be a complete LSID, or should it be split into an "LSID-base" at the dataset level, and a LSID-object-ID at the object level? This is relevant if the base needs to be changed, as we expect in the case of projects that start with LSIDs like urn:LSID:local:local:white.
+		* The "local" is a convention we would like to propose as an extension to the LSID mechanism. For similar reasons that some IP-numbers and DNS system names have special local semantics, we would like to have them in the LSID as well. This would allow students to start on a quick description attempt, without having to bother about registration or choices for LSID namespace bases first.
+	* I have a bad feeling about the inability to add a local language or change the analysis assumptions if terminology is shared using the include mechanism. I believe the preference for include - which is very nice and simple - results from the assumption that the terminology has the language you want - which will be true for English. For German, my experience is that it will not, so I would have to copy external terminology to a local position, emend it there, and then use the local copy. Which completely forfeits the desire to be able to integrate data based on shared terminology. However, I only know complicated solutions around this.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 8 Jun 2004
+
+
+---
+
+A side topic: in the include file, you label the concept tree as:
+<verbatim>
+<Type>PartCompositionHierarchy</Type>
+<DesignedFor>
+  <Role>DescriptionEditing</Role>
+  <Role>InteractiveIdentification</Role>
+  <Role>ReportingTerminology</Role>
+  <Role>NaturalLanguageReporting</Role>
+</DesignedFor>
+</verbatim>
+which it obviously is not. It is a <nop>PropertyHierarchy (flat) that is Designed for no display purposes. Getting this right was not the purpose of the example, of course, it just worries me that this is not obvious. So the Type and <nop>DesignedFor element names seem to be unintuitive. Can we express it better?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 8 Jun 2004
+
+---
+
+On a separate note: while xInclude is not yet widely supported by standard tools (e.g. it can not be used
+when validating with Altova xml spy), it is possible to using xml system entities. This allows inside a valid SDD document to define the position of fragment files, and then refer to them. This approach does work e.g. when validating files in Altova xml spy. The central file could look like:
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE SDD [
+	<!ENTITY CharBlock1 SYSTEM "SDD-Test-EntityInclude-c1.xml"> 
+	<!ENTITY CharBlock2 SYSTEM "SDD-Test-EntityInclude-c2.xml"> 
+	<!ENTITY DescriptBlock1 SYSTEM "SDD-Test-EntityInclude-d1.xml"> 
+]>
+<Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.tdwg.org/2004/UBIF" xsi:schemaLocation="http://www.tdwg.org/2004/UBIF SDD.xsd">
+  <!-- This example is based on the minimal SDD example and illustrates how SDD can be used when 
+fragments are distributed over several files, using XML external entities. The key/keyref identity 
+constraints are still validated. Alternatively, xInclude may be used. This has many advantages, but the 
+major disadvantage of not being automatically supported by validating parsers or applications like Altova 
+xml spy. The main point of this demonstration is, however, that the aggregation of distributed fragments 
+into a valid SDD entity, where all relations are resolvable, is considered a question of external 
+mechanisms, and not part of SDD. -->
+<Dataset>
+...
+<Characters>
+&CharBlock1; 
+&CharBlock2; 
+</Characters>
+...
+<CodedDescriptions>
+&DescriptBlock1; 
+</CodedDescriptions>
+</DescriptiveData>
+</Dataset>
+</Datasets>
+
+</verbatim>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 6 Oct. 2004
+
+I'm shortly about to start my travel so without time to try this: is this successful recursively?
+
+I can tell you that the mechanism is used (one level deep) with a number of the ant build.xml files in the Apache axis Web Services framework, which in particular probably means that xerces is happy with it.
+
+We'll have xerces on our laptops in Christchurch for validation experiments.
+-- Main.BobMorris - 06 Oct 2004
+%META:FILEATTACHMENT{name="xincludeExample.zip" attr="" comment="xinclude example of shared terminology" date="1086573963" path="C:\Documents and Settings\ram\My Documents\_efg\SDD\xincludeExample.zip" size="69284" user="BobMorris" version="1.1"}%

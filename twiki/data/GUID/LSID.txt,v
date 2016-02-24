@@ -1,0 +1,512 @@
+head	1.21;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.21
+date	2012.08.21.15.21.44;	author JonathanRees;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2011.06.28.06.56.10;	author PaulMurray;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2010.02.19.22.21.10;	author RyanKaldari;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2009.11.12.15.51.21;	author BenRichardson;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2009.10.26.07.30.50;	author BenRichardson;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2009.10.21.09.13.54;	author BenRichardson;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.05.23.20.55.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.05.14.22.54.04;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.04.02.23.11.25;	author KevinRichards;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.29.15.31.23;	author RicardoPereira;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.03.15.16.11.45;	author CharlesHussey;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.02.01.00.03.02;	author BobMorris;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2005.10.20.15.45.52;	author DonaldHobern;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2005.09.09.19.23.01;	author RodericPage;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2005.09.09.12.37.56;	author DonaldHobern;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2005.09.09.12.37.47;	author DonaldHobern;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2005.07.08.14.48.21;	author DonaldHobern;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.07.08.14.48.13;	author DonaldHobern;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.07.08.14.25.45;	author DonaldHobern;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2005.07.08.14.22.58;	author DonaldHobern;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.07.08.14.19.04;	author DonaldHobern;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.21
+log
+@none
+@
+text
+@%META:TOPICINFO{author="JonathanRees" date="1345562504" format="1.1" reprev="1.21" version="1.21"}%
+---+ Life Sciences Identifiers (LSIDs)
+
+---++ GUID and LSID Applicability Statements Public Review
+
+   * [[GUID and LSID AS Review]] - a page for the collation of submissions for the GUID and LSID Applicability Statement Public Review.
+
+---++ What is an LSID?
+From [[http://lsids.sourceforge.net/]]:
+
+   The Life Sciences Identifier (LSID) is an I3C and OMG Life Sciences Research (LSR) Uniform Resource Name (URN) specification. The LSID concept introduces a straightforward approach to naming and identifying data resources stored in multiple, distributed data stores in a manner that overcomes the limitations of naming schemes in use today. Almost every public, internal, or department-level data store today has its own way of naming individual data resources, making integration between different data sources a tedious, never-ending chore for informatics developers and researchers. By defining a simple, common way to identify and access biologically significant data, whether that data is stored in files, relational databases, in applications, or in internal or public data sources, LSID provides a naming standard underpinning for wide-area science and interoperability.
+
+---++ Documentation
+
+   * [[http://lsids.sourceforge.net/quick-links/lsid-spec/][LSID Technical Specification]] (broken link as of August 2012)
+   * [[http://lsids.sourceforge.net/][LSID Resolution Protocol Development]] (broken link as of August 2012)
+   * [[LsidSoftwareInventory][List of LSID Software APIs]]
+
+---++++ Discussion
+
+---++++ Projects using LSIDs
+The following projects are actively using LSIDs or experimenting with their use:
+
+   * BioMOBY
+   * [[http://www.catalogueoflife.org/][Catalogue of Life]]
+   * [[http://www.generationcp.org/vw/modules.php?name=News&file=categories&op=newindex&catid=3][Generation Challenge Programme]] - see also http://www.iris.irri.org:8080/generation/informatics.html for their justification for using LSIDs
+   * [[http://www.compositae.org/][Global Compositae Checklist]]
+   * [[IndexFungorum][Index Fungorum]]
+   * [[http://nzflora.landcareresearch.co.nz/][New Zealand Plants]]
+   * [[http://lsid.limnology.wisc.edu/][Northern Temperate Lakes - Long Term Ecological Research Network]]
+   * [[TSE][Taxonomic Search Engine]]
+
+---++++ Issues with LSIDs
+
+These are some thoughts based on my (RodericPage) experience. They are based on notes I sent to Chris Rawlings who is part of the _Brassica_ genome consortium (they are investigating LSIDs).
+
+Setting up the software to support LSIDs is trivial for anybody with any experience using Perl. There are a couple of other key steps, some not so trivial.
+
+   1. You MUST be able to add SRV records to the DNS. This means having a system administrator you is happy to add these records (it's a trivial task). This would only be an issue if the person/organisation serving the data didn't have complete control over the machines it's using (for example, basic server packages provided by commercial internet server providers might not support this). In practice, what you want is control over the domain name from which you serve the LSIDs.
+   1.  The best way to serve LSIDs seems to be setting up virtual servers on Apache. This is pretty straightforward (cut and paste a template from  http://lsid.sourceforget.net, with a few minor edits, then restart Apache). You'd also want to add a record to the DNS, for example mapping lsid.my.org to the same IP as my.org.
+   1.  Then you need to serve the metadata and data, and this is basically a case of writing some Perl to talk to whatever database you are using, and deciding what is metadata and data. This will probably be driven by who will be using the data, for example whether you will be using technologies like MyGRID or BioMoby, which make explicit use of LSIDs (note that the current version of IBMs Perl code has trouble with BioMoby LSIDs -- I haven't checked how the more recent code in CVS performs).
+
+This is all fairly easy (as in, easy once you know how), and any programmer with Perl/CGI experience should be able to get something working in an afternoon (I mean, if I can do it it can't be that hard...).
+
+Perl is probably adequate for most stuff. I've not done any benchmarking, but it seems to work OK at Glasgow. The LSID metadata that I serve is almost always generated by calling web services on remote machines, hence any performance hit is likely to be the overhead in talking to these machines. If you plan to serve very large data sets (e.g., people would routinely download large chunks of the genome using LSIDs then you might need to look at streaming data, or using FTP as the protocol to serve data (LSIDs can support HTTP, and SOAP, and I think also FTP). I gather the reason LTER used Java and a commerical company was because they were going to serve very large datasets. I might be naive, but my guess is that most LSIDs will be assigned to things  where the size of data is actually fairly small (a few kb).
+---
+
+
+RodPage also raised on the mailing list this:
+
+LSID seems to be bound to DNS.  
+
+BobMorris differs:
+
+Some cite the appearance of a URL in an LSID, and the discussion in Sec 13 of the spec (DDNS) as evidence that that LSIDs are bound to the DNS and so not futureproof. This seems wrong to me. 
+
+First, the URL (actually a URN) is the "authority" part of an LSID. It is not about resolvers, it identifies the issuer. The issuer is an eternal entity whether or not it still exists. You can't change the fact that mobot.org  issued some particular LSID. There is no special connection between the issuer and the resolvers except as may arise incidentally for administrative reasons.  
+
+Second, the DDNS service described in the spec is not about resolution. It is about locating resolution services. If a resolution service happens to exist in 2030 but the DNS does not, this is utterly without impact on LSID resolution. It only impacts how you find resolvers. This is rather akin to the fact that most IP addresses are given out by non-authoritative servers. There is always only one authoritative server at any given time and acquiring \its/ IP address can be from a non-authoritative DNS server or a phone call to your friend. Finding this authoritative IP address is the resolution service location problem. If you happen to know the IP address of the authoritative server for a domain , you don't need any DNS servers at all, except that authoritative server,  to find IP addresses for names for which it is authoritative. All the rest is about the discovery of that authoritative resolution service or its proxies. It is a (very important, scalable) performance issue that the other DNS servers near you in the network offer you something you are willing to rely on. (Even that is not such a great idea if you can't trust the chain all the way from that server to the authoritative one. It's technically easy for me to spoof the entire internet if I control all the DNS servers and routers you can connect to. Cf. Chinese internet). I raise this to argue more specifically, and I think slightly more relevantlly, in support of Chuck Miller's position against Rod's arguments about future proofing. The analogous situation, I think, is this: imagine in 2030 that IPv6 is in place, but nothing else about the internet is. In particular, imagine nothing like the DNS is in place. The LSID resolvers will all still work. You just won't find them through the DNS. This is not a problem, because the authority part of LSID is not about resolution. By the way, this is not such a far-fetched scenario, because there are very strong gathering forces internationally to centralize control of the internet, at least on a country by country basis. Controlling discovery of IP addresses is probably the first step, and is why there are arguments about it right now.
+
+Finally, I think there is nothing about GUIDs that implies that the world is entitled to resolve them. We have unlisted numbers for POTS, and while it may violate the spirit of GBIF, and may be a requirement for GUIDS in the biodiversity community, "unlisted" resolvers would not violate the LSID spec, would probably not violate any others, and is likely to be what software engineers call a non-functional requirement of any biodiversity GUID system. Non-functional requirements are genuine requirements for a project which are not requirements about the underlying problem. Ricardo raised universal access as one such on a posting to the mailing list. The widely accepted(?) requirement that GUID issuance should be free of monetary cost is another. Availability of open-source support components might be another. Hopefully the workshop will identify both the functional and non-functional requirements for GUIDS.
+
+BobMorris January 30 2006
+
+----
+
+I am looking for arguments why we need LSIDs in the first place, instead of using simple (P)URL-GUIDs with the same social contract about permanence of identifier (not resource) as in LSIDs. The contract for LSIDs is essentially social as well. I fail to see any advantage of LSID over community driven PURLs (persistent URLs). PURLs seem to be standard technology, not raising any of the issues discussed here. I am unconvinced by arguments that LSIDs are not *so* bad if they are not *required* in the first place. Please add to [[TechnologyComparison]], but perhaps management or social advantages and disadvantages need to discussed as well.
+
+-- Main.GregorHagedorn - 14 May 2007
+
+---++++LSIDs are neither URNs nor URIs
+
+The 'lsid' URN namespace is not registered, and as a result does not appear not appear in the IANA NID registry (http://www.iana.org/assignments/urn-namespaces/urn-namespaces.xml). Therefore it would be incorrect to say that any string beginning 'urn:lsid:...' is a URI.
+
+As a result I would say it is a bad practice to use any URN inside any RDF serialization where an RDF URI reference is required. It is not technically incorrect, since RDF URI references do not have to be URIs, they merely have to have the syntax of a URI. But using RDF URI references that are not URIs is confusing, since most people don't know the difference, and shameful from a standards point of view.
+
+I have been urging those who care about LSIDs to register the 'lsid' URN namespace with IETF by writing an RFC draft. If this were accomplished and the RFC published, LSIDs would become URIs and could be used in RDF (and other URI contexts) without confusion.
+
+However, while filling out the registration form itself will not be difficult, I expect that explaining how LSID authority names are established in perpetuity, and why valid LSIDs are to be expected to behave persistently, will be difficult to explain to reviewers at IETF.
+
+The way to make LSIDs live up to the URN standard would be for TDWG (could be someone else - but I'm not aware of anyone else who cares) to establish and maintain, in perpetuity, a registry of LSID authorities. (Of course the registry maintainer could hand this responsibility off to someone else, should it decide to disband or if it decides it can't be held responsible any more. The important thing is the speech act - the intent and assumption of responsibility.) The registry should in turn provide adequate information to explain who is responsible for that authority (at the time of registration) and should argue, in each case, why the LSIDs under that authority string are expected to be 'persistent'. Good luck.
+
+-- Main.JonathanRees - 21 Aug 2012
+
+---++++Is LSID dead?
+
+All the LSID software projects seem to be dead; the prototype gateway service (http://lsid-info.org/) seems to be dead; the lsid-developer mailing list is dead; half the time I try to look up an LSID record I get an "Unable to resolve authority" error; and most people seem to be content to use PURLs or URLs these days. Is it safe to say that LSID is basically dead?
+
+-- Main.RyanKaldari - 19 Feb 2010
+
+---++++LSID resolution service software at Googlecode
+
+The software in use at biodiversity.org.au to serve data (LSID resolution, linked data provider, oai-pmh service) is available at googlecode:
+
+=$ svn checkout http://ala-nsl.googlecode.com/svn/service-layer/trunk service-layer=
+
+The app consists of a set of xsql modules which are uploaded into an instance of an eXist xml database.
+
+to see the application in operation, try 
+   * http://biodiversity.org.au/authority/metadata?lsid=urn:lsid:biodiversity.org.au:apni.taxon:54321&acceptedFormats=text/html
+   * http://biodiversity.org.au/apni.taxon/54321
+
+-- Main.PaulMurray - 28 Jun 2011
+
+---+++++ Categories
+CategoryLSID
+@
+
+
+1.20
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PaulMurray" date="1309244170" format="1.1" version="1.20"}%
+d15 2
+a16 2
+   * [[http://lsids.sourceforge.net/quick-links/lsid-spec/][LSID Technical Specification]]
+   * [[http://lsids.sourceforge.net/][LSID Resolution Protocol Development]]
+d71 14
+@
+
+
+1.19
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RyanKaldari" date="1266618070" format="1.1" reprev="1.19" version="1.19"}%
+d77 14
+@
+
+
+1.18
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BenRichardson" date="1258041081" format="1.1" reprev="1.18" version="1.18"}%
+d71 6
+@
+
+
+1.17
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="BenRichardson" date="1256542250" format="1.1" reprev="1.17" version="1.17"}%
+---+++ Life Science Identifiers (LSIDs)
+d4 1
+a4 2
+---++GUID and LSID Applicability Statements Review
+    * [[GUID and LSID AS Review]] - a page for the collation of submissions for the review process.
+d6 1
+a6 2
+---++++ Links
+   * *[[http://lsids.sourceforge.net/][LSID Resolution Protocol Project]]* ([[http://lsids.sourceforge.net/]]) - Main site for development of LSID protocol
+d8 1
+a8 1
+---++++ What is an LSID?
+d11 7
+a17 1
+   _The Life Sciences Identifier (LSID) is an I3C and OMG Life Sciences Research (LSR) Uniform Resource Name (URN) specification in progress. The LSID concept introduces a straightforward approach to naming and identifying data resources stored in multiple, distributed data stores in a manner that overcomes the limitations of naming schemes in use today. Almost every public, internal, or department-level data store today has its own way of naming individual data resources, making integration between different data sources a tedious, never-ending chore for informatics developers and researchers. By defining a simple, common way to identify and access biologically significant data, whether that data is stored in files, relational databases, in applications, or in internal or public data sources, LSID provides a naming standard underpinning for wide-area science and interoperability._
+d25 1
+d27 1
+d29 2
+a31 3
+   * [[http://lsid.limnology.wisc.edu/][Northern Temperate Lakes - Long Term Ecological Research Network]]
+   * [[http://www.compositae.org/][Global Compositae Checklist]]
+   * [[http://nzflora.landcareresearch.co.nz/][New Zealand Plants]]
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BenRichardson" date="1256116434" format="1.1" reprev="1.16" version="1.16"}%
+d4 2
+a5 3
+---++++ GUID-LSID Applicability Statement Review
+
+   * [[GuidLsidAsReview]]: A page for the submission of comments on the GUID-LSID Applicability Statement.
+@
+
+
+1.15
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1179953700" format="1.1" version="1.15"}%
+d4 4
+d9 1
+a9 1
+   * *[[http://lsid.sourceforge.net/][LSID Resolution Protocol Project]]* ([[http://lsid.sourceforge.net/]]) - Main site for development of LSID protocol
+d12 1
+a12 1
+From [[http://lsid.sourceforge.net/]]:
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1179183244" format="1.1" version="1.14"}%
+d59 1
+a59 1
+I am looking for arguments why we need LSIDs in the first place, instead of using simple URL-GUIDs with the same social contract about permanence of identifier (not resource) as in LSIDs. The contract for LSIDs is essentially social as well. I fail to see any advantage of LSID over community driven PURLs (persistent URLs). PURLs seem to be standard technology, not raising any of the issues discussed here as LSIDs are not SO bad.
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinRichards" date="1175555485" format="1.1" reprev="1.13" version="1.13"}%
+d59 3
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RicardoPereira" date="1170084682" format="1.1" version="1.12"}%
+d22 2
+a23 1
+
+d61 1
+a61 1
+CategoryLSID@
+
+
+1.11
+log
+@
+.
+@
+text
+@d1 1
+a2 12
+
+   1. Item x
+   2. Item x
+   3. Item x
+   4. Item x
+   8. Item x
+  12. Item x
+
+Some example of _italics_.
+Some example of a link: http://www.tdwg.org/ or http://wiki.tdwg.org/.
+Some example of a link: ftp://www.tdwg.org/ or ftp://wiki.tdwg.org/.
+Some example of a link: mailto://www.tdwg.org/ or ftp://wiki.tdwg.org/.
+@
+
+
+1.10
+log
+@
+.
+@
+text
+@d2 12
+d32 1
+@
+
+
+1.9
+log
+@
+.
+@
+text
+@d35 20
+@
+
+
+1.8
+log
+@
+.
+@
+text
+@d17 1
+a17 1
+   * [[http://www.generationcp.org/vw/modules.php?name=News&file=categories&op=newindex&catid=3][Generation Challenge Programme]]
+@
+
+
+1.7
+log
+@
+.
+@
+text
+@d17 1
+d19 17
+@
+
+
+1.6
+log
+@
+.
+@
+text
+@d17 1
+a17 1
+   * [[Index][Fungorum IndexFungorum]]
+@
+
+
+1.5
+log
+@
+.
+@
+text
+@d17 1
+a17 1
+   * ''Add projects here''
+@
+
+
+1.4
+log
+@
+.
+@
+text
+@d17 1
+a17 1
+   * ''Add projects here'
+@
+
+
+1.3
+log
+@
+.
+@
+text
+@d17 1
+@
+
+
+1.2
+log
+@
+.
+@
+text
+@d11 7
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 3
+@

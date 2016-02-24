@@ -1,0 +1,128 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.5
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.03.16.12.57.40;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.03.15.22.41.34;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2005.03.14.09.01.11;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.03.13.22.48.11;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.5
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1110977860" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="UriAndUrnAndUrl"}%
+See UriAndUrnAndUrl for the context of this topic.
+
+The [[http://www.taguri.org/07/draft-kindberg-tag-uri-07.html][draft-kindberg-tag-uri-07]] of the proposed [[http://www.taguri.org][tag]] URI scheme does, in fact, provide only for a mail address or domain name as a required part, called the authorityPart of the _tag_ syntax, while also providing (for future extensions) that ="software that processes tags MUST NOT reject them on the grounds that they are outside the syntax"= which requires a domain name or email address as  the authorityPart. I'm not entirely sure what the consequence of these apparently contradictory specifications, but the one on the authorityPart syntax runs afoul of a case Gregor mentions, which is that the IANA authority for a DNS name, e.g. "institutionname.de", might prohibit use of its DNS name for things no longer associated with the organization. This means that if an object moved from "institutionname" to someone else's (e.g. the holder of the database changes employers or a databases is sold or taken over by another institution) then the old tag id may no longer by used. This means that a syntax compliant _tag_ can not be persistent under this circumstance.
+
+On the other hand, the appeal of having a simple, lightweight, IANA blessed, URI scheme supporting self-minted tags is very high and would serve those who wish to turn a locally defined guid into a component of a real URN) without having to pursue an issuing authority as in LSIDs. Examples:	  <br/>
+	* *tag:bgbm.org,2005-3-15:herbarium:barcode:B 10 0160176* &nbsp; &nbsp;{self-minted URN identified by BGBM barcode}<br/>
+	* *tag:w.berendsohn@@bgbm.org,2005-3-15:office:plants:1002* &nbsp; &nbsp;{self minted potted plant URN in w.berendsohn's Berlin office, each uniquely tagged}<br/>
+	* *tag:w.berendsohn@@cs.umb.edu,2006-3-15:office:plants:1002* {self minted potted plant URN  by a _different_ w.berendsohn in the Computer Science Department at UMASS Boston and with similar a numbering scheme local to his office}
+
+The date part in the second component of a _tag_ is required and somewhat arbitrary. It is meant to guarantee global uniqueness based on the fact that for each kind of nameAuthority, at any given time there is only one instance of the given name. For example, the email address w.berendsohn@@bgbm might be given to someone else in the future, and that person might use the same scheme for describing office plants, using the same numbers again. Details are irrelevant for this discussion except that it is not covered by the "MUST NOT" exemption mentioned above in the draft standard.
+
+My feeling is that we should encourage _tag_ whenever the current restriction on authorityPart is tolerable. Essentially, it represents a contract that a self-minted URN is a guid and it does so as a (soon to be) IANA blessed scheme.
+
+-- Main.BobMorris - 13 Mar 2005
+ 
+My feeling about making _date_ a requirement is that this is rather silly. It is fine as a recommendation for private use, but under the assumption of any future change _any_ kind of identifier run's afoul. In many countries organizations or institutions change their name and corresponding DNS entry every few decades because someone gets merits for "organizing things better". In that case the old DNS entry will often be given up after a while (perhaps only after another 10 years), and someone completely different may use it. If herbarium accession numbers are already managed for uniqueness, I believe that "tag:bgbm.org:herbarium:B 10 0160176" would be technically equivalent and socially more acceptable.
+
+-- Main.GregorHagedorn - 14 Mar 2005
+
+You are _completely_ missing the point and are attempting to assign semantics to the identifier. This is the same error that people make about lsid's where the domain name in the lsid is merely an issuing authority and has no meaning at all once the id is issued. The _point_ of the date is to insure that the {name,date} pair participates guid because _on that date_ there was only one such instance of that name and at any future time, a conforming {name,date} pair will be different. The required semantics of the pair _at issuing time_ is that the self-issuer has the permission to use the name at that date. It is completely irrelevant (for the uniqueness) that in the future the holder of the name might change or the permission be withdrawn. The purpose of that pair is to help insure that the entire id string is unique, based also on the presumption that (for human issuers of a small number of ids per day) it is pretty easy to not duplicate. It is designed to support reuse of the trailing parts, waiting at most a day, which by assumption is not necessary for herbarium accession numbers.
+
+It may well be that "tag:bgbm.org:herbarium:B 10 0160176" would be technically equivalent and socially more acceptable. However, it would not be compliant with the current tag scheme proposed to IANA, since it doesn't have a date component. Further,mixing the styles is would result in  a uri scheme that depends on its uniqueness in some cases on some parts of the name, and in other parts on others. It could be hard to validate that a name is compliant. The design goal of having reusable trailing parts seems---if you wish---seems quite useful to me.
+
+-- Main.BobMorris - 15 Mar 2005	  
+
+I mostly agree with you, but I think if the tag scheme defines that part of the id has to be a URI name under control of the issuer plus the date at time of issuing it, it is the tag scheme defining semantics, not me. I completely agree with you that identifiers should be semantically opaque. Since tag does not seem to be that, I continue to ask about social acceptance of the semantics choosen. Adding the date seems to address an issue that none of the other identifier schemes solve, and this does not combine well with the - in my eyes - semantic structure of the tag scheme. Perhaps you define semantic as something that the specification allows you to use, whereas I interpret semantic as something that is there (even parsing rules are deducible from the tag proposal) to someone who does not case whether she or he is permitted to use the semantics. I believe the latter view more realistically reflects human behavior, but certainly the machine-specified semantics view is very important as well.
+
+ -- Main.GregorHagedorn - 15 Mar 2005
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110926494" format="1.0" version="1.3"}%
+d28 4
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110790871" format="1.0" version="1.2"}%
+d22 6
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110754091" format="1.0" version="1.1"}%
+d3 1
+a3 1
+See UriAndUrnAndTag as well as ObjectIdentifierPattern for the context of this topic.
+d5 1
+a5 1
+The [[http://www.taguri.org/07/draft-kindberg-tag-uri-07.html][draft-kindberg-tag-uri-07]] of the proposed [[http://www.taguri.org][tag]] URI scheme does, in fact, provide only for a mail address or domain name as a required part, called the authorityPart of the _tag_ syntax, while also providing (for future extensions) that ="software that processes tags MUST NOT reject them on the grounds that they are outside the syntax"= which requires a domain name or email address as  the authorityPart. I'm not entirely sure what the consequence of these apparently contradictory specifications, but the one on the authorityPart syntax runs afoul of a case Gregor often mentions, which is that the IANA authority for a DNS name, e.g. bba.de, might (and in the case of bba.de does), prohibit use of its DNS name for things not associated with the organization. This means that if an object moved from the IANA authority's control to someone else's (e.g. Gregor changes employers and serves a database with _tag_ records from his new employer) then he is prohibited by his previous employer from using bba.de. This means that a syntax compliant _tag_ can not be persistent under this circumstance. 
+d18 3
+@

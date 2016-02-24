@@ -1,0 +1,53 @@
+%META:TOPICINFO{author="RicardoPereira" date="1168433717" format="1.1" version="1.13"}%
+---+++ Search Request
+
+This is the main method to retrieve data on records.
+Apart from the searches already in use in the CurrentProtocols (see also their DifferencesInRequestTypes) it would be desireable to have subtypes of searches:
+
+---+++++ Search Subtypes 
+   * *FullDocumentSearch* - return an xmldocument compliant to a well known standard with all data existing
+
+   * *PartialDocumentSearch* - return an xml document compliant to a well known standard with only selected parts of it
+
+   * *CustomDocumentSearch* - return a custom xml document with a ResponseStructure given in the request
+
+
+---+++++ Additional features 
+
+*Different Conceptual Schemas for request/response:*
+
+One thing that can be done in BioCASE is to specify in which schema you are "asking for" and in which schema you want your reply to be. So if the data provider has mapped one database to Darwin Core and ABCD is possible to query using Darwin Core concepts and get an ABCD document as a result, or the other way around.
+
+
+*Sorting the results: (discarded)*
+
+It could be also interesting to be able to define in the protocol sorting criterias so that the wrapper can sort the results, or can query using this sortings, and produce sorted lists. For example imagine you want just a simple strcuture like this:
+
+<verbatim>
+<Taxon UnitID="22">Luzula Luzuloides</TaxonName>
+</verbatim>
+
+And you want the results sorted by the name, not the UnitID.
+
+This can save the portals a lot of processing time.
+
+
+*Comments:*
+     I would like to see if XQuery implements any sorting. But as we have to think in XML terms instead of SQL, I don't see an easy way of sorting nested structure. Imagine something simple as specimens with multiple identifications:
+<verbatim>
+<specimen>
+  <identifications>
+    <scientificName>Abies alba Miller</scientificName>
+    <scientificName>Picea abies subsp. obovata (Ledeb.) Domin</scientificName>
+  </identifications>
+</specimen>
+<specimen>
+  <identifications>
+    <scientificName>Larix decidua P. Mill.</scientificName>
+  </identifications>
+</specimen>
+</verbatim>
+     Is this the final sorted stage if you want it sorted by scientific name? You will never be able to sort over the whole document, but only within RepeatableRegions of the document.
+     -- Markus Döring 6.7.2004
+-----
+

@@ -1,0 +1,503 @@
+%META:TOPICINFO{author="MichaelBrowne" date="1211090597" format="1.1" reprev="1.14" version="1.14"}%
+%META:TOPICPARENT{name="IntroToGISIN"}%
+<h3>Suggestions for Changes and Additions to the GISIN technical document</h3>
+<h4>[[http://www.niiss.org/cwis438/websites/GISINTech/Documentation/ProtocolSpecification.html?WebSiteID=5][GISIN Web Service Protocol Specification]]</h4> Click on the title to open the document, then use your browser's back button to return to this page and insert your wiki input below.
+
+
+ <h2>Appendix A - Issues</h2>
+ <p><br />
+  1. Do we specify taxonomic hierarchy or just  kingdom/scientific name  </p>
+<p>- Just kingdom/scientific name for now </p>
+<p>2.Can ask  service: do you supported hierarchical taxon queries?</p>
+<p>- Later addition </p>
+<p>3. Need a method to determine if a record is from its original data set or is a duplicate</p>
+<p>4. Need a method to determine the original source of a duplicated record</p>
+<p>5. Need to include LSIDs for each record. Will LSIDs address issues 3 and 4? </p>
+<p>6. The Metadata in TAPIR uses' 2 letter language codes. Should we do the same? </p>
+<p>7. Should we add "Debugging" as a format parameter? </p>
+ <p><br />
+<h4><a name="Issues_List_with_numbered_issues"></a> &#8220;Issues List&#8221; with numbered issues, current recommendations, current status, and associated discussions. </h4>
+The &#8220;Status&#8221; fields have the following values:
+<ul>
+  <li>Investigation &#8211; we&#8217;re trying to come up with a proposal</li>
+  <li>Proposed &#8211; we have a proposal and are seeing if anyone objects</li>
+  <li>Resolved &#8211; the issue has been decided but is not yet in the protocol documentation</li>
+  <li>Existing &#8211; the issue is represented in the documentation</li>
+</ul>
+<p>
+1. PROPOSAL: Add a new data model for <span class="twikiNewLink">EnvironmentalInfo<a href="/twiki/bin/edit/InvasiveSpecies/EnvironmentalInfo?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><br>
+Status: Proposed<br> 
+This datamodel will help distinguish between species that occur in natural or human modified environments, and/or in freshwater, brackish, marine and terrestrial habitats. Multiple values are possible. These concepts are different from <span class="twikiNewLink">EcosystemImpacted<a href="/twiki/bin/edit/InvasiveSpecies/EcosystemImpacted?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> and <span class="twikiNewLink">HabitatImpacted<a href="/twiki/bin/edit/InvasiveSpecies/HabitatImpacted?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> (a terrestrial species can impact aquatic environments). At the GISIN portal someone could filter by &#8216;terrestrial&#8216; to get all terrestrial species &#8211; whether or not the habitat impacted might be both terrestrial and aquatic.<br>
+<p>EnvironmentalInfo supports the following additional Concepts: Possible values for the additional Concepts are listed in the table.</p>
+<table width="100%" cellspacing="0" cellpadding="2" border='1'>
+  <tr>
+    <th>Concept</th>
+    <th>Required</th>
+    <th>Type</th>
+    <th>Values</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>SpeciesEnvironment</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Natural, <span class="twikiNewLink">HumanModified<a href="/twiki/bin/edit/InvasiveSpecies/HumanModified?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span></td>
+    <td>The environment in which the species occurs</td>
+  </tr>
+  <tr>
+    <td>SpeciesBiome</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Freshwater, Brackish, Marine, Terrestrial</td>
+    <td>The biome in which the species occurs</td>
+  </tr>
+</table>
+<p>
+2. PROPOSAL: Change Harmful back to Invasive in <span class="twikiNewLink">BioStatus<a href="/twiki/bin/edit/InvasiveSpecies/BioStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><br> 
+Status: Proposed<br> 
+Discussion: Many believe that &#8216;Harm&#8217; is subjective and that it is the culmination of the invasion process, which begins with establishment, then persistence and spread. If we provided the word &#8216;Invasive&#8217; instead of &#8216;Harmful&#8217; in the <span class="twikiNewLink">BioStatus<a href="/twiki/bin/edit/InvasiveSpecies/BioStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> concept, most providers would be able to map to its possible values, but each provider might mean something different. The key differences are between;<br>
+ONE: Scientific uses of the word &#8216;Invasive&#8217; meaning ability to spread (i.e. Distribution = Widespread or Moderate, and/or Abundance= Dominant or Common) and <br>
+TWO: Policy uses of the word &#8216;Invasive&#8217; meaning ability to cause harm.<br>
+Different meanings or usages can be deduced from the additional concepts for which data is provided. Currently, the first group can select &#8216;Invasive&#8217; then map their data to Distribution = (Widespread or Moderate), and/or Abundance= (Dominant or Common) and/or Harmful= (Yes or Potentially). <br>
+The second group can select &#8216;Invasive&#8217; then map their data to <span class="twikiNewLink">ImpactStatus<a href="/twiki/bin/edit/InvasiveSpecies/ImpactStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> concepts as well as those of group 1.<p>
+More Discussion: Folks had major issues with the term &#8220;Invasive&#8221;. We decided to use &#8220;Harmful=Yes&#8221;. However, invasiveness data would not be mapped to the &#8216;Harmful&#8217; concept if there is only evidence of establishment, persistence and spread (e.g. when harm has not been confirmed). A search at the GISIN portal on Harmful = yes would miss this invasiveness data.
+</p>
+<p>BioStatuses  support the following additional Concepts. Possible values for the Concepts are listed below this table. </p>
+<table width="100%" cellspacing="0" cellpadding="2" border='1'>
+  <tr>
+    <th>Concept</th>
+    <th>Required</th>
+    <th>Type</th>
+    <th>Values</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Source</td>
+    <td>No</td>
+    <td>String</td>
+    <td>&nbsp;</td>
+    <td>Citation for the source of the data </td>
+  </tr>
+  <tr>
+    <td>Origin</td>
+    <td>Yes</td>
+    <td>String</td>
+    <td>Indigenous, Nonindigenous, Unknown </td>
+    <td>Whether the species is considered to be native to a particular location or not. </td>
+  </tr>
+  <tr>
+    <td>Presence</td>
+    <td>Yes</td>
+    <td>String</td>
+    <td>Absent, Sometimes, Present, Unknown </td>
+    <td>There is supporting evidence to show the species is present within the valid date </td>
+  </tr>
+  <tr>
+    <td>Persistence</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Persistent, Temporary [let's delete this value. MB], Transient, <span class="twikiNewLink">DiedOut<a href="/twiki/bin/edit/InvasiveSpecies/DiedOut?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>, Unknown </td>
+    <td>How successful the organism is at surviving and reproducing </td>
+  </tr>
+  <tr>
+    <td>Distribution</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Widespread, Moderate, Localized, Unknown </td>
+    <td>Whether the species is limited to a local area or covers vast tracks of land or water </td>
+  </tr>
+  <tr>
+    <td>Abundance</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Dominant, Common, Rare, Zero, Unknown </td>
+    <td>How abundant the organism is   </td>
+  </tr>
+  <tr>
+    <td>Trend</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Expanding, Stable, Declining, Unknown </td>
+    <td>Whether the range of the organism is increasing or decreasing </td>
+  </tr>
+  <tr>
+    <td>RateOfSpread</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Rapid, Moderate, Slow, Unknown </td>
+    <td>How quickly the range of the organism is expanding </td>
+  </tr>
+  <tr>
+    <td>Invasive</td>
+    <td>Yes</td>
+    <td>String</td>
+    <td>Yes, No, Potentially, Unknown</td>
+    <td>Whether the organism causes concern. 'Spread' information is dealt with in BioStatus. 'Harm' information is dealt with in the ImpactStatus? Element as are Environmental versus Livelihood and HumanHealth impacts.>?</a></span> element</td>
+  </tr>
+  <tr>
+    <td>RegulartoryListing</td>
+    <td>No</td>
+    <td>String</td>
+    <td>Prohibited, Restricted, <a href="/twiki/bin/view/InvasiveSpecies/NotConsidered" class="twikiLink">NotConsidered</a>, Unknown </td>
+    <td>The legal regulatory status of the organism </td>
+  </tr>
+</table>
+<p>
+<P>
+<p />
+3. <span class="twikiNewLink">ImpactStatus<a href="/twiki/bin/edit/InvasiveSpecies/ImpactStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><p> 
+3.1 PROPOSAL: Introduce an <span class="twikiNewLink">ImpactMechanism<a href="/twiki/bin/edit/InvasiveSpecies/ImpactMechanism?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> concept<br> 
+Status: Proposed<br>
+Introduce an <span class="twikiNewLink">ImpactMechanism<a href="/twiki/bin/edit/InvasiveSpecies/ImpactMechanism?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> concept to handle information about competition, predation, etc. i.e. how IAS damage species habitats and ecosystems. This kind of information is widely available and <span class="twikiNewLink">ImpactMechanism<a href="/twiki/bin/edit/InvasiveSpecies/ImpactMechanism?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> allows us to make assumptions about which kinds of native species may be threatened. <br>
+3.2 PROPOSAL: Change <span class="twikiNewLink">HarmType<a href="/twiki/bin/edit/InvasiveSpecies/HarmType?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> values from <span class="twikiNewLink">HarmfulToEconomy<a href="/twiki/bin/edit/InvasiveSpecies/HarmfulToEconomy?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> to <span class="twikiNewLink">HarmfulToLivelihoods<a href="/twiki/bin/edit/InvasiveSpecies/HarmfulToLivelihoods?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>.<br>
+Status: Proposed<br>
+3.3 PROPOSAL: Make <span class="twikiNewLink">HabitatImpacted<a href="/twiki/bin/edit/InvasiveSpecies/HabitatImpacted?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> non-mandatory<br>
+Status: Proposed<br>
+<p/>
+ <p>ImpactStatuses  support the following additional Concepts: </p>
+ <table width="100%" cellspacing="0" cellpadding="2" border='1'>
+   <tr>
+     <th>Concept</th>
+     <th>Required</th>
+     <th>Type</th>
+     <th>Values</th>
+     <th>Description</th>
+   </tr>
+   <tr>
+     <td>BiomeImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Freshwater, Brackish, Marine, Terrestrial</td>
+     <td>The ecosystem type being impacted (can be more than one).</td>
+   </tr>
+   <tr>
+     <td>EnvironmentImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Natural, <span class="twikiNewLink">HumanModified<a href="/twiki/bin/edit/InvasiveSpecies/HumanModified?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span></td>
+     <td>Type of environment being impacted</td>
+   </tr>
+   <tr>
+     <td>HarmType</td>
+     <td>No</td>
+     <td>String</td>
+     <td>HarmfulToEnvironment, <span class="twikiNewLink">HarmfulToLivelihoods<a href="/twiki/bin/edit/InvasiveSpecies/HarmfulToLivelihoods?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><span class="twikiNewLink">HarmfulToHumanHealth<a href="/twiki/bin/edit/InvasiveSpecies/HarmfulToHumanHealth?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span></td>
+     <td>What values the species is impacting (can be more than one) </td>
+   </tr>
+   <tr>
+     <td>ImpactLevel</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Habitat, Ecosystem</td>
+     <td>Level at which impact is occuring (can be more than one)</td>
+   </tr>
+<tr>
+     <td>SpeciesImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Use scientific name (can be more than one)</td>
+   </tr>
+<tr>
+     <td>HabitatImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Description of habitat impacted</td>
+   </tr>
+<tr>
+     <td>EcosystemImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Description of the ecosystem being impacted</td>
+   </tr>
+<tr>
+     <td>*EcosystemServicesImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Provisioning, Regulating, Cultural, Supporting</td>
+     <td>Ecosystem services are the benefits that people obtain from ecosystems (can be more than one).</td>
+   </tr>	
+<tr>
+     <td>LivelihoodValuesImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Description of impacts on livelihoods.</td>
+   </tr>	
+<tr>
+     <td>HumanHealthValuesImpacted</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Description of impacts on human health.</td>
+   </tr>
+   <tr>
+     <td>ImpactMechanism</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Allergenic, Competition, <span class="twikiNewLink">DiseaseTransmission<a href="/twiki/bin/edit/InvasiveSpecies/DiseaseTransmission?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>, Herbivory, Hybridisation, <span class="twikiNewLink">InteractionWithOtherInvasiveSpecies<a href="/twiki/bin/edit/InvasiveSpecies/InteractionWithOtherInvasiveSpecies?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>, Pathogenic/Parasite, <span class="twikiNewLink">PhysicalDisturbance<a href="/twiki/bin/edit/InvasiveSpecies/PhysicalDisturbance?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>, Predation, <span class="twikiNewLink">SoilTransformation<a href="/twiki/bin/edit/InvasiveSpecies/SoilTransformation?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>, Transpiration, Other, Unknown
+</td>
+     <td>Mechanism by which negative impacts occur </td>
+   </tr>
+   <tr>
+     <td>*ImpactStrength</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Massive, Strong, Moderate, Weak, None, Unknown </td>
+     <td>How strong the impact is</td>
+   </tr>
+<tr>
+     <td>ImpactCost</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Description of cost and either estimated or actual monetary value.</td>
+   </tr>
+<tr>
+     <td>ImpactBenefit</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>Description of benefit and either estimated or actual monetary value.</td>
+   </tr>
+</table>
+<p><strong>HarmTypeValues</strong></p>
+ <table width="100%" border="1" cellpadding="2" cellspacing="0">
+   <tr>
+     <th>Name</th>
+     <th>Description</th>
+   </tr>
+   <tr>
+     <td>HarmfulToEnvironment</td>
+     <td>Impact on natural or semi-natural environments and/or the species they contain. Includes impacts on species, species interactions, habitats, ecosystem composition, functionality and services.</td>
+   </tr>
+   <tr>
+     <td>HarmfulToLivelihoods</td>
+     <td>Impact on primary production or subsistence, as well as on safety and social, recreational, aesthetic, spiritual or cultural values. 
+</td>
+   </tr>
+   <tr>
+     <td>HarmfulToHumanHealth</td>
+     <td>Impact on human health via disease, allergen, air/water quality, etc.</td>
+   </tr>
+ </table>
+
+
+
+
+<p><strong>EcosystemServicesImpacted Values</strong></p>
+ <table width="100%" border="1" cellpadding="2" cellspacing="0">
+   <tr>
+     <th>Name</th>
+     <th>Description</th>
+   </tr>
+   <tr>
+     <td>Provisioning</td>
+     <td>Provisioning services, such as food, fibre, fuel, water, biochemicals, natural medicines, pharmaceuticals and ornamental resources.</td>
+   </tr>
+   <tr>
+     <td>Regulating</td>
+     <td>Regulating services, i.e. benefits obtained from the regulation of ecosystem processes, such as the regulation of climate, floods, disease, wastes, and water
+quality.</td>
+   </tr>
+   <tr>
+     <td>Cultural</td>
+     <td>Cultural services such as recreation, aesthetic enjoyment and tourism; </td>
+   </tr>
+   </tr>
+   <tr>
+     <td>Supporting</td>
+     <td>Services that are necessary for the production of all other ecosystem services, such as soil formation, photosynthesis, and nutrient cycling</td>
+   </tr>
+ </table>
+<P>
+*EcosystemServicesImpacted values and descriptions are adapted from: Kettunen, M. & ten Brink, P. 2006. Value of biodiversity- Documenting EU examples
+where biodiversity loss has led to the loss of ecosystem services. Final report for the
+European Commission. Institute for European Environmental Policy (IEEP), Brussels,
+Belgium. 131 pp.<p>
+*ImpactStrength values and descriptions are adapted from: Olenin S, Minchin D, Daunys D (2007) Assessment of biopollution in aquatic ecosystems. Marine Pollution Bulletin (Volume 55, Issues 7-9, 2007, Pages 379-394). <br>
+*Some <span class="twikiNewLink">ImpactMechanism<a href="/twiki/bin/edit/InvasiveSpecies/ImpactMechanism?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> values come from the IUCN Red List&#8217;s Authority Files.<br>
+<p>
+
+
+
+<p/>
+
+4. <span class="twikiNewLink">DispersalStatus<a href="/twiki/bin/edit/InvasiveSpecies/DispersalStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><p>
+4.1 PROPOSAL: Introduce a  <span class="twikiNewLink">DispersalStatus<a href="/twiki/bin/edit/InvasiveSpecies/DispersalStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> Concept called <span class="twikiNewLink">MovementStatus<a href="/twiki/bin/edit/InvasiveSpecies/MovementStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><br> 
+Status: Investigation<br>
+Discussion: <span class="twikiNewLink">DispersalStatus<a href="/twiki/bin/edit/InvasiveSpecies/DispersalStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> applies to species movements at all scales &#8211; introduction across international borders as well as dispersal from one watershed to the next. We could introduce a  <span class="twikiNewLink">DispersalStatus<a href="/twiki/bin/edit/InvasiveSpecies/DispersalStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> Concept called <span class="twikiNewLink">MovementStatus<a href="/twiki/bin/edit/InvasiveSpecies/MovementStatus?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> with possible values = Pre-borderMovement and Post-borderMovement.<br>
+4.2 PROPOSAL: Introduce Concepts for <span class="twikiNewLink">DispersalMechanisms<a href="/twiki/bin/edit/InvasiveSpecies/DispersalMechanisms?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> and <span class="twikiNewLink">DisperslPathways<a href="/twiki/bin/edit/InvasiveSpecies/DisperslPathways?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span><br>
+Status: Proposed<br>
+Discussion: The problem with the original Cause and Vector concepts is that it would have been difficult for providers to map to values as there are so many. Now they can map to 1 of 3 dispersal mechanisms and/or 1 of 6 dispersl pathways. This simplified approach lends itself to comparative analysis across a wide range of taxa and to policy applications (see the &#8216;responsibility&#8217; statement in the Descriptions for Pathway values). <br>
+4.3 PROPOSAL: Introduce a <span class="twikiNewLink">DateOfFirst<a href="/twiki/bin/edit/InvasiveSpecies/DateOfFirst?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> Report concept<br>
+Status: Proposed<br>
+Discussion: This date is sometimes available when date of introduction is unknown.<br>
+4.4 PROPOSAL: Change Method concept to 'Mode' and make it not mandatory<br>
+Status: Proposed<br>
+4.5 PROPOSAL: What format should we use for dates?<br>
+Proposal: Use the TAPIR standard date format<br>
+Status: Existing<br>
+Discussion: Michael: YYYY-MM-DD is usually unavailable for &#8216;Date of introduction&#8217;. Typically providers have a year or a decade. How do we handle the lack of MM-DD? 
+Discussion: Michael: You often get pre- or post- a year or a decade. Could we implement something modelled on DAISIE, which uses 2 fields: If the date is precise, the same date appears in both fields. If the first field alone is populated, the meaning = &#8216;post the date&#8217;, if only the second field is populated, the meaning = &#8216;pre the date&#8217;.<br>
+Discussion: Jim:We can setup the toolkit to map years (including a decade) to a date field.  Mapping multiple columns into a date is more complicated.  All databases have standard date fields that can be automatically mapped to the protocol.  On this one I think I would suggest we recommend the providers use the SQL standard date fields if at all possible.<br>
+<p />
+<p>DispersalStatuses  support the following additional Concepts: </p>
+ <table width="100%" cellspacing="0" cellpadding="2" border='1'>
+   <tr>
+     <th>Concept</th>
+     <th>Required</th>
+     <th>Type</th>
+     <th>Values</th>
+     <th>Description</th>
+   </tr>
+  <tr>
+     <td>DateOfIntroduction</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>A textual description of any date (day, month, year, decade, etc.) of introduction</td>
+   </tr>
+  <tr>
+     <td>DateOfFirstReport</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>A textual description of any date (day, month, year, decade, etc.) of first report</td>
+   </tr>
+ <tr>
+     <td>Mode</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Natural, Deliberate, Accidental, Unknown </td>
+     <td>A high-level categorization of how  the organism is dispersing </td>
+   </tr>
+ <tr>
+     <td>MovementStatus</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Pre-borderMovement, Post-borderMovement</td>
+     <td>A high-level classification of where the dispersal is occurring</td>
+   </tr>
+   <tr>
+     <td>*Mechanism</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Commodity, Vector, <span class="twikiNewLink">NaturalDispersal<a href="/twiki/bin/edit/InvasiveSpecies/NaturalDispersal?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>, Unknown</td>
+     <td>Mechanism of arrival, entry and/or dispersal.</td>
+   </tr>
+   <tr>
+     <td>*Pathway</td>
+     <td>No</td>
+     <td>String</td>
+     <td>Release, Escape, Contaminant, Stowaway, Corridor, Unaided, Unknown</td>
+     <td>Process that results in the introduction of alien species from one location to another</td>
+   </tr>
+   <tr>
+     <td>FromCountryCode</td>
+     <td>No</td>
+     <td>String</td>
+     <td>See section 4.4.1.3 </td>
+     <td>The country the organism is dispersing from</td>
+   </tr>
+   <tr>
+     <td>Route</td>
+     <td>No</td>
+     <td>String</td>
+     <td>(undefined)</td>
+     <td>A textual description of the route the organism took from the <span class="twikiNewLink">FromCountryCode<a href="/twiki/bin/edit/InvasiveSpecies/FromCountryCode?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>. If used, a <span class="twikiNewLink">LanguageCode<a href="/twiki/bin/edit/InvasiveSpecies/LanguageCode?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> must be specified. </td>
+   </tr>
+ </table>
+<p>
+<p />
+<p><strong>Mechanism Values</strong></p>
+ <p>Mechanism of arrival, entry and dispersal</p>
+ <table width="100%" border="1" cellpadding="2" cellspacing="0">
+   <tr>
+     <th>Name</th>
+     <th>Description</th>
+   </tr>
+   <tr>
+     <td>Commodity</td>
+     <td>Importation of a commodity</td>
+   </tr>
+   <tr>
+     <td>Vector</td>
+     <td>Arrival of a transport vector. Vector means the physical means, agent or mechanism which facilitates the transfer of organisms or their propagules from one place to another.</td>
+   </tr>
+   <tr>
+     <td>NaturalDispersal</td>
+     <td>Natural spread from a neighbouring region where the species is alien</td>
+   </tr>
+ </table>
+<p>
+<p />
+<p><strong>Pathways Values</strong></p>
+ <p>Process that results in the introduction of alien species from one location to another</p>
+ <table width="100%" border="1" cellpadding="2" cellspacing="0">
+   <tr>
+     <th>Name</th>
+     <th>Description</th>
+   </tr>
+   <tr>
+     <td>Release</td>
+     <td>Intentional introduction as a commodity for release (examples include biocontrol agents, game animals and plants for erosion control - responsibility should be the applicant&#8217;s)</td>
+   </tr>
+   <tr>
+     <td>Escape</td>
+     <td>Intentional introduction as a commodity but escapes unintentionally (examples include feral crops and livestock, pets, garden plants, live baits - responsibility should be the importer&#8217;s) [should this include illegal release of e.g. pets, fish for stocking, biocontrol agents, game animals?]</td>
+   </tr>
+   <tr>
+     <td>Contaminant</td>
+     <td>Unintentional introduction with a specific commodity (examples include parasites, pests and commensals of traded plants and animals - responsibility should be the exporter&#8217;s)</td>
+   </tr>
+  <tr>
+     <td>Stowaway</td>
+     <td>Unintentional introduction attached to or within a transport vector (examples include hull fouling, ballast water/soil/sediment/organisms - responsibility should be the carrier&#8217;s)</td>
+   </tr>
+   <tr>
+     <td>Corridor</td>
+     <td>Unintentional introduction via human infrastructures linking previously unconnected regions (examples include Lessepsian migrants, Ponto-Caspian aliens in the Baltic- responsibility should be the developer&#8217;s)</td>
+   </tr>
+   <tr>
+     <td>Unaided</td>
+     <td>Unintentional introduction through natural dispersal of alien species across political borders (potentially all alien taxa are capable of dispersal - responsibility should be the polluter&#8217;s)</td>
+   </tr>
+</table>
+<P>
+*Mechanism and Pathway values and descriptions are adapted from: Hulme PE, Bacher S, Kenis M, Klotz S, Kühn I, Minchin D, Nentwig W, Olenin S, Panov V, Pergl J, Py*ek P,  Roques A, Sol D, Solarz W &amp; Vilà, M (2008) Grasping at the routes of biological invasions: a framework to better integrate pathways into policy.  Journal of Applied Ecology, 45 (in press). 
+<p>
+6. PROPOSAL: Have a Metadata <span class="twikiNewLink">DataModel<a href="/twiki/bin/edit/InvasiveSpecies/DataModel?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>.<br>  
+Status: Investigating<br>
+Jim: Does TDWG have something we can use here?  The TAPIR <span class="twikiNewLink">MetaData<a href="/twiki/bin/edit/InvasiveSpecies/MetaData?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> <span class="twikiNewLink">DataModel<a href="/twiki/bin/edit/InvasiveSpecies/DataModel?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> is for the entire data source so it does not fit well.<br>
+<p>
+7. PROPOSAL: Have a Citation <span class="twikiNewLink">DataModel<a href="/twiki/bin/edit/InvasiveSpecies/DataModel?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span>. <br> 
+Status: Investigating<br>
+Jim: Does TDWG have something we can use here?<br>
+<p>
+8. PROPOSAL: Add GUIDs to each record using LSIDs where appropriate<br>
+Status: Proposed<br>
+<p>
+9. PROPOSAL: We need a method to add general text to each record for comments, descriptions, etc.<br>
+Status: Proposed<br>
+Discussion: Add a &#8220;Comments&#8221; text field to each <span class="twikiNewLink">DataModel<a href="/twiki/bin/edit/InvasiveSpecies/DataModel?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> but insure that the documentation indicates it should not be used for information that is covered in elsewhere in the protocol and cannot be queried at the same level of performance or reliability.<br>
+
+
+
+
+
+----
+Posted Protocol Specification text on Wiki -- <a href="http://www.tdwg.org/membership/list-of-users/?tx_newloginbox_pi3%5BshowUsername%5D=AnnieSimpson#" class="twikiAnchorLink">AnnieSimpson</a> - 04 Aug 2007
+<p />
+Added <span class="twikiNewLink">DateOfIntroduction<a href="/twiki/bin/edit/InvasiveSpecies/DateOfIntroduction?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> into Table 4.4.7; added detailed descriptions for 'cause' and 'vector'; 
+-- <a href="http://www.tdwg.org/membership/list-of-users/?tx_newloginbox_pi3%5BshowUsername%5D=AnnieSimpson#" class="twikiAnchorLink">AnnieSimpson</a> - 05 Aug 2007
+<p />
+Added <span class="twikiNewLink">ImpactStrength<a href="/twiki/bin/edit/InvasiveSpecies/ImpactStrength?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> values (and reference) to table at end of section 4.4.6.1.
+-- <a href="http://www.tdwg.org/membership/list-of-users/?tx_newloginbox_pi3%5BshowUsername%5D=AnnieSimpson#" class="twikiAnchorLink">AnnieSimpson</a> - 06 Aug 2007
+<p />
+Removed <span class="twikiNewLink">AbundanceValue<a href="/twiki/bin/edit/InvasiveSpecies/AbundanceValue?topicparent=InvasiveSpecies.ProtocolSpecGISIN" rel="nofollow" title="Create this topic">?</a></span> = monoculture
+-- <a href="http://www.tdwg.org/membership/list-of-users/?tx_newloginbox_pi3%5BshowUsername%5D=AnnieSimpson#" class="twikiAnchorLink">AnnieSimpson</a> - 09 Aug 2007
+<p />
+Removed Protocol Specification document's main text but kept suggested changes list; added document URL as reference; added instructions for making additional comments. -- <a href="http://www.tdwg.org/membership/list-of-users/?tx_newloginbox_pi3%5BshowUsername%5D=AnnieSimpson#" class="twikiAnchorLink">AnnieSimpson</a> - 01 Mar 2008

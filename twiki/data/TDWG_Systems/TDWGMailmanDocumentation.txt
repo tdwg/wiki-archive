@@ -1,0 +1,122 @@
+%META:TOPICINFO{author="MarkusDoering" date="1424764326" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="WebHome"}%
+---++Mailing Lists
+
+A number of mailman mailing lists are run off the owl.tdwg.org server.
+In addition postfix is managing all email aliases of the form @tdwg.org, i.e. it provides some aliases to existing addresses.
+
+---+++Email Aliases
+All email aliases of the form @tdwg.org are set up in Postfix on the owl server.
+Postfix aliases are configured in /etc/postfix/virtual
+As of today (8.9.2010) this file defines the following aliases:
+
+<verbatim>
+postmaster@tdwg.org	admin@gbif.org, mdoering@gbif.org
+
+
+#
+# TIP team members
+# 
+lee@tdwg.org            leebelbin@gmail.com
+ricardo@tdwg.org        scachett@gmail.com
+stan@tdwg.org           sblum@calacademy.org
+roger@tdwg.org          rogerhyam@googlemail.com
+markus@tdwg.org         mdoering@gbif.org
+
+# Lee's email is also leebel@netspace.net.au
+
+
+#
+# TDWG various roles
+#
+chairman@tdwg.org     	dhobern@gmail.com
+treasurer@tdwg.org     	sblum@calacademy.org
+secretary@tdwg.org    	Mergen.Patricia@gmail.com
+accounts@tdwg.org	lee@tdwg.org, A.Rissone@nhm.ac.uk
+editor@tdwg.org         WEITZMAN@si.edu
+outreach@tdwg.org       lee@tdwg.org
+stdtrack@tdwg.org       lee@tdwg.org
+charters@tdwg.org       lee@tdwg.org
+secretariat@tdwg.org	lee@tdwg.org
+
+executive@tdwg.org      exec@tdwg.org
+exec@tdwg.org           A.Rissone@nhm.ac.uk, sblum@calacademy.org, nozomi@biol.tsukuba.ac.jp, lee@tdwg.org, WEITZMAN@si.edu, dhobern@gmail.com, eotuama@gbif.org, gkamp@uiuc.edu, paul.flemons@austmus.gov.au, CooperJ@landcareresearch.co.nz, rbeaman@flmnh.ufl.edu, Mergen.Patricia@gmail.com, saraiva@usp.br, heimo.rainer@NHM-WIEN.AC.AT, ckahindo@yahoo.com
+
+convener@tdwg.org	w.berendsohn@bgbm.org, stk2@cornell.edu, tuco@berkeley.edu, asimpson@usgs.gov, sblum@calacademy.org, N.Thomson@nhm.ac.uk, G.M.Hagedorn@gmail.com, renato@cria.org.br, roger@tdwg.org, lee@tdwg.org, eotuama@gbif.org, WEITZMAN@si.edu, ram@cs.umb.edu, rbeaman@flmnh.ufl.edu, RichardsK@landcareresearch.co.nz, deepreef@bishopmuseum.org
+
+systems@tdwg.org	lee@tdwg.org, piers@gaiaresources.com.au
+webmaster@tdwg.org      A.Rissone@nhm.ac.uk, tdwg_web@gaiaresources.com.au
+root			admin@gbif.org
+
+
+#
+# TDWG Program Committee
+#
+
+pc@tdwg.org		asimpson@usgs.gov, patricia.mergen@africamuseum.be, jsachs@csee.umbc.edu, e.arnaud@cgiar.org, A.Rissone@nhm.ac.uk, lee@tdwg.org, ckahindo@yahoo.com, knupffer@ipk-gatersleben.de
+
+#
+# TDWG Local Organising Committtee
+#
+
+loc@tdwg.org		e.arnaud@cgiar.org, pierre.bonnet@cirad.fr, cabantous@agropolis.fr, s.channeliere@cgiar.org, k.lehrer@cgiar.org, d_mckey@hotmail.com, jean-francois.molino@ird.fr, navas@supagro.inra.fr, pham@agropolis.fr, jean-christophe.pintaud@ird.fr, m.ruas@cgiar.org, manuel.ruiz@cirad.fr, maxime.thibon@fondationbiodiversite.fr, j.thiriet@cgiar.org, jacques.david@supagro.inra.fr, chauvet@agropolis.fr, maguelonne.teisseire@cemagref.fr, daniel.barthelemy@cirad.fr, michel@teledetection.fr, zanetto@supagro.inra.fr, Anne.Zanetto@supagro.inra.fr
+</verbatim>
+
+To add, delete or modify aliases, edit file owl:/etc/postfix/virtual and run the commands:
+
+<verbatim>
+postmap /etc/postfix/virtual
+</verbatim>
+
+
+
+---+++Mailing Lists
+Mailing lists can be visible to the public or not. Public lists are listed here: http://lists.tdwg.org/mailman/listinfo
+Mailman binaries are found at <verbatim>/usr/lib/mailman/bin</verbatim> 
+On 11. September most mailing lists have been merged into the following 3 lists are configured on the owl server in /var/lib/mailman
+
+<verbatim>
+tdwg
+tdwg-content
+tdwg-tag
+tdwg-phylo
+</verbatim>
+
+---+++TDWG Mailing List down
+After a reboot of the Owl server, mailing lists did not run.
+
+_Ricardo's Cure_
+
+The mailman startup script was indeed not set to start at server boot time.  This is something that normally needs to be performed when mailman is installed (same as apache, mysql, etc.) using ntsysv or chkconfig --add.  This was done by Andrei on the 4th September, 2008.
+
+---+++Create a New Mailing List
+Lee needed to create a new mailing list on the server.
+
+_Ricardo's Cure_
+
+Don't forget to append the appropriate redirection commands to /etc/aliases on server owl. Mailman will give you the commands to append after you create the list. The lines look like this:
+
+<verbatim>
+_taxon-model: "|/usr/lib/mailman/mail/mailman post tdwg-spm"_
+_taxon-model-admin: "|/usr/lib/mailman/mail/mailman admin tdwg-spm"_
+_taxon-model-bounces: "|/usr/lib/mailman/mail/mailman bounces tdwg-spm"_
+_taxon-model-confirm: "|/usr/lib/mailman/mail/mailman confirm tdwg-spm"_
+_taxon-model-join: "|/usr/lib/mailman/mail/mailman join tdwg-spm"_
+_taxon-model-leave: "|/usr/lib/mailman/mail/mailman leave tdwg-spm"_
+_taxon-model-owner: "|/usr/lib/mailman/mail/mailman owner tdwg-spm"_
+_taxon-model-request: "|/usr/lib/mailman/mail/mailman request tdwg-spm"_
+_taxon-model-subscribe: "|/usr/lib/mailman/mail/mailman subscribe tdwg-spm"_
+_taxon-model-unsubscribe: "|/usr/lib/mailman/mail/mailman unsubscribe tdwg-spm"_
+</verbatim>
+
+Those are for taxon-model mailing list. Then issue the newaliases and restart mailman and postfix.
+
+In case the password doesn't work, just reissue it using the appropriate mailman command (logged in as root on owl) using the command /usr/lib/mailman/bin/mmsitepass
+
+
+---+++Rebuild Mailing List Archives
+The true mailing list archive is a single mbox file in /var/lib/... for each mailing list. From this a set of static html pages and downloadable gziped archives are created by mailman which are shown on the html archive pages. Mailman allows you to regenerate those html pages from the mbox file. In case some mails are missing or wrong in the archives, simply fix the mbox file, e.g. by copying it to your local email client and modifying it there, and rebuild the html archives afterwards. The command to run for rebuilding the tdwg-content list is this one:
+
+<verbatim>
+/usr/lib/mailman/bin/arch --wipe tdwg-content
+</verbatim>

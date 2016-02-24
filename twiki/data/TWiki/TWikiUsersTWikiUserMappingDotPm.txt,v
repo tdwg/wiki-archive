@@ -1,0 +1,140 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.12.03;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.06.25.16.26.33;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@buildrelease
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Users::TWikiUserMapping=
+
+User mapping is the process by which TWiki maps from a username (a login name) to a wikiname and back. It is also
+where groups are maintained.
+
+By default TWiki maintains user topics and group topics in the %MAINWEB% that
+define users and group. These topics are
+   * !TWikiUsers - stores a mapping from usernames to TWiki names
+   * !WikiName - for each user, stores info about the user
+   * !GroupNameGroup - for each group, a topic ending with "Group" stores a list of users who are part of that group.
+
+Many sites will want to override this behaviour, for example to get users and groups from a corporate database.
+
+This class implements the basic TWiki behaviour using topics to store users, but is also designed to be subclassed
+so that other services can be used.
+
+Subclasses should be named 'XxxxUserMapping' so that configure can find them.
+
+*All* methods in this class should be implemented by subclasses.
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($session) -> $object</tt>
+
+Constructs a new user mapping handler of this type, referring to $session
+for any required TWiki services.
+
+
+
+---++ ObjectMethod *finish* <tt></tt>
+
+Complete processing after the client's HTTP request has been responded
+to.
+   1 breaking circular references to allow garbage collection in persistent
+     environments
+
+
+
+---++ ObjectMethod *getListOfGroups* <tt>() -> @@listOfUserObjects</tt>
+
+Get a list of groups defined by the mapping manager. By default,
+TWiki defines groups using topics in the Main web. Subclasses should
+override this to list groups from their own databases.
+
+Returns a list of TWiki::User objects, one per group.
+
+
+
+---++ ObjectMethod *addUserToMapping* <tt>($user,$addingUser) -> $topicName</tt>
+
+Add a user to the persistant mapping that maps from usernames to wikinames
+and vice-versa. The default implementation uses a special topic called
+"TWikiUsers" in the users web. Subclasses will provide other implementations
+(usually stubs if they have other ways of mapping usernames to wikinames).
+
+Group names must be acceptable to $TWiki::cfg{NameFilter}
+
+$user is the user being added. $addingUser is the user doing the adding.
+
+
+
+---++ ObjectMethod *lookupLoginName* <tt>($username) -> $wikiName</tt>
+
+Map a username to the corresponding wikiname. This is used for lookups during
+user resolution, and should be as fast as possible.
+
+
+
+---++ Objectmethod lookupWikiName($wikiname) -> $username
+
+Map a wikiname to the corresponding username. This is used for lookups during
+user resolution, and should be as fast as possible.
+
+
+---++ ObjectMethod *getListOfAllWikiNames* <tt>() -> @@wikinames</tt>
+
+Returns a list of all wikinames of users known to the mapping manager.
+
+
+
+---++ ObjectMethod *groupMembers* <tt>($group) -> @@members</tt>
+
+Return a list of user objects that are members of this group. Should only be
+called on groups.
+
+Note that groups may be defined recursively, so a group may contain other
+groups. This method should *only* return users i.e. all contained groups
+should be fully expanded.
+
+
+
+---++ ObjectMethod *isGroup* <tt>($user) -> boolean</tt>
+
+Establish if a user object refers to a user group or not.
+
+The default implementation is to check if the wikiname of the user ends with
+'Group'. Subclasses may override this behaviour to provide alternative
+interpretations. The $TWiki::cfg{SuperAdminGroup} is recognized as a
+group no matter what it's name is.
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d32 1
+@

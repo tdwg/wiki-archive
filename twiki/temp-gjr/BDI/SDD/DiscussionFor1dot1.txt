@@ -1,0 +1,15 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118873" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---++ Discussion of BDI.SDD_ V 1.1
+
+Necessary changes that are already enacted in the BDI.SDD_ development trunk (of the subversion versioning system):
+
+   * Newer releases of Altova XML-Spy claim a problem with the xml:lang attribute directly on the dataset. Since the similar use of xml:lang on Notes, Labels, etc. is unproblematic (there added using an attributeGroup reference), the same method is now used on dataset itself. Consequences: Only technical consequences with validating parsers may be possible, no actual change to syntax of instance files is involved occurred.
+
+   * Using BDI.SDD_ for single-access identification keys is less well developed than the other areas and testing continues. Several errors where detected when implementing this for large datasets in the context of the KeytoNature.eu project.
+      * It was discovered that contrary to initial expectations, some styles of keys do point to specific leads within a couplet, including pointers to subkey or taxon leads. In the original release of BDI.SDD_ 1.1 these where separated from inner nodes (Lead elements) as "Result" elements. To support such keys a described above, the Result element now also requires an optional id attribute to be referable. However, as a result, the distinction between Lead and Result seems no longer warranted. The two functions are therefore combined in a single Lead element type. The type for <nop>StoredKeyLeaf will be removed starting with BDI.SDD_ 1.1 rev. 3. 
+      * In addition, a special attribute "leadspecific" was added on Reticulation elements (pointers to other leads) to flag that a reticulation is specific to the lead, not the couplet. 
+      * Erroneously, the BDI.SDD_ 1.1 version assumes that Identification key statements are short text, whereas in fact they are long text. This required additional changes, in the context of which the Statement element now directly contains the text (rather than Statement/Label) and MediaObject is a sibling of Statement (rather than Statement/MediaObject). The feature that in a "pictorial key" a lead may contain ONLY a media object reference (but no text statement) remains unchanged.
+   * We believe it is least disruptive to consider this a minor change, expressed in the revision number, since no major data sets for this BDI.SDD_ subtype are known yet. The coded descriptions are not affected by these changes.
+
+   * For Natural Language descriptions, the ability to link a text fragment to a "text character" (rather than only categorical/quantitative characters) has been added. The ability to express the language of marked text (through xml:lang attributes) remains unchanged but has been made more explicit in the schema to help schema-generated software tools.

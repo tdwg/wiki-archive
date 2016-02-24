@@ -1,0 +1,200 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@---+ HeaderProposalThree
+
+The header is used in both requests and responses to communicate directly with a single resource (datasource). Examples:
+
+---+++++ Header from a "manual" request sent directly to a resource
+<verbatim>
+<header>
+   <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" HeaderProposalThree>
+</header>
+</verbatim>
+
+Note: in this case no software has been specified, and there's only a single source element.
+
+---+++++ Header from a response to the previous request
+<verbatim>
+<header>
+   <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PHP Provider" version="1.1.4" HeaderProposalThree>
+        </source>
+</header>
+</verbatim>
+
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+
+---+++++ Header from a client software request that has been dispatched by a portal
+<verbatim>
+<header>
+   <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+     <software name="GBIF Website" HeaderProposalThree>
+   </source>
+   <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+     <software name="Portal Engine" version="0.95" HeaderProposalThree>
+   </source>
+</header>
+</verbatim>
+
+Note: Intermediaries such as portals (MessageBrokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+
+---+++++ Header from a more detailed response to the previous request
+<verbatim>
+<header>
+   <source accesspoint="http://mydomain.org/myresource/wrapper.py" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PyWrapper" version="1.3.6" HeaderProposalThree>
+     <software name="Python" version="2.3" HeaderProposalThree>
+        </source>
+</header>
+</verbatim>
+
+Note: each "source" has the freedom to specify other related software.
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d37 1
+a37 1
+Note: Intermediaries such as portals (message brokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d12 1
+a12 1
+Note: in this case no software has been specified, and that there's only a single source element.
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d12 1
+a12 1
+Notice that no software has been specified, and that there's only a single source element.
+d23 2
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d8 1
+a8 1
+   <source ip="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" HeaderProposalThree>
+d17 1
+a17 1
+   <source ip="17.18.19.20" sendtime="2001-12-17T09:30:50-05:00">
+d26 1
+a26 1
+   <source ip="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+d29 1
+a29 1
+   <source ip="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+d40 1
+a40 1
+   <source ip="17.18.19.20" sendtime="2001-12-17T09:30:50-05:00">
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d5 1
+a5 1
+---+++++ Header from a "manual" request send directly to a resource
+d23 1
+a23 1
+---+++++ Header from a request dispatched by a portal from a client software
+d35 2
+d46 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d8 1
+a8 1
+   <source sendtime="2001-12-17T09:30:47-05:00">13.14.15.16</source>
+d17 3
+a19 2
+   <software name="PyWrapper" version="1.3.6" HeaderProposalThree>
+   <source sendtime="2001-12-17T09:30:50-05:00">17.18.19.20</source>
+d26 6
+a31 4
+   <software name="GBIF website" version="1.0" HeaderProposalThree> (included by the client software)
+   <software name="portal engine" version="0.95" HeaderProposalThree> (included by the portal)
+   <source sendtime="2001-12-17T09:30:47-05:00">11.12.13.14</source> (included by the client software)
+   <source sendtime="2001-12-17T09:30:49-05:00">15.16.17.18</source> (included by the portal)
+d35 9
+a43 1
+Open issue: Shouldn't we incorporate the software attributes into the source element??
+@

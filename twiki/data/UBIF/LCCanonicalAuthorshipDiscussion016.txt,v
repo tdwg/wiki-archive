@@ -1,0 +1,176 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.4
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.12.16.12.41.28;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.12.16.11.37.12;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.12.13.16.40.20;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.4
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1103200888" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="LinneanCoreCanonicalAuthorship"}%
+Similar to the discussion on canonical names in LCCanonicalNameDiscussion016, the discussion with Marc Geoffrey provided some rethinking of the names container. The Berlin Model has separates four authorship containers:
+	* <nop>AuthorTeamFk = Pointer to authors in the <nop>AuthorTeam table
+	* <nop>ExAuthorTeamFk  = Pointer to ex-authors in the <nop>AuthorTeam table
+	* <nop>BasAuthorTeamFk = Pointer to basionym authors in the <nop>AuthorTeam table
+	* <nop>ExBasAuthorTeamFk = Pointer to basionym ex-authors in the <nop>AuthorTeam table
+This may have to be extended to include sanctioning, or an addtional flag could determine whether an <nop>XAuthorTeam is ex or sanctioning. An alternative may be to have a single list of authors in sequence, and flag each of them with a role attribute. This would probably be a very clean solution. However, two silly problems get in the way:
+	1. As discussed in LCNameAuthorshipConventions, point "Year as part of authorship", botany and zoology differ in their citation conventions in a way that so far we can only find models with 2 instead of 1 places to cite the reference.
+	2. In regard to the ex-problem, Marc and I discussed extensively what the ex-author is. Although not clearly stated in ICBN, it seems that botanical preference is to call the validated author "_from_" which the name comes "Ex-authors", whereas Richard explains that zoological preference is to call the validating authors "_through_" which the validation occurred "Ex-Authors". Trying to find role names for before- and after-ex authors is difficult, the before could be called "validated-name-authors", but calling the ones after "validating-name-authors" causes an anomaly in that these are also the "normal-authors" if the validation is not yet recognized.
+
+---
+Currently "Smith ex Jones &amp; Johnson" looks like (version 0.1.6 = 0.1.5, = 0.1.4 Proposal 2 (compare diagrams in LCCanonicalAuthorshipDiscussion014)
+<verbatim>
+  1. Smith
+  2. ex
+  3  Jones
+  4. Johnson
+</verbatim>
+
+Sally's model (version 1.3) was:
+<verbatim>
+  1. Smith
+  2. Jones [Prefix:ex]
+  3. Johnson
+</verbatim>
+
+Both are somehow denormalized. Should we have a role attribute on each author?
+<verbatim>
+  1. Smith - role: curr.
+  2. Jones - role: ex
+  3. Johnson - role: ex
+</verbatim>
+This would be more normalized, but also slightly more complicated to understand and generate. But perhaps worth it? So far role would be "ex", "curr", "sanct". We could also have: "prot", "ex", "sanct" (Note: Botany: Fungi, always part of protonym authors); and if there were no publication problem, "comb", "excomb" - and drop the separation between protonym and combination authorship.
+
+Currently LC 0.1.6 still has the the first model from previous versions in the schema type <nop>NameCitation, but also contains alternatives 
+	1. using Token as an element name for "ex" and ":" in the schema type <nop>NameCitationAlternativeModel1
+	2. an example of how a role-based model might look in the schema type <nop>NameCitationAlternativeModel2
+
+I personally prefer the Token model. It keeps most of the simplicity of the LC 0.1.4 model, while avoiding the loose definition of what the Author element should contain (in 0.1.4 Author contains either an authorstring plus optional reference to an <nop>AgentID, *or* it contains special tokens ex and ":"). A comparison of instance models could look like:
+
+<table border="0">
+<tr><td><strong>Author-Name model</strong> (LC 0.1.4)</td><td><strong>Token model</strong> (= Author-Name-Token model; alternative proposed in LC 0.1.6)</td></tr>
+<tr><td>
+<verbatim>
+ <ProtonymCitation>
+	 <Authors>
+		<Name>A. Invalid</Name>
+		<Name>B. Publication</Name>
+		<Name>A. Protonym-Author1</Name>
+		<Name>ex</Name>
+		<Name ref="urn:lsid:x:y:21397">B. Author2</Name>
+	 </Authors>
+ </ProtonymCitation>
+</verbatim>
+</td><td>
+<verbatim>
+ <ProtonymCitation>
+	 <Authors>
+		<Name>A. Invalid</Name>
+		<Name>B. Publication</Name>
+		<Name>A. Protonym-Author1</Name>
+		<Token>ex</Token>
+		<Name ref="urn:lsid:x:y:21397">B. Author2</Name>
+	 </Authors>
+ </ProtonymCitation>
+</verbatim>
+</td></tr>
+</table>
+
+*Questions* (I add my own answers, please add yours)
+	* Do we need a role-based model (no instance for this shown above)? 
+		* Gregor: A role-model seems cleanest, but has serious complications. If you think we should go that way, please try to draft the list of role names needed. Marc, Wolf-Henning and I basically failed when it came to the validation/ex case, which author team should be called which role. Note that ex-authors seems to mean the opposite in zoology and botany! Also, it seems undesirable to change the role of validating authors depending on whether it is known that they have validated or not. This may be the lesser evil though.
+	* Any other models not yet considered?
+	* Do you prefer the old *Author-Name model* (overloading the "Name" element with the additional functionality of "ex" and ":" token) or isolating the latter into a separate element "Token" (*Token model*).
+		* Gregor: I prefer the newer Token model and think it is a good compromise. Basically it is a "2-role" model: "author" or "special token" in a single list.
+	* Shall we include additional date/year elements inside the LC authorship type?
+		* Jerry's opinion is probably Yes, since he did so in the original draft and annotated "Necessary duplication with data in citation if present. In an ideal world ... "
+		* Richard Pyle: probably prefers the dates only in the reference/literature module, avoiding duplication -- Rich, please update this!
+		* Gregor: Prefer duplication, to keep the taxon name model and the reference model independent. In a physical data model, constraints may be added that either the two places (years in name and publication) must be identical, or that if a year is present in publication, the years in name must be missing. But for the transfer/exchange format, the information could then be duplicated.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 13 Dec 2004
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1103197032" format="1.0" version="1.2"}%
+a12 1
+
+d34 1
+a34 4
+This would be more normalized, but also slightly more complicated to understand and generate. But perhaps worth it?
+
+So far role would be "ex", "curr", "sanct". We could also have: "prot", "ex", "sanct" (Note: Botany: Fungi, always part of protonym authors);
+and if there were no publication problem, "comb", "excomb" - and drop the separation between protonym and combination authorship.
+d36 1
+a36 1
+So currently LC 0.1.6 still has the the first model from previous version in the schema type <nop>NameCitation, but also contains alternatives 
+d43 1
+a43 1
+<tr><td>*Author-Name model* (LC 0.1.4)</td><td>*Token model* (= Author-Name-Token model; alternative proposed in LC 0.1.6)</td></tr>
+d71 11
+a81 4
+*Questions:*
+	* Does someone think we need a role-based model? Can someone draw up the list of role names needed? Marc, Wolf-Henning and I basically failed when it came to the validation/ex case, which author team should be called which role. Note that ex-authors seems to mean the opposite in zoology and botany!
+	* Certainly any other models not yet considered would be welcome!
+	* Please give me your opinion whether you consider it better to overload the "Name" element with the additional functionality of name-token, or to isolate the latter into a separate element "Token" (*Token model*).
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1102956020" format="1.0" version="1.1"}%
+d44 35
+@

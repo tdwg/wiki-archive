@@ -1,0 +1,162 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.16.04.12.01;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.06.25.16.26.33;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Users=
+
+Singleton object that handles mapping of users to wikinames and
+vice versa, and user authentication checking.
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($session,$impl)</tt>
+
+Construct the user management object
+
+
+
+---++ ObjectMethod *finish* <tt></tt>
+
+Complete processing after the client's HTTP request has been responded
+to.
+   1 breaking circular references to allow garbage collection in persistent
+     environments
+
+
+
+---++ ObjectMethod *findUser* <tt>($name[,$wikiname][,$nocreate]) -> $userObject</tt>
+
+   * =$name= - login name or wiki name
+   * =$wikiname= - optional, wikiname for created user
+   * =$nocreate= - optional, disable creation of user object for user not found
+
+Find the user object corresponding to =$name=, which may be either a
+login name or a wiki name. If =$name= is found (either in the list
+of login names or the list of wiki names) the corresponding
+user object is returned. In this case =$wikiname= is ignored.
+
+If they are not found, and =$nocreate= is true, then return undef.
+
+If =$nocreate= is false, then a user object is returned even if
+the user is not known.
+
+If =$nocreate= is false, and no =$wikiname= is given, then the
+=$name= is used for both login name and wiki name.
+
+If nocreate is off, then a default user will be created with their wikiname
+set the same as their login name. This user/wiki name pair can be overridden
+by a later createUser call when the correct wikiname is known, if necessary.
+
+
+
+---++ ObjectMethod *findUserByEmail* <tt>($email) -> \@@users</tt>
+   * =$email= - email address to look up
+Return a list of user objects for the users that have this email registered
+with the password manager.
+
+
+
+---++ ObjectMethod *createUser* <tt>($login,$wikiname) -> $userobject</tt>
+
+Create a user, and insert them in the maps (overwriting any current entry).
+Use this instead of findUser when you want to be sure you are not going to
+pick up any default user created by findUser. All parameters are required.
+
+
+
+---++ ObjectMethod *addUserToMapping* <tt>($user) -> $topicName</tt>
+
+Add a user to the persistant mapping that maps from usernames to wikinames
+and vice-versa.
+
+
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d2 1
+d10 1
+d16 1
+d49 7
+d57 1
+a69 18
+
+---++ ObjectMethod *initializeRemoteUser* <tt>($remoteUser) -> $loginName</tt>
+
+Return value: $remoteUser
+
+Acts as a filter for $remoteUser.  If set, $remoteUser is filtered for
+insecure characters and untainted.
+
+If not user is passed, the remote user defaults to $cfg{DefaultUserLogin}
+(usually 'guest').
+
+If we got here via an authentication status failure, then the remote user
+is set to blank, effectively signalling an illegal access.
+
+If no remote user name was passed in, the user defaults to
+$cfg{DefaultUserLogin}.
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d13 8
+d25 1
+a25 1
+   * =$nocreate= - optional, disable creation of user object for user not found in TWikiUsers
+d28 1
+a28 2
+login name or a wiki name. The name is looked up in the
+TWikiUsers topic. If =$name= is found (either in the list
+d35 1
+a35 1
+the user is not listed in TWikiUsers.
+d53 1
+a53 1
+---++ ObjectMethod *addUserToTWikiUsersTopic* <tt>($user) -> $topicName</tt>
+d55 2
+a56 3
+Add a user to the TWikiUsers topic. This is a topic that
+maps from usernames to wikinames. It is maintained by
+Register.pm, or manually outside TWiki.
+@

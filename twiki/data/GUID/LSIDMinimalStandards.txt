@@ -1,0 +1,46 @@
+---++ Minimal Standards for LSID Issuing
+
+*Coordinator(s):* DonaldHobern
+
+*Participants:* 
+
+----
+---+++ Description
+This group will specify the miminal requirements for LSID issuance and will identify potential tools and services associated with it.  The aim is to provide sufficient information to allow potential LSID issuing organisations to decide whether they are able to meet basic requirements for how LSIDs should be issued and subsequently managed.  there are some requirements which cannot easily be enforced by the software.  For example it has to be the responsibility of each issuer to make sure that their LSIDs are constructed in a way that guarantees their uniqueness and avoids subsequent reuse in other contexts.  These minimal standards are an attempt to document such responsibilities.
+
+----
+---+++ Discussion
+DonaldHobern, 22 Feb 2006: It seems most efficient to start this discussion by listing a series of minimal requirements which must be met by any organisation which issues LSIDs (see below).  These can be developed over the next few months, as we gain better understanding of other aspects of our adoption of the technology.  I would like to keep the final list of requirements as short as we can without sacrificing anything important.  Note that I have included a requirement that points forward to any specific requirements that may be imposed on serving LSIDs for specific classes of data.  It may for example make sense for us to include a canonical form of a scientific name as the data for a TaxonName LSID, or to establish some standards for inclusion of binary image data.  It also seems likely that there may be specific recommendations from different subgroups on minimal sets of properties which should be included in the metadata for each class of object.
+
+DonaldHobern, 23 Feb 2006: We should consider whether we will require all LSIDs to be resolvable at least at the time of issuing.  To turn this around, do we want to encourage the use of LSIDs e.g. to act as the id/ref linkages between the various elements in an XML document or data set (for example TCS or SDD data sets), even if the data provider has no LSID resolution service to handle them.  The potential advantage would be that LSIDs provide a reasonably simple way to ensure the global uniqueness of the identifiers concerned, even if they do not resolve.  My own feeling however is that we should require all LSIDs to be associated with a resolution service at least at the time of issuing.  We then have the separate question of whether to set minimal standards on the persistence of a resolution service (although I am not sure what such standards might be).
+
+----
+---+++ Recommendations
+We recommend to issuers of LSIDs:
+
+   1.  Every LSID shall be validly formed (i.e. a string made up from a colon-separated sequence of "urn", "lsid", an authority identification, a namespace identification, an object identification, and optionally a revision identification).
+   1.  No LSID shall ever be reused to identify a different data object.
+   1.  If an LSID is resolvable, it shall always resolve to metadata (and where appropriate, data) representing the same data object.
+   1.  All authorities should by default use HTTP GET as the binding for getMetadata.
+   1.  Metadata for an LSID shall be expressed in XML-encoded RDF.
+   1.  Metadata shall include as a minimum a Dublin Core Title for the data object and an object class.  ''(DonaldHobern: the actual recommendations here need to be integrated with work in the TDWG Technical Architecture Group, so this is a placeholder.)''
+   1.  Classes should be selected from the TDWG ontology (or covered by TDWG applicability statements) wherever appropriate.
+   1.  Any metadata and data associated with an LSID shall follow any specific guidelines developed for its associated object class.  
+   1.  Use lower-case for the first three parts of the LSID ("urn", "lsid" and the authority identification) to simplify string comparisons.
+   1.  The issuer of an LSID shall only use an authority identification associated with the issuer's own DNS registration, or by agreement with the organisation controlling the DNS registration associated with the authority identification.  ''(DonaldHobern: TALK ABOUT THIS. this is not well-expressed and probably not right, but it's a start.)''
+
+----
+
+---+++ Discussion Points From TAG-1 Meeting 
+The following points arose from the TAG-1 meeting in Edinburgh April '06. They should be considered when compiling the list of requirements.
+   1.  All objects returned as a call to an LSID getMetadata method need to be typed in a consistent way so that consuming applications can discover how to process them. The meeting suggested that with objects encoded in schema controlled XML a schemaLocation attribute should be given in the top level element and that objects encoded in RDF should contain an rdfs:type property. This implies that the rdfs:type and schema location URIs are resolvable to something 'useful' - this standard is being developed and will probably form part of the work on a system for managing an ontology of classes.
+   1.  All objects must identify themselves so that the client can be sure they have recieved the correct object. In objects encoded in schema controlled XML a convention needs to be developed as to the naming of an attribute in the top level element that will contain the LSID of the object. In RDF encoded objects it will be the rdf:about attribute.
+   1.  The need for some form of harvesting interface was discussed and would be highly useful - perhaps as a secondary requirement of an LSID authority. The [[http://www.openarchives.org/][Open Archives Initiative]] is being considered.
+
+More information on the TDWG TAG can be found on the [[http://wiki.tdwg.org/twiki/bin/view/TAG][TAG Wiki]].
+
+(RogerHyam 2006-04-24)
+
+---+++++ Categories
+CategoryWorkingGroup
+CategoryInfrastructureWG

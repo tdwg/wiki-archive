@@ -1,0 +1,80 @@
+---+ DatasourceHeaderProposalOne
+
+The header is used in both requests and responses to communicate directly with a single datasource.
+
+Headers are mandatory elements in both requests and responses and they can contain "source" and "destination" elements. 
+
+Each "source" element represents a stage in the process of making the request reach its final destination. It is possible to have multiple "sources" in a header due to the action of middleware software like MessageBrokers. It's recommended, although not necessary, that each middleware software add its "source" element after the last position in the "source" list.
+
+Each source element must contain two attributes: accesspoint and sendTime.
+
+Each source element can contain one software element.
+
+Each software element must have a name and can also have a version attribute. A software element can contain other software elements inside it, in case it wants to be more specific about other components.
+
+In requests, the destination element should be the accesspoint of the service. In responses it should be the accesspoint of the first source element in the associated request. The main reason for having a destination element is to facilitate asynchronous messaging. 
+
+Since it's possible to send direct requests, it should be possible to have empty headers. A direct request could be sent through a browser and it would look like:
+
+http://datasource.url/wrapper?request=http://myserver/myrequest.xml
+
+In that case it's better not to require source/destination elements than to have them with incorrect information. Without any source in the header, the server can use the REMOTE_ADDR CGI variable as the client accesspoint.
+
+In requests, both source and destination are optional elements.
+In responses, both source and destination are mandatory elements.
+
+---+ Request Examples
+
+---+++++ Simple header from a client software request sent directly to a datasource
+<verbatim>
+<header>
+  <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+Note: in this case there's only a single source element with no software specified, and there's also no destination element.
+
+---+++++ Header from a client software request that has been dispatched by a portal
+<verbatim>
+<header>
+  <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+    <software name="GBIF client" DatasourceHeaderProposalOne>
+  </source>
+  <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+    <software name="Portal Engine" version="0.95" DatasourceHeaderProposalOne>
+  </source>
+  <destination accesspoint="http://mydomain.org/provider/wrapper.php" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+Note: Intermediaries such as portals (MessageBrokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+
+---+ Response Examples
+Responses must contain a single destination element that identifies the original source of the request.
+
+---+++++ Header from a response to the previous request
+<verbatim>
+<header>
+  <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+   <software="PHP Provider" version="1.1.4" DatasourceHeaderProposalOne>
+  </source>
+  <destination accesspoint="11.12.13.14" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+
+Note: the client destination is always taken from the first source of the request header which is representing the original source of the request.
+
+---+++++ Header from a response to the previous request with more detailed information about the server software
+<verbatim>
+<header>
+  <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+   <software="PyWrapper" version="1.3.6">
+     <software="Python" version="2.3" DatasourceHeaderProposalOne>
+   </software>
+  </source>
+  <destination accesspoint="11.12.13.14" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+

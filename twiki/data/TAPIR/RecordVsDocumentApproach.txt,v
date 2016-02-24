@@ -1,0 +1,569 @@
+head	1.22;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.22
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.22
+log
+@Revision 22
+@
+text
+@---+ RecordVsDocumentApproach
+
+[[#recbased][The Record based approach]]
+
+[[#docbased][The Document based approach]]
+
+
+---+++++ Introduction
+There are 2 fundamentally different approaches regarding retrieval of results.
+The record based approach retrieves a list of things - records or objects - whereas the document based approach always returns a single document with 1 root element. 
+You can still consider parts of a document to represent a record and therefore allow paging and resultset limitations, but for this you will additionally need to define an explicit RecordDefinition inherent to each ConceptualSchema.
+
+
+<a name="recbased"></a>
+---+ Record Based Approach
+The record based approach treats each RecordObject separate from each other. The protocol is used to transfer objects defined in XML.
+
+*Advantages*
+   * A more native programming way of dealing with records and objects.
+   * Easy extension of schemas ([[#recextension][see below]]).
+   * Uses a common SearchResponseTopStructure defined by the protocol for dealing with metadata and records.
+
+
+*Disadvantages*
+   * The interlinking of objects needs to be resolved in a generic way. As the protocol cannot deal with documents that relate objects to each other (which is highly relevant for SDD and even for the NapierSchema), there needs to be a global pointer for an object so it can be referenced from anywhere. Each object could reside in its own namespace and there is no xml validation mechanism available to ensure the completeness of a set of objects.
+   * Possible solution: Establish a separate service to retrieve and assemble documents on top of record based services.
+   * Schema extension can only happen in the record (root) level.
+
+---+++++ Record Based Search Proposal
+Please take a look at the SearchProposalTwo for details and examples.
+
+---+++++ WFS Object Approach
+The proposal just mentioned above is similar to the OpenGis object approach. In their WebFeatureService architecture a FeatureMember corresponds to our record idea. But instead of having a ConceptualBinding using a qualified path only, they are relying on a type (global element with a corresponding complex type) and a path to refer to elements of this type which they call properties of this type. Thus a schema with a single namespace can expose multiple "objects" as types by defining multiple global elements. The WFS defines also a method "DescribeFeatureType" for a client to retrieve the xml schema definition of all known types of this service.
+
+<a name="recextension"></a>
+---+++++ Schema Extension Mechanism
+The record based approach can extend a schema by another on its record level, because a record element is defined by the protocol schema. This allows to create valid xml by listing all requested ConceptualSchema responses for one record as a list next to each other.
+
+Please take a look at the SearchProposalTwo for details and examples.
+
+
+<a name="docbased"></a>
+---+ DocumentBasedApproach
+
+The document centric approach handles complete documents instead of lists of RecordObjects.
+So every document search response returns only a single complex document with one root element.
+
+It is still possible to treat parts of the document as representing records by giving an inherent RecordDefinition when creating a ConceptualSchema. This - possibly list of - RecordDefinition should be visible to the outside and listed in the capabilities response of a datasource as shown in the DatasourceCapabilitiesProposal.
+
+So consider this ABCD document:
+<verbatim>
+<acbd>
+ <units>
+  <unit id="34">
+   ...
+  <unit id="37">
+   ...
+  <unit id="156">
+   ...
+</verbatim>
+
+With a RecordDefinition being RecordVsDocumentApproachabcd/units/unit this document represents 3 records which can be used for counting and paging.
+
+
+*Advantages*
+   * Allows the definition of relations between object in a ConceptualSchema
+   * Allows extension of schemas ([[#docextension][see below]]).
+
+
+*Disadvantages*
+   * A common SearchResponseTopStructure needs to be defined in each ConceptualSchema on the basis of a common agreement like the UBIF framework schema.
+   * Extensions are bound to the XML Schema definition (either through the definition of slots, or through the entire definition of new XML Schemas importing others and using a new namespace)
+
+<a name="docextension"></a>
+---+++++ Document Based Search Proposal
+Please take a look at DocSearchProposal for details and examples (it doesn't use the extension mechanism defined below).
+
+
+---+++++ Schema Extension Mechanism
+To allow the extension of a ConceptualSchema in the document based approach, an ExtensionSlot has to be reserved when defining a schema. This is usually done by using the <xml:any> element.
+All available slots for a given ConceptualSchema therefore need to be listed in a datasources capabilities. 
+
+To use an extension schema with another, the request has to specify a base schema which is specifying the document root element. The extension itself could be specified by a concept of another schema and the path to the extension slot of the base schema which should be used.
+
+So imagine a base schema like this with two extension slots:
+<verbatim>
+<root xmlns="http://www.anywhere.org">
+  <unit>
+    <id>
+    <name>
+    <location>
+      <institute>
+      <person>
+      <xml:any>     -> slot1
+    <xml:any>       -> slot2
+<root>
+
+ext-slot1 = RecordVsDocumentApproachroot/unit/location/person
+ext-slot2 = RecordVsDocumentApproachroot/unit/location
+</verbatim>
+
+A request could then use an extension schema that could produce an instance document like this to be attached in one of the slots:
+<verbatim>
+<postalAddress xmlns="http://www.extension.com">
+  <town RecordVsDocumentApproach>
+  <zip RecordVsDocumentApproach>
+  <addressline RecordVsDocumentApproach> *
+<postalAddress>
+</verbatim>
+
+A possible request could be:
+<verbatim>
+<docsearch>
+  <baseschema base:xmlns="http://www.anywhere.org">
+    <concept path="base:/root"/> *
+  </baseschema>
+  <extension slot="base:/root/unit/location/person" ext:xmlns="http://www.extension.com">
+    <concept path="ext:/postalAddress"/> *
+  </extension>
+</docsearch>
+</verbatim>
+
+to retrieve a document like this:
+<verbatim>
+<root xmlns="http://www.anywhere.org">
+  <unit>
+    <id></id>
+    <name></name>
+    <location>
+      <institute></institute>
+      <person>
+        <postalAddress xmlns="http://www.extension.com">
+          <town></town>
+          <zip></zip>
+          <addressline RecordVsDocumentApproach>
+        </postalAddress>
+      </person>
+    </location>
+  </unit>
+<root>
+</verbatim>
+
+@
+
+
+1.21
+log
+@Revision 21
+@
+text
+@d72 1
+a72 1
+
+d76 1
+a76 1
+Please take a look at DocSearchProposal for details and examples.
+@
+
+
+1.20
+log
+@Revision 20
+@
+text
+@d62 1
+a62 1
+With a RecordDefinition being RecordVsDocumentApproachabcd/units/unit this document represents 3 records which can be used for counting and paging! 
+d71 1
+a71 1
+   * common SearchResponseTopStructure needs to be defined in each ConceptualSchema on the basis of a common agreement like the UBIF framework schema.
+d83 1
+a83 1
+To use an extension schema with another, the request has to specify a base schema which is specifying the docuemnt root element. The extension itself could be specified by a concept of another schema and the path to the extension slot of the base schema which should be used.
+d102 1
+a102 1
+A request could then use the following extension schema:
+d105 4
+a108 3
+  <town>
+  <zip>
+  <addressline> *
+d111 1
+a111 1
+A possible request could then look like this:
+d127 2
+a128 2
+    <id>
+    <name>
+d130 1
+a130 1
+      <institute>
+d132 8
+a139 4
+      <postalAddress xmlns="http://www.extension.com">
+        <town>
+        <zip>
+        <addressline>
+@
+
+
+1.19
+log
+@Revision 19
+@
+text
+@d27 1
+d33 1
+a33 1
+The record based approach taken in the search request of this proposal (see RecordSearchProposal) is similar to the OpenGis object approach. In their WebFeatureService architecture a FeatureMember corresponds to our record idea. But instead of having a ConceptualBinding using a qualified path only, they are relying on a type (global element with a corresponding complex type) and a path to refer to elements of this type which they call properties of this type. Thus a schema with a single namespace can expose multiple "objects" as types by defining multiple global elements. The WFS defines also a method "DescribeFeatureType" for a client to retrieve the xml schema definition of all known types of this service.
+@
+
+
+1.18
+log
+@Revision 18
+@
+text
+@d26 1
+a26 1
+   * Possible solution: Establish seperate services to retrieve and assemble documents on the base of record based services.
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@d9 2
+a10 2
+There are 2 fundamentally different approaches regarding the retrieval of results.
+The record based approach is retrieving a list of things - records or objects, whereas the document based approach is always returning a single document with 1 root element. 
+d16 1
+a16 1
+The record based approach treats each RecordObject seperate from each other. The protocol is used to transfer objects defined in XML.
+d21 1
+a21 1
+   * Allows to establish a common protocol defined SearchResponseTopStructure for dealing with metadata and records.
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d25 2
+a26 3
+The interlinking of objects needs to be resolved i a generic way. As the protocol cannot deal with documents that relate objects to each other (which is highly relevant for SDD and even for the NapierSchema), there needs to be a global pointer for an object so it can be referenced from anywhere. Each object could reside in its own namespace and there is no xml validation mechanism available to ensure the completeness of a set of objects.
+
+Possible solution: Establish seperate services to retrieve and assemble documents on the base of record based services.
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d44 31
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d29 3
+d44 2
+a45 3
+---+++++ Proposal
+
+See DocSearch for examples.
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d34 4
+a37 4
+The record based approach can extend a schema by another on its record level, because a record element is defined by the protocol schema. This allows to create valid xml by listing all requested ConceptualSchema responses for one record as a list next to each other:
+<verbatim>
+...
+</verbatim>
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d21 1
+a21 1
+   * Allows to establish a common protocol defined Search Response Top Structure for dealing with metadata and records.
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d21 1
+a21 1
+   * Allows to establish a common protocol defined TopLevelRecordStructure for dealing with metadata and records.
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d10 2
+a11 1
+The record based approach is retrieving a list of things - records or objects, whereas the document based approach is always returning a single document with 1 root element. You can still consider parts of the document to represent a record and therefore allow paging and resultset limitations, but you will additionally need an explicit RecordDefinition for this innate to each ConceptualSchema.
+d16 1
+d18 10
+d32 1
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d3 2
+a6 1
+[[#recbased][The Record based approach]]
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d3 1
+a3 1
+[[#docbased][doc approach]]
+d5 1
+a5 1
+[[#recbased][rec approach]]
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d12 1
+d14 1
+a14 1
+<a name="recbased"></a>
+d25 1
+a27 1
+<a name="docbased"></a>
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d3 3
+a5 2
+[[#DocumentBasedApproach][doc approach]]
+[[#RecordBasedApproach][rec approach]]
+d12 2
+a13 1
+---+ RecordBasedApproach
+d26 2
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d3 3
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d8 1
+a8 1
+---+ Record Based Approach
+d19 1
+a19 1
+---+ Document Based Approach
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d11 1
+a11 1
+The record based approach taken in the search request of this proposal (see XXX) is similar to the OpenGis object approach. In their WebFeatureService architecture a FeatureMember corresponds to our record idea. But instead of having a ConceptualBinding using a qualified path only, they are relying on a type (global element with a corresponding complex type) and a path to refer to elements of this type which they call properties of this type. Thus a schema with a single namespace can expose multiple "objects" as types by defining multiple global elements. The WFS defines also a method "DescribeFeatureType" for a client to retrieve the xml schema definition of all known types of this service.
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d4 3
+a6 1
+to be done
+d9 3
+a11 1
+to be done
+d20 3
+a22 1
+to be done
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 2
+@

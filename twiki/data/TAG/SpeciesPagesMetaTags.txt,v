@@ -1,0 +1,333 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.7
+date	2008.11.03.15.11.33;	author RogerHyam;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2008.10.30.15.39.43;	author RogerHyam;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2008.10.30.11.57.36;	author RogerHyam;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2008.10.29.16.40.17;	author RogerHyam;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2008.10.26.14.07.56;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2008.10.26.07.12.43;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.10.26.04.32.23;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1225725093" format="1.1" reprev="1.7" version="1.7"}%
+%META:TOPICPARENT{name="SpeciesPages"}%
+%RED% These ideas are still under discussion. %BLACK%
+
+---+ <nop>%TOPIC%
+
+This page describes how you can improve the metatags in a species page so that it works well with species page indexers (see SpeciesPages). It will probably improve performance of any indexer.
+
+%TOC%
+
+---++ Introduction
+
+HTML pages have a &lt;head&gt; section that contains information about the page that isn't normally displayed. Two of the elements that can occur in the head section are the [[http://www.w3schools.com/tags/tag_meta.asp][&lt;meta&gt;]] element and the [[http://www.w3schools.com/tags/tag_link.asp][&lt;link&gt;]] element.
+
+Dublin Core (DC) is the most common metadata vocabulary for describing all sorts of objects. The Dublin Core Metadata Initiative [[http://dublincore.org/documents/dc-html/][describes how to express DC in HTML]] using these two elements. Using DC and one metadata term from the TDWG ontology it is possible to provide rich information in the page header that enable indexers to bind species pages to nomenclatural and other kinds of data thus making your species page part of a global system.
+
+This page provides simple information on what to include in the &lt;head&gt; section of your species pages. You should not need to read other documents to get your pages marked up correctly but you can if you want to of course.
+
+---++ Complete Example
+
+The content to include is simple so it is best to start with a complete example and then explain the different parts.
+
+<verbatim>
+<head>
+   ...
+   <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" >
+   <meta name="DCTERMS.title" content="Lythrum salicaria L." >
+   <meta name="DCTERMS.subject" content="SpeciesPage Plantae Lythrum salicaria Purple-loosestrife" >
+   <meta name="DCTERMS.coverage" content="GB IE 155 British Isles and Western Europe" >
+   <link rel="schema.TDWG" href="http://rs.tdwg.org/ontology/voc/TaxonConcept#" >
+   <link rel="TDWG.hasName" href="urn:lsid:ipni.org:names:103757-3:1.1" >
+   ...
+</head>
+</verbatim>
+
+
+
+---++ schema.DCTERMS
+
+The first line is not specific to SpeciesPages. It just defines the namespace for the Dublin Core metadata vocabulary that is used in the next three lines. Further explanation is given [[http://dublincore.org/documents/dc-html/][here]].
+
+---++ DCTERMS.title
+
+The second line gives the 'title' of the resource. The content attribute of this line should contain the full name of the species including any authorship string and dates. Here it is used in an equivalent sense to the Darwin Core [[http://wiki.tdwg.org/twiki/bin/view/DarwinCore/ScientificName][ScientificName]] field.
+
+---++ DCTERMS.subject
+
+The third line gives the 'subject' of the resource. The Dublin Core Metadata Initiative makes the following comment "Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled vocabulary."
+
+The content attribute of this line should start with the key word 'SpeciesPage' followed by the Kingdom of the species, followed by the genus of the species followed by the specific epithet of the species with a space between each word. Further key words can be added after the specific epithet.
+
+The Kingdom should be one of: Eukaryota, Animalia, Plantae, Fungi, Chromista or Protozoa.
+
+---++ DCTERMS.coverage
+
+The fourth line gives the 'coverage' of the resource.  The Dublin Core Metadata Initiative suggests the use of a controlled vocabulary for this field. Because species accounts are typically applicable at quite a high geographic level two controlled vocabularies are suggested. 
+
+The content attribute of this element should contain a combination of two letter alphabetic codes for countries from the [[http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2][ISO-3166-1]] standard and/or three digit numeric  United Nations [[http://unstats.un.org/unsd/methods/m49/m49regin.htm][geographical region codes]].
+
+A SpeciesPage indexer can  digest the contents of this attribute and interpret two letter and three digit codes appropriately but ignore any other words that may be useful for other indexers.
+
+---++ schema.TDWG
+
+The fifth line is like the first line in that it defines a namespace. The namespace defined is for the TDWG TaxonConcept vocabulary that is used in the next line. Both this and the next line give a degree of precision that is desirable but optional.
+
+---++ TDWG.hasName
+
+The sixth and final line enables indexers to unambiguously link the species page with a name as defined by one of the major nomenclators; IPNI, IndexFungorum or ZooBank.
+
+The href attribute of this line should contain the LSID of a name from one of these recognized nomenclators.
+
+---++ Expressing Taxonomic Relationships
+
+You can express valuable taxonomic relationships by adding other lines. If the page represents a taxon that you do not think should be used (e.g. you consider it a synonymous taxon) then you should state specifically in the text of the page that another taxon should be used and you should add this line in the header (below the schema.DCTERMS line). 
+<verbatim>
+   <link rel="DCTERMS.isReplacedBy" href="http://link_to_other_species_page" >
+</verbatim>
+In the accepted taxon page you could include this line in the header
+<verbatim>
+   <link rel="DCTERMS.replaces" href="http://link_to_other_species_page" >
+</verbatim>
+You can indicate that this page represents a taxon that is a child of another taxon (e.g. a species of a genus) by including a line like this:
+<verbatim>
+   <link rel="DCTERMS.isPartOf" href="http://link_to_other_species_page" >
+</verbatim>
+In the enclosing taxon page (e.g. the genus of a species) you can include a link like this:
+<verbatim>
+   <link rel="DCTERMS.hasPart" href="http://link_to_other_species_page" >
+</verbatim>
+
+---++ Other Dublin Core Terms
+
+The above recommendation is only concerned with the Dublin Core metadata terms to include for the specific benefit of Species Page indexes. You are encourage to follow best practice in including as many other Dublin Core terms as are relevant to your situation. Terms of particular importance are: created, modified, publisher, creator and license. The terms are documented [[http://dublincore.org/documents/dcmi-terms/][here]] and examples of expressing them are documented [[http://dublincore.org/documents/dc-html/][here]]. 
+
+---++ HTML or XHTML?
+
+There are broadly two types of HTML used today (though several subtypes). If HTML documents are valid XML documents they are referred to as XHTML and begin with an declaration that looks like this:
+
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+they also have XHTML mentioned in their DOCTYPE declaration. Regular HTML documents are not valid XML they don't start with a XML declaration or mention XHTML in their DOCTYPE declaration. Regular HTML pages are far more common that XHTML pages.
+
+The examples given above are for regular HTML pages. They can be adapted for XHTML pages simply by adding a / (forward slash) before the closing &gt; of the link or meta elements for example this:
+
+&lt;link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" &gt;
+
+would become this:
+
+&lt;link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" /&gt;
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1225381183" format="1.1" reprev="1.6" version="1.6"}%
+d7 3
+a9 1
+This page discribes how you can improve the metatags in a species page so that it works well with species page indexers (see SpeciesPages). It will probably improve performance of any indexers.
+d58 1
+a58 2
+The content attribute of this element should contain a combination of two letter alphabetic codes for countries from the [[http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2][ISO-3166-1]] standard and/or three digit numeric  United Nations [[
+http://unstats.un.org/unsd/methods/m49/m49regin.htm][geographical region codes]].
+d60 1
+a60 1
+A SpeciesPage indexer can therefore digest the contents of this attribute and interpret two letter and three digit codes appropriately but ignore any other words that may be useful for other indexers.
+d72 19
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1225367856" format="1.1" reprev="1.5" version="1.5"}%
+d3 2
+a6 2
+
+
+d24 6
+a29 6
+   <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+   <meta name="DCTERMS.title" content="Lythrum salicaria L." />
+   <meta name="DCTERMS.subject" content="SpeciesPage Plantae Lythrum salicaria Purple-loosestrife" />
+   <meta name="DCTERMS.coverage" content="GB IE 155 British Isles and Western Europe" />
+   <link rel="schema.TDWG" href="http://rs.tdwg.org/ontology/voc/TaxonConcept#" />
+   <link rel="TDWG.hasName" href="urn:lsid:ipni.org:names:103757-3:1.1" />
+d44 1
+a44 1
+---++ DCTERMS.coverage
+d52 12
+a63 1
+---++ Dublin Core Coverage
+d65 1
+a65 1
+http://unstats.un.org/unsd/methods/m49/m49regin.htm
+d67 1
+a67 1
+---+++ TDWG TaxonConcept hasName
+d69 1
+d71 1
+d73 1
+d83 1
+a83 1
+The examples given below are for regular HTML pages. They can be adapted for XHTML pages simply by adding a / (forward slash) before the closing &gt; of the link or meta elements for example this:
+a90 15
+---++ Basic DublinCore Meta
+
+&lt;link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" &gt;
+
+---++ Key Terms to Include
+
+
+---++ The Tags
+
+Tags are listed in order of importance but the more tags you add the better. Start at the top of the page and work down skipping the ones you can't do or that aren't relevant to you.
+
+
+
+
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1225298417" format="1.1" reprev="1.4" version="1.4"}%
+d13 1
+a13 1
+Dublin Core (DC) is a general metadata vocabulary for describing all sorts of objects. The Dublin Core Metadata Initiative [[http://dublincore.org/documents/dc-html/][describes how to express DC in HTML]] using these two elements. Using DC and one metadata term from the TDWG ontology it is possible to provide rich information in the page header that enable indexers to bind species pages to nomenclatural and other kinds of data thus making your species page part of a global system.
+d19 1
+a19 1
+The content to include is relatively simple so it is perhaps best to start with a complete example and then break down the different parts later.
+a33 1
+This example contains six lines.
+d36 1
+d38 1
+d40 1
+d42 1
+a42 1
+---++ Three Basic Fields
+d44 1
+a44 1
+---+++ Dublin Core Title
+d46 1
+a46 1
+---+++ Dublin Core Subject
+d48 5
+a52 1
+---+++ Dublin Core Coverage
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1225030076" format="1.1" reprev="1.3" version="1.3"}%
+d13 1
+a13 1
+Dublin Core (DC) is a general metadata vocabulary for describing all sorts of objects. The Dublin Core Metadata Initiative [[http://dublincore.org/documents/dc-html/][describes how to express DC in HTML]] using these two elements. Using DC and some metadata terms from the TDWG ontology it is possible to provide rich information in the page header that enable indexers to bind species pages to nomenclatural and other kinds of data thus making your species page part of a global system.
+d17 1
+a17 1
+---++ HTML or XHTML
+d19 39
+a57 1
+There are broadly two types of HTML used today (though many subtypes). If HTML documents are valid XML documents they are referred to as XHTML and begin with an declaration that looks like this:
+d71 1
+a71 1
+---++ Namespace Links
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1225005163" format="1.1" reprev="1.2" version="1.2"}%
+d13 25
+a37 1
+Dublin Core (DC) is a general metadata vocabulary for describing all sorts of objects. The Dublin Core Metadata Initiative [[http://dublincore.org/documents/dc-html/][describes how to express DC in HTML]] .
+a38 1
+Darwin Core (!DwC) is a simple vocabulary for describing specimens and occurrences of biological organisms. By using a combination of these two vocabularies it is possible to provide rich information in the page header that enable indexers to bind species pages to nomenclatural and other kinds of data.
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1224995543" format="1.1" version="1.1"}%
+d7 11
+a17 1
+This page discribes how you can improve the metatags in a species page so that it works well with species page indexers (see SpeciesPages)
+@

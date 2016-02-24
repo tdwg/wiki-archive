@@ -1,0 +1,2 @@
+// TWiki namespace
+var twiki = {};

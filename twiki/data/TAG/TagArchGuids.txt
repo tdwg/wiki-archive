@@ -1,0 +1,36 @@
+%META:TOPICINFO{author="RogerHyam" date="1194007257" format="1.1" reprev="1.4" version="1.4"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ <nop>TagArchGuids
+
+This page one of three pages linking in to the TDWG Architecture. The other two are:
+   1) TagArchOntology
+   1) TagArchProtocols
+
+
+---++ Role of GUIDs in the Architecture
+
+In a network that includes data indexers and aggregators it is possible for a data package to arrive at a location via multiple routes. The only way a client can tell that two packets, coming via different routes, represent the same original data record is if they bear some form of unique identifier.
+
+The scope of the uniqueness of this identifier is global as anyone may join the network at any time - it is an open world system. The identifiers therefore have to be globally unique.
+
+The only entity that can be authoritative for a packet of data is the originator of that packet. If it is important for the client to know the normative form of the data it has to ask the originator directly. The GUID the packet is tagged with therefore has to be 'resolvable' i.e. the client has to be able to dereference it to the data it identifies - just like a pointer/variable in a programming language or a foreign keep in a database.
+
+Main.BobMorris says: resolution is (sort of) sufficient, but it is hardly necessary. The data can be accompanied by a security token using, for example, Public Key Infrastructure authenticated assertions about the data, e.g. whether the data are already in normative form, contracts, origin etc.  These can be verified as having been issued by the data provider itself without needing the data provider to resolve the GUID. In this scenario, even if the data are not in normative form, they could be accompanied by a verifiably authentic transformer which will put them in normative form. These are common approaches in security systems, where the data may be large compared to these auxiliary pieces of information, and the network resolution latencies large compared to the transformation costs. I put "sort of" in the first sentence because I have never heard anyone articulate a requirement even for TDWG GUID resolution be be provably authentic in the first place. If there is such a requirement, then some of the infrastructure for the "simpler" solutions will be needed by resolution mechanisms anyway. Furthermore, if trustworthiness is indeed not a requirement, some of these approaches, e.g. carrying or obtaining small transformers on an untrusted basis, may still be faster than resolving the GUID. Finally, some security systems such as Shibboleth support trust delegation, making it possible for other than the originator of data to be an authenticated authoritative source for data it did not originate.  -- Main.BobMorris
+
+Main.RogerHyam replies: You have a point provided all the time to live stuff is also included in the security infrastructure and the infrastructure doesn't require resolving the certificate.  The normative form of data itself may change through time so the only way to get the latest version may still be to call for it.
+
+Most data suppliers will only share their data under some form of legal contract (such as Creative Commons) and these contracts usually require attribution. Client applications can only keep track of who to attribute data to if that data is "branded" with some form of GUID. 
+
+Resolvable GUID are therefore essential to an open world data sharing model.
+
+---++ Life Science Identifiers (LSID)
+
+TDWG and GBIF had a series of meetings and adopted the use of LSIDs as the preferred GUID technology. You can read about it on the GUID.WebHome wiki.
+
+The adoption of LSID in no way restricts the use of other GUIDs within the TDWG Architecture. It is likely that URL style URIs will continue to be used of ontology constructs. Other communities that TDWG needs to interact with have adopted other technologies notably DOIs in the publishing community.
+
+----
+*Linking Topics*
+   * WebHome
+
+%META:TOPICMOVED{by="RogerHyam" date="1194003617" from="TAG.StoolGuids" to="TAG.TagArchGuids"}%

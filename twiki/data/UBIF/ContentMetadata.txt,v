@@ -1,0 +1,314 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.08.13.10.38.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.08.10.13.44.24;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.07.15.18.04.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.06.15.10.26.10;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.06.11.10.15.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.06.02.13.42.21;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.01.08.50.28;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.26.12.12.57;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.05.25.09.36.55;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.04.22.13.05.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.04.18.16.03.23;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.12
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1092393509" format="1.0" version="1.11"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+<nop>ProjectDefinition or perhaps <nop>ProjectMetadata, or <nop>DatasetMetadata (the name is still under discussion, please contribute) should be applicable to all TDWG/GBIF standards, not just SDD.
+
+After the Berlin 2004 meeting Bryan and I fiddled a bit with it, so together with the changes agreed at the meeting in Berlin it does look slightly different now. Some old questions probably are still valid:
+
+	* Does <nop>ProjectDefinition provide sufficient information to "discover" documents that are published as documents on the internet?
+	* Does federation (several description projects using parts of several terminology projects) work? 
+	* What is the relation between project / dataset metadata and UBIF.DerivationHistory? Why does ABCD not need project definition? 
+	  What will the position of the taxon name standard be?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 May 2004
+
+---
+
+Metadata/Scope example:
+
+Sally Hinchcliff asks: "I was wondering if you have any examples of a UBIF xml file which uses the scope element - I can't see how to
+express the values I want. I want the class to cover all vascular plants, and the geographical scope to be global ... what would be the best way to implement that?" For geography this could be:
+
+<verbatim>
+<Metadata>  [...]
+  <Scope>
+	 <GeographicalScope><Locality ref="1"/></GeographicalScope>
+  </Scope>
+  [...]
+<ExternalDataInterface>
+  <Geography>
+	 <Locality key="1">
+		<Label>
+		 <Representation language="en"><Text>Global</Text></Representation>
+		 <Representation language="de"><Text>Weltweit</Text></Representation>
+		</Label>
+	 </Locality>
+  [...]
+</verbatim>
+
+Thus scope defines to terms defined in the EDI data interface/proxy objects. This seems awkward when all you want is say "global" in English. However, it is a migration path into a future where we use controlled vocabularies (which are not controlled by UBIF). becomes interesting only, as soon as we actually have a global gazetteer that may be used for data integration.
+It then would become:
+
+<verbatim>
+ <Locality key="1">
+	<Label>
+	  <Representation language="en"><Text>Global</Text></Representation>
+	  <Representation language="de"><Text>Weltweit</Text></Representation>
+	</Label>
+	<Link>
+	  <LSID>urn:lsid:GettyThesaurus:TGN:2372378<LSID>
+	</Link>
+ </Locality>
+</verbatim>
+
+And it is interesting if the dataset has geographical data both on the metadata for the dataset, and individual parts. In that case even the dataset-local key enables expression which of the 18 "Zell in Bayern (Germany)" are identical and which not.
+
+The same mechanism is proposed for <nop>ClassNames, Publications or Agents are more interesting. <nop>ClassName is where you would refer in scope to the highest name.
+
+The EDI offers to express and consume mixed situations, where some taxon names come from taxon name server a, others from name server b, and for yet other (perhaps newly published) only a local proxy name can be delivered.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 10 August 2004
+%META:TOPICMOVED{by="GregorHagedorn" date="1092393509" from="UBIF.SourceMetadata" to="UBIF.ContentMetadata"}%
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1092145464" format="1.0" version="1.10"}%
+d60 1
+a60 1
+%META:TOPICMOVED{by="GregorHagedorn" date="1089915501" from="SDD.SourceMetadata" to="UBIF.SourceMetadata"}%
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089914640" format="1.0" version="1.9"}%
+d12 1
+a12 1
+-- Gregor Hagedorn - 26 May 2004
+d14 46
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1087295170" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="UnifiedBioInfoFramework"}%
+d9 1
+a9 1
+	* What is the relation between project / dataset metadata and DerivationHistory? Why does ABCD not need project definition? 
+d14 1
+a14 1
+%META:TOPICMOVED{by="GregorHagedorn" date="1087295170" from="SDD.ProjectDefinition" to="SDD.SourceMetadata"}%
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086948950" format="1.0" version="1.7"}%
+d14 1
+a14 1
+%META:TOPICMOVED{by="GregorHagedorn" date="1086079827" from="SDD.ProjectDefinitionReview" to="SDD.ProjectDefinition"}%
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1086183741" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="OverarchingPatternsForTdwgSchemata"}%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1086079827" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SDD2004Berlin"}%
+d12 2
+a13 2
+-- Gregor Hagedorn - 26 May 2004
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085573577" format="1.0" version="1.4"}%
+d14 1
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085477813" format="1.0" version="1.3"}%
+d3 1
+a3 2
+(This discussion thread is currently specific to the [[SDD2004Berlin][Agenda for review meeting in Berlin]])
+---
+d5 1
+a5 1
+In SDD.ExternalTerminology I argue that GUIDs for Terminology are not strong enough to provide assurance that two projects are using the same Terminology. I'm not sure this detail merits discussion at the meeting, so much as does a very brief (<= 15 minutes!) discussion of whether that assurance is required or merely desired.
+d7 1
+a7 6
+-- Main.BobMorris - 18 Apr 2004
+
+<nop>ProjectDefinition is probably one of the more advanced parts of SDD, so I agree a discussion of details is not urgent (comments on the WIKI are most welcome, but we should not spend time going through it at the meeting). The discussion should focus on:
+
+	* Does <nop>ProjectDefinition provide sufficient information to "discover" documents that are published as documents on the net?
+	  Has UDDI additional requirements (or rather since UDDI is neutral: which discovery / vocabulary schema will be used?)
+d9 1
+a9 2
+	  This is what Bob disusses above.
+	* What is the relation between <nop>ProjectDefinition and DerivationHistory? Why does ABCD not need project definition? 
+d12 2
+a13 1
+-- Gregor Hagedorn - 22 Apr 2004
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082639100" format="1.0" version="1.2"}%
+d16 1
+a16 1
+	* What is the relation between <nop>ProjectDefinition and TransformationHistory? Why does ABCD not need project definition? 
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082304203" format="1.0" version="1.1"}%
+d3 2
+d6 1
+d10 10
+a19 1
+In SDD.ExternalTerminology I argue that GUIDs for Terminology are not strong enough to provide assurance that two projects are using the same Terminology. I'm not sure this detail merits discussion at the meeting, so much as does a very brief (<= 15 minutes!) discussion of whether that assurance is required or merely desired.
+@

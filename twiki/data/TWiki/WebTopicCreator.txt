@@ -1,0 +1,152 @@
+%META:TOPICINFO{author="TWikiContributor" date="1131431859" format="1.1" version="4"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ %MAKETEXT{"Create New Topic in [_1] Web" args="<nop>%BASEWEB%"}%
+%STARTSECTION{"newtopicform"}%
+%STARTSECTION{"formstart"}%
+%STARTSECTION{"javascriptfunctions"}%
+<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/unicode_chars.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+/**
+Checks if the entered topic name is a valid WikiWord.
+If so, enables the submit button, if not: enables the submit button if the user allows non-WikiWords as topic name; otherwise disables the submit button and returns 'false'.
+Automatically removes spaces from entered name.
+Automatically strips illegal characters.
+If non-WikiWords are not allowed, capitalizes words (separated by space).
+If non-WikiWords _are_ allowed, capitalizes sentence.
+The generated topic name is written to a 'feedback' field.
+@param inForm : pointer to the form
+@param inShouldConvertInput : true: a new name is created from the entered name
+@return True: submit is enabled and topic creation is allowed; false: submit is disabled and topic creation should be inhibited.
+*/
+function canSubmit(inForm, inShouldConvertInput) {
+	
+	var inputForTopicName = inForm.topic.value;
+	if (!inputForTopicName) return;
+
+	/* Topic names of zero length are not allowed */
+	if (inputForTopicName.length == 0) {
+		disableSubmit(inForm.submit);
+		/* Update feedback field */
+		insertHtml("", "webTopicCreatorFeedback");
+		return false;
+	}
+	
+	var hasNonWikiWordCheck = (inForm.nonwikiword != undefined);
+	var userAllowsNonWikiWord = true;
+	if (hasNonWikiWordCheck) {
+		userAllowsNonWikiWord = inForm.nonwikiword.checked;
+	}
+	
+	/* check if current input is a valid WikiWord */
+	var noSpaceName = removeSpacesAndPunctiation(inputForTopicName);
+
+	/*
+	if necessary, create a WikiWord from the input name
+	(when a non-WikiWord is not allowed)
+	*/
+	var wikiWordName = noSpaceName;
+	if (!userAllowsNonWikiWord) {
+		wikiWordName = removeSpacesAndPunctiation(capitalize(inputForTopicName));
+	}
+	if (userAllowsNonWikiWord) {
+		wikiWordName = removeSpacesAndPunctiation(capitalizeSentence(inputForTopicName));
+	}
+	
+	if (inShouldConvertInput) {
+		if (hasNonWikiWordCheck && userAllowsNonWikiWord) {
+			inForm.topic.value = noSpaceName;
+		} else {
+			inForm.topic.value = wikiWordName;
+		}
+	}
+
+	/* Update feedback field */
+	feedbackHeader = "<strong>%MAKETEXT{"Topic will be named: "}%</strong>";
+	feedbackText = feedbackHeader + wikiWordName;
+	insertHtml(feedbackText, "webTopicCreatorFeedback");
+
+	/*
+	Update hidden field value
+	Use the negative value of the checkbox. This is the ugly way but must be used until edit script parameter =allowsnonwikiword= is implemented.
+	*/
+	if (hasNonWikiWordCheck && userAllowsNonWikiWord) {
+		inForm.onlywikiname.value = userAllowsNonWikiWord ? "off" : "on";
+	}
+	if (isWikiWord(wikiWordName) || userAllowsNonWikiWord) {
+		enableSubmit(inForm.submit);
+		return true;
+	} else {
+		disableSubmit(inForm.submit);
+		return false;
+	}
+}
+function capitalizeSentence (inText) {
+	return inText.substr(0,1).toUpperCase() + inText.substr(1);
+}
+/**
+@param inState: true or false
+*/
+function setCheckBoxState (inCheckBox, inState) {
+if (! inCheckBox) return;
+	inCheckBox.checked = inState;
+}
+function enableSubmit(inButton) {
+if (!inButton) return;
+	removeClass(inButton, "twikiSubmitDisabled");
+	inButton.disabled = false;
+}
+function disableSubmit(inButton) {
+if (!inButton) return;
+	addClass(inButton, "twikiSubmitDisabled");
+	inButton.disabled = true;
+}
+/* ]]> */
+</script>
+%ENDSECTION{"javascriptfunctions"}%
+<form name="newtopic" id="newtopic" action="%SCRIPTURLPATH{edit}%/%BASEWEB%/" onsubmit="return canSubmit(this,true);"><input type="hidden" name="onlywikiname" /><input type="hidden" name="onlynewtopic" value="on" />%ENDSECTION{"formstart"}%
+<div class="twikiFormSteps">
+<div class="twikiFormStep">
+---------------------------------------------+++ %MAKETEXT{"Topic name:"}%
+<p>%STARTSECTION{"topicname"}%<input type="text" class="twikiInputField" name="topic" id="topic" size="40" tabindex="10" %IF{"'%PREFILLTOPIC%'='1'" then="value=\"%BASETOPIC%\""}% %IF{"'%URLPARAM{"newtopic"}%'" then="value=\"%URLPARAM{"newtopic"}%\""}% onkeyup="canSubmit(this.form,false);" onchange="canSubmit(this.form,false);"  onblur="canSubmit(this.form,true);" /> <span id="webTopicCreatorFeedback" class="twikiInputFieldDisabled"><!--generated name will be put here--></span>%ENDSECTION{"topicname"}%</p>
+<p>%STARTSECTION{"allownonwikiword"}%<input type="checkbox" class="twikiCheckbox" id="nonwikiword" name="nonwikiword" tabindex="11" onchange="canSubmit(this.form,false);" onmouseup="canSubmit(this.form,false);" /><label for="nonwikiword">%MAKETEXT{"Allow non <nop>WikiWord for the new topic name"}%</label><br />
+<span class="twikiGrayText">%MAKETEXT{"It's usually best to choose a <a target='WikiWord' onclick=\"return launchWindow('[_1]','WikiWord')\" href='[_1]' rel='nofollow'>WikiWord</a> for the new topic name, otherwise automatic linking may not work. Characters not allowed in topic names, such as spaces will automatically be removed." args="%TWIKIWEB%,%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/WikiWord"}%</span>
+<script type="text/javascript">
+/* <![CDATA[ */
+// Read url param 'allowsnonwikiword' to set the initial checkbox value
+var allowsNonWikiWord = "%URLPARAM{"allowsnonwikiword" default=off}%";
+setCheckBoxState(document.forms.newtopic.nonwikiword, allowsNonWikiWord.toBoolean() ? true : false);
+/* ]]> */
+</script>%ENDSECTION{"allownonwikiword"}%</p>
+</div><!--/twikiFormStep-->
+<div class="twikiFormStep">
+---------------------------------------------+++ %MAKETEXT{"Topic parent:"}%
+<p>%STARTSECTION{"topicparent"}%<select name="topicparent" size="10" tabindex="12">
+%TOPICLIST{"<option $marker value='$name'>$name</option>" separator=" " selection="%URLPARAM{ "parent" default="%MAKETEXT{"(no parent, orphaned topic)"}%" }%"}%
+<option value="">%MAKETEXT{"(no parent, orphaned topic)"}%</option>
+</select>%ENDSECTION{"topicparent"}%</p>
+</div><!--/twikiFormStep-->
+<div class="twikiFormStep">
+---------------------------------------------+++ %MAKETEXT{"Use template:"}%
+<p>%STARTSECTION{"topictemplate"}%<select name="templatetopic">
+<option value="%TWIKIWEB%.WebTopicEditTemplate">%MAKETEXT{"Default template"}%</option>%SEARCH{".*Template$" scope="topic" type="regex" nonoise="on" format="<option>$topic</option>"}%</select> <a href="%SCRIPTURL{view}%/%TWIKIWEB%/WebTemplateTopics?web=%BASEWEB%">%MAKETEXT{"View templates"}%</a> %ENDSECTION{"topictemplate"}%</p>
+</div><!--/twikiFormStep-->
+<div class="twikiFormStep twikiLast">
+<p>%STARTSECTION{"submit"}%<input id="submit" type="submit" class="twikiSubmit" tabindex="13" value='%MAKETEXT{"Create this topic"}%' />%ENDSECTION{"submit"}%</p>
+</div><!--/twikiFormStep-->
+</div><!--/twikiFormSteps-->
+%STARTSECTION{"formend"}%
+</form>
+<script type="text/javascript">
+//<![CDATA[
+// start with a check
+canSubmit(document.forms.newtopic,false);
+// focus input field
+document.forms.newtopic.topic.focus();
+//]]>
+</script>%ENDSECTION{"formend"}%
+%ENDSECTION{"newtopicform"}%
+%BR%
+<div class="twikiHelp">
+%ICON{info}% %MAKETEXT{"Once you have created the topic, consider adding links in related topics to the new topic so that there are more ways people can discover it."}%
+</div>

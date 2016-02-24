@@ -1,0 +1,681 @@
+%META:TOPICINFO{author="HilmarLapp" date="1358873661" format="1.1" version="1.80"}%
+%META:TOPICPARENT{name="WorkingMeeting2010"}%
+A paper based on this technical report has now been published: Stoltzfus, Arlin, Brian O&#8217;Meara, Jamie Whitacre, Ross Mounce, Emily L Gillespie, Sudhir Kumar, Dan F Rosauer, and Rutger A Vos. 2012. &#8220;Sharing and Re-use of Phylogenetic Trees (and Associated Data) to Facilitate Synthesis.&#8221; BMC Research Notes 5 (1) (October 22): 574. doi:[[http://dx.doi.org/10.1186/1756-0500-5-574 10.1186/1756-0500-5-574]].
+
+---+ DRAFT: Current Best Practices for Publishing Trees Electronically
+
+*Authors* 
+   * Arlin Stoltzfus, Biochemical Science Division, NIST, 100 Bureau Drive, Gaithersburg, MD, 20899
+   * Jamie Whitacre, Smithsonian Institution
+   * Dan Rosauer, Yale University
+   * Torsten Eriksson, Royal Swedish Academy of Sciences
+
+%TOC%
+
+---+ Summary
+
+An assessment of best practices for publishing phylogenetic trees is timely given recent decisions by many journals to require the archiving of trees.  However, even without that justification, several longer-term trends favor an increased emphasis on richly annotated re-usable trees that can be linked to other data: the opportunities for phylogeny re-use are greater; new opportunities for aggregation and integration exist; and both specific and general technologies that make sharing and re-using trees easier have emerged. This report summarizes an as-yet-incomplete project to perform an assessment of best practices and, in turn, suggest solutions for meeting recommendations provided by the scientific community (? jsw) and filling gaps in the current landscape.
+
+The motivation for the report is that it will encourage the use, and further the development, of data management practices that will benefit scientists individually and collectively.  Archiving of results post-publication seems to benefit the scientific community, and to benefit the individual archiving scientist in the form of increased recognition.  A less speculative motivation is that developing capacity to manage richly annotated yet interoperable data _benefits scientists_ (individually and collectively) and _science_ by making it easier to carry out integrative, automated, or large-scale projects. 
+
+This report represents the first step in a larger analysis.  Following release of this initial report, we will disseminate a survey broadly, carry out further analysis, and write a more comprehensive report.  For the present purposes, we have conducted an initial general assessment of 
+   * data archiving policies and reporting standards adopted by journals and funding agencies
+   * two electronic archives (TreeBASE and Dryad) suitable for storing phylogenies
+   * file formats commonly used for representing phylogenies (Newick, NEXUS, NHX, phyloXML and NeXML)
+   * available support for Life Science Identifiers (LSIDs) and other globally unique identifiers (GUIDs)
+In other areas, we offer comments and call for more extensive analysis: 
+   * language support for representing data and metadata
+   * current practices in the research community
+   * software tools to support archiving and re-use 
+
+In addition, we have studied the submission process of TreeBASE, and have evaluated the capacity of various file formats to represent specific kinds of metadata (annotations) deemed likely to increase the capacity for research results to be discovered, interpreted, linked (to other data) and re-used, including: 
+   * publication data (authorship, citation)
+   * species names and other taxonomic identifiers 
+   * methods used to infer a tree
+   * geographic coordinates 
+
+Our tentative analysis suggests the following: 
+   * The infrastructure to support archiving of 1000's of new phylogenetic trees is available 
+   * The needs of archiving are not the same as those of publishing linkable, re-usable data
+   * No formalized reporting standard for a phylogenetic analysis currently exists
+   * The extent to which _data_ archiving policies require archiving of phylogenetic trees is unclear  
+   * The potential for archiving richly annotated trees is limited by technology and standards
+   * The gap between needs and capacities is much greater for publishing re-usable trees than for simple archiving
+
+Archiving phylogenetic trees is technically feasible given current formats, and using currently available archives (TreeBASE and Dryad).  However, the archival value of many trees will be limited without a shift in emphasis toward re-useability, along with technology and standards to support such a shift.  While making trees archival is an important step forward for the phylogenetic community, re-usability of trees depends on several other conditions that, for the foreseeable future, will be difficult for most researchers to obtain.  Before interoperability of richly annotated trees can be obtained, the research community must commit to the use of globally unique identifiers (GUIDs) for informational and material entities, and develop the syntax and semantics to represent the metadata upon which the value of the data depend.  The community may be ready to respond to renewed calls for a Minimal Information for a Phylogenetic Analysis (MIAPA) standard.  
+
+---+ Request for Comments 
+To ensure that the descriptions and recommendations here are accurate and relevant to the community of users, we are seeking feedback in several ways.  As described in Appendix 4, we intend to target scientists with a survey to assess current practices and needs.
+ 
+We also solicit feedback on this preliminary report (see [[#AddComments][below]]).  We invite interested scientists to make comments and to join the effort required to complete this report.  
+---+ Draft Report: Current Best Practices for Publishing Trees Electronically
+---++ Scope and rationale of this report 
+
+A major National Research Council (NRC) report on "A New Biology for the 21st Century" (2009; http://www.nap.edu/catalog.php?record_id=12764) suggests enormous potential for biological discovery based on aggregating and integrating data from diverse sources and from multiple disciplines.  More specifically, recent commentaries (e.g., Sidlauskas, et al, 2010; Patterson, et al., 2010), suggest the possibility that archiving and re-use of phylogenetic trees and biodiversity data will soon take off at a pace not seen before.  At the same time that funding agencies, publishers, and scientific culture are shifting in ways that incentivize sharing of data-- including phylogenetic trees-- new technologies and standards are emerging with the potential to make phylogenetic methods and results more interoperable (Sidlauskas, et al, 2010; Prosdocimi, et al., 2009).  This interoperability infrastructure benefits individual researchers by enabling them to link results to related data, to avoid duplication of effort, to collaborate more effectively, and to pursue large-scale, integrative projects.  
+
+What standards and technologies _will_ allow scientists to take advantage of phylogenies for "A New Biology"?  The answer to this question is not certain.  It is not clear whether promising interoperability technologies will fulfill their promise.  It is not clear whether, in the phylogenetics community, these technologies will be developed in an orchestrated manner, through stakeholder organizations (analogous to TDWG for biodiversity studies), or in a more anarchic or competitive way.  
+
+However, regardless of strategies for responding to current challenges, the first step is to understand those challenges.   For this reason, at the TDWG 2010 meeting in Woods Hole, the TDWG phylogenetic standards interest group set in motion a project to to assess the current state of the field in regard to archiving and re-use of phylogenetic trees, with the ultimate goal of  encouraging the use and further development of practices that make trees interoperable.  We aim to identify strengths and weaknesses in the current infrastructure, practices and, policies; to educate tree producers about the needs of tree users; and to educate users about the needs of tree producers.  The scope of this project extends, in principle, to all areas (systematics, phylogenetics, paleobiology, diversity studies, etc) where the archiving and re-use of trees is of interest to scientists.   
+
+As a step toward this goal, we have undertaken a preliminary assessment of current best practices for publishing phylogenetic trees.  Specifically, in regard to the electronic archiving and re-use of trees, we have done a preliminary review of
+   * relevant institutional policies and reporting standards
+   * current practices 
+   * data formats
+   * software tools
+   * ontologies and other forms of language support
+
+This document reports the results of our preliminary assessment.  To get broader feedback, recruit interested scientists, and gather information to finish the report, we have partnered with participants of the MIAPA-discuss (miapa-discuss@googlegroups.com) email list.  This group has developed a survey that will be sent to thousands of scientists.  After analyzing this feedback, we intend to expand this preliminary report into a manuscript for publication.  We invite those willing to make a commitment of work to join in this project. 
+---++ Background: data archiving and re-use, how and why?
+
+Re-use of published results is crucial to the progressive and self-correcting nature of scientific inquiry.  In the distant past, publication of a conventional scientific article was deemed sufficient to satisfy the demand for accessible and re-usable data.  By publishing, authors were obliged to share data (and materials), but publishers had little power to enforce such obligations.  In practice, authors determined which data were released, to whom, and in what form, often assuming that their own interests were served best by hoarding data, rather than sharing data, an attitude that remains common in some fields (ref: Piwowar).   
+
+The circumstances of publishing and data reuse have changed radically in the past few decades.  As the result of new technologies that generate massive amounts of data, many scientific reports depend on data too voluminous to publish in printed form.  For instance, the record of a 3-dimensional protein structure contains roughly 10^4 coordinates (each a floating-point number) per domain.  To facilitate archiving and re-use of such data, crystallographers collaborated in 1971 to launch the Protein Database ([[http://www.pdb.org][PDB]]), which is still the world's premier archive for 3D protein structures.  In 1982, just 5 years after the discovery of DNA sequencing methods, GenBank was launched to archive the DNA sequences that were crowding the pages of journals.  In both cases, editorial boards of relevant scientific journals quickly decided to require simultaneous archiving (of 3D structures in PDB; of DNA sequences in GenBank), so that data would be accessible to all scientists upon publication.    
+
+Meanwhile, principled reasons to promote data sharing have exerted an increasing influence over institutions and institutional policies.  Professional associations, publishers, and funding agencies recognize that availability of the data underlying published scientific findings is essential to a healthy scientific process (see Appendix 1).  Funding agencies such as NSF and NIH increasingly recognize that work done on behalf of the public, especially if it is funded by taxpayers, should be accessible to the public without restriction.  
+
+Viewed as a large-scale dynamic, data sharing is a movement of information from producers to consumers, facilitated by informatics tools, and guided in various ways by institutional policies.  Some of the policies noted above represent incentives or pressures on individual researchers to "push" data out into the world.  However, there is simultaneously an increasing "pull" from the promise of large-scale studies that aggregate and re-purpose data.  The availability of data from PDB and GenBank, for example, has resulted in innumerable publications by scientists analyzing data generated by other scientists and stored in these archives.   For this reason, no scientist would doubt the utility of these archives for scientific research.  
+
+<img src="http://wiki.tdwg.org/twiki/bin/viewfile/Phylogenetics/LinkingTrees2010?rev=1;filename=example.jpg" width="300" align="right">
+How do these and other factors apply to the publishing of phylogenetic trees?  Phylogenetic trees play two central roles in modern biology: organizing knowledge by lines of descent, and extending knowledge through comparative analysis.  In either role, trees become useful only to the extent that the tree and its parts are attached to, or can be linked to, data and metadata.  
+
+Until recently, for most authors, publishing a phylogenetic tree meant publishing a picture of a tree in a journal article (figure)-- an informational dead-end.  Thus, in the economy of phylogenetic data sharing,  there are thousands of phylogeny producers (Kumar and Dudley, 2006), but there have been few phylogeny consumers, in spite of an archive called "TreeBASE" (Piel, et al., 2002) that has enabled phylogeny re-use since the late 1990's.  
+
+However, conditions are changing in ways that favor archiving and re-use of trees: 
+   * In a coordinated effort announced early in 2010, various journals in evolution and systematics have implemented data-archiving policies; 
+   * In 2010, TreeBase (Piel, et al., 2002) completed a substantial upgrade of features, including its submission process; 
+   * A new data archive, Dryad, began accepting data from ecological and evolutionary studies, including phylogenetic trees in 2009;
+   * NSF recently increased its [[http://www.nsf.gov/pubs/policydocs/pappguide/nsf11001/gpg_2.jsp#IIC2j requirements for data-sharing plans]] in grant proposals (see Appendix 1); 
+   * In recent years, the National Evolutionary Synthesis Center (NESCent) has invested in "phyloinformatics" efforts to enable interoperability, resulting in projects to develop an XML file format (NeXML), an ontology (CDAO), and a web-services standard (PhyloWS).  
+
+What about phylogeny consumers?  The most significant challenge in enabling an information-sharing dynamic in phylogenetics may be to recognize and understand how and why phylogeny consumers would re-use a phylogeny product.  Phylogenetic trees play a vital role in research.  Anyone with experience in phylogenetic analysis quickly learns that our biologist colleagues want trees for various research purposes, and frequently ask for help in getting them.  Thus, there is an enormous demand for phylogenetic knowledge.  Yet, the product of an individual phylogeny producer, it seems, is unlikely to be re-used or re-purposed.  The reason for this seems to be that the typical need is for a very narrowly defined phylogenetic product, with a specific set of OTUs and characters, including up-to-date information.  
+
+Limited cases in which phylogenetic results are aggregated or re-used are playing a more prominent role in scientific research.  Examples of large-scale projects that rely on meta-analysis or integration are assembling a tree of life representing all known species, or identifying vulnerable species by combining occurrence data, climate data, and phylogeny in a geographic framework (this section needs specific references and examples along the lines of Burleigh, et al., 2010, and Sidlauskas, et al., 2010). 
+
+This project to assess strengths and weaknesses in current practices has the ultimate goal of enabling effective data-sharing that links phylogeny producers and phylogeny consumers.  Logically, then, we must begin with some notion of what makes a tree re-usable.  In considering what makes it likely for a tree to be re-used in study replication, meta-analysis, aggregation, or integration, we draw guidance from the 2008 roadmap of the TDWG Technical Architecture Group (TAG), and two recent commentaries, by Sidlauskas, et al (2010) on synthetic approaches to evolutionary analysis, and by Patterson, et al (2010) on the importance of names. Together, these resources suggest the importance of 
+   * having unique names for biological things of interest (globally unique identifiers or GUIDs)
+   * exchanging information using validatable formats (e.g., XML)
+   * using a controlled set of terms and predicates, ideally defined in an ontology 
+   * providing context with rich annotations ("metadata") 
+for the re-useability of phylogenetic results. Below, we briefly explain these features.  
+
+---++++  1. Standard, Validatable Formats 
+Currently, most trees that appear in the published literature are accessible only in the form of an embedded graphical image, i.e., the published item is literally a flat picture of a phylogenetic tree (figure, above), rather than a machine-readable symbolic encoding of relationships.   For trees to be re-usable, they must be accessible in a standard, computer-readable format that makes the structure of the tree explicit.  The tree image above corresponds to the following Newick string: 
+<pre>
+((otu1:0.34, otu2:0.19):0.11, otu3:0.44);
+</pre>
+Newick is the simplest of several data formats that are used to represent trees (see Appendices 1 and 3).  For instance, PhyloXML and NeXML are formats defined by schemata.  Available tools allow any instance of a PhyloXML file to be checked against the schema, to determine whether the file is properly formed.  A file with mistakes in syntax (miss-spelled terms, missing punctuation, etc), will be found invalid.  But if a file is valid, then any software that fully supports the standard should be able to read it.  Automated validation removes uncertainty, especially in regard to the causes of errors.  
+
+---++++ 2.  Globally Unique Identifiers (GUIDs)
+There are many uses for identifiers.  To integrate data from diverse sources, we need to have some kind of integrating variable such as a species name, a specimen number, etc.  For instance, to aggregate data on species occurrence, we need to know if a report of a bird in location X and a second report of a bird in location Y refer to the same species of bird.  If we wish to integrate data from all over the world using names for things, then the names should be unique over all the world.  By contrast, the tree example above invokes entities "otu1", "otu2" and "otu3".  If we integrated data from all over the world using arbitrary local names like "otu1" and "otu2", we would make mistakes by aggregating information that does not belong together.  
+
+Using globally unique identifiers or GUIDs ensures that when we refer to a thing, regardless of context, we know what it is.  For instance, perhaps otu1 refers to the coyote.  In that case, we can provide a Life Science Identifier or LSID (urn:lsid:ubio.org:namebank:2478093), which is a kind of GUID, and this LSID will make it possible for the researcher to associate the entity with information on ''_Canis latrans_'' (coyote) available in resources such as the Encyclopedia of Life.  If otu1 is a gene sequence, then an http URI for its NCBI accession can serve as a GUID, and this will make it possible for any subsequent researcher to associate "otu1" with the underlying sequence data. 
+
+The system of Document Object Identifiers allows publishers to assign GUIDs to publications.  Thus, not just species or samples, but information artefacts, should have unique identifiers.  For instance, in TreeBASE, each tree, data matrix, and study receives an ID that is unique and stable, allowing TreeBASE to offer persistence GUIDs via http URIs.  
+
+---++++ 3. Rich Annotations ("metadata")
+While the Newick tree above is in a standard format and could be archived in the Newick format, it remains an information dead-end, because we do not know what it refers to or how it was derived.  Even if our goal is to explore models of speciation, and we wish only to measure whether the topology of the tree is ladder-like vs. bushy, we can't use this particular tree because we can't tell whether it is a species tree (relevant to speciation), or some other kind of tree (irrelevant).      
+
+So then, what kind of annotations increase the re-usability of a tree?  What are the integrating variables a tree consumer would use to integrate or aggregate trees?  Imagine that we have a data-mining tool with access to all published trees, richly annotated.  Our challenge is to use this database to reveal prior work on a topic, to test a hypothesis, to discover new relationships, or to carry out a meta-analysis addressing a methodological issue.  In this context, useful types of data or metadata would include: 
+   * data (or GUIDs for data) from which the tree was inferred (e.g., if we wish to combine data into a supermatrix)
+   * authorship and citation data (e.g., if we wish to find all the studies by a particular author)
+   * taxonomic links and species identifiers for OTUs (e.g., to find all studies relevant to a taxonomic group)
+   * identifiers for a specimen or accession to which OTUs are linked (e.g., to find any studies with a particular gene)
+   * geographic coordinates (e.g., to integrate phylogeny data with other geographically-linked data)
+   * a description of the method by which the tree was inferred (e.g., to enforce quality controls)
+
+---++++ 4. Formal Language Support
+Computable knowledge representation is largely a matter of relationships between entities that can be expressed as subject-predicate-object triples, i.e., "Bob has_friend Susan" or "Susan is_a female_person".  By joining these two statements via the identity of Susan (which we could establish via a GUID for Susan), we can answer the question of whether Bob has any female friends, even though neither statement alone tells us this.  
+
+Without formal language support, its unclear what such terms and predicates mean.  For instance, if we are interested in the phylogenetic origin of primates and search the web for a _tree that has a monkey and a squirrel_, we will not find a phylogeny that includes a monkey and a squirrel as OTUs, but we will get other fascinating information, including information about 1) *squirrel monkeys*, which spend time in *trees*, 2) sounds made by *squirrels*, *monkeys* and other animals that live in *trees*; and 3) news of a scientific study showing that macaques (a kind of *monkey*) in *trees* get upset when flying *squirrels* sail over them.  
+
+Typically, a domain expert (in knowledge representation, a field of application such as phylogenetics is called a *domain*) avoids language problems by using a limited set of known data sources with a limited set of terms and predicates whose domain-specific meanings are understood by the expert.  Thus, one way to support clear use of language is to have domain-specific vocabularies.  A more robust form of support is to specify concepts in an ontology.  
+
+To represent the kinds of annotations that make phylogenies suitable for re-use-- citations, taxonomic links, provenance information, georeferences, methods descriptions-- requires language support for the relevant concepts.  For instance, [[http://dublincore.org/documents/dces/][Dublin core]] provides a metadata standard for documents, providing terms for assigning authorship, title, and so on.  The [[http://open-biomed.sourceforge.net/opmv/ns.html][Open Provenance Model Vocabulary Specification ]] provides a term "wasDerivedFrom", such that, having derived "tree1" from "alignment1", we could annotate this relationship with the statement 
+
+ tree1 [[http://purl.org/net/opmv/ns#wasDerivedFrom][http://purl.org/net/opmv/ns#wasDerivedFrom]] alignment1
+
+An important aim for this project is to investigate what kinds of annotations can be supported by available vocabularies and, where possible, to make recommendations about which vocabularies are best for which annotations.   Some types of annotations involve ''domain-specific concepts'', e.g., if we wish to distinguish "unrooted tree" from "rooted tree" in a robust way, this must make reference to some externally defined concept.  
+
+---++ Analysis 
+---+++ Policies 
+*Evolution-related journals and their data policies.*   In early 2010, the editorial boards of eight journals: _Evolution_, _Molecular Biology_ and _Evolution_, _American_ _Naturalist_, _Molecular_ _Ecology_, _Journal of Evolutionary Biology_, _Heredity_, _Evolutionary Applications_) announced plans for a joint data archiving policy.  This is a minority of the journals that regularly publish phylogenetic trees (other examples include _Systematic Biology_, _Molecular Phylogenetics_, and so on).  The policies adopted by most of these journals as of January 2011 require data archiving in an "appropriate public archive" to ensure that the data are "preserved and usable for decades in the future".  However, some policies are more stringent than others. For example, _Evolution_ requires that "authors submit DNA sequence data to GenBank and phylogenetic data to TreeBase" and _American Naturalist_ stipulates that "authors. . . deposit the data associated with accepted papers in a public archive. For gene sequence data and phylogenetic trees, deposition in GenBank or TreeBASE, respectively, is required." Other journals have a looser policy. _Molecular Ecology_ "expects that data supporting the results in the paper should be archived in an appropriate public archive such as GenBank, Gene Expression Omnibus, TreeBASE, Dryad, the Knowledge Network for Biocomplexity, your own institutional or funder repository, or as Supporting Information on the _Molecular Ecology_ web site." Furthermore, _Evolutionary Applications_ states that "only data underlying the main results in the paper need to be made available, In addition, sufficient information must be provided such that data can be readily suitable for re-analyses, meta-analyses, etc. . . . The preferred way to archive data is using public repositories. For types of data for which there is no public repository, authors can upload the relevant data as Supplementary Materials on the journal's website. Data submission to any of these repositories and the acceptance of the data by these repositories must occur *before* the manuscript goes to production. Appendix 1 provides detailed guidelines for submitting to TreeBASE and to Dryad.
+
+*National Science Foundation (NSF).*  In the US, NSF is the major funder of evolutionary science.  As described in Appendix 1, NSF guidelines call for proposals to include a &#8220;Data Management Plan&#8221; to describe how the proposal will conform to NSF policy on the dissemination and sharing of research results, including what types of data will be produced, "the standards to be used for data and metadata format and content", and plans "for preservation of access" to the data.  The policy does not specify any particular standards, but merely calls on researchers to address this issue. 
+
+---+++ Standards 
+
+*Life Science Identifiers (LSIDs)* represent a standard developed and approved by Biodiversity Information Standards (TDWG), an organization that promotes the wider and more effective dissemination of information about the World's heritage of biological organisms.   
+
+* MIAPA*  Scientists with an interest in the archiving and re-use of phylogenetic data have called for (but not yet developed) a minimal reporting standard designated "Minimal Information for a Phylogenetic Analysis", or MIAPA ([[http://www.ncbi.nlm.nih.gov/pubmed/16901231 Leebens-Mack, et al. 2006]]). The vision of these scientists is that the research community would develop, and adhere to, a standard that imposes a minimal reporting requirement yet ensures that the reported data can be interpreted and re-used.   Such a standard might be adopted by journals, repositories, databases, workflow systems, granting organizations, and organizations that develop taxonomic nomenclature based on phylogenies.  Leebens-Mack, et al. suggest that a study should report objectives, sequences, taxa, alignment method, alignment, phylogeny inference method, and phylogeny (this implies that MIAPA is intended only for molecular, as opposed to non-molecular, phylogenetics). 
+
+As of 2010, no standard or draft has been developed (the [[http://mibbi.sourceforge.net/projects/MIAPA/ MIBBI repository for the MIAPA project]] is empty).  A [[http://evoinfo.nescent.org/MIAPA_WhitePaper NESCent whitepaper on MIAPA]] outlines how the project could be moved forward.  As a proof-of-concept exercise (described with some screenshots [[https://www.nescent.org/wg_evoinfo/Supporting_MIAPA#Proof-of-concept_.28annotation_software.29  here]]), participants in NESCent's Evolutionary Informatics working group configured an existing annotation application to use a controlled vocabulary to describe a phylogenetic analysis as a series of steps.  
+
+Open questions
+   * are there other standards that are applicable here?  
+
+---+++ Formats 
+Various formats are used for phylogenies.  Here we review information on the following 5 formats:
+
+   * Newick- design for trees only with labels, no other data or metadata
+   * NEXUS (http://informatics.nescent.org/wiki/Supporting_NEXUS_Documentation) - a full featured but dated format
+   * NHX [[http://www.phylosoft.org/NHX/nhx.pdf PDF docs]]) - an extension of Newick with limited uses
+   * [[http://www.phyloxml.org phyloXML]]- an economical and easy to use XML format tuned to molecular phylogenies 
+   * [[http://www.nexml.org NeXML]] - a full-featured XML format that allows arbitrary annotations of diverse types of data 
+
+The Newick ("New Hampshire") format was developed informally in 1986 by a group of phylogenetic software developers (http://en.wikipedia.org/wiki/Newick_format).  It was intended to represent trees only, not associated data or metadata.   
+
+NEXUS is a highly expressive data format that has been in use for nearly as long as Newick.  It is the preferred format for many phylogenetic inference programs such as PAUP* and MrBayes.  The basic structure of a NEXUS file is a series of blocks, each containing commands.  The most commonly used blocks are TAXA (a declared list of OTUs), CHARACTERS (a matrix of comparative data) and TREES (one or more phylogenetic trees for the OTUs).  OTUs and characters can be referenced (from other blocks) by index numbers.  Due to the lack of an ongoing development model, and ambiguities in the syntax, different interpretations of NEXUS have arisen within the phylogenetics community.  
+
+NHX (New Hampshire eXtended) format was developed by Christian Zmasek as an extension of Newick, to represent common annotations of nodes (e.g., duplication events), and to insert molecular sequences.  However, the highly constrained syntax of NHX limits its usefulness.  
+
+In the past few years, four different XML formats have become available, though none is in widespread use.  The main developer of NHX format, Christian Zmasek, went on to develop phyloXML (Han and Zmasek, 2009), a validatable format to represent a greater range of attributes than NHX.  PhyloXML has an economical schema tuned to the needs of molecular phylogeneticists.  The BEAST package (Drummond, et al., 2007) has used an XML input format for several years, but it is not considered further here because it is not used to export trees (BEAST outputs trees in NEXUS format).  Likewise, while it is possible to encode comparative data in terms of CDAO (Comparative Data Analysis Ontology: Prosdocimi, et al., 2009), and serialize this as RDF-XML, this is not the recommended use of CDAO.  NeXML (http:www.nexml.org) is an XML format with a precisely defined schema, modeled after the structure of NEXUS.  While the design of phyloXML takes a very direct approach to satisfying user needs, NeXML opts for greater generality at the expense of a much more complex schema.  It has an approach to metadata that allows for arbitrary annotation of data objects using external vocabularies.  
+ 
+Features of Newick, NHX, NEXUS, phyloXML and NeXML are compared in the table below (a filled square indicates presence of the feature; an open circle indicates that there are significant limitations on this feature). 
+ 
+<img src="%ATTACHURLPATH%/phylo_file_format_comparison.gif" border='1' width='800' />
+
+---+++ Archives 
+
+Researchers wishing to make a phylogenetic tree available in a public archive currently have two options, TreeBASE and Dryad.  
+
+The TreeBASE project is a specialized repository that focuses on supporting phylogenetic studies (Piel, et al., 2002).  TreeBASE 2.0 (released in March, 2010) has a relational database back-end with a complex schema that allows it to accommodate not just phylogenies and character matrices, but metadata associated with a study, including authors, publications, and descriptions of methods.  The submission process (see Appendix 3) is well documented, and allows users to associate OTUs with species names (NCBI or UBio names) and to add other types of metadata.   Data are uploaded in NEXUS format.   Other formats are not currently supported and support for studies with large numbers of trees is limited.  Archived data are made available to users via a convenient web interface; however, the web interface does not provide full access to the schema.  
+
+Last year, according to the web site (http://www.treebase.org/treebase-web/about.html), TreeBASE contained 6,500 trees in 2,500 publications (60,000 distinct taxa).  This is a small fraction of trees published since TreeBASE began in the mid-1990s.  Due to variable journal policies, TreeBASE is well known and extensively used in some sub-disciplines such as fungal systematics, but is relatively unknown and unused in others (see Appendix 1 for a list of 19 journals that require or recommend submission of trees to TreeBase as a condition of publication).   
+
+The Dryad project was launched in 2009, to support archiving of data from ecological and evolutionary studies, including data that do not fit any specialized database.  The data may include images, text files, spreadsheets, and some other types of files.  According to Todd Vision of the Dryad project (see Appendix 3), "since Dryad is a general-purpose repository, it doesn't impose any constraints on how the data are represented within the files that users submit. The best practices need to come from elsewhere, such as journal policies, MIAPA . . . and community practice."  Because of the diversity of data, there is no back-end schema for knowledge organization.   Instead, any text in uploaded files is indexed so that relevant files can be identified and retrieved by users.  The submission process, currently in beta testing, is carefully explained on the website.   By submitting data, users make the data available for re-use via a Creative Commons license.  
+
+The launch of Dryad was coordinated with an initiative urging journals and professional societies in the disciplines of ecology and evolution to adopt policies about data archiving and data sharing (see Appendix 1).  According to the web site (http://www.datadryad.org), in January of 2011, Dryad contained 407 data packages and 1000 data files, published in 52 journals.  Each package, apparently, corresponds to a publication. 
+
+Open questions
+   * Does morphobank also archive data?  What about TOLKIN?  Any others? 
+
+---+++ Language Support (Ontologies and Other Vocabularies)
+
+In recent years there has been an explosion of work on ontologies to provide the language support for sharing of knowledge in life sciences.  Ontologies are one extreme on a continuum of vocabulary artefacts ranging from lists of informally defined tags, to hierarchies of classes (taxonomies), to ontologies that specify class hierarchies as well as relations and attributes.  In some areas of research, vocabulary artefacts play a key role, e.g., the Gene Ontology (GO), primarily a set of 3 taxonomies (molecular function, pathway, location), plays a key role in genome annotation.  The field of comparative biology benefits from a long tradition of using organismal taxonomy, which is a hierarchy of approved names and synonyms.  In regard to representing trees and associated data, a clear example of the use of a standard vocabulary is the use of IUPAC codes for nucleotides and amino acids (e.g., as explicitly defined in the NEXUS format specification of Maddison, et al. 1997).  
+
+As a general practical matter, NeXML and CDAO together provide an approach to metadata that is open-ended.  NeXML is designed in a way to take advantage of external vocabularies.  So, if there is a way to say something by invoking the terms of an external vocabulary, it can be said within NeXML (and this is the advantage of the NeXML metadata approach).  The Comparative Data Analysis Ontology (CDAO) provides language support for many aspects of comparative analysis, though it has not been tested extensively and remains experimental.  The concept of a phylogenetic tree could be designated by reference to CDAO:Tree, which in turn defines a tree as a sub-class of "Network", and in relation to other concepts like "Branch" and "Node".   
+
+However, in this area, the role of ontologies and other vocabularies is mainly a matter of future possibilities, rather than current practice.  A variety of relevent artefacts exist, some of them recently developed.  For this preliminary report, we have identified some possible resources, but we are not sure how useful they will be.  At this point, we mainly have questions.  
+
+*Representing authorship and citations*  Citing a journal publication is a key issue.  However, there is also an issue of the authorship of an electronic document (e.g., tree file), which may be distinct from a publication.  Dublin core (http://dublincore.org/documents/dces/), a metadata standard for documents, provides language for authorship, creation dates, copyright, licenses and so on.   A major shortcoming is that it lumps journal, volume, issue and page into one concept (dc:citation), making it unsuitable for scientific literature.   PRISM (http://www.prismstandard.org), which builds on Dublin core, may provide a better alternative for referencing the scientific literature.  
+
+*Linking to taxonomic concepts*  LSIDs are a standard approved by TDWG.  Sources such as [[http://www.ubio.org/][UBio]] provide LSIDs for taxa (taxon concepts).  This solves one part of the problem of providing annotations that refer to LSIDs for species.  The other part, which isn't as clear, is the issue of what predicates one should use to link entities in a tree file with a species source, or with another taxonomic concept.  For instance, what is the proper relation between an internal node of a tree and a concept for a higher taxonomic category that corresponds to it?   
+
+*Provenance*  A key issue in annotating a phylogeny with character data is to indicate the source of data or specimens.  For molecular sequences, a GenBank accession is appropriate. PhyloXML has a simple tag for that.  In other cases, its not clear which predicate to use, especially since an aligned molecular sequence may be derived by truncation from a GenBank source.  In this case, the Open Provenance Model (mentioned earlier) has some general predicates such as wasDerivedFrom.  A tree can be annotated as having been derived from an alignment, and this alignment can be annotated, in turn, as being derived from individual sequences with GenBank sources.  Another case is that in which we wish to associate data with a specimen that has a museum accession.  Does DarwinCore provide an appropriate source of predicates?  
+
+*Georeferences*  TDWG TaxonOccurrence (http://rs.tdwg.org/ontology/voc/TaxonOccurrence) seems to address this.  This could be incorporated directly into NeXML.  In phyloXML, there are pre-assigned tags.  
+
+*Methods*   As indicated in the MIAPA paper (Leebens-Mack, et al) and in the TreeBASE submission protocol, researchers dealing with molecular data consider methods to be an important component of metadata. The Open provenance model, mentioned above, provides some generic concepts that would be useful.  However, in spite of the potential of CDAO (Prosdocimi, et al., 2009), there seems to be a major gap between what is available, and what is needed to annotate the complex multi-step user-assisted workflows used by a scientific researcher to generate a phylogeny product.  A recent LIMS plug-in for the Geneious software allows for tracking workflows and alignment annotations (see http://software.mooreabiocode.org). 
+
+Open questions: 
+   * Are there other standards for citations more appropriate than DublinCore and PRISM? 
+   * Where do we get predicates for linking to LSIDs for taxonomic concepts?  Does DarwinCore provide an appropriate source of predicates?   
+ 
+---+++ Tools 
+
+For the purposes of this report, we did not carry out an extensive analysis of available tools.  Our initial impressions are that there is a deficit of tools supporting archiving and reuse of phylogenetic data.  
+
+Even in an atmosphere that incentivizes data sharing, scientists motivated to archive or re-use data may find it difficult to do so if appropriate tools are lacking.  Some of the obvious kinds of tools to support archiving of richly annotated data sets are: 
+   * format validators
+   * translators that support conversions of data and metadata between formats
+   * annotation tools that allow users to add metadata using controlled vocabularies 
+
+To support re-use, re-purposing, aggregation and integration of data requires the same kinds of tools, as well as tools for 
+   * visualizing diverse types of data together with their metadata 
+   * manipulating data and metadata (e.g., extracting subsets or subtrees) while maintaining integrity
+   * databasing a collection of studies for further analysis of their data and metadata
+   * comparing, measuring and manipulating sets of trees (and associated data and metadata)
+
+Many phylogenetics users implement a customized interactive workflow that relies on diverse software tools.  Because these tools may use different formats, the ability to convert among formats is important.  However, convenient generalized tools are lacking (the <a href="http://www.nexml.org/manual">NeXML manual</a> provides a useful list of online servers and scripting approaches).  Likewise, there are many tools for viewing trees, but it seems that only a few allow for viewing trees together with a matrix of data (e.g., Archaeopteryx, Mesquite, Nexplore).  
+
+Support for adding or viewing metadata is very limited.  The Phenoscape project has a tool used for project-specific purposes of adding ontology-based phenotype annotations to comparative data (in NeXML format).  The TreeBASE submission server is an example of a tool that allows users to annotate data sets by associating OTUs with species names, and by associating data rows with accessions.  However, this tool only works in the context of a TreeBASE submission.  
+
+---+++ Current Practices 
+
+The analysis of citations by Kumar & Dudley (2007) suggests that the number of phylogeny publications in 2006 was 7000, and the rate of phylogeny publications is rapidly increasing.  Experts in phylogenetic analysis typically generate hundreds or thousands of trees for every tree that is published.  Thus, it is likely that, each year, many millions of trees are generated in association with published research. Yet only a subset is actually made available through publications and electronic media.  
+
+A systematic analysis of current practices for archiving and re-use of trees has not been performed for this draft report.  In early 2011 we intend to release a survey that will provide information on some aspects of current practices.  The main questions to address are: 
+
+   1. To what extent are trees being archived today?  What data and metadata are being archived? 
+      * Archiving at journal web sites may be the most common method
+      * [[http://www.treebase.org TreeBase]] is widely used in some sub-disciplines
+      * [[http://datadryad.org Dryad]], Morphobank, others?
+   1. What are the real or perceived barriers to archiving?  
+   1. To what extent are trees being re-used? 
+   1. What are the real or perceived barriers to re-use? 
+      * what makes a study suitable for re-use by a particular user? (which data and metadata must match user's criteria)
+      * if the re-usable study exists, would it be found easily? 
+      * if the re-usable study can be found, could it be accessed and interpreted easily?  
+
+---++ Conclusions: gaps and recommendations 
+   
+This report is tentative and incomplete.  However, we think it will be useful to suggest some conclusions and recommendations, subject to revision as we continue this project and expand our understanding. 
+
+---+++ Archiving 
+*Archives with the capacity to store thousands of new phylogenetic trees are available*.  TreeBASE and Dryad may serve as repositories to ensure that phylogenetic tree information associated with a publication is recoverable many years into the future.  These repositories represent quite different approaches to archiving.  Individual users may find one archive more suitable than the other.  
+
+*There is no common reporting standard governing the archiving of trees*  It is not clear what a phylogeny producer should include when archiving a tree.  In the absence of a developed MIAPA, there is no community standard of the minimal information for a phylogenetic analysis report.  Institutional policies are inconsistent, and lack specifics.  TreeBASE requires that a tree be accompanied by a data matrix, publication information, and an explicit methodological link from tree to matrix. 
+
+*The extent to which current policies require archiving of trees is unclear*.  The draft policy suggested recently by journals (Appendix 1) refers to "data supporting the results" of a publication.  The significance of this is unclear due to an ambiguity in the term "data".  Natural scientists traditionally use the term "data" in the _empirical_ sense, as a synonym for "facts", the empirical observations or measurements on which further analysis rests.  Phylogenies are not observational data.  Computer and information scientists use "data" (and in some sub-fields, even "facts") to refer to any kind of recorded information, regardless of its nature or derivation.  The NIH data sharing policy (see note 7 of [http://grants.nih.gov/grants/policy/nihgps/fnpart_ii.htm]) makes clear that NIH uses the _informational_ sense, not the _empirical_ one.  We recommend that institutions with data archiving policies be explicit about what they mean by "data". 
+
+Open questions: 
+   * to what extent will authors avoid archives, e.g., by choosing a publisher that does not require archiving? 
+   * how significant is the technical barrier posed by format translation (implied by the TreeBASE instructions) 
+
+---+++ Publishing re-usable or link-able data
+
+Currently the gap between needs and capacities is much greater for publishing re-usable trees than for the problem of archiving trees.  
+
+*The needs of archiving are not the same as those of publishing linkable, re-usable data*.  For instance, BEAST (Drummond, et al., 2007) users can support study replication by archiving, with their NEXUS output file, their BEAST XML input file, which includes the input data along with precise instructions for processing.  This is a perfectly adequate solution for archiving, and it provides strong support for study replication.  However, this approach to archiving does not go very far toward facilitating re-use, because the information in the BEAST XML file provides instructions that only BEAST can understand, and is not anchored by semantics defined in external vocabularies.  
+
+*A reporting standard for a phylogenetic analysis can only extend the re-usability of archived trees*.  As noted above, there is no standard governing archiving.  A minimal reporting standard for phylogenetic analysis has been suggested (see MIAPA, Appendix 1) but not drafted or approved.  Establishing such a standard is a critical step in promoting re-useable trees.  To develop a standard requires community organization as well as technological support (some guidance is provided by a [[http://evoinfo.nescent.org/MIAPA_WhitePaper MIAPA whitepaper]] from the NESCent EvoInfo working group).   
+
+*Other issues on which a conclusion might be possible in the final report*
+   1. Lack of resolvable LSIDs; lack of a validator to see if species refs are resolved 
+   1. Lack of formal language support (e.g., tree inferred_from_data matrix) 
+   1. Lack of community standards for some types of metadata 
+   1. Lack of education, awareness, of metadata standards 
+   1. Lack of tools (software support) for annotation 
+
+#AddComments
+---++ Please add your comments
+
+%COMMENT{type="above"}%
+
+---++ Author contribution and other acknowledgments
+
+   * We thank TDWG for its support for the 1-day workshop that launched this project in Woods Hole, MA.  
+   * DR and AS pitched the idea for the project to the TDWG phylogenetic standards interest group 
+   * Elena Herzog, TE, DR, AS, and JW participated in the TDWG workshop project October 2010 in Woods Hole, MA
+   * DR, AS and JW wrote the report 
+   * Bill Piel and  Todd Vision provided information on archive projects 
+   * Christian Zmasek and Rutger Vos provided information on file formats 
+   * Other people in the discussion thread? (jsw)
+
+---++ References 
+
+Burleigh, J. G., M. S. Bansal, et al. (2010). "Genome-Scale Phylogenetics: Inferring the Plant Tree of Life from 18,896 Gene Trees." Syst Biol.
+
+Han, M. V. and C. M. Zmasek (2009). "phyloXML: XML for evolutionary biology and comparative genomics." BMC Bioinformatics 10: 356.
+
+Kumar, S., and J. Dudley. 2007. Bioinformatics software for biologists in the genomics era. Bioinformatics 23:1713-1717.
+
+Lapp, H., S. Bala, J. P. Balhoff, A. Bouck, N. Goto, M. Holder, R. Hollan, A. Holloway, T. Katayama, P. O. Lewis, A. Mackey, B. I. Osborne, W. H. Piel, S. L. Kosakovsky Pond, A. Poon, W. G. Qiu, J. E. Stajich, A. Stoltzfus, T. Thierer, A. J. Vilella, R. Vos, C. M. Zmasek, D. Zwickl, and T. J. Vision. 2007. The 2006 NESCent Phyloinformatics Hackathon: A field report. Evolutionary Bioinformatics 3:357-366.
+
+Patterson, D. J., J. Cooper, P. M. Kirk, R. L. Pyle, and D. P. Remsen. 2010. Names are key to the big new biology. Trends Ecol Evol 25:686-691.
+
+Piel, W. H., M. J. Donoghue, and M. J. Sanderson. 2002. "TreeBASE: a database of phylogenetic knowledge." Pp. 41-47. In: Shimura, J., K. L. Wilson, and D. Gordon, eds. To the interoperable "Catalog of Life" with partners Species 2000 Asia Oceanea. Research Report from the National Institute for Environmental Studies No. 171, Tsukuba, Japan.
+
+Prosdocimi, F., B. Chisham, E. Pontelli, J. D. Thompson, and A. Stoltzfus. 2009. Initial Implementation of a Comparative Data Analysis Ontology. Evolutionary Bioinformatics 5:47-66.
+
+Sidlauskas, B., G. Ganapathy, E. Hazkani-Covo, K. P. Jenkins, H. Lapp, L. W. McCall, S. Price, R. Scherle, P. A. Spaeth, and D. M. Kidd. 2010. Linking big: the continuing promise of evolutionary synthesis. Evolution 64:871-880.	
+
+---+ Appendices
+---++ Appendix 1.  Relevant Standards 
+
+---+++ Data sharing and archiving policies
+*(not done)* 
+For general information on data sharing policies in the US, see the wikipedia [[http://en.wikipedia.org/wiki/Data_sharing data sharing]] article, or NIH's [[http://grants.nih.gov/grants/policy/data_sharing/ data sharing web site]].   Authors of scientific studies often are required (as a condition of funding or of publication) to make data available to the research community without restriction.
+
+Add something on Scientific Data Management for Government Agencies working group. (jsw)
+
+---++++ Evolution and Systematics Journals 
+*(done)*
+[[http://www.treebase.org TreeBASE]] as an [[http://www.treebase.org/treebase-web/journal.html online list]] of 19 journals that require or recommend submission of trees to TreeBASE as a condition of publication (_Evolution_, _Evolutionary Applications_, _Fungal Biology_, _Invertebrate Systematics_, _Mycologia_, _Mycologial Progress_, _Mycologial Research_, _Mycoscience_, _Mycosphere_, _Organisms, Diversity, and Evolution_, _Persoonia_, _Phytopahology_, _Plant Disease_, _Rhodora_, _Muelleria_, _Studies in Mycology_, _Systematic Biology_, _Systematic Botany_, _Tropical Bryology_). 
+
+The [[http://www.datadryad.org  Dryad]] web site describes the Joint Data Archiving Policy as follows: 
+<blockquote>
+&lt; &lt; Journal &gt; &gt; requires, as a condition for publication, that data supporting the results in the paper should be archived in an appropriate public archive, such as &lt; &lt; list of approved archives here  &gt; &gt;. Data are important products of the scientific enterprise, and they should be preserved and usable for decades in the future. Authors may elect to have the data publicly available at time of publication, or, if the technology of the archive allows, may opt to embargo access to the data for a period up to a year after publication. Exceptions may be granted at the discretion of the editor, especially for sensitive information such as human subject data or the location of endangered species.
+</blockquote>
+And lists the following partner journals (for links, go to the [[http://www.datadryad.org  Dryad]] web site): 
+   * Whitlock, M. C., M. A. McPeek, M. D. Rausher, L. Rieseberg, and A. J. Moore. 2010. Data Archiving. American Naturalist. 175(2):145-146, doi:10.1086/650340
+   * Rieseberg, L., T. Vines, and N. Kane. 2010. Editorial and retrospective 2010. Molecular Ecology. 19(1):1-22, doi:10.1111/j.1365-294X.2009.04450.x
+   * Rausher, M. D., M. A. McPeek, A. J. Moore, L. Rieseberg, and M. C. Whitlock. 2010. Data Archiving. Evolution. doi:10.1111/j.1558-5646.2009.00940.x
+   * Moore, A. J., M. A. McPeek, M. D. Rausher, L. Rieseberg, and M. C. Whitlock. 2010. The need for archiving data in evolutionary biology. Journal of Evolutionary Biology 2010. doi:10.1111/j.1420-9101.2010.01937.x
+   * Uyenoyama, M. K. 2010. MBE editor's report. Molecular Biology and Evolution. 27(3):742-743. doi:10.1093/molbev/msp229
+   * Butlin, R. 2010. Data archiving. Heredity advance online publication. 28 April doi:10.1038/hdy.2010.43
+   * Tseng, M. and L. Bernatchez. 2010. Editorial: 2009 in review. Evolutionary Applications. 3(2):93-95, doi:10.1111/j.1752-4571.2010.00122.x
+---++++ National Science Foundation (NSF)
+<blockquote>
+Beginning January 18, 2011, proposals submitted to NSF must include a supplementary document of no more than two pages labeled &#8220;Data Management Plan&#8221;. This supplementary document should describe how the proposal will conform to NSF policy on the dissemination and sharing of research results. See Grant Proposal Guide (GPG) Chapter II.C.2.j for full policy implementation.
+</blockquote>
+The policy may be found in the Award and Administration Guide (AAG), [[http://www.nsf.gov/pubs/policydocs/pappguide/nsf11001/aag_6.jsp#VID4 section VI.D.4.b]]: 
+<blockquote>
+b.	Investigators are expected to share with other researchers, at no more than incremental cost and within a reasonable time, the primary data, samples, physical collections and other supporting materials created or gathered in the course of work under NSF grants. Grantees are expected to encourage and facilitate such sharing. 
+</blockquote>
+
+The Grant Proposal Guide, [[http://www.nsf.gov/pubs/policydocs/pappguide/nsf11001/gpg_2.jsp#IIC2j Section II.C.2.j]], reads partially as follows: 
+<blockquote>
+Plans for data management and sharing of the products of research. Proposals must include a supplementary document of no more than two pages labeled &#8220;Data Management Plan&#8221;. This supplement should describe how the proposal will conform to NSF policy on the dissemination and sharing of research results (see AAG Chapter VI.D.4), and may include:
+<ul>
+<li>the types of data, samples, physical collections, software, curriculum materials, and other materials to be produced in the course of the project;
+<li>the standards to be used for data and metadata format and content (where existing standards are absent or deemed inadequate, this should be documented along with any proposed solutions or remedies);
+<li>policies for access and sharing including provisions for appropriate protection of privacy, confidentiality, security, intellectual property, or other rights or requirements;
+<li>policies and provisions for re-use, re-distribution, and the production of derivatives; and plans for archiving data, samples, and other research products, and for preservation of access to them.
+</ul>
+Data management requirements and plans specific to the Directorate, Office, Division, Program, or other NSF unit, relevant to a proposal are available at: http://www.nsf.gov/bfa/dias/policy/dmp.jsp. If guidance specific to the program is not available, then the requirements established in this section apply.
+</blockquote>
+
+---+++ Dublin Core 
+*(not done)*
+there isn't a standard for encoding Dublin Core (Dc) publication data in XML.  In particular, there isn't an enclosing element.  In NeXML it would be "meta".  DC isn't very well suited to journal articles, anyway.  The best attempt I've seen (http://reprog.wordpress.com/2010/09/03/bibliographic-data-part-2-dublin-cores-dirty-little-secret/) goes like this: 
+
+<verbatim>
+<mikesMadeUpNamespace:article xmlns:dc=&#8221;http://purl.org/dc/elements/1.1/&#8221; xmlns:dcterms=&#8221;http://purl.org/dc/terms/ xmlns:mikesMadeUpNamespace=&#8221;whatever&#8221;>
+    <dc:creator>Michael P. Taylor</dc:creator>
+    <dc:creator>Darren Naish</dc:creator>
+    <dcterms:issued>2007</dcterms:issued>
+    <dc:title>An unusual new neosauropod dinosaur from the Lower Cretaceous Hastings Beds Group of East Sussex, England.</dc:title>
+    <dcterms:isPartOf>urn:ISSN:0081-0239</dcterms:isPartOf>
+    <dc:publisher>Blackwell</dc:publisher>
+    <dc:type xxx=&#8221;http://purl.org/dc/terms/DCMIType&#8221;>Text</dc:type>
+    <dcterms:bibliographicCitation>Palaeontology 50(6), 1547-1564. (2007)</dcterms:bibliographicCitation>
+    <dc:identifier>info:doi:10.1111/j.1475-4983.2007.00728.x</dc:identifier>
+</mikesMadeUpNamespace:article>
+</verbatim>
+
+---+++ Darwin Core and TDWG
+From the [[http://rs.tdwg.org/dwc/terms/guides/xml/index.htm Darwin Core XML Guide]] (specify namespace with xmlns:dwc="http://rs.tdwg.org/dwc/terms/"):
+  
+<verbatim>
+    <dwc:Taxon>
+      <dwc:scientificName>Anthus hellmayri</dwc:scientificName>
+      <dwc:class>Aves</dwc:class>
+      <dwc:genus>Anthus</dwc:genus>
+      <dwc:specificEpithet>hellmayri</dwc:specificEpithet>
+      <dwc:occurrenceID>urn:catalog:AUDCLO:EBIRD:OBS64515331</dwc:occurrenceID>
+    </dwc:Taxon>
+</verbatim>
+
+---++ Appendix 2: Sample data set rendered in different formats 
+
+To illustrate the representation capabilities (and limitations) of different formats we have developed a set of test files: 
+
+   * [[%ATTACHURL%/PF00034_4.nwk][PF00034_4.nwk]]: 4-taxon test case in Newick format
+   * [[%ATTACHURL%/PF00034_4.nhx][PF00034_4.nhx]]: 4-taxon test case in NHX format
+   * [[%ATTACHURL%/PF00034_4.nex][PF00034_4.nex]]: 4-taxon test case in NEXUS format
+   * [[%ATTACHURL%/PF00034_4_phylo.xml][PF00034_4_phylo.xml]]: 4-taxon test case in [[http://www.phyloxml.org phyloXML]] format
+   * [[%ATTACHURL%/PF00034_4_nexml.xml][PF00034_4_nexml.xml]]: 4-taxon test case in [[http://www.nexml.org NeXML]] format
+
+Each file represents the same token set of data and (as allowed) metadata from cytochrome C sequences (PFAM family PF00034).  The tree for this gene family  
+<verbatim>
+((Mus_musculus_CAA25899.1:0.008307,Rattus_norvegicus_AAA21711.1:0.009662):0.024280[0.74],
+(Gallus_gallus_CAA25046.1:0.055226,Rattus_norvegicus_AAA41015.1:0.117358):0.040335[0.69]);
+</verbatim>
+is is a molecular gene tree, not a species tree, as shown by the two different OTUs from the same rat species.  The data and metadata are drawn from the following table: 
+|*Label*|*Species*|*NCBI taxid*|*LSID*|*Accn*|*Sequence data*|
+|Mus_musculus_CAA25899.1|Mus musculus|10090|http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:2481174|CAA25899.1|MGDVEKGKKIFVQKCAQCHT|
+|Rattus_norvegicus_AAA41015.1|Rattus norvegicus|10116|http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:2481343|AAA41015.1|MGDAEAGKKIFIQKCAQCHT|
+|Gallus_gallus_CAA25046.1|Gallus gallus|9031|http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:3854553|CAA25046.1|MGDIEKGKKIFVQKCSQCHT|
+|Rattus_norvegicus_AAA21711.1|Rattus norvegicus|10116|http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:2481343|AAA21711.1|MGDVEKGKKIFVQKCAQCHT|
+---+++ Newick
+*Capabilities*:
+   * tree topology, branch lengths, OTU labels
+   * labels on internal nodes, as in ((rat, mouse)rodent,(gorilla,human)primate) 
+   * multiple trees in one file (terminate with semi-colon and end-of-line)
+   * by convention, bootstraps confidence values in square brackets
+*Limitations*: 
+   * no formal syntax or semantics, only a conventional understanding
+   * not extensible to allow character data, accessions, coordinates, or taxon ids (except as labels)
+*File content*
+<verbatim>
+((Mus_musculus_CAA25899.1:0.008307,Rattus_norvegicus_AAA21711.1:0.009662)0.024280[0.74],
+(Gallus_gallus_CAA25046.1:0.055226,Rattus_norvegicus_AAA41015.1:0.117358)0.040335[0.69]);
+</verbatim>
+---+++ NHX (New Hampshire Extended)
+*Capabilities* in addition to what Newick allows:
+   * tag designated for species name (but parsers don't expect spaces)
+   * tag designated for NCBI-style taxid (but not LSID-like identifier with punctuation) 
+   * tag designated for accession (but not fully documented in format standard)
+   * tag designated for sequence (but not fully documented in format standard)
+   * unassigned tag designated for user-defined uses
+*Limitations*: 
+   * no formal syntax or semantics, only a limited format description 
+   * all tree-linked info must be embedded in the tree (no refs)
+   * not actively or openly developed; deprecated by developer (C. Zmasek) in favor of phyloXML
+
+*File content*
+<verbatim>
+((Mus_musculus_CAA25899.1:0.008307[&&NHX:S=Mus_musculus:AC=CAA25899.1:T=10090:
+XN=protein=NCBI=MGDVEKGKKIFVQKCAQCHT],Rattus_norvegicus_AAA21711.1:
+0.009662[&&NHX:S=Rattus_norvegicus:T=10116:AC=AAA21711.1:
+XN=protein=NCBI=MGDVEKGKKIFVQKCAQCHT]):0.024280[&&NHX:B=0.74],(Gallus_gallus_CAA25046.1:
+0.055226[&&NHX:S=Gallus_gallus:T=9031:AC=CAA25046.1:XN=protein=NCBI=MGDIEKGKKIFVQKCSQCHT],
+Rattus_norvegicus_AAA41015.1:0.117358[&&NHX:S=Rattus_norvegicus:T=10116:AC=AAA41015.1:
+XN=protein=NCBI=MGDAEAGKKIFIQKCAQCHT]):0.040335[&&NHX:B=0.69]);
+</verbatim>
+This view of NHX file PF00034_4.nhx was made with Archaepteryx using the "species name" view option: <br />
+     <img src="%ATTACHURLPATH%/PF00034_4.jpg" alt="PF00034_4.jpg" width='618' border='1' height='206' />
+
+---+++ NEXUS 
+*Capabilities* in addition to what Newick allows:
+   * trees can be named and assigned weights
+   * extensive capacity to represent molecular or morphological character data
+   * arbitrary notes can be assigned to OTUs, characters, states in NOTES block
+   * extensible by means of user-defined blocks and commands 
+   * extensive format description (Maddison, et al., 1997)
+*Limitations*: 
+   * no formal syntax or semantics
+   * no designated commands to denote species names, accessions or coordinates 
+   * conflicting interpretations in the user community
+*File content* with species names as comments (interspersed with taxlabels) and LSIDs embedded in the NOTES block:
+<verbatim>
+#NEXUS
+BEGIN TAXA;
+    DIMENSIONS ntax=4;
+    TAXLABELS  Mus_musculus_CAA25899.1 [Mus musculus] Rattus_norvegicus_AAA21711.1 [Rattus norvegicus]  Gallus_gallus_CAA25046.1 [Gallus gallus] Rattus_norvegicus_AAA41015.1 [Rattus norvegicus];
+END;
+BEGIN CHARACTERS;
+    DIMENSIONS nchar=20;
+    FORMAT datatype=protein gap=- missing=?;
+    MATRIX
+    Mus_musculus_CAA25899.1    MGDVEKGKKIFVQKCAQCHT
+    Rattus_norvegicus_AAA41015.1    MGDAEAGKKIFIQKCAQCHT
+    Gallus_gallus_CAA25046.1    MGDIEKGKKIFVQKCSQCHT
+    Rattus_norvegicus_AAA21711.1    MGDVEKGKKIFVQKCAQCHT;
+END;
+BEGIN TREES;
+    TREE con_50_majrule = ((Mus_musculus_CAA25899.1:0.008307,Rattus_norvegicus_AAA21711.1:0.009662):0.024280[0.74],(Gallus_gallus_CAA25046.1:0.055226,Rattus_norvegicus_AAA41015.1:0.117358):0.040335[0.69]);
+END;
+BEGIN NOTES; 
+    text taxon=Mus_musculus_CAA25899.1 text='http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:2481174'
+    text taxon=Rattus_norvegicus_AAA41015.1 text='http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:2481343'
+    text taxon=Gallus_gallus_CAA25046.1 text='http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:3854553'
+    text taxon=Rattus_norvegicus_AAA21711.1 text='http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:2481343'
+END; 
+</verbatim>
+Nexplorer-generated view of NEXUS file PF00034_4.nex: <br />
+     <img src="%ATTACHURLPATH%/nexplorer_view.jpg" alt="nexplorer_view.jpg" border='2' width='676' height='127' />
+
+---+++ PhyloXML
+*Capabilities* in addition to what Newick allows:
+   * published format description ([[http://www.biomedcentral.com/1471-2105/10/356/ Han and Zmasek]])
+   * formal syntax as defined in XSD schema  
+   * tags designated for accession numbers
+   * tags for geographic coordinates
+   * tags designated for species identifiers with a named authority
+   * tags designated for sequence data
+   * extensible via &lt;property&gt; tag reserved for user-defined properties
+*Limitations*: 
+   * schema focuses on molecular evolution use-cases, doesn't cover other character data
+   * lack of idrefs leads to need to duplicate literals, prevents normalization 
+
+The snippet below shows a terminal branch with explicitly tagged data and metadata
+<verbatim>
+      <clade>
+        <branch_length>0.055226</branch_length>
+        <taxonomy>
+          <id provider="UBio">http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:3854553</id>
+          <scientific_name>Gallus gallus</scientific_name>
+        </taxonomy>
+        <sequence>
+          <accession source="NCBI">CAA25046.1</accession>
+          <name>Gallus_gallus_CAA25046.1</name>
+          <mol_seq>MGDIEKGKKIFVQKCSQCHT</mol_seq>
+        </sequence>
+      </clade>
+</verbatim>
+As described (http://www.phyloxml.org/documentation/version_1.10/phyloxml.xsd.html#h-979596407), geographic coordinates also can be represented (example provided by Christian Zmasek):
+<verbatim>
+<clade>
+ <name>a clade with a distribution</name>
+ <distribution>
+   <desc>San Diego</desc>
+   <point geodetic_datum="WGS84" alt_unit="m">
+     <lat>32.880933</lat>
+     <long>-117.217543</long>
+     <alt>104</alt>
+   </point>
+ </distribution>
+</clade>
+</verbatim>
+---+++ NeXML
+*Capabilities* in addition to what Newick allows:
+   * formal syntax as defined in XSD schema 
+   * designed with extensive capabilities for representing character data of various types
+   * extensible via &lt;meta&gt; tag intended for external vocabularies such as
+      * DarwinCore taxon concepts
+      * DarwinCore geographic coordinates
+      * dublin core publication data 
+*Limitations*: 
+   * format description is not published
+The snippet below shows &lt;meta&gt;-tagged information associated with an OTU via external vocabularies
+<verbatim>
+    <otu id="otu4" label="Gallus_gallus_CAA25046.1">
+        <meta href="http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:3854553" id="meta5" rel="skos:closeMatch" xsi:type="nex:ResourceMeta"/>
+        <meta content="Gallus gallus" datatype="xsd:string" id="meta6" property="skos:altLabel" xsi:type="nex:LiteralMeta"/>
+    </otu>
+</verbatim>
+If we want to put accessions in here, we have to decide what property to use.  Other than that, its not a problem: 
+<verbatim>
+<row id="row7" label="Mus_musculus_CAA25899.1" otu="otu2">
+        <meta content="CAA25899.1" datatype="xsd:string" id="meta1" property="???" xsi:type="nex:LiteralMeta"/>
+        <seq>MGDVEKGKKIFVQKCAQCHT</seq>
+</row>
+</verbatim>
+Its also possible to put in study identifiers and citation data, as in the following TreeBASE example (which you can retrieve via [[http://treebase.org/treebase-web/search/downloadAStudy.html?id=112&format=nexml its phyloWS URL]]): 
+<verbatim>
+<nex:nexml about="#nex_nexml94" generator="org.nexml.model.impl.DocumentImpl" version="0.8" xml:base="http://purl.org/phylo/treebase/phylows/">
+     <meta content="190" datatype="xsd:string" id="meta109" property="prism:volume" xsi:type="nex:LiteralMeta"/>
+     <meta content="Plant Systematics and Evolution" datatype="xsd:string" id="meta108" property="dc:publisher" xsi:type="nex:LiteralMeta"/>
+     <meta content="Plant Systematics and Evolution" datatype="xsd:string" id="meta107" property="prism:publicationName" xsi:type="nex:LiteralMeta"/>
+     <meta content="31-47" datatype="xsd:string" id="meta106" property="prism:pageRange" xsi:type="nex:LiteralMeta"/>
+     <meta content="47" datatype="xsd:string" id="meta105" property="prism:endingPage" xsi:type="nex:LiteralMeta"/>
+     <meta content="31" datatype="xsd:string" id="meta104" property="prism:startingPage" xsi:type="nex:LiteralMeta"/>
+     <meta content="1994" datatype="xsd:string" id="meta103" property="prism:publicationDate" xsi:type="nex:LiteralMeta"/>
+     <meta content="Eriksson R." datatype="xsd:string" id="meta102" property="dc:contributor" xsi:type="nex:LiteralMeta"/>
+     <meta content="Eriksson R." datatype="xsd:string" id="meta101" property="dc:creator" xsi:type="nex:LiteralMeta"/>
+     <meta content="Phylogeny of Cyclanthaceae." datatype="xsd:string" id="meta100" property="dc:title" xsi:type="nex:LiteralMeta"/>
+     <meta content="Eriksson R. 1994. Phylogeny of Cyclanthaceae. Plant Systematics and Evolution, 190: 31-47." datatype="xsd:string" id="meta99" property="dcterms:bibliographicCitation" xsi:type="nex:LiteralMeta"/>
+     <meta content="1995-11-05" datatype="xsd:string" id="meta98" property="prism:creationDate" xsi:type="nex:LiteralMeta"/>
+     <meta content="S11x5x95c18c34c59" datatype="xsd:string" id="meta97" property="tb:identifier.study.tb1" xsi:type="nex:LiteralMeta"/>
+     <meta content="112" datatype="xsd:string" id="meta96" property="tb:identifier.study" xsi:type="nex:LiteralMeta"/>
+     <meta content="Study" datatype="xsd:string" id="meta95" property="prism:section" xsi:type="nex:LiteralMeta"/>
+     <meta href="study/TB2:S112" id="meta93" rel="owl:sameAs" xsi:type="nex:ResourceMeta"/>
+</verbatim>
+
+---+++ CDAO RDF/XML
+not done
+
+---++ Appendix 3: Archives
+
+---+++ Dryad 
+[http://www.datadryad.org Dryad] is a new project (established in 2009) to support data archiving for evolutionary research.  The organizers of this project worked with publishers to generate agreement on the provisional data archiving policy noted above.  The archive will accept text files and spreadsheet files in standard formats.  Thus, users could submit a phylogenetic tree in any of the formats noted above.  Whereas TreeBASE has a complex internal data model, with each submitted datum being assigned to some slot in the data model, Dryad will accept all sorts of textual information.  To allow for query and retrieval, Dryad will index all of this information as text.  
+
+---++++ Uploading data to [[http://www.youtube.com/watch?v=RP33cl8tL28 Dryad]]
+
+
+---++++ Results of using the [[http://www.datadryad.org Dryad]] submission process
+
+---++++Further information on Dryad 
+Communicated by Todd Vision of the Dryad project:
+<blockquote>
+Dryad is a general-purpose repository. It doesn't impose constraints on how data are represented within the files that users submit.  The best practices need to come from elsewhere, such as journal policies, MIAPA, and community practice imposed by awareness of how the data will be reused by more specialized phylogenetic tools. 
+
+Dryad just introduced a "handshaking" feature for TreeBASE.  Users can elect to have a NEXUS file that is deposited to Dryad "pushed through" to TreeBASE to initiate the submission process there.  So for the special case of phylogenetic data in Dryad, we would encourage having that Newick tree within a NEXUS file, together with the OTU metadata that can fit within that file format.   I dream of a future in which lots of different software tools will support the editing and output of metadata-rich phylogenies in NeXML, and that TreeBASE can ingest those NeXML files.  But we aren't there yet.
+
+If a user doesn't intend to use TreeBASE for whatever reason, then a Newick tree in one file and OTU metadata in a separate CSV file would be a reasonable low-tech solution, as long as the OTU identifiers were consistent between the files.  A ReadMe file could also be used to provide study-level metadata.
+</blockquote>
+
+---+++ TreeBASE
+TreeBASE is a repository for trees that has been in operation for many (how many? jsw) years.  In the past few years, the schema was redesigned, and there have been numerous upgrades to the user interface, including a sophisticated submission process and a web services API to retrieve results via a URL.  
+
+---++++ Uploading a tree to [[http://www.treebase.org TreeBase]]
+The TreeBASE website provides detailed instructions for submitting data.  We obtained further information in a teleconference (9/29/10) with Bill Piel, who described the process as follows: 
+
+   1. Use Mesquite to prepare document before uploading to [[http://www.treebase.org TreeBase]]
+      * Why?  Because 1) TreeBASE and Mesquite use the same Java API for parsing NEXUS; and 2) this API is a relatively complete and robust implementation of the standard
+   1. In Mesquite, best to combine matrix and tree in the same file to ensure matching names
+   1. Ensure taxon names are written out in full as binomial or trinomial
+      * If there are infraspecies, just write the triplet without &#8216;var&#8217;, &#8216;subsp&#8217; etc
+      * What if there are multiple specimens for the same taxon?  Each name must be unique, so make sure the specimen ID etc, is a suffix formatted with a leading capital or a number so [[http://www.treebase.org TreeBase]] won&#8217;t treat it as a new taxon name
+   1. After upload, click on yellow taxon button.  Then click &lt;validate taxon labels&gt;.  Tree base tries to match up labels with existing taxon names.  If not, checks uBio.  If name may be a homonym &#8211; will be asked to choose which taxon map link to.  NCBI handles the homonyms. [[http://www.treebase.org TreeBase]] will link to taxon names to a GenBank taxid if possible.
+   1. Create an analysis record to link the matrices to the trees.
+   1. Linking to specimen IDs (e.g., genbank accession) is done by setting attributes of rows in the matrix:
+      1. After uploading matrix click &lt;download rowsegment template&gt;.  There is a list of row labels to populate.  You can enter Darwin Core information about the specimen.
+      1. There is a bug here: if some rows are populated for a given column, all rows must be populated for that column.  There is an error if left blank.  To work around this bug, just put something there, such as a dash ("-"). 
+      1. You could apply this metadata to just a part of the alignment
+
+See below for notes on how much of this metadata is included in [[http://www.nexml.org NeXML]] output.  Currently there is no way to attach metadata to the tree nodes individually. 
+
+---++++ Results of using the [[http://www.treebase.org TreeBase]] submission process
+
+To assess the TreeBase submission process, we uploaded files with OTU labels that contain species names.  These were recognized >90% of the time by TB once the "validate taxon labels" button is pressed (which prompts the question of why TB doesn't suggest these automatically and simply ask the user to confirm.  One of us used the "row segment table" interface to annotate a submission with GenBank accessions.  
+
+One of us (AS) worked with Dr. Martin Wu to submit data from a largely, recently published analysis of prokaryotic phylogeny (Wu, et al., 2010).  The data consist of a 720-taxon tree, a 6309-column alignment, and metadata (citation data, analysis methods) added interactively during the submission process.  Prior to submission, AS spent several hours to generate matching labels so that the separate alignment and tree files (initially with non-matching names) could be combined in Mesquite or Bio::NEXUS.  This is a common stumbling block in phylogenetics workflows.  Dr. Wu spent an hour on the submission process itself, though this stretched out over several weeks while a syntax issue due to differing interpretations of NEXUS was resolved via email, with help from Dr. Piel (initially, we encoded names as 'Genus_species_strain', based on the equivalence of spaces and underscores in NEXUS names; however, protecting the underscores within a single-quoted phrase prevented them from being treated as spaces by the TreeBASE NEXUS parser).  When this minor syntax issue was resolved, TreeBASE automatically matched all 720 OTU names to qualified species names.  The report was submitted and now appears as TreeBASE study [[http://www.treebase.org/treebase-web/search/study/summary.html?id=10965 10965]].  Before submitting to TreeBASE, Dr. Wu had been contacted with requests for the data 3 times in the 11 months since the paper was published.  Dr. Wu reports that making the submission to TreeBASE was "definitely worth it". 
+
+The following [[http://www.treebase.org TreeBase]] screenshot (cropped) shows how a user may assign a UBio Id to an OTU (and it also shows that _TreeBase correctly guesses the actual species_): <br />
+     <img src="%ATTACHURLPATH%/tb2_taxlabel_editor_screenshot.jpg" alt="tb2_taxlabel_editor_screenshot.jpg" border='1' width='706' height='239' />
+
+The following [[http://www.treebase.org TreeBase]] screenshot (cropped) shows a taxon table with match-able names.  The 3 lower rows show OTUs whose names were auto-matched already.  Pressing the "Validate taxon labels" button will automatically apply the results of name-matching, which in this case gives  the correct attributions: <br />
+     <img src="%ATTACHURLPATH%/tb_taxa_table_screenshot.jpg" alt="tb_taxa_table_screenshot.jpg" border='1' width='749' height='486' />
+
+---++++ Examples of metadata in NeXML output 
+
+Not all of the metadata stored internally at TreeBase is exported in standard exchange formats.  However, some of these metadata are exportable in NeXML.  For example, look at this:
+
+http://purl.org/phylo/treebase/phylows/matrix/TB2:M5212?format=nexml
+
+which shows geographic coordinates and taxon identifiers, like this:
+
+<verbatim>
+<otu about="#otu83424" id="otu83424" label="Engystomops pustulosus VERC">
+         <meta content="-96.43" datatype="xsd:double" id="meta84310" property="DwC:DecimalLongitude" xsi:type="nex:LiteralMeta"/>
+         <meta content="19.73" datatype="xsd:double" id="meta84309" property="DwC:DecimalLatitude" xsi:type="nex:LiteralMeta"/>
+         <meta content="113446" datatype="xsd:integer" id="meta83431" property="tb:identifier.taxonVariant.tb1" xsi:type="nex:LiteralMeta"/>
+         <meta content="22147" datatype="xsd:integer" id="meta83430" property="tb:identifier.taxon.tb1" xsi:type="nex:LiteralMeta"/>
+         <meta href="http://purl.uniprot.org/taxonomy/76066" id="meta83429" rel="skos:closeMatch" xsi:type="nex:ResourceMeta"/>
+         <meta content="Engystomops pustulosus" datatype="xsd:string" id="meta83428" property="skos:altLabel" xsi:type="nex:LiteralMeta"/>
+         <meta href="http://www.ubio.org/authority/metadata.php?lsid=urn:lsid:ubio.org:namebank:5957127" id="meta83427" rel="skos:closeMatch" xsi:type="nex:ResourceMeta"/>
+         <meta href="study/TB2:S10423" id="meta83426" rel="rdfs:isDefinedBy" xsi:type="nex:ResourceMeta"/>
+         <meta href="taxon/TB2:Tl288633" id="meta83425" rel="owl:sameAs" xsi:type="nex:ResourceMeta"/>
+</otu>
+</verbatim>
+
+Unfortunately the Genbank Accession numbers are not yet included, pending a decision (by the TreeBASE and NeXML developers) on how to represent these.
+
+---++ Appendix 4: Survey and user feedback.
+Release of the initial report will be coordinated with release of a survey ([[https://spreadsheets.google.com/viewform?formkey=dHhZa0xMQTJuR0ZCZWxoV2JSTG13b2c6MQ preliminary draft]]) developed by the MIAPA group.  Planning for the survey is described here: 
+
+  http://www.evoio.org/wiki/MIAPA_Survey
+
+The survey is a Google spreadsheet with a web-form interface.  Users respond to the form, and their responses are entered automatically into the spreadsheet.  The MIAPA survey team will test, revise, and deploy the survey.  The survey team will analyze the results of the survey and followup on queries from respondents.  
+
+-- Main.ArlinStoltzfus - 28 Oct 2010
+
+%META:FILEATTACHMENT{name="tb2_taxlabel_editor_screenshot.jpg" attachment="tb2_taxlabel_editor_screenshot.jpg" attr="" comment="TreeBase2 screenshot (cropped) showing how to assign a UBio Id to an OTU" date="1285946754" path="tb2_taxlabel_editor_screenshot.jpg" size="56373" stream="tb2_taxlabel_editor_screenshot.jpg" user="Main.ArlinStoltzfus" version="2"}%
+%META:FILEATTACHMENT{name="tb_taxa_table_screenshot.jpg" attachment="tb_taxa_table_screenshot.jpg" attr="" comment="TreeBase2 screenshot (cropped) showing taxon table with match-able names" date="1285944819" path="tb_taxa_table_screenshot.jpg" size="147585" stream="tb_taxa_table_screenshot.jpg" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="nexplorer_view.jpg" attachment="nexplorer_view.jpg" attr="" comment="Nexplorer-generated view of NEXUS file PF00034_4.nex" date="1285944984" path="nexplorer_view.jpg" size="63077" stream="nexplorer_view.jpg" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="PF00034_4.jpg" attachment="PF00034_4.jpg" attr="" comment="Archaeopteryx-generated view of NHX file PF00034_4.nhx" date="1285945026" path="PF00034_4.jpg" size="8131" stream="PF00034_4.jpg" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="PF00034_4.nwk" attachment="PF00034_4.nwk" attr="" comment="4-taxon test case in Newick format" date="1286220953" path="PF00034_4.nwk" size="177" stream="PF00034_4.nwk" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="PF00034_4.nhx" attachment="PF00034_4.nhx" attr="" comment="4-taxon test case in NHX format" date="1286220969" path="PF00034_4.nhx" size="529" stream="PF00034_4.nhx" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="PF00034_4.nex" attachment="PF00034_4.nex" attr="" comment="4-taxon test case in NEXUS format" date="1286291359" path="PF00034_4.nex" size="1283" stream="PF00034_4.nex" user="Main.ArlinStoltzfus" version="2"}%
+%META:FILEATTACHMENT{name="PF00034_4_phylo.xml" attachment="PF00034_4_phylo.xml" attr="" comment="4-taxon test case in phyloxml format" date="1286221008" path="PF00034_4_phylo.xml" size="2517" stream="PF00034_4_phylo.xml" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="PF00034_4_nexml.xml" attachment="PF00034_4_nexml.xml" attr="" comment="4-taxon test case in nexml format" date="1286293534" path="PF00034_4_nexml.xml" size="10675" stream="PF00034_4_nexml.xml" user="Main.ArlinStoltzfus" version="2"}%
+%META:FILEATTACHMENT{name="Matrix.xls" attachment="Matrix.xls" attr="h" comment="" date="1295324981" path="Matrix.xls" size="26624" stream="Matrix.xls" user="Main.JamieW" version="1"}%
+%META:FILEATTACHMENT{name="Matrix_Capabilities.png" attachment="Matrix_Capabilities.png" attr="" comment="Capabilities Matrix" date="1295326233" path="Matrix_Capabilities.png" size="51901" stream="Matrix_Capabilities.png" user="Main.JamieW" version="1"}%
+%META:FILEATTACHMENT{name="Matrix_Limitations.png" attachment="Matrix_Limitations.png" attr="" comment="" date="1295327188" path="Matrix_Limitations.png" size="31607" stream="Matrix_Limitations.png" user="Main.JamieW" version="2"}%
+%META:FILEATTACHMENT{name="Capabilities_Limitations_Matrix.xls" attachment="Capabilities_Limitations_Matrix.xls" attr="" comment="" date="1295327342" path="Capabilities_Limitations_Matrix.xls" size="20992" stream="Capabilities_Limitations_Matrix.xls" user="Main.JamieW" version="1"}%
+%META:FILEATTACHMENT{name="example.jpg" attachment="example.jpg" attr="" comment="Image of an uninformative tree" date="1295634935" path="example.jpg" size="4435" stream="example.jpg" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="phylo_file_format_comparison.gif" attachment="phylo_file_format_comparison.gif" attr="" comment="Image of table comparing file format features" date="1295901298" path="phylo_file_format_comparison.gif" size="43911" stream="phylo_file_format_comparison.gif" user="Main.ArlinStoltzfus" version="1"}%
+%META:FILEATTACHMENT{name="phylo_file_format_comparison.xls" attachment="phylo_file_format_comparison.xls" attr="" comment="Table comparing file format features (Excel)" date="1295901322" path="phylo_file_format_comparison.xls" size="17408" stream="phylo_file_format_comparison.xls" user="Main.ArlinStoltzfus" version="1"}%

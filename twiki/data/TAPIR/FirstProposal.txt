@@ -1,0 +1,22 @@
+---+ First proposal: The XQuery alternative
+
+*General strategy:*
+
+To adopt the XqueryLanguage as a substitute for the current way of filtering and specifying the resulting record structure.
+
+*Details:*
+XQuery is part of a new generation of query languages and it aims at being far more generic than the existing options (SQL for instance). Statements can be expressed in order to act across different data sources at the same time, including structured and semi-structured documents, relational databases, object repositories, or even web services (http://www.w3.org/TR/xquery-use-cases/). XQuery could be used not only on search and update operations, but also on transformation and re-structruring of data being retrieved.
+
+In a network of distributed and heterogeneous databases, a possible way to use XQuery would be to write statements based on the data structure of a federated schema. Since each data provider would have mapped its local database against the same federated schema, those statements could be translated according to the local data structure by a wrapper software. Due to the richness and complexity of XQuery, it would be too costly to write complete parsers for it. So instead of having such a parser in the wrapper, the wrapper could pass on the translated queries to a local XML server or middleware software capable of dealing with XQuery statements to be processed.
+
+There could be an interface for advanced users to write their own XQuery statements, but also other simplified interfaces which should be able to automatically generate at least the most used and required types of XQuery statements.
+
+However, one of the consequences of XQuery's flexibility is that it remains unclear how data providers could restrict the ammount of data to be returned in a single response. This issue would also affect paging capabilities. Both features (limiting the number of records and paging) are present and considered important in the DiGIR protocol.
+
+The current XQuery specification version, although considered stable, is still in the stage of a working draft, and there are only a few implementations of it. Presently, most part of the available XML servers, and XML middleware tools are proprietary software (http://www.rpbourret.com/xml/ProdsMiddleware.htm), and not all of them support the complete XQuery specification. Using a commercial software would certainly be too expensive for networks with so many data providers. And the costs should not only include licenses, but equipment and training as well.
+
+XQuery parsers have been mostly implemented in native XML databases, some of them are free and open source (http://www.rpbourret.com/xml/ProdsNative.htm). But that would require frequent data exporting for almost all production databases, and performance could also be a problem when querying larger data sets. Moreover, most database administrators are still not familiar with XML database products.
+
+On the other hand, only a few commercial relational databases have released prototype XQuery interfaces (http://www.oreillynet.com/lpt/wlg/4991), which is certainly not enough to cover the diverse infrastructure of existing data providers.
+
+Still, one specific tool has been identified as a potential candidate to be used in a scenario similar to the one previously suggested. The XQuark project (XQuark Group - http://xquark.objectweb.org/index.html) is working on a suite of free and open source tools (XQuark Bridge and XQuark Fusion) that seem to implement the whole XQuery specification in a distributed environment. Both tools are platform independent (java), and each local data source needs to map its data structure against a federation schema through an object-relational mapping technique. Although the number of supported databases is still limited and the web services interface is not available yet, it would definitely be interesting to conduct a more detailed study to assess the viability of using these tools. With positive conclusions from such a study, the protocol could be substituted by XQuery, and almost all existing software could be replaced by the aforementioned tools or by similar ones.

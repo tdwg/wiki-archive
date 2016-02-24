@@ -1,0 +1,91 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@All three types of searches would still be possible according to the parameters used, and the custom search would use XML schema instead of a simplified structure representation.
+
+A full document search would look like:
+
+<verbatim>
+
+<search>
+
+  <responseStructrure>http://www.tdwg.org/schemas/abcd/1.0</responseStructrure>
+
+</search>
+
+</verbatim>
+
+Implying that the responseStructure schema is a conceptual schema accepted by the provider.
+
+A partial document search would look like:
+
+<verbatim>
+
+<search>
+
+  <responseStructrure>http://www.tdwg.org/schemas/abcd/1.0</responseStructrure>
+
+  <concepts>
+
+    <concept path="/datasets/dataset/recordset/record/units/unit/identification"/>
+
+  </concepts>
+
+</search>
+
+</verbatim>
+
+Also implying that the responseStructure schema is a conceptual schema accepted by the provider. In this case all mandatory elements from the response schema would be returned, including the additional concepts specified.
+
+The custom search would also use an XML schema to specify the response structure, but now this schema would not be a conceptual schema accepted by the provider:
+
+<verbatim>
+
+<search>
+
+  <responseStructrure>http://www.mydomain.org/myschema/1.0</responseStructrure>
+
+  <mapping xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.0">
+
+    <concept fromPath="taxon/@@name" toPath="abcd:/datasets/dataset/recordset/record/units/unit/identification"/>
+    <concept fromPath="taxon/coordinates/@@latitude" toPath="abcd:/datasets/dataset/recordset/record/units/unit/latitude"/>
+    <concept fromPath="taxon/coordinates/@@longitude" toPath="abcd:/datasets/dataset/recordset/record/units/unit/longitude"/>
+
+  </mapping>
+
+</search>
+
+</verbatim>
+
+
+However it would give the provider the necessary mappings to produce the results.
+
+A custom search could also accept a list of concepts (as the partial search).
+
+Providers could cache the mappings to speed up responses (should we also include a "useCache" attribute?)
+
+Important: The recordDefinition elements would still be necessary here!
+
+
+
+@

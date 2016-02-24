@@ -1,0 +1,62 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1092393509" format="1.0" version="1.11"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+<nop>ProjectDefinition or perhaps <nop>ProjectMetadata, or <nop>DatasetMetadata (the name is still under discussion, please contribute) should be applicable to all TDWG/GBIF standards, not just SDD.
+
+After the Berlin 2004 meeting Bryan and I fiddled a bit with it, so together with the changes agreed at the meeting in Berlin it does look slightly different now. Some old questions probably are still valid:
+
+	* Does <nop>ProjectDefinition provide sufficient information to "discover" documents that are published as documents on the internet?
+	* Does federation (several description projects using parts of several terminology projects) work? 
+	* What is the relation between project / dataset metadata and UBIF.DerivationHistory? Why does ABCD not need project definition? 
+	  What will the position of the taxon name standard be?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 May 2004
+
+---
+
+Metadata/Scope example:
+
+Sally Hinchcliff asks: "I was wondering if you have any examples of a UBIF xml file which uses the scope element - I can't see how to
+express the values I want. I want the class to cover all vascular plants, and the geographical scope to be global ... what would be the best way to implement that?" For geography this could be:
+
+<verbatim>
+<Metadata>  [...]
+  <Scope>
+	 <GeographicalScope><Locality ref="1"/></GeographicalScope>
+  </Scope>
+  [...]
+<ExternalDataInterface>
+  <Geography>
+	 <Locality key="1">
+		<Label>
+		 <Representation language="en"><Text>Global</Text></Representation>
+		 <Representation language="de"><Text>Weltweit</Text></Representation>
+		</Label>
+	 </Locality>
+  [...]
+</verbatim>
+
+Thus scope defines to terms defined in the EDI data interface/proxy objects. This seems awkward when all you want is say "global" in English. However, it is a migration path into a future where we use controlled vocabularies (which are not controlled by UBIF). becomes interesting only, as soon as we actually have a global gazetteer that may be used for data integration.
+It then would become:
+
+<verbatim>
+ <Locality key="1">
+	<Label>
+	  <Representation language="en"><Text>Global</Text></Representation>
+	  <Representation language="de"><Text>Weltweit</Text></Representation>
+	</Label>
+	<Link>
+	  <LSID>urn:lsid:GettyThesaurus:TGN:2372378<LSID>
+	</Link>
+ </Locality>
+</verbatim>
+
+And it is interesting if the dataset has geographical data both on the metadata for the dataset, and individual parts. In that case even the dataset-local key enables expression which of the 18 "Zell in Bayern (Germany)" are identical and which not.
+
+The same mechanism is proposed for <nop>ClassNames, Publications or Agents are more interesting. <nop>ClassName is where you would refer in scope to the highest name.
+
+The EDI offers to express and consume mixed situations, where some taxon names come from taxon name server a, others from name server b, and for yet other (perhaps newly published) only a local proxy name can be delivered.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 10 August 2004
+%META:TOPICMOVED{by="GregorHagedorn" date="1092393509" from="UBIF.SourceMetadata" to="UBIF.ContentMetadata"}%

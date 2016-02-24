@@ -1,0 +1,277 @@
+head	1.11;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@---+ Metadata Response, Proposal I
+
+---+++++ General Idea
+
+This proposal is based on the current DiGIR metadata response but removes all items that are machine readable and especifically related to the work of the PyWrapper MetadataResponseProposalOne ProviderSoftware. These items (conceptualSchema, minQueryTermLength, maxSearchResponseRecords, maxInventoryResponseRecords) were moved to the CapabilitiesRequest.
+
+Additionally all items that focussed on resources' content were removed. These items ("recordBasis", "recordIdentifier") would be treated by some ConceptualSchema and would be retrieved through inventory or search requests.
+
+The former DiGIR element "implementation" is already part of the standard ProtocolHeader called version, so it was dropped.
+
+The host grouping element was seen as the provider itself, so it has been removed and its contacts and code were moved to the provider level.
+
+As far as possible, UDDI elements were mapped to this metadata definition with a provider being treated as a BusinessEntity and a single resource as a UDDI ServiceEntity. Both provider and resources now have their own AccessPoints.
+
+The element "useRestrictions" has been substituted by "IPR". (*pending issue: * Is IPR broader than useRestrictions?)
+
+*Pending issue: *Should we keep numberOfRecords? (could be retrived through count requests)
+
+---+++++ Example
+<verbatim>
+<metadata>
+  <provider>
+    <name>String</name>
+    <code>String</code>
+    <accessPoint>http://xx</accessPoint>
+    <relatedInformation>http://xx</relatedInformation> *
+    <contact type="technical"> *
+      <name>String</name>
+      <title>String</title>
+      <emailAddress>a@@a</emailAddress>
+      <phone>String</phone>
+    </contact>
+    <abstract>String</abstract>
+  </provider>
+  <resources>
+    <resource> *
+      <name>String</name>
+      <code>String</code>
+      <accessPoint>http://xx</accessPoint>
+      <relatedInformation>http://xx</relatedInformation> *
+      <contact type="administrative"> *
+        <name>String</name>
+        <title>String</title>
+        <emailAddress>a@@a</emailAddress>
+        <phone>String</phone>
+      </contact>
+      <abstract>String</abstract>
+      <keywords>String</keywords>
+      <citation>String</citation>
+      <IPR>String</IPR>
+      <numberOfRecords>1</numberOfRecords>
+      <dateLastUpdated>2001-12-17T09:30:47-05:00</dateLastUpdated>
+    </resource>
+  </resources>
+</metadata>
+
+with* indicating repeatable elements
+</verbatim>
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@a18 2
+*Pending issue: *Should we keep dateLastUpdated? (could be possibly retrived in a more generic way depending on the ResponseStructure specification to be proposed)
+
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d7 1
+a7 1
+Additionally all items that focussed on resources' content were removed. These items (RecordBasis, RecordIdentifier) would be treated by some ConceptualSchema and would be retrieved through inventory or search requests.
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d5 1
+a5 1
+This proposal is based on the current DiGIR metadata response but removes all items, that are machine readable and important for the work of the PyWrapper MetadataResponseProposalOne ProviderSoftware. These items (conceptualSchema, maxSearchResponseRecords, maxInventoryResponseRecords) are moved to the CapabilitiesRequest now or dropped completely (minQueryTermLength).
+d7 1
+a7 1
+Additionally all items were removed that focussed on the content of the resources. These items (RecordBasis, RecordIdentifier) should be treated by their own ConceptualSchema.
+d9 1
+a9 1
+The former DiGIR element "implementation" is already part of the standard ProtocolHeader called version, so it was dropped here.
+d11 1
+a11 1
+As far as possible UDDI needs were mapped to this metadata definition with a provider being treated as a BusinessEntity and a single resource as a UDDI ServiceEntity with its own AccessPoint. Thats why the accessPoint element was moved from the provider to the individual resource.
+d13 7
+d27 1
+d29 1
+a29 1
+    <techContact> *
+d43 1
+a43 1
+      <adminContact> *
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@a14 1
+to be completed ...
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d5 1
+a5 1
+This proposal is based on the current DiGIR metadata response but removes all items, that are machine readable and important for the work of the PyWrapper MetadataResponseProposalOne ProviderSoftware. These items are moved to the CapabilitiesRequest now. 
+d7 1
+a7 1
+Additionally all items were removed that focussed on the content of the resources. These items like "RecordBasis" and "xxx" should be treated by their own ConceptualSchema.
+d9 3
+a11 1
+As far as possible UDDI needs were mapped to this metadata definition with a provider being treated as a BusinessEntity and a single resource as a UDDI ServiceEntity with its own AccessPoint.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d1 1
+a1 1
+---+ Metadata Response I
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d32 1
+a32 1
+         <accessPoint>http://xx</accessPoint>
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d19 1
+a19 2
+    <relatedInformation>http://xx</relatedInformation>
+    <relatedInformation>http://xx</relatedInformation>
+d33 1
+a33 2
+      <relatedInformation>http://xx</relatedInformation>
+      <relatedInformation>http://xx</relatedInformation>
+d49 2
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d17 11
+a27 1
+  ...
+d30 18
+a47 5
+    <resource>
+    ...
+    </resource>
+    <resource>
+    ...
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d13 1
+a13 1
+
+@

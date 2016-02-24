@@ -1,0 +1,91 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.2
+date	2007.12.03.20.33.24;	author KevinRichards;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.04.13.12.24.20;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@none
+@
+text
+@%META:TOPICINFO{author="KevinRichards" date="1196714004" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ <nop>%TOPIC%
+
+---++ Introduction
+
+The problem goes like this:
+
+People start labeling the data objects that they own with LSIDs i.e.  
+a herbarium generates LSIDs for its specimens. The herbarium database
+also has data about TaxonNames but it isn't authoritative for it and so
+wants to tag these taxon names with LSIDs from another authority who
+manages the nomenclature - perhaps IPNI or Index Fungorum.
+
+How does the herbarium tag their data with LSID from some one else?
+
+Jessie Kennedy's team at Napier in Edinburgh looked at this and presented
+a semantic web based paper at last years TDWG.  
+ZooBank are talking about implementing such an interfaces as well.   
+We have talked about developing a generic interface definition for
+looking up LSIDs but have not had resources to pursue it yet.
+
+Basically the interface would involve a client passing a server a
+partially populated object and the server would return the LSIDs of the
+objects that best matched that object. The client could then tag the
+rows in its database either automatically or with some human interaction
+- possible a mixture of both.
+
+This subject will definitely become and issue as more providers go live.
+ 
+Thoughts and contributions would be welcome.
+
+---++ Straw Man Interface Definition
+
+   * Server advertises endpoint as URL for particular class from TDWG ontology that it will service.
+   * Client makes HTTP POST request to server that contains a XML RDF instance of the class with some of the fields filled in with its known data.
+   * Server returns either:
+      * an empty RDF graph - there were no matches
+      * a graph containing a single  object of the required with the correct LSID in it.
+      * a graph containing multiple objects of the class each with and LSID.
+
+A property would need to be added to the classes to show the degree of confidence the server had in the match.
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1176467060" format="1.1" version="1.1"}%
+d17 1
+a17 1
+Jessie Kennedy's team at Napier in Edinburgh looked at this an presented
+d45 1
+a45 1
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@

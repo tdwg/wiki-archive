@@ -1,0 +1,49 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1094037900" format="1.0" version="1.2"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+There is a distinct difference between SDD and ABCD's handling of dates with missing or ambiguous parts.
+
+Bob Morris asks: The ABCD Schema seems to claim that its string regular expression produces a proper subset of ISO8601, including as to omitted parts, such as 2004---31 to mean the 31st day of some month in 2004. Is this claim based on actually examining a copy of the published 8601, or rather on one or another of various interpretations of it that are around (and maybe not entirely consistent with each other)? (We may have the example wrong since we didn´t carefully look at the ABCD regular expression and don´t have a copy of 8601 at hand)
+
+------
+
+*ABCD:* See http://www.bgbm.org/TDWG/CODATA/Schema/DateTime.htm for ABCDs position. The following is taken from annotations in <nop>ABCD.DateTimeISOType inside the schema:
+	* The date and time expressed in a way conforming to a subset of ISO 8601
+	* A representation of the date and time of (the beginning of) an event in ISO/ANSI standard structured format.
+	* Reviewer M. Doering, A. Guentsch and W. Berendsohn 2003
+	* Existing Standard: ISO Standard 8601:1988, HISPID, ITF
+	* Any chronologically acceptable date and time in ISO/ANSI format
+	* Examples: 1966-12-05T23:55:46; 1925-02-21; 1925-02; 1925; --12-05T23:55:46;---05T23:55; 1966-12-05T23:55
+	* This field is a representation of the date and time in its structured form
+	* Rules:
+		* The values are in order Year-Month-Day, separated by hyphens, followed by the letter T and the time, in order Hour:Minutes:Seconds, separated by colons
+		* Partial dates in the form of Year-Month or Year only are acceptable
+		* The year is expressed as a 4-digit value, left zero padded if necessary
+		* The year can be omitted, the month is than preceeded by two hyphens
+		* The year and the month can be omitted, the day is than preceeded by three hyphens
+		* The month of the year is expressed in as 2-digit value, left zero padded if necessary, ranging between 01 and 12
+		* The day of the month is expressed as a 2-digit value, left zero padded if necessary, ranging between 01 and 31.
+		* Parts can be omitted from the right, whereas a year is replaced by '--' and only a day would look like '---31'.
+		* The hour is expressed as a 2-digit value, left zero padded if necessary, ranging between 01 and 31.
+	* This field will nearly always be a representation derived from the date on the specimen. The <nop>DateText field is available for recording verbatim date information for generalized or ambiguous dates.
+	* The year must be represented as four digits to avoid ambiguity between centuries. Month and Day values are left zero padded to two digits to facilitate machine readability.
+	* In the rare instances of multiple exact dates or periods those can be recorded in this <nop>DateText field.
+	* In the rare instances of dates for periods before the year 0000, BC and similar dates can be recorded in this <nop>DateText field.
+	* Parts can be omitted from the right, whereas a year is replaced by '--' and only a day would look like '---31'.
+	* In the ISO standard element, time can only be specified when there is a full date.
+	* restriction pattern value="\d\d\d\d(\-(0[1-9]|1[012])(\-((0[1-9])|1\d|2\d|3[01])( (0\d|1\d|2[0-3])(:[0-5]\d){0,2})?)?)?|\-\-(0[1-9]|1[012])(\-(0[1-9]|1\d|2\d|3[01]))?|\-\-\-(0[1-9]|1\d|2\d|3[01])"
+
+---		
+
+*UBIF* proposal is:
+	* An element type "CompositeDate" with the following attributes: year = four digit year; month = two digit month of year; day = two digit day of month; verbatim = unparsed textual date representation; supplement = text additional or modifying the exact dates, e. g., 'end of summer', 'first half or year', 'first decade of month', '1888-1892'; timezone = expressed as integer according to the xml schema seven parameter model.
+	* A second derived type "CompositeDateTime" including all the above, plus hour, minute, second attributes. Note, alternatively, the xs:time type could be used, but then a duplication of the timezone information would be possible.
+
+The provide types for composite gregorian calendar date/time (points in time where parts may be missing; following the seven property model described, e. g., in xml Schema 1.1 (http://www.w3.org/TR/2004/WD-xmlschema11-2-20040716/#theSevenPropertyModel). 
+
+Instead of gYear, gMonth, gDay integer types with constraining facets are used for two reasons: a) each of them may have a timezone, which may lead to inconsistent data with multiple timezones; b) the lexical representation seems to be occasionally poorly implemented (e.g. where '31', or '---5' are accepted, whereas valid examples are '---31', '---05', and  '---05+02:00'). Schema example: &lt;xs:element name="DT" type="CompositeDate"/&gt;. Instance data: &lt;DT day="---31" month="--06--" year="2004Z-02:00"/&gt;&lt;!-- gDay dMonth, although gYear should allow a timezone, spy does not validate this --&gt; &lt;DT day="31" month="06" year="2004"/&gt;&lt;!-- xs:integer, constraint 1-31,  xs:integer, constraint 1-12  --&gt;
+
+In addition to the seven property model additional text attributes for either unsharp additions or complete verbatim dates are added. Note that incomplete dates in most cases are calendar specific and incomplete non-gregorian dates can not be expressed. Furthermore, for complete dates it may be unclear whether a reformed or unreformed date has been used (e.g. in Russia in the 19th century).
+
+-- Main.GregorHagedorn - 1 Sept. 2004

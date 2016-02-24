@@ -1,0 +1,129 @@
+%META:TOPICINFO{author="JohnWieczorek" date="1269534515" format="1.1" version="1.24"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+!! Historical <noautolink>%WEB%</noautolink> wiki site. Deprecated.
+------
+
+*Note*: These Wiki pages are for historical purposes, they *do not* reflect the content of the current standard, which can be found at
+
+* http://rs.tdwg.org/dwc/index.htm
+
+
+---++Geospatial Extension Concept List
+
+This document contains a list of the proposed elements of the Geospatial Extension of the Darwin Core. This schema is incorporated (imported) in the Darwin Record Application schema, which is ready for use with the Tapir protocol.
+
+This is not the normative representation of the draft standard. In the case of any conflict between representations, the protocol-independent [[http://rs.tdwg.org/dwc/tdwg_dw_geospatial.xsd][Geospatial Extension schema]] takes precedence.
+
+---++Status
+   * Ready for review, June 30, 2005.
+
+Submitted by: !BioGeomancer Collaboration
+
+Submission Date:
+30 Jun 2005
+
+Date Last Modified
+22 May 2008
+
+|  *Element*  |  *Description*  |  *Nillable*  |  *Type*  |  *Min Value*  |  *Max Value*  |
+|  |  *Geospatial Elements*  |  |  |  |  |
+| *[[DecimalLatitude]]* | The latitude of the geographic center of a location where an event occurred (organism collected, observation made), expressed in decimal degrees. Positive values are North of the Equator, negative values are South of the Equator. Describes the point-radius representation of the location, along with DecimalLongitude, GeodeticDatum, and CoordinateUncertaintyInMeters. Example: -41.0983423 | no | double |  -90  |  90  |
+| *[[DecimalLongitude]]* | The longitude of the geographic center of a location where an event occurred (organism collected, observation made), expressed in decimal degrees. Positive values are East of the Greenwich Meridian, negative values are West of the Greenwich Meridian. Describes the point-radius representation of the location, along with DecimalLatitude, GeodeticDatum, and CoordinateUncertaintyInMeters. Example: -71.0943235 | no | double |  -180  |  180  |
+| *[[GeodeticDatum]]* | The geodetic datum to which the latitude and longitude refer. If not known, use "not recorded". This concept should be vocabulary-controlled. Example: "WGS84" | no | string |  |  |
+| *[[CoordinateUncertaintyInMeters]]* | The upper limit of the distance (in meters) from the given DecimalLatitude and DecimalLongitude describing a circle within which the whole of the described locality lies. Leave the value empty if the uncertainty is unknown, cannot be estimated, or is not applicable (because there are no coordinates). Describes the point-radius representation of the location, along with DecimalLatitude, DecimalLongitude, and GeodeticDatum. Zero is not a valid value for this element. | no | positiveDouble |  |  |
+| *[[PointRadiusSpatialFit]]* | A measure of how well the circle defined by the coordinates and uncertainty match the original spatial representation, as a ratio of the area of the circle to the area of the original spatial representation. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given georeference does not completely contain the original representation. The !PointRadiusSpatialFit is undefined if the original representation is a point without uncertainty and the given georeference is not that same point (without uncertainty). If both the original and the given georeference are the same point, the !PointRadiusSpatialFit is 1. Detailed explanations with graphical examples can be found in the [[http://www.gbif.org/prog/digit/Georeferencing][Guide to Best Practices for Georeferencing]] (Chapman and Wieczorek, eds. 2006). | no | spatialFitDataType |  |  |
+| *[[VerbatimCoordinates]]* | A text representation of the coordinate data (Latitude/ Longitude, UTM, TRS, etc.) from its original source if it cannot be separated into its component parts.  Example: "470999 1234300". | no | string |  |  |
+| *[[VerbatimLatitude]]* | A text representation of the Latitude part of the coordinate data from its original source.  Example: 47d09'99"N | no | string |  |  |
+| *[[VerbatimLongitude]]* | A text representation of the Longitude part of the coordinate data from its original source.  Example: -122.43254 | no | string |  |  |
+| *[[VerbatimCoordinateSystem]]* | The name of the system in which the verbatim geographic coordinates were recorded. Examples: "decimal degrees", "degrees minutes seconds", "degrees decimal minutes", "UTM" | no | string |  |  |
+| *[[GeoreferenceProtocol]]* | A reference to the methods used for determining the coordinates and uncertainties.  Example: "http://manisnet.org/GeorefGuide.html". | no | string |  |  |
+| *[[GeoreferenceSources]]* | A list of maps, gazetteers or other resources used to georeference the locality. The content of this concept is meant to be specific enough to allow anyone in the future to use the same resource to georeference the same locality. Examples: "USGS 1:24000 Florence Montana Quad", "Terrametrics 2008 on Google Earth"  | no | string |  |  |
+| *[[GeoreferenceVerificationStatus]]* | A categorical description of the extent to which the georeference has been verified to represent the location where the specimen or observation was collected. This element should be vocabulary-controlled.  Examples: "requires verification", "verified by collector", "verified by curator". | no | string |  |  |
+| *[[GeoreferenceRemarks]]* | Comments about the spatial description determination, explaining assumptions made in addition or opposition to the those formalized in the method referred to in !GeoreferenceProtocol. | no | string |  |  |
+| *[[http://wiki.tdwg.org/twiki/bin/view/DarwinCore/WKTFootprint][FootprintWKT]]* | A Well-Known Text (WKT; see http://en.wikipedia.org/wiki/Well-known_text) representation of the the shape (footprint, geometry) that defines the location of the occurrence. The same place may have both a point-radius representation (see DecimalLatitude) and a footprint representation, and they may differ from each other for the same occurrence. Example: the one-degree bounding box with opposite corners at (longitude=10, latitude=20)  and (longitude=11, latitude=21) would be expressed in well-known text as POLYGON ((10 20, 11 20, 11 21, 10 21, 10 20)) | no | string |  |  |
+| *[[FootprintSpatialFit]]* | A measure of how well the geometry expressed in the footprint match the original spatial representation, as a ratio of the area of the footprint given to the area of the original spatial representation. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given georeference does not completely contain the original representation. The !FootprintSpatialFit is undefined if the original representation is a point without uncertainty and the given georeference is not that same point (without uncertainty). If both the original and the given georeference are the same point, the !FootprintSpatialFit is 1. Detailed explanations with graphical examples can be found in the [[http://www.gbif.org/prog/digit/Georeferencing][Guide to Best Practices for Georeferencing]] (Chapman and Wieczorek, eds. 2006). | no | spatialFitDataType |  |  |
+
+
+---++ Comments 
+Use the space below to make comments about this page. -- Main.JohnWieczorek - 24 Aug 2006
+
+------
+
+%ICON{bubble}% *Separating spatial data*
+Posted by: Steve Ginzbarg [mailto:sginzbar@biology.as.ua.edu]   Date: Sat, 01 Oct 2005, 21:15:12
+
+Can anyone give a better layman's answer to Mary's question?
+
+> -----Original Message-----
+> From: Mary Barkworth [mailto:Mary@biology.usu.edu]
+> Sent: Saturday, October 01, 2005 11:38 AM
+> To: Ginzbarg, Steve
+> Subject: RE: [HERBARIA] new collaborative website
+
+> ... What is the reason for
+> separating spatial data from record data? Concordance with
+> ABCD or visions of automating the process of georeferencing?  At this point it's too technical for me to fully understand, but the idea is to write the
+!GeoSpatial schema in Geography Markup Language (GML), see http://en.wikipedia.org/wiki/Geography_Markup_Language, a standard used outside of !DwC and ABCD.  A GML schema wraps geospatial properties in a geospatial object that could be served by a Web Feature Service (WFS), see http://en.wikipedia.org/wiki/Web_Feature_Service.  If I understood what this meant I could use less jargon. Sorry.
+
+> If the latter, I trust the existing record - which may - and
+> only may - be more accurate - will not be affected.
+
+> Mary
+
+------
+<DL><DD>%ICON{bubble}% *Re: Separating spatial data*
+Posted by: John Wieczorek [mailto:tuco@berkeley.edu]   Date: Sun, 02 Oct 2005, 00:11:23
+
+Steven, Mary, and all,
+
+There are a number of reasons for separating the geospatial components from the Darwin Core (http://darwincore.calacademy.org/Documentation/). Some of them Mary already guessed.
+
+The basic idea is to create reusable schemas - schemas that can be used in more than one place, thereby promoting true standardization rather than re-creation based on a model. The intention is to create modules based on different classes of questions that one might want to ask of the underlying data. The curatorial extension to the Darwin Core (http://darwincore.calacademy.org/Extensions/CuratorialExtensionFolder/CuratorialElementDefs), for example, was an attempt to create a module for information of interest to curators and those interested in the physical specimens without clogging the Darwin Core with concepts of limited interest. In this early extension proposal, the proposed elements were conceptually related, but the scope of interest in the concepts was limited to one aspect of the broader discipline of
+biodiversity informatics - specimen curation.
+
+The geospatial extension (http://darwincore.calacademy.org/Extensions/GeopatialExtension/GeospatialElementDefs) also consists of a set of related concepts. A major difference between this extension and the curatorial one is the fact that the geospatial extension represents a set of concepts that is of nearly universal interest - the representation of place in a way that can be used analytically.  Some of these concepts (Latitude and Longitude) aren't new - they've been in the Core since the
+Species Analyst days. The removal of the coordinate information from the core caused a stir, and ultimately caused the retraction of the Darwin Core 2 as a proposed standard at this time. This is largely due to new thinking about standards and schema construction, which may be at odds with the mixed purpose and design goals of the Darwin Core:  "The Darwin Core is a specification of data concepts and structure intended to support the retrieval and integration of primary data that documents the occurrence of organisms in space and time and the occurrence of organisms in biological collections."
+(from http://darwincore.calacademy.org/Documentation/PurposeGoals)
+
+The basic problem is whether the Darwin Core should be that one minimalist answer to our common interests (albeit incomplete for everyone) or the basis for building areas of common interest. The struggle is reflected in the desire on one hand to have everything important in the Core itself, and on the other hand to have everything built from solidly constructed building blocks that can be used wherever they may be needed.
+
+What I've represented here is not definitive, it's just one line of current thinking about conceptual architecture and how best to build and maintain libraries of schemas that represent our concept standards. TDWG will soon assemble an Architecture Group to discover and recommend a best practice in this regard. One clear outcome of the latest TDWG meeting is the need not only for this recommendation, but also for clear and concise documentation for the use and reuse of conceptual schemas so that special interests can present their special data well and share their common data broadly.
+
+A final note for Mary, then, is that all of this talk of architecture is likely to have less of an impact on those providing data than on those who figure out how. Actually, that is part of the point. If we get the architecture right, then the standards should be easier to share and maintain, and providers will have to mess around less to keep their systems running in perpetuity. At least that's where I like to ground myself in the grand scheme.
+
+I hope that helps.
+
+John </DL>
+------
+<DL><DD>%ICON{bubble}% *Re: Separating spatial data*
+Posted by: Mary Barkworth [mailto:Mary@biology.usu.edu]   Date: Sun, 02 Oct 2005, 12:49:01
+
+Thank you. As someone who is really longing to be able to look at co-occurrences of various critturs (seed dspersal critturs) and plants, I am very interested in the spatial data. What I also want to do, to the extent that it is feasible, it modify the specimen database (we use a modification of IK) so that we start capturing the information people are looking for now even if we have to modify its export for GBIF down the road. I know that ther are some fields that we must add but our top
+priority has been taking care of a more urgent matter. But there is no way we want to go back through the specimens to add information if we can start putting it in now.. Steve, because we have modified IK, we have not installed the latest upgrades for fear we would then lose our own changes. This may mean that we are not storing information that other users of IK are storing. Our biggest problem was revising it to allow for data entry from multiple sites. At least, I think that has been our biggest problem.
+
+Russell: PLease would you send Steve and Charlie a copy of IK as we use it - without data and unlocked? I tried sending one to Charlie this summer but it was locked so he could not get into it. You might add a note as to what you have changed and what you are workng on.
+
+Mary </DL>
+------
+------
+%ICON{bubble}%
+Posted by: John Wieczorek     Date: 06 Sep 2006
+
+There remain several important question about the geospatial extension. Foremost among these is "Should these elements be an extension or part of the Core?" This one comes right to the crux of the architectural and philosophical designs for the Darwin Core. Since the Darwin Core is flat (all elements are global with one occurrence within a "record"), it essentially acts as an element container. The contents of that container should share a common theme or purpose. For the Darwin Core the stated purpose is "to facilitate the exchange of information about the geographic occurrence of species." This might suggest that the geospatial elements (or a subset of them) given here should be part of the Core, since they fit the purpose. Alternatively, the geospatial elements may be of utility independent of the Core as a generic means of describing place geospatially - a module that could be reused without being burdened by the specialized purpose of the Core.
+Another line of reasoning about design of the Core might suggest that it should contain elements that are in common among all of the data sources that share the purpose for which the Core was designed. This reasoning doesn't suggest an obvious best location for the geospatial elements, as some of them are commonly used and others, alas, are not.
+Yet another line of reasoning might suggest that the Core should be as stable as possible to shield against change, thereby preserving the common ground and legacy systems. This line of reasoning also doesn't suggest a best location for the location of the geospatial elements, as they are no more or less stable than other elements either in the Core or in other extensions.
+
+My recommendation at this point in time is to continue to define the flexible [[http://wiki.tdwg.org/twiki/bin/view/TAG/CoreOntology][Core Ontology]] first, keeping these geospatial elements in mind as the current thinking in best practices to document place. When the Core Ontology is established, the best location of these elements will become obvious.  
+------
+%ICON{bubble}%
+posted by   -- Main.JohnWieczorek - 7 Sep 2006
+
+I feel the need to add two elements that will make the geospatial extension much more flexible. These are WKTFootprint and !FootprintSpatialFit. The WKTFootprint would allow the Well Known Text (WKT) encoding of any geometry collection (point, bounding box, linestring, polygon, multipolygon, combinations, etc.) to be shared. The !FootprintSpatialFit would allow data providers to share geometries that are less specific than the original, while providing a way for the end user to know that. 
+
+------
+%ICON{bubble}%
+
+------
+%ICON{bubble}%
+posted by   -- Main.JohnWieczorek - 30 Aug 2007
+Sharing the agent who georeferenced the record would be extremely useful. Please consider adding it to the Geospatial Extension.

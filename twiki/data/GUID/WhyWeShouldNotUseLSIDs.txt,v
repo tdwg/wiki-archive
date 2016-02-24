@@ -1,0 +1,502 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2008.12.07.21.58.58;	author KevinRichards;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.06.08.11.38.43;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.29.16.40.46;	author RicardoPereira;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.19.00.00.00;	author SallyHinchcliffe;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.05.14.23.58.41;	author BobMorris;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.05.05.13.56.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.05.04.20.11.11;	author RicardoPereira;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.05.04.20.03.53;	author RicardoPereira;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.05.04.20.02.18;	author RicardoPereira;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.9
+log
+@none
+@
+text
+@%META:TOPICINFO{author="KevinRichards" date="1228687138" format="1.1" reprev="1.9" version="1.9"}%
+---++ Why We Should Not Use LSIDs
+
+From the [[http://wiki.tdwg.org/twiki/bin/view/TAG/WhyWeShouldNotUseLSIDs][TDWG TAG Wiki]] by GregorHagedorn, 28 Apr 2006:
+
+Rather surprisingly, one outcome of the [[http://wiki.tdwg.org/twiki/bin/view/TAG/TagMeeting1][TagMeeting1]] for me was that I believe GBIF and TDWG should *not use LSIDs*
+
+Advantages of LSIDs:
+   * In contrast to DOIs, they allow both local and shared management and carry no cost factor.
+   * LSIDs seem to be flexible, allowing for a distributed control of globally unique identifiers (especially small institutions which are unable or do not desire to set up their own lsid authority could instead register namespaces with a central gbif authority, and then manage only their own uniqueness within this namespace.
+   * LSIDs separate the issue of truly persistent identifiers from the management of the conventional URLs (which are both semantically and managementwise overloaded, causing great instability). Although good management practices allow to set up a system where URLs intended to be persistent are well separated from those that may change (and where management is not cost-effective) in reality the conventional web mechanisms lend itself easily to improper management, mixing these different URLs and making it hard to persist URLs through forwarding.
+   * They do offer a separation of data and metadata, and provide a versioning system.
+
+Disadvantages of LSIDs
+   * The version system does not work very well as long as no standard metadata is delivered that always points to the most recent version.
+   * As discussed on the TAG 1 meeting, LSIDs can not be expected to work with ontologies:
+   * *LSIDs are not interoperable with semantic web technologies*.
+
+The general conclusion at the meeting was that is would be ok to use LSIDs for specimens and taxon names, but avoid them for class and property concepts (i.e. use standard URLs for software-design ontology. However, I believe we should go further and avoid LSIDs altogether. They are ok for specimens, but for taxon names, taxon concepts, descriptive concepts, geographical concepts they are ok only in the near future. 
+
+Ultimately, we very much want to reason on taxon generalizations along the taxonomic rank hierarchy as well as on taxon concept relationships, on generalization relationships between organism parts, observations methods, properties and property values. Examples: Both a leaf and a cladode being a kind of leaf-like structure, which organisms leaf-like structures 10 cm long with 5 leaflets? both ovate and elliptical being roundish shapes, which organisms have roundish leaf-like structures?
+
+My feeling is that adopting LSIDs for taxon and descriptive concepts may preclude the use of standard machine-reasoning engines for biodiversity data in the future.
+
+I believe we should UsePURLsAsGUIDs.
+
+----
+
+By email Kevin Richards comments: I agree that PURLs are a perfectly good option for our GUID needs, and that they would probably be
+one of the easier technologies to get "working". Like [Roger] I really had to think again to work out the benefits of LSIDs over PURLs, expecially considering the disadvantage you have mentioned.
+
+Some of the benefits of LSIDs include:
+   * clearly separate data and metadata services (as you have mentioned)
+      * Markus D�ring comments: From what I've understood from the GUID group nearly only metadata is used though. So if we deal with metadata only then its not a big practical difference at least.
+   * separation from domain names - as far as I understand, the PURL still requires domain name resolution of the actual ID url to obtain the resolution server address - this ties you to a particular url format
+      * Markus D�ring comments: We could easily setup a redirection service http://purl.gbif.net/AUTHORITY/whatever that redirects to whereever you want to keep your resolver. Just the authority URL part needs to be centrally managed. 
+      * Markus D�ring: This leads me to a questions about LSIDs which I never understood. LSID are bound to domain name resolution and their guarantee to be globally unique is heavily based on DNS. So to me a central body keeping track of LSID authorities is required to guarantee life long uniqueness of LSID URNs. If "bgbm.org" is owned by someone different that also wants to set up a LSID authority, how does he know there was one already under that domain? He could be reissuing the same URN (LSID) again. Thats exactly what people use as an argument against URLs, but its also true for LSIDs as far as I understand the technology. [BobMorris says: No, LSID's are _not_ tied to DNS. The only(?) current mechanism for the _discovery_ of resolvers uses DNS. This is not fundamental to LSIDs, but a matter of convenience. It is not required either for resolution, or resolution service discovery. See my comments in [[LSID]] ]
+   * LSID assigning service can be managed by provider organisation ("ownership" of data and IDs is often high on a data provider's requirements list)
+      * Markus D�ring comments: so can PURLs
+   * LSIDs provide a "standard" technology for resolving and serving up data objects - ie every provider will have the LSID authority services running on their server that will serve up data and metadata (+ other services if required) in the same way, for every provider
+      * Markus D�ring comments: URLs are even more standard I would think. Take Apache and there you go.
+   * related to the previous point, a standard mechanism for third party annotations of LSIDs is provided with every LSID server implementation
+      * Markus D�ring comments: Annotea (for RDF) uses simple HTTP. As Rod said pingbacks are a way to go as well (over http). And I am sure there are many other standards existing for URLs.
+   * same URN LSID can be used for resolution of http, ftp, soap and tcp protocols (unsure how PURLs handle this?)
+      * Markus D�ring comments: true. but is that needed?
+   * ...other cool stuff, I'm sure, that I cant think of right now - too late at night
+
+Probably best to avoid LSIDs for RDF class identfiers etc, but do the semantic web tools you are talking about have no way of recognising different url resolution types - I'm wondering if you can "plug in" lsid resolution into these tools?
+
+Kevin
+
+----
+
+----
+
+Steven Perry writes (by email):
+
+PURLs are centrally managed indirection-through-redirection over HTTP.  Because resolution is only an HTTP call away, PURLs are both easy to understand and very easy to consume.  PURLs are also powerful because anything that can be assigned a URL can have a PURL (maybe that makes them too powerful). 
+   * There are some advantages to PURLs:
+      * PURLs are easy to consume
+      * PURLs require a central resolver which may provide greater 
+reliability than a network with many LSID authorities
+      * PURLs make it easy to solve the "single resource change in 
+custodianship" problem
+   * And I see some disadvantages to PURLs:
+      * PURLs require a central resolver which is a single point of failure
+      * There are no conventions about what to expect when you resolve a PURL
+      * PURLs may be easy to consume but they're not easy to produce
+      * PURLs can't be distinguished from URLs by software
+
+I'll address each with a sentence or two.
+
+a1.) PURLs are easy to consume
+
+Because PURLs rely on simple HTTP GET, they are trivial to resolve.  One can use a web browser to manually resolve a PURL or use any of a large number of programs or software libraries for fetching URL contents via HTTP GET.  This is the primary advantage of PURLs.
+
+a2.)  PURLs require a central resolver which may provide greater reliability than a network with many LSID authorities
+
+If we assume that it's equally likely that a given GUID could be resolved by any of the resolvers on the network, then the reliability of the GUID network reduces to the average resolver reliability.  If it turns out that there are 100 LSID resolvers but at any given time 20 are likely to be non-responsive, then it's quite possible that a PURL based network with a single well managed resolver (98 % uptime) could provide better quality of service than an LSID-based network.
+
+a3.) PURLs make it easy to solve the "single resource change in custodianship" problem
+
+If the ownership or location of a data object changes, its PURL wouldn't change, it would merely redirect you to the new location of the object. This is a potential problem with LSIDs because change in custodianship of an entire authority is easy to deal with, but change in custodianship of a single identified object is difficult to handle.
+
+d1.) PURLs require a central resolver which is a single point of failure
+
+A PURL resolver acts as a centralized registry.  While a single PURL resolver my provide better reliability than a distributed network of LSID resolvers, centralization comes at a cost.  A central PURL resolver is a single point of failure.  To guard against failure, the community must guarantee that the organization hosting the resolver will be funded over time and that it will work to prevent hardware issues, network outages, denial of service attacks, etc.  The community may also demand that the organization that hosts the PURL resolver provide technical support. 
+
+d2.) There are no conventions about what to expect when you resolve a PURL
+
+Under the OCLC's purl.org resolver, there are no conventions about what you get when you resolve a PURL.  A PURL can point to a chunk of RDF describing a particular specimen, a DVD rip of a Bollywood movie, a second PURL that redirects to the first PURL in an endless loop, or a web application that returns no content but sends a signal to your fancy new networked coffee machine telling it to make a double espresso.  Some of these examples are silly, but my point is that PURL only provides for the possibility of persistence through indirection.  We're not interested solely in indirection.  We want to build a set of services on top of whatever GUID system we select.  This set of services requires common agreement on what you get when you resolve a GUID.  The LSID spec attempts to address this issue by splitting the universe into data and metadata and strongly suggesting the use of RDF for metadata.  There is no agreement on what you get when you resolve a PURL, and even if we came to agreement within our community there's no software in place to help us enforce these conventions.
+
+d3.) PURLs may be easy to consume but they're not necessarily easy to produce
+
+PURLs are easy to resolve but hard to register.  A central PURL resolver has to provide functionality for registering PURLs and assigning/reassigning live URLs to them.  It's simple to envision a web-based form for registering PURLs (see http://www.purl.org/maint/choose.html), but I imagine that most of the time new PURLs will be requested by a piece of software that's trying to publish a large number of resources.  This means that the PURL resolver should provide a remote service (software interface) for registering a new PURL, in part to facilitate automated registration of a large number of identifiers.  Interestingly enough, I don't think the OCLC PURL resolver implementation provides this functionality.  I imagine that most people who want to register a large number of PURLs work around the problem by registering what OCLC calls a "partial redirection" (http://purl.oclc.org/docs/inet96.html#partial).  I don't consider partial redirects to be GUIDs because they allow the use of a domain as a prefix for a localized URL hierarchy.  In order to guarantee that I don't mess up your PURLs, the OCLC PURL resolver require authentication in order to register a new PURL.  Authentication systems aren't easy to implement or support.
+
+d4.) PURLs can't be distinguished from URLs by software
+
+Most GUID systems come with a set of assumptions about when and how it's appropriate to use a GUID.  In addition to distributed resolution we might want to use GUIDs for things like equality testing, versioning, or object composition.  Each of these uses raise questions that need to be sorted out.  For instance, with equality testing, do we want to be able to have software say that two things are equal if their GUIDs are bitwise identical?  If two GUIDs are not bitwise identical, can they refer to the same object?  Do we require that different versions of the same object have the same GUID, different GUIDs with a relationship between them asserted in metadata, or the same base GUID with a different version component tacked onto the end?  What about different representations (formats) of the same thing (say an XML and an RDF version)?  Can they have the same GUID?  How does our object equality testing by GUID choice affect our choice of how to do versioning? How do we actually compose a compound object out of simple related objects?  All of these questions require careful consideration and are affected by our choice of a GUID system. 
+
+I guess what I'm trying to say is that we're not interested in GUIDs for the sake of GUIDs alone, but instead require them for specific uses that extend beyond simple naming and resolution.  I hope that we'll examine some of these questions and come to agreement on our conventions for GUID use.  Once we have these conventions (either because they're embedded in the GUID scheme we choose or because we've arrived at them during meetings and documented them appropriately), we'll need to write software that operates on these assumptions and enforces these conventions.  That software will have to be able to distinguish a GUID from a non-GUID because we can do certain things with GUIDd objects that we can't do with non-GUIDd ones.  With PURL this is problematic because a piece of software cannot easily distinguish a PURL from a URL yet they probably ought to be treated differently.
+
+
+I'm not a huge fan of LSID.  I think a urn based identification system introduces a barrier to entry for some.  I think the SOAP/web services stuff in the LSID spec and the Java toolkit from IBM introduce another barrier.  PURL may be easier to use (at least for resolution), but it doesn't go as far as LSID in laying the groundwork for a network of services that can at the very least share data, if not actually help researchers do something interesting with it.
+
+I'm not against inventing something new that's essentially a set of restrictions on top of PURL.  Maybe we could get the best of both worlds -- the simplicity of PURL with the conventions of LSID.
+
+
+-- Steve
+
+----
+
+Gregor: I would like to comment on some of the disadvantages listed by Steve:
+
+"d1.) PURLs require a central resolver which is a single point of failure"
+
+I see no difference between lsid and purl here. We can set up a single or multiple lsid authorities, or a single or multiple purl services.
+
+"d2.) There are no conventions about what to expect when you resolve a PURL"
+
+LSIDs provide only a partial solution, since no agreement exists which  metadata you get from an lsid service, GBIF/TDWG has to design that entirely themselves. So you may not know what kind of data are behind an LSID. What I propose is to simply use content negotiation in combination with purls to achieve exactly the same system. We simply, within our network, agree that when contacted with some ACCEPT: xml-metadata (MY EXAMPLE, IS THERE ALREADY SOMETHING FOR THIS PURPOSE) should return metadata, with all other ACCEPT the data. To me this gives all the advantages of LSIDs without the disadvantages. WOULD THIS WORK?
+
+"d3.) PURLs may be easy to consume but they're not necessarily easy to produce"
+ 
+It seems to me that it should be simple enough to mimic the good sides of LSIDs and simply create a PURL resolver that only registers namespaces, but not IDs. That is, I register the namespace "LIAS" with purl.gbif.net as as synonym to "www.LIAS.net/names/webservice". If I try to resolve "purl.gbif.net/LIAS/149872", the purl service will issue a rewrite/forward to  "www.LIAS.net/names/webservice/149872". I believe this is very thin management shell over existing forwarding modules in, e.g., apache.
+
+In fact, when registering a purl namespace, a data provider may even decide:
+   * I want to handle metadata content negotiation myself
+   * metadata requests should go to a different service ("www.LIAS.net/names/metadata/149872").
+   * I cannot handle metadata, but I can register common metadata applicable to all objects within the registered namespace (the purl service could then report these common metadata).
+
+What Steve describes as "partial redirection" seems to be close to such a system (albeit without metadata proposed above). 
+
+With regard to the statement: "I don't consider partial redirects to be GUIDs because they allow the use of a domain as a prefix for a localized URL hierarchy.  In order to guarantee that I don't mess up your PURLs, the OCLC PURL resolver require authentication in order to register a new PURL.  Authentication systems aren't easy to implement or support." I do not see the difference to LSIDs. The authority will in many cases only be such a partial redirection service, unable to verify that ALL possible LSIDs remain valid. So an LSID system is no more validated that a partial PURL system.
+
+Steve lists a number of shortcomings or things that need to be decided (equality testing, bitwise GUID-identity, versions, representations (formats), composing compound objects), but I believe all are equally problematic for PURL and LSID systems.
+
+After all it looks almost like GBIF will be one of very few systems to adopt LSIDs. So we may just as well in our community instead of relying on a urn:lsid prefix rely on a convention that all purl services must start with http://purl. 
+
+"Maybe we could get the best of both worlds -- the simplicity of PURL with the conventions of LSID."
+
+To me this seems to be quite achievable.
+
+For the last two years I always thought LSIDs are truly nice, I am only just changing my mind. Most LSIDs conventions are really good, including the separation into authority, namespace, ID, and the idea of separating data and metadata, and the ability to recognize (whether for software or human management) which URI is to be permantent. I believe we easily mimic all these based on PURL (I say this with almost no technical understanding...)
+
+-- Main.GregorHagedorn - 05 May 2006
+
+----
+
+Roderic Page wrote on June 05, 2007
+
+Maybe it's time to bite the bullet and consider the elephant in the room -- LSIDs might not be what we want. Markus D�ring sent some nice references to the list in April, which I've repeated below, there is also http://dx.doi.org/10.1109/MIS.2006.62 .
+
+I think the LSID debate is throwing up issues which have been addressed elsewhere (e.g., identifiers for physical things versus digital records), and some would argue have been solved to at least some people's satisfaction.
+
+LSIDs got us thinking about RDF, which is great. But otherwise I think they are making things more complicated than they need to be. I think this community is running a grave risk of committing to a technology that nobody else takes that seriously (hell, even the http://lsid.sourceforge.net/ web site is broken).
+
+The references posted by Markus D�ring  were:
+
+(1) http://www.dfki.uni-kl.de/dfkidok/publications/TM/07/01/tm-07-01.pdf "Cool URIs for the Semantic Web" by Leo Sauermann DFKI GmbH, Richard Cyganiak Freie Universit�t Berlin (D2R author), Max V�lkel FZI Karlsruhe. The authors of this document come from the semantic web community and discuss what kind of URIs should be used for RDF resources.
+
+(2) http://www.w3.org/2001/tag/doc/URNsAndRegistries-50. This one here is written by the W3C and addresses the questions "When should URNs or URIs with novel URI schemes be used to name information resources for the Web?" The answers given are "Rarely if ever" and "Probably not". Common arguments in favor of such novel naming schemes are examined, and their properties compared with those of the existing http: URI scheme.
+
+Regards, Rod
+
+----
+
+On Jun 6, 2007, at 00:46, Donald Hobern wrote:
+
+I do recognise the strength of Rod's arguments.  Indeed, if I were building some system for integrating data using semantic web technologies, and my only concern was ensuring the efficiency of synchronous connections now, I am sure I would adopt HTTP URIs for the purpose.  However I remain convinced (as I've stated before) that the needs of this community do subtly shift the balance in another direction.  We are interested in maintaining long-term connections between our objects and have a perspective which goes back hundreds of years.  This at least should give us pause over whether we want our specimens to be referenced using identifiers so firmly tied to the Internet of today.  More importantly, one of the key drivers right at the beginning of TDWG's consideration of GUIDs was that the community had plenty of experience of URL rot and didn't want to rely on everyone maintaining stable virtual directories on their web servers to preserve the integrity of object identifiers.
+
+Both LSIDs and HTTP URIs could be made to work for us.  Both are totally reliant on good practice on the part of data owners. Personally I believe our chances of getting the community to consider, define and apply such practices are enhanced by the identifier technology being something a little more different and distinct than just a "special URL".
+
+Thanks,
+Donald
+
+----
+
+On 06.06.2007, at 09:21, Dave Vieglais wrote:
+
+This discussion has been very interesting reading, and though I agree with Donald's comments, I find myself coming to a different conclusion, leaning towards HTTP URIs as a preferable scheme.  The reasons are simple - HTTP has been around for a long time, it is widely implemented, and mechanisms for implementing robust services with that protocol are pretty well sorted out - and really there is nothing to stop implementation of the same functionality exhibited by LSIDs using HTTP.  As Rod has pointed out, http is widely used for referencing entities within a semantic web type of context, and it seems foolish to ignore the momentum in those technologies as they provide a great deal of the desired functionality for interoperability and interchange of our data.  As a result my preference is towards the use of http, primarily because my intents are to integrate data from a much broader community.  In the end though, it doesn't really matter which scheme is adopted by TDWG - we will build http resolvers regardless, since they will be necessary for reasons of convenience in order to utilize LSIDs in all but specific, custom built applications.
+
+However, regardless of the scheme used to implement the GUIDs used by this community, it is critical that the identifiers are persistent and useful beyond the lives of whatever services are constructed to resolve them.  This implies some provenance information may need to be captured, and I would argue that the use of DNS alone for handling server changes as utilized by LSIDs may be insufficient.  The only benefit provided by DNS in this context is that it is acting as a single source of authority for directing how to locate something (in this case an ip address).  What I suspect is really required is a more robust, and richer mechanism for discovering and recording provenance.  The ideal would be a large, replicated, and distributed data store with a single service point which provided people and systems with a one-stop shop for discovering provenance for a GUID.  Then if an particular GUID could not be directly resolved, the global provenance store could be consulted and the resulting information providing a pointer (or perhaps a series of pointers) indicating how the guid can now be resolved.
+
+By creating such provenance records and persisting them with as much care as the data, it seems that a system with stability beyond the vagaries of the internet could reasonably be constructed.
+
+regards,
+ Dave V.
+
+----
+
+
+Markus D�ring wrote on Wed, 6 Jun 2007 to email list:
+
+As I have had a number of discussions lately with people doubting that LSIDs are good for our purposes, I would really like to question the TDWG decision to go with LSIDs and start yet another comparison of plain http paired with redirection, content negotiation and guidelines for using URLs. I  strongly feel that we should avoid new protocol schemes if we do not have *very* good reasons. I will use the term URL for now to refer to any http based identification scheme, if its PURLs, our own system or something else.
+
+The LSID specification already tells us how to deal with persistent identifiers. It is an agreement that we would have to make for URLs. As the "what gets an URI" confusion has shown those guidelines are needed in any case, no matter if we take up LSIDs or not. Even LSIDs can be used with or without versioning and a lot depends on agreements in regard to the RDF behind it. So essentially we will have to come up with our own best practices anyway.
+
+LSID and HTTP both are based on DNS to guarantee global uniqueness and even more important to resolve them. They both derive their persistence from the promise of the service provider that the domain name is kept forever and a server is running. If the domain is lost in 50 years *both* systems are broken.
+
+LSIDs and the semantic web don't play nicely together per se, because the semweb de facto requires plain http. From what I've read the suggestion is to use an [[LsidHttpProxyUsageRecommendation][LSID proxy that maps URLs into LSIDs]]. The problem then is that all RDF statements must use the proxy URL instead of the real LSID (otherwise you/a reasoner doesn't know that the statement about the LSID and the statement about the !proxyURL are about the identical resource) so essentially no-one is using the LSIDs, they are just kept as an additional "persistent" ID. To overcome this problem and to be able to use both, the LSID or the proxy URL, it is suggested to use an owl:sameAs statement within the LSID metadata to link the proxy URL with the LSID. So applications can use this to understand we are talking about the same thing. This gets pretty complex already and I would be surprised if there are many applications out there that understand this.
+
+Why not apply the owl:sameAs trick to URLs once we find that http is dead (just in case we can't do a global search-and-replace)? We could stay with simple URLs now, write simple software fast and get into the complex mess at a much later stage when we know we really need to - and not already from the start.
+
+An often raised requirement for the technology is also that it should last for hundreds of years. I doubt anyone can predict in that time period. But a very good reason to go with http is that there is a *lot* of data bound to them and if the world decides there is something better than http, there will be many tools to migrate your data. I feel much more safe trusting the entire web community than eventually getting out of the LSID trap by ourselves.
+
+Imagine if all the different research communities decide to use their own resource identification scheme, how bad will data integration get? We have to deal already with DOIs, but imagine chemists, geologists, meteorologists, physicists would all choose their own scheme, just as we are about to issue life science identifiers? Non-http URIs put barriers up for adoption to other communities, so I am confident that our LSIDs will be referenced much much less than URLs. I can see already all those proxy URLs in genebank and alike, not the LSIDs.
+
+
+And finally yet another link to some good discussion in the W3C semweb lifescience list: http://lists.w3.org/Archives/Public/public-semweb-lifesci/2005Mar/0004.html
+
+Markus
+
+----
+
+I fully agree with Rod, Dave and Markus. I think we need a new topic "[[Community Practices for Http-based GUIDs]]
+
+-- Main.GregorHagedorn - 08 Jun 2007
+
+----
+Kevin Richards:
+
+After recent discussions, I am also leaning towards the belief that LSIDs will be "too hard" to work with, especially the fact that they are not resolvable by default using HTTP, and therefore not semantic web friendly.
+
+See some related links:
+http://www.w3.org/2001/tag/doc/URNsAndRegistries-50.html#iddiv2128006416
+
+http://www4.wiwiss.fu-berlin.de/bizer/pub/LinkedDataTutorial/ (dbpedia reccommend not using URNs)
+
+http://bib.oxfordjournals.org/cgi/content/full/7/3/275?ck=nck#T1 (LSIDs in SWLS)
+
+-- Kevin Richards 3 December 2008
+
+---++ Comments
+Use the space below to make comments about this page.
+
+------
+
+%ICON{bubble}% Posted by Main.SallyHinchcliffe - 2006-05-05 10:37:45
+
+Hi can someone explain why LSIDs can't work with ontologies or point me to an explanation. I've not heard this argument, and it didn't come up at the GUID meeting ...
+
+------
+
+%ICON{bubble}% 
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1181302723" format="1.1" reprev="1.8" version="1.8"}%
+d221 12
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RicardoPereira" date="1170088846" format="1.1" version="1.7"}%
+d4 1
+a4 1
+From the [[http://wiki.tdwg.org/twiki/bin/view/TAG/WhyWeShouldNotUseLSIDs][TDWG TAG Wiki]] by GregorHagedorn.
+d16 2
+a17 1
+   * As discussed on the TAG 1 meeting, LSIDs can not be expected to work with ontologies. *LSIDs are not interoperable with semantic web technologies*.
+d60 2
+a61 2
+     * PURLs are easy to consume
+     * PURLs require a central resolver which may provide greater 
+d63 1
+a63 1
+     * PURLs make it easy to solve the "single resource change in 
+d66 4
+a69 4
+     * PURLs require a central resolver which is a single point of failure
+     * There are no conventions about what to expect when you resolve a PURL
+     * PURLs may be easy to consume but they're not easy to produce
+     * PURLs can't be distinguished from URLs by software
+d150 1
+d152 69
+d233 1
+a233 1
+%ICON{bubble}% @
+
+
+1.6
+log
+@Comment added
+.
+@
+text
+@d1 1
+d33 1
+a33 1
+      * Markus DÃ¶ring comments: From what I've understood from the GUID group nearly only metadata is used though. So if we deal with metadata only then its not a big practical difference at least.
+d35 2
+a36 2
+      * Markus DÃ¶ring comments: We could easily setup a redirection service http://purl.gbif.net/AUTHORITY/whatever that redirects to whereever you want to keep your resolver. Just the authority URL part needs to be centrally managed. 
+      * Markus DÃ¶ring: This leads me to a questions about LSIDs which I never understood. LSID are bound to domain name resolution and their guarantee to be globally unique is heavily based on DNS. So to me a central body keeping track of LSID authorities is required to guarantee life long uniqueness of LSID URNs. If "bgbm.org" is owned by someone different that also wants to set up a LSID authority, how does he know there was one already under that domain? He could be reissuing the same URN (LSID) again. Thats exactly what people use as an argument against URLs, but its also true for LSIDs as far as I understand the technology. [BobMorris says: No, LSID's are _not_ tied to DNS. The only(?) current mechanism for the _discovery_ of resolvers uses DNS. This is not fundamental to LSIDs, but a matter of convenience. It is not required either for resolution, or resolution service discovery. See my comments in [[LSID]] ]
+d38 1
+a38 1
+      * Markus DÃ¶ring comments: so can PURLs
+d40 1
+a40 1
+      * Markus DÃ¶ring comments: URLs are even more standard I would think. Take Apache and there you go.
+d42 1
+a42 1
+      * Markus DÃ¶ring comments: Annotea (for RDF) uses simple HTTP. As Rod said pingbacks are a way to go as well (over http). And I am sure there are many other standards existing for URLs.
+d44 1
+a44 1
+      * Markus DÃ¶ring comments: true. but is that needed?
+@
+
+
+1.5
+log
+@Remarks on LSID and DNS
+.
+@
+text
+@d147 15
+@
+
+
+1.4
+log
+@
+.
+@
+text
+@d35 1
+a35 1
+      * Markus DÃ¶ring: This leads me to a questions about LSIDs which I never understood. LSID are bound to domain name resolution and their guarantee to be globally unique is heavily based on DNS. So to me a central body keeping track of LSID authorities is required to guarantee life long uniqueness of LSID URNs. If "bgbm.org" is owned by someone different that also wants to set up a LSID authority, how does he know there was one already under that domain? He could be reissuing the same URN (LSID) again. Thats exactly what people use as an argument against URLs, but its also true for LSIDs as far as I understand the technology.
+@
+
+
+1.3
+log
+@
+.
+@
+text
+@d49 98
+@
+
+
+1.2
+log
+@
+.
+@
+text
+@d5 1
+a5 1
+Rather surprisingly, one outcome of the TagMeeting1 for me was that I believe GBIF and TDWG should *not use LSIDs*
+d7 1
+a7 1
+Advantages of LSIDs
+a26 8
+We could also UseLsidsWithHttpProxy to overcome the issues you raised with advantages over your proposal of replacing LSID by PURL.
+
+-- Main.RicardoPereira - 02 May 2006
+
+Which exactly are these advantages of LSIDs over a possibly gbif-run purl server? Anything more than I list above? -- Main.GregorHagedorn - 03 May 2006
+
+----
+
+d28 1
+a28 2
+one of the easier technologies to get "working". Like [Roger] I really had to think again to work out the benefits of LSIDs over PURLs, expecially
+considering the disadvantage you have mentioned.
+d32 1
+a32 2
+     * Markus DÃ¶ring comments: From what I've understood from the GUID group nearly only metadata is used though. So if we deal
+with metadata only then its not a big practical difference at least.
+d34 2
+a35 1
+     * Markus DÃ¶ring comments: We could easily setup a redirection service http://purl.gbif.net/AUTHORITY/whatever that redirects to whereever you want to keep your resolver. Just the authority URL part needs to be centrally managed. <br/> MD: This leads me to a questions about LSIDs which I never understood. LSID are bound to domain name resolution and their guarantee to be globally unique is heavily based on DNS. So to me a central body keeping track of LSID authorities is required to guarantee life long uniqueness of LSID URNs. If "bgbm.org" is owned by someone different that also wants to set up a LSID authority, how does he know there was one already under that domain? He could be reissuing the same URN (LSID) again. Thats exactly what people use as an argument against URLs, but its also true for LSIDs as far as I understand the technology.
+d37 1
+a37 1
+     * Markus DÃ¶ring comments: so can PURLs
+d39 1
+a39 1
+     * Markus DÃ¶ring comments: URLs are even more standard I would think. Take Apache and there you go.
+d41 1
+a41 1
+     * Markus DÃ¶ring comments: Annotea (for RDF) uses simple HTTP. As Rod said pingbacks are a way to go as well (over http). And I am sure there are many other standards existing for URLs.
+d43 1
+a43 1
+     * Markus DÃ¶ring comments: true. but is that needed?
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d5 1
+a5 1
+If using LSIDs causes problems with automated reasoning using semantic web technologies (see WhyWeShouldNotUseLSIDs), what arguments do we really have to not use PURLs? Roger Hyam mentioned at TAG-1 that he proposed PURLs at the GUID meeting, but that this was rejected. Why?
+d7 5
+a11 1
+Do we need to use purl.org or can we set up our own purl resolver? I would not mind a purl.gbif.net, but we may need to reserve an appropriate DNS name, which would be independent enough to survive name changes both of TDWG or GBIF.
+d13 3
+a15 1
+One advantage of LSIDs is their separation between data and metadata. However, it seems to me that this can also be achieved by content negotiation. With an accept: xml-tdgwmetadata we may configure the resolver to return metadata instead of the data.
+d17 1
+a17 1
+The issue that purls in practice seem to be not very stable is truly a management problem, not a technical problem. Using different technology like LSIDs helps management to separate the issue of low management normal URLs and managed persistent purls, but I believe going through an agreed purl yields very similar results in documenting management decisions. The real problem with Purls as it appears to me, it that most institutions decide: well if it is simply URL forwarding and rewriting, then we simply do this ourself - but then do not follow this decision by allocating enough resources to truly hold the promise.
+d19 1
+a19 1
+If we can agree on a URL-pattern that signifies the decision to keep a URL persistent, the GBIF could offer a service of notifying providers that they do not keep the contract. This seems to be a natural extension of the GBIF indexing service.
+d21 1
+a21 1
+GregorHagedorn - 28 Apr 2006
+d23 1
+a23 1
+Funny, today we were discussing about this approach in the TAPIR group. I would like just to add an example to Gregor's comments so that people not aware of what a PURL is can get an idea. I registered today an specimen:
+d25 1
+a25 1
+http://purl.oclc.org/NET/BGBM/training/Specimen/1352
+d27 1
+a27 1
+This URL is redirected to a BioCASe wrapper with a search by Specimen ID embed as a GET parameter. I do not paste the real URL because in the case of BioCASe it looks very ugly (just XML URL encoded). The wrapper is also returning the specimen described in ABCD 1.2 + the BioCASe protocol envelope, what is ugle, but the BioCASe was not created with this idea in mind (in TAPIR you can disable the protocol envelope).
+d29 29
+a57 1
+JavierTorre - 28 Apr 2006
+@

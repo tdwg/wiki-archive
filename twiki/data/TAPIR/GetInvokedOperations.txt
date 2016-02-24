@@ -1,0 +1,201 @@
+All TAPIR operations can alternatively be invoked with a http GET URL. The operation name itself is specified in a parameter called "op". If not specified the default operation is metadata.
+
+---+++ Global parameters (valid for all operations)
+   * op=[ping,metadata,capabilities,inventory,search]
+   * default=metadata
+   * cardinality=1..1
+
+   * xslt=[URI]
+   * default=null
+   * cardinality=0..1
+
+   * xslt-apply=[true,false,1,0]
+   * default=false
+   * cardinality=0..1
+
+   * log-only=[true,false,1,0]
+   * default=false
+   * cardinality=0..1
+
+---+++ The accepted list of parameters for each operation
+
+---+++++ ping
+   * op=[ping,p]
+
+---+++++ metadata
+   * op=[metadata,m]
+
+---+++++ capabilities
+   * op=[capabilities,c]
+
+---+++++ inventory
+   * op=[inventory,i]
+
+   * count=[true,false,1,0]
+   * default=false
+   * cardinality=0..1
+
+   * start=[[integer][>= 1]]
+   * default=1
+   * cardinality=0..1
+
+   * limit=[[integer][>=0, NONE]]
+   * default=NONE
+   * cardinality=0..1
+
+Then either a "template" parameter must be present:
+
+   * template=[URI]
+   * default=null
+   * cardinality=0..1
+
+Or one or more concepts with an optional filter:
+
+   * concept=[[fully][qualified or alias]]  
+   * default=(UNDEFINED which must be interpreted by implementation to mean no concepts and therefore empty response) 
+   * cardinality=0..n
+
+   * filter=[expression]
+   * default=null
+   * cardinality=0..1
+
+Parameter "template" takes precedence over "concept". So if both are present, "concept" (and the optional "filter") should be ignored. 
+
+---+++++ search
+   * op=[search,s]
+
+   * count=[true,false,1,0]
+   * default=false
+   * cardinality=0..1
+
+   * start=[[integer][>= 1]]
+   * default=1
+   * cardinality=0..1
+
+   * limit=[[integer][>=0, NONE]]
+   * default=NONE
+   * cardinality=0..1
+
+Then either a "template" parameter must be present:
+
+   * template=[URI]
+   * default=null
+   * cardinality=0..1
+
+Or a "model" parameter with optional "partial", "filter" and "orderby":
+
+   * model=[URI]
+   * default=null
+   * cardinality=0..1
+
+   * partial=[XPath]
+   * default=null
+   * cardinality=0..n
+
+   * filter=[expression]
+   * default=null
+   * cardinality=0..1
+
+   * orderby=[[fully][qualified or alias]]
+   * default=null
+   * cardinality=0..n
+
+Parameter "template" takes precedence over "model". So if both are are present, "model" (and the optionals "partial", "filter" and "orderby") should be ignored.
+
+   * envelope=[true,false,1,0]
+   * default=true
+   * cardinality=0..1
+
+---+++ Filter encoding
+
+  Filter expressions in GET requests will be infix equivalents to their XML counterparts
+
+---++++ Order of Operations
+The precedence of operators follows these rules:
+<verbatim>
+E: AOP, COP, LOP
+AOP: Mul, Div, Add, Sub
+COP: Equals
+LOP: Not, And, Or
+</verbatim>
+
+Blocks can be formed by using simple parenthesis ( )
+
+---++++ BNF Grammar For GET Filter expressions
+WikiPedia:Backus-Naur_form
+<verbatim>
+<expression>                    ::= <logical_operator> |
+                                    <comparative_operator>
+
+<comparative_operator>          ::= <unary_comparison_expression> |
+                                    <binary_comparison_expression> | 
+                                    <unbound_comparison_expression>
+
+<logical_operator>              ::= <unary_logical_expression> | <binary_logical_expression>
+
+<literal>                       ::= '"' <string> '"'
+
+<concept>                       ::= <concept_alias> |
+                                    <qualified_concept>
+
+<concept_alias>                 ::= <local_concept_alias> "@" <namespace_alias>
+
+<local_concept_alias>           ::= <string>
+
+<namespace_alias>               ::= <string>
+
+<qualified_concept>             ::= <string>
+
+<value>                         ::= <literal> | 
+                                    <concept> | 
+                                    <arithmetic_expression>
+
+<arithmetic_expression>         ::= <value> <arithmetic_operator> <value>
+
+<unary_comparison_expression>   ::= <unary_comparison_operator> <concept>
+
+<binary_comparison_expression>  ::= <value> <binary_comparison_operator> <value>
+
+<unbound_comparison_expression> ::= <unbound_comparison_operator> <expression> {<expression>}
+
+<unary_logical_expression>      ::= <unary_logical_operator> <expression>
+
+<binary_logical_expression>     ::= <expression> <binary_logical_operator> <expression>
+
+<unary_comparison_operator>     ::= "isNull"
+
+<binary_comparison_operator>    ::= "Equals" | 
+                                    "Like" | 
+                                    "GreaterThan" | 
+                                    "LessThan" | 
+                                    "GreaterThanOrEquals" | 
+                                    "LessThanOrEquals"
+
+<unbound_comparison_operator>   ::= "In"
+
+<unary_logical_operator>        ::= "Not"
+
+<binary_logical_operator>       ::= "And" | 
+                                    "Or"
+
+<arithmetic_operator>           ::= <ADD> | 
+                                    <DIV> | 
+                                    <MUL> | 
+                                    <SUB>
+
+<ADD>                           ::= "+"
+<SUB>                           ::= "-"
+<MUL>                           ::= "*"
+<DIV>                           ::= "/"
+
+<string>                        ::= <any_char> { <any_char> }
+</verbatim>
+
+---+++++ Filter example
+<verbatim>
+isnull country@dwc2 or FullScientificName@abcd206 like "Abies*" and country@dwc2 equals "Spain"
+
+would be more explicit:
+
+((isnull country@dwc2) or((FullScientificName@abcd206 like "Abies*") and(country@dwc2 equals "Spain")))
+</verbatim>

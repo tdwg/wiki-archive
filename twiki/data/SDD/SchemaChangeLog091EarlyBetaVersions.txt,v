@@ -1,0 +1,1735 @@
+head	1.21;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.21
+date	2009.11.25.03.14.37;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2009.11.20.02.45.29;	author LeeBelbin;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2005.09.28.17.10.44;	author GregorHagedorn;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2004.10.06.09.15.18;	author GregorHagedorn;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2004.07.15.18.02.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2004.06.11.09.19.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2004.05.28.17.24.06;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.05.28.15.05.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.05.25.08.13.51;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.05.24.13.33.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.05.24.12.20.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.05.11.13.04.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.05.10.11.33.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.05.05.16.08.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.05.03.13.41.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.04.29.01.20.07;	author BobMorris;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.04.23.16.24.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.25.12.50.37;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.03.22.13.35.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.16.10.49.07;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.21
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118877" format="1.1" version="1.21"}%
+%META:TOPICPARENT{name="SchemaChangeLog"}%
+---+!! %TOPIC%
+
+<h1>Changes in 0.91 beta 15 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+
+<strong>This is an updated version containing most of the minor changes discussed at the [[SDD2004Berlin][meeting in Berlin]]. Some changes are still pending. 
+The current version of the SDD schema can always be found at CurrentSchemaVersion. Please do read through the report of changes, except perhaps for the few trivial at the start. 
+Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+
+<strong>Note:</strong> I have tried to document changes, but I cannot guarantee that everything is properly documented.
+In fact, since <nop>GenerationMetadata and <nop>ProjectDefinition are heavily changed in an attempt to find common
+ground between the various GBIF standards (current discussion involves only ABCD so far), I have given up on documenting all detailed changes therein (but some are commented).
+
+<h3>Trivial omissions that were present in 0.9, corrected in 0.91<a name="trivial"/></h3>
+   * audiencekey in <nop>ProjectDefinition/Audiences/Audience was specified to have a pattern in the documentation, but the pattern was not defined in the schema, regular expression pattern added to schema 0.91.
+   * <nop>RevisionData were required in Description, Keys, and <nop>GlossaryEntries, now made optional.
+   * The Keys collection could be missing, or empty (0 to unlimited Key objects), now changed to 1 to unlimited Key objects.
+
+<h3>Non-trivial changes enacted plus proposals not enacted<a name="nontrivial"/></h3>
+
+*Root*
+   * In an attempt to converge with ABCD:
+      * Document root element changed to <nop>DataSets/<nop>DataSet collection. <nop>DataSet takes the place of the original Document. Multiple "Projects" can now be transported in one file or data stream. This is not urgent for SDD, but does not hurt either.
+      * <nop>GenerationMetadata changed to <nop>TransformationHistory, conceived as a collection of at least one, possibly multiple Transformation elements. Alternative names: <nop>ConversionHistory, <nop>UBIF.DerivationHistory, <nop>HistoryMetadata, <nop>ContentHistoryMetadata, or <nop>DataHistoryMetadata.
+
+*<nop>ProjectDefinition*
+   * Element itself changed to <nop>ProjectMetadata
+   * <nop>AudienceSpecificData/Representation split into <nop>Description/Representation and <nop>IPRStatements/Representation.
+   * <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (new type common to SDD and ABCD schema). However, this is also present in <nop>TransformationHistory!
+   * <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@@@ To be discussed. The idea is that a project may point to a web resource that informs about details about the history of the data (previous versions or a detailed log of changes)." Unless somebody needs it now, I propose that this should be an addition in a later version rather than included in the first release.
+   * <nop>ProjectDefinition/Icon moved to new <nop>ProjectDefinition/Description/Representation, thus making it audience specific. 
+     Icon (or logos) are not necessarily language independent since they may include text!
+   * <nop>ProjectDefinition/WebAddress moved as well, different audiences/languages may be referred to different URIs!
+   * _New_ after Berlin meeting: attempt to use across standards (see UBIF.SchemaDiscussion), therefore audience-dependent project Description and IPR-Statements changed to language dependent. Language should simplify the adoption of common framework elements for all TDWG/GBIF standards.
+   * _New_ after Berlin meeting: Version structure revised. 
+      * Version/PublicationDate changed to <nop>VersionReleaseDate to avoid possible confusion with <nop>LastRevision or data generation date in online situations.
+      * A Modifier element added (for beta, rel. candidate, etc.). 
+      * Increment removed (because considered application-internal management mechanism, no need for interoperability).
+      * Major and Minor left as integers to improve interoperability and comparability (nobody commented on the proposal "change version to string" posed in previous version of the change log.)
+   * _New_ after Berlin meeting: The narrative (unconstrained text) elements <nop>GeographicCoverage and <nop>TaxonomicCoverage in <nop>ProjectDefinition|Projectmetadata/Description/Representation combined to Coverage.
+      Constrained <nop>ClassScope added, __OtherScope needs a proposal how to link it to other vocabularies. <nop>SourcePublication changed from a single to possibly several, and considered a scoping mechanism as well.
+   * _NOTE_: Project Definition could also be called "Envelope". This avoids "project", which is meaningful in SDD, but perhaps problematic in ABCD/taxon names?)
+   * _QUESTION_: Can project definition be merged with transformation history?)
+   * _PROPOSAL_: Need documentation of quality control methods and standards, e. g. 
+      * <nop>QualityControlStandard: Name (and version, if applicable) of the published or internally documented quality control standard used.
+      * <nop>QualityControlDescription: Free-form description of methods used to ensure the quality of the descriptive data. In the absence of a standard, this should be a short description of the quality control procedures taken.
+   * _QUESTION_: <nop>ProjectDefinition/RevisionData/InitiationDate is xml:dateTime and required, which may cause problems in legacy projects. See discussion under InitiationDateForImportedLegacyData. The proposal makes sense in the context of project definition.
+     However, <nop>RevisionDataType is also used in several other contexts (single descriptions, glossary, characters, etc.) and the proposal does not make sense there. Do we need two slightly derived types? Has anybody a better idea?
+
+*GeneralDeclarations*
+   * New root section "<nop>GeneralDeclarations" created for concepts not specific to SDD, but needed in the schema. Alternative names for this section are: 
+     <nop>GeneralDefinitions, <nop>OverarchingIssues/Functions, <nop>CrosscuttingIssues/Functions, <nop>GeneralTerminology, <nop>GeneralTerms, <nop>GeneralVocabulary (the latter three do not 
+     cover the possible inclusion of "language rules"). The following elements moved there:
+      * <nop>ProjectDefinition/Audiences
+      * Terminology/<nop>CodingStatusValues
+      * Terminology/<nop>UnivariateStatisticalMeasures (was <nop>StatisticalMeasures)
+      * (Newly created:) Global definitions for <nop>MeasurementUnits (Character definition Numerical/<nop>MeasurementUnit is consequently changed to a ref type). The optional generalization allows to define relations between units such that two size measures, one expressed in mm the other in cm become comparable.
+   * In each of <nop>CodingStatus, <nop>UnivariateStatisticalMeasure, <nop>MeasurementUnit, the "Generalization" element 
+     (containing the machine-readable partial semantics of an object) was renamed to Specification.
+   * The Audience definitions lang and expertiselevel, previously defined as attributes, have been reorganized to follow the pattern of Label + Specification.
+   * The defaultaudience attribute present at Audience was only appropriately placed because all audience definitions were considered part of the project definition.
+     Now it is separated and moved to <nop>ProjectDefinition/DefaultAudience.
+   * <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bob's comment on TWIKI about ClosedTopicMultivariateStatistics).
+      * Related: the fact that Char. def. Numerical/StatisticalMeasures had both a ref and a key confused several reviewers. To clarify, the key has now been renamed from ref to <nop>GeneralDeclarationRef and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure is typed as <nop>StatisticalMeasureKeyValue.
+      * Element "Dimensionless" added to Specification of <nop>UnivariateStatisticalMeasures (answers whether the measurement unit apply to a statistic or not).
+
+*Terminology*
+   * Sequence of sections changed, Terminology section placed after Entities and Resources sections.
+   * Terminology/Glossary (= ontology definitions) strongly changed
+      * Multiple new ontological relations between terms added and subsumed under a new  Ontology element. This urgently needs review!
+      * <nop>SensuLabel and <nop>KindOfTerm added. The first allows to distinguish between multiple definitions of a term (Term does not have to be unique, but Term + <nop>SensuLabel has to be!), the latter categorizes terms (is that doubtful??).
+      * With the introduction of <nop>SensuLabel, Term is no longer a keyref in the ontological definitions (synonym, antonym, etc.). Replaced with <nop>TermListType = List of <nop>GlossaryEntryRefType.
+      * Ontology now refers to <nop>GlossaryEntry keys rather than Term strings in a specific language. This is partly necessitated by the introduction of a <nop>SensuLabel.
+      * As a result, other parts of the <nop>GlossaryEntry (Citations, <nop>RevisionData) have now been made language/audience-independent as well. This also resolves some anomalies, e.g. that <nop>RevisionData were one the audience-specific part instead on the language-independent object as in all other cases in SDD.
+      * <nop>ExternalReference changed to <nop>ExternalDefinitionURI
+   * <nop>CharacterDefType
+      * Label changed from <nop>LabelPlusAbbreviationType to <nop>SimpleLabelType. This simplifies the model: Only a single label can be defined at the character level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each character, the same expressiveness is maintained.
+      * Type changed to <nop>MeasurementScale, value list completed to include "ratio".
+      * Section Assumptions added to the character definition, <nop>MeasurementScale moved there
+      * Categorical and Numerical are tentatively changed to a choice rather than co-occurring. This needs discussion!
+      * PlausibilityRange added to numeric character definition. Applies to all values and statistics, except those that are dimensionless (like variance).
+   * <nop>GenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>GenericStates 
+     was present). "Generic" was considered to be confusing since for biologists it may be understood as referring to states describing a Genus.
+   * "Probability modifiers" have been renamed back to "Certainty modifiers" (they were previously called "Uncertainty modifiers" before changing to "Probability". As 
+     already discussed in Brazil (but later forgotten), Probability is ambiguous since low occurrence frequency of a state also results in a low probability that a given object has a given character state.
+   * Terminology/Modifiers/Sets (intended to define reusable modifier sets which would then be associated with characters) and <nop>CharacterDefType/ModifierSets where both replaced with a new Concept/ApplicableModifiers element in the concept trees. For the modifier sets a key and a label had to be defined so they could be selected in each characters through a keyref. The new solution avoids both the label and the key/keyref mechanism: The concept label also identifies the modifier set, and the characters are already defined by all characters included in a concept branch. The disadvantage is, that some tree-walking is required to find which modifier is applicable to which character.
+   * In frequency modifiers "ProbabilityRange" was changed to "CertaintyRange".
+   * Frequency and Certainty modifiers changed to now contain the Range definition inside a Specification element. 
+   * Concept trees: An organizing element "Specification" added (similar to definitions in <nop>GeneralDeclarations). The types, roles, etc. inside were reorganized and the enumerations changed (e.&nbsp;g., <nop>MethodHierarchy to <nop>InstrumentationHierarchy, <nop>PartHierarchy split into <nop>PartOfHierarchy and <nop>PartGeneralizationHierarchy). Also please critizise the current structure: "DesignedFor/Role=Filtering". Do the element and value names make sense to native speakers? Any better suggestions?
+
+   * _PROPOSAL_: Rename <nop>AutoAddStates to <nop>UpdateStateRefsTriggers (those state from a generic state set must be as <nop>StateReference in Character/Categorical/States). GH: I believe it should be the other way round, i.e. instead of a state-set reference at the character, there should be a list of characters referenced at the place concept node. I have started to do this, but not yet finished! See "####" at the end of the document!
+   * _QUESTION_: Allow multiple mappings of fine-grained states to coarse-grained states, and make these mappings expertise-specific (part of audience definition)?
+     Do we need multiple state sets within a character? Broad categories and narrow categories? Currently mapping of state is within a single character, and the two state sets need to be detected by application (those present minus those mapped away. Note: mapping can be indirect a-> b-> c, only c should remain.)
+     Do we need multiple <em>named</em> mapping definitions in the future? See StateMapping for further discussion.
+
+*Entities*
+   * The "connector" metapher was not well received and not considered intuitive. As an attempt, I propose to use a proxy metapher: The proxy object is a local object "standing-in" for the external, often asynchronously available resource on the internet. In programming this is called the "proxy-pattern". As a variation proxy objects may, however, also "stand-in" if no external object can be found and a local object (e.g. in biology: taxon name, specimen) has to be defined. Specific changes:
+      * <nop>ResourceConnectorBaseType changed to <nop>ProxyBaseType
+      * <nop>ClassNameConnectorType, <nop>ClassHierarchyConnectorType, <nop>DescribedObjectConnectorType, etc. all changed to <nop>...ProxyType
+      * Within the <nop>ProxyBaseType, the <nop>FreeFormDescription was changed to Label. For all internal SDD object like characters or states, Label signifies a human readable representation, which is the intent of this data element as well.
+      * The ID/external object linking was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the <nop>ObjectLink rather than the old "ExternalID" points to the object in case of a single URI query string. The method and parameter names, and the ID-values are now given separately for web services. Furthermore, ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables that together uniquely refer to a specimen object. This is supported, but it would still be desirable to have a single ID to simplify ID comparison and distinguish ID from other parameter values that may be required to use a webservice method (but may be constant for different objects).
+      * In addition to URL and webservice, tentative support for DOI (digital object identifiers) and <nop>LifeScience ID (LSID) was added (including an LSIDs defining a pattern constraint).
+      * _New_ after Berlin meeting: Sequence of Label (= <nop>FreeFormDescription in 0.9) and <nop>ObjectLink changed; Label is now first. This agrees with the use of Label throughout the other parts of the schema (characters, states, etc.).
+   * Entities/Classes changed to Entities/ClassNames, //Class to //ClassName. Note: in addition to the <nop>ClassName (taxon name) pointers present we may need alternative pointers into the class concepts (taxon concepts) as present <nop>ClassHierarchy!
+   * "<nop>TaxonNameInSource" renamed to "<nop>ClassNameInSource". Related open issue: Combine with Location? Else we need to have a <nop>CitationBaseType without <nop>ClassNameInSource used in Glossary and Keys, and a derived type used in Descriptions!
+   * _New_ after Berlin meeting: <nop>ClassIdentification changed to <nop>ClassAssignment; the process will be an identification, but the result is assigning the object description to a class. The term Identification caused confusion in the discussion.
+   * Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of taxon/specimen) and still having taxon, taxonauthor, etc. in UBIF.FormattedText. For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back).
+   * Similarly, the biology-specific elements Sex and Stage were removed from <nop>ClassNameProxyType (= <nop>ClassNameConnectorType in 0.9; = the type of the proxy object defining links to external name databases).
+     SDD assumes that <nop>ClassNameConnectorType in the future will connect to nomenclators or species databases and these are unlikely to provide separate records for sex and stage. It would have been possible to move Sex and Stage to <nop>DescriptionBaseType, but they are required at the end of the diagnostic keys as well (sexes or stages may be keyed out separately!). Thus, a new type <nop>ClassRefWithAdditionalClassifierType has been derived from the <nop>ClassRefType and used for <nop>DescriptionBaseType/Class (which is the basis for coded as well as natural language descriptions) and <nop>StoredKeyDefType/Lead/Class. Furthermore the Object identifications may be sex/stage specific (but also many objects will have multiple stages in a single specimen...). At the moment the new <nop>ClassRefWithAdditionalClassifierType has also been used at <nop>DescribedObjectConnectorType/ClassIdentification.
+      * The above mentioned type <nop>ClassRefWithAdditionalClassifierType should be defined generalized, avoiding biology-specific concepts like sex and stage.
+      * See SecondaryClassifiersProposal (and earlier: TheProblemOfSex)!
+   * <nop>ClassHierarchies was previously restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in SDD to define 
+     taxon subsets (character subsets are defined in the <nop>ConceptTrees).
+
+   * _PROPOSAL_: Add an Abbreviation element to Class and Object in Entities? Would not likely be updated by service, but may be useful or even required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+
+*Descriptions*
+   * In coded and natural language descriptions a Header element was introduced to improve the overview and organization of information. 
+   * <nop>CharacterData_BaseType/Sequence with values "terminology" or "description" was considered difficult to understand. Bob proposed to replace it with a boolean "<nop>StatesAreOrdered" which has been done.
+
+   * _PROPOSAL_: Rename <nop>CodedDescriptions to <nop>SymbolicDescriptions, see Analytical Philosophy (I only checked the Enc. Britannica, I am no expert in this!)
+
+*Keys*
+   * Keys/Key was changed to <nop>IdentificationKey/IdentificationKeys. The term "key" was perceived as too general, causing especially misunderstanding for non-biologists like programmers.
+     Instead of the depracated "guided key" other terms are "Pathway key" and "Stored key". "Dichotomous key" is inappropriate.
+   * <nop>CodedStatements in Keys (coded terminology equivalent to the natural language key statement) used to be a simple list of states. To accomodate the frequently occurring more complex statements in keys, e. g. "margin of fruitbody yellow (or orange and hairy)" -> i.e. not if only orange, or "margin of fruitbody yellow, never with denticles" -> other surface structures may be present, a boolean operator logic modeled after <nop>MathML has been added to <nop>CodedStatements inside Keys.  
+      * Related: Should Boolean logic (not, and, or) be added to any natural language markup?
+      * Should guided keys be marked up using the natural language markup method rather than using a separate section, as currently proposed? Currently, the key markup was thought to follow the coded description model, but now it has been extended. Problem: Boolean logic is frequently found in the lead statements of keys, but rarely in natural language taxon descriptions. However, if Boolean logic operators are introduced to both, it would be a strong argument to use the same method in NLD and Keys, rather than having three variants.
+      * Alternatively, we may want to extend the <nop>CodedDescriptions and provide Boolean logic operators there as well. This would be a heavy burden on database-oriented descriptive data processing, however. Or can someone provide a simple model how to handle arbitrary logical and/or combinations in a relatively simple database model?
+
+*General*
+   * <nop>CitationType: optional <nop>LastVerified and <nop>InvalidSince date elements added, important for volatile online publications.
+   * The application-specific data containers (= extension mechanism to store non-SDD data) has been renamed from <nop>ApplicationData/Application to <nop>CustomExtensions/CustomExtension. Several applications may agree on common extensions, in which case the old names would not have been appropriate. The mechanism itself remains unchanged.
+   * Model groups like "(Rich)AnnotationGroup" containing only optional elements have been themself made optional. This changes nothing in the validation and schema, but seems to help when using Castor data binding.
+   * In the <nop>LabelPlusAbbreviationRepresentationType (used frequently in Label/Representation elements) the Selector element containing media (usually images) was renamed to <nop>MediaResources. This is the same element name used generically throughout the schema. 
+      * The name "Selectors" was intended to express that only certain media should be added here - those that are sufficiently informative and concise at the same time to be used as selectors instead of text labels. However, the use of Selector lead to more confusion than clarification, and the purpose of the media is expressed through the Label context, i.e. these are labeling images etc.
+      * The only other media resource is Icon which remains semantically labeled.
+
+---
+
+<h1>Open Questions<a name="questions"/></h1>
+
+   * Class names (= taxon names referenced in descriptions or keys) may have to be audience specific! See LanguageSpecificClassNames for a discussion!
+
+   * Descriptions generalization questions, i.e. inferring descriptions from other descriptions:
+      * Main.PrometheusII proposes to explictly reference descriptions that are to be included or generalized into a current description. Currently we expect in SDD this to rely on am automatic "description resource discovery" mechanism, i. e. _all_ object descriptions with the same class name are generalized, and classes are generalized to higher classes following the class (taxon) hierachy defined in Entities.
+      * <nop>BioLink proposes (correct?) to explicitly flag which characters or states allow generalization, and whether from above or below.
+      * (= the first is explicit generalization on the object/class hierarchy level, the second explicit which characters/states are included in generalization.)
+      * Related: SDD probably needs a mechanism to mark the results of aggregation/generalization, computed characters, calulated statistics to document whether they are calculated / inherited or directly entered.
+      * Related: Do we have to document original terminology labels during data entry (i.e. in the language/audience representation used during scoring). The audience itself may be interesting (as a code), but even more the terminology may have been changed slightly (evolution of terminology) since scoring. A record of score-time representation would increase the trust in the coded scores and allow some backtracking of problems.
+
+   * In Descriptions we call an element <nop>GeographicalScope, in <nop>ProjectDefinition basically the same thing <nop>GeographicalCoverage! However, Descriptions refers to defined objects in Resources, whereas in <nop>ProjectDefinition it is free-form text (modeled directly after <nop>DublinCore). Make this consistent and always use Resources/Geography/Location object references?
+
+   * Problem of storing calculated data and marking them as "autogenerated" (or which term to use?). Related to problem of inheriting information up and down taxonomic tree. Similar problems are already marked up in the "Origin" element in character and NLD data, and in the inherited attribute associated with character ratings. In the case of statistical measures, marking the Origin as calculated would refer to the raw data in an observation set. However, there is some discussion on the Wiki (see RepeatedObservations) whether we need a keyref to exactly one observation set or not.
+
+   * We probably need to have more than one class hierarchy and add a marker to indicate which hierarchy is formal, and which contains non-taxonomic groupings. In Brazil Kevin reported on Lucid providing a "tag" mechanism to mark "silly characters" intended only to group items like "100 worst weed species: yes/no". XPER reported a similar tag mechanism for items (instead of characters as in Lucid) to tags items for specific problems: diseases / quarantine species / disease vectors. To me both kind of problems seem to be most appropriately handled as a non-taxonomic class hierarchy. Any proposals how to handle this? As a first step an additional attribute "IsPhylogenetic" in the class hierarchy is proposed (already done).
+
+   * Glossary:
+      * Do we need some method to express ranges for cardinality: How many legs may there be etc.?
+      * Do we need some method to associate states with properties/types?
+
+   * Should the natural language markup be brought closer to xhtml by using &lt;span class=""&gt; for markup?
+
+   * Basing character states on concept states (= reuse of state sets in multiple characters) causes problem with order (ordinal scale) characters. The states in a character may be inherited from from multiple concepts nodes. Each of these will probably have order in the concept, but the final order can only be defined in each character. This seems unfortunate.
+
+   * Can we describe images? Is this automatically implied in reversing the association between a description and an image or not? 
+     Images may only illustrate parts of the description.
+
+   * Can we format numeric values in reports? See DELTA  *DECIMAL PLACES. How do we format sets of statistical measures in natural language or other reports? The (min-) lowerrange - central - upperrange (-max) format is not necessarily universal. Currently it is nevertheless fixed in application code and cannot be defined by users. Since many variants which individual measures are present exist, this can probably not be done with a <nop>TextBefore/After strategy (possible for Min, Max, but not for ranges with/without mean, "3-6", "5", "3-5-6"). Also, open ranges exist, which should be output as "at least 3 cm long" in natural language. Also: formats are audience/language-specific!
+  
+   * Can we find a smart method to format related and dependent value like width x length?
+
+   * Using polymorphism for character definitions. Color as separate character type?
+
+   * Media Resource may need a location detail (if figure has multiple labeled fragments). Perhaps call this <nop>FragmentLabel?
+
+   * Media-"FragmentLabels", but even more the "Location" in Citations may be language sensitive! "table 1", "tab. 2", "figure 3" in English, "Abbildung 3" in German etc.!
+
+---
+
+<h1>Problems I believe cannot be solved in xml schema</h1> 
+
+(please tell me if you disagree!)
+
+   * We have a frequently used type that prevents validation of requiredness in SDD  schema: Most labels use <nop>FormattedSimpleTextType, which if the element is required should always be non-empty. However, in contrast to simple text strings, <nop>FormattedSimpleTextType allows limited formatting (sup/sub etc.) and has a mixed content model. As a result, it is not possible in xml schema to require the length of it to be at least 1. This may be a case where we have to make a recommendation not to output empty elements, and a requirement that a missing element and an empty element are to be considered identical (applications should not attach different semantics to empty elements).
+---
+The missing element issue seems approachable by declaring things nillable and allowing xsi:nil="true" to distinguish from the missing case. This arose also in the discussion ResolvedTopicIsDiGIRadequateForBDI.SDD -- Main.BobMorris - 29 Apr 2004 
+
+I cannot follow your argument. The problem I state above is that I cannot constrain the Labels to actually contain a string, the element must be present but may contain nothing. There seems no mechanims in schema to prevent that. I know you warned us against mixed content model! -- Gregor Hagedorn - 3. May.
+---
+
+<h3>Appendix, see discussion marked "####" above:</h3>
+
+Current situation in 0.9:
+<pre>
+Concept
+  Concept
+     Concept key="123"
+       ConceptStates
+         StateDefinition key="1"
+         StateDefinition key="2"
+         StateDefinition key="3"
+
+Char
+  Categorical/States/
+    StateReference ref="1"
+    StateReference ref="2"
+    StateReference ref="3"
+    AutoAddStates ref="123"
+</pre>
+
+Proposed reversal:
+<pre>
+Concept
+  Concept
+     Concept key="123"
+       ConceptStates
+         StateDefinition key="1"
+         StateDefinition key="2"
+         StateDefinition key="3"
+       UpdateStateRefsTrigger
+         Character ref="123"
+
+Char key="123"
+  Categorical/States/
+    StateReference ref="1"
+    StateReference ref="2"
+    StateReference ref="3"    
+</pre>
+
+One reason why this is relevant is that I believe we have to introduce a similar mechanism for <nop>StatisticalMeasures, to allow defining sets of statistical measures centrally (min-max range, a simple range/mean type like DELTA, extensions including variance and sample size, etc.).
+
+Also, we have modifier sets as well. Can we also run them over a concept-node-based system, so that we have very similar systems for States, Measures, and modifiers? That seems to improve the schema. Unfortunately, with modifiers I am uncertain how well this works. Modifiers almost cry for inheritance down the concept tree, something we have not yet done so far!
+
+---
+
+Looking for the most recent schema file? See CurrentSchemaVersion!
+
+-- Gregor Hagedorn - 25 May 2004
+
+%META:FILEATTACHMENT{name="SDD_091beta3.zip" attr="h" comment="SDD 0.91 Beta 3" date="1079962204" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta3.zip" size="52796" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="SDD_091beta6.zip" attr="h" comment="SDD 0.91 Beta 6" date="1082737634" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta6.zip" size="57560" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="SDD_091beta7.zip" attr="h" comment="SDD 0.91 Beta 7" date="1083591586" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta7.zip" size="56869" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="SDD_091beta9.zip" attr="h" comment="SDD 0.91 Beta 9" date="1083773230" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta9.zip" size="57050" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="SDD_091beta10.zip" attr="h" comment="SDD 0.91 Beta 10" date="1084188580" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta10.zip" size="58257" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="SDD_091beta11.zip" attr="h" comment="Beta 11 = Final for Berlin meeting!" date="1084279915" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta11.zip" size="77014" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1079962486" from="SDD.SchemaChangeLog091EarlyBetaVersion" to="SDD.SchemaChangeLog091EarlyBetaVersions"}%
+@
+
+
+1.20
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685129" format="1.1" reprev="1.20" version="1.20"}%
+d8 1
+a8 1
+The current version of the BDI.SDD schema can always be found at CurrentSchemaVersion. Please do read through the report of changes, except perhaps for the few trivial at the start. 
+d24 1
+a24 1
+      * Document root element changed to <nop>DataSets/<nop>DataSet collection. <nop>DataSet takes the place of the original Document. Multiple "Projects" can now be transported in one file or data stream. This is not urgent for BDI.SDD, but does not hurt either.
+d30 1
+a30 1
+   * <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (new type common to BDI.SDD and ABCD schema). However, this is also present in <nop>TransformationHistory!
+d43 1
+a43 1
+   * _NOTE_: Project Definition could also be called "Envelope". This avoids "project", which is meaningful in BDI.SDD, but perhaps problematic in ABCD/taxon names?)
+d52 1
+a52 1
+   * New root section "<nop>GeneralDeclarations" created for concepts not specific to BDI.SDD, but needed in the schema. Alternative names for this section are: 
+d75 1
+a75 1
+      * As a result, other parts of the <nop>GlossaryEntry (Citations, <nop>RevisionData) have now been made language/audience-independent as well. This also resolves some anomalies, e.g. that <nop>RevisionData were one the audience-specific part instead on the language-independent object as in all other cases in BDI.SDD.
+d101 1
+a101 1
+      * Within the <nop>ProxyBaseType, the <nop>FreeFormDescription was changed to Label. For all internal BDI.SDD object like characters or states, Label signifies a human readable representation, which is the intent of this data element as well.
+d110 1
+a110 1
+     BDI.SDD assumes that <nop>ClassNameConnectorType in the future will connect to nomenclators or species databases and these are unlikely to provide separate records for sex and stage. It would have been possible to move Sex and Stage to <nop>DescriptionBaseType, but they are required at the end of the diagnostic keys as well (sexes or stages may be keyed out separately!). Thus, a new type <nop>ClassRefWithAdditionalClassifierType has been derived from the <nop>ClassRefType and used for <nop>DescriptionBaseType/Class (which is the basis for coded as well as natural language descriptions) and <nop>StoredKeyDefType/Lead/Class. Furthermore the Object identifications may be sex/stage specific (but also many objects will have multiple stages in a single specimen...). At the moment the new <nop>ClassRefWithAdditionalClassifierType has also been used at <nop>DescribedObjectConnectorType/ClassIdentification.
+d113 1
+a113 1
+   * <nop>ClassHierarchies was previously restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in BDI.SDD to define 
+d134 1
+a134 1
+   * The application-specific data containers (= extension mechanism to store non-BDI.SDD data) has been renamed from <nop>ApplicationData/Application to <nop>CustomExtensions/CustomExtension. Several applications may agree on common extensions, in which case the old names would not have been appropriate. The mechanism itself remains unchanged.
+d147 1
+a147 1
+      * Main.PrometheusII proposes to explictly reference descriptions that are to be included or generalized into a current description. Currently we expect in BDI.SDD this to rely on am automatic "description resource discovery" mechanism, i. e. _all_ object descriptions with the same class name are generalized, and classes are generalized to higher classes following the class (taxon) hierachy defined in Entities.
+d150 1
+a150 1
+      * Related: BDI.SDD probably needs a mechanism to mark the results of aggregation/generalization, computed characters, calulated statistics to document whether they are calculated / inherited or directly entered.
+d186 1
+a186 1
+   * We have a frequently used type that prevents validation of requiredness in BDI.SDD  schema: Most labels use <nop>FormattedSimpleTextType, which if the element is required should always be non-empty. However, in contrast to simple text strings, <nop>FormattedSimpleTextType allows limited formatting (sup/sub etc.) and has a mixed content model. As a result, it is not possible in xml schema to require the length of it to be at least 1. This may be a case where we have to make a recommendation not to output empty elements, and a requirement that a missing element and an empty element are to be considered identical (applications should not attach different semantics to empty elements).
+@
+
+
+1.19
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1127927444" format="1.0" version="1.18"}%
+%META:TOPICPARENT{name="SchemaChangeLog"}%
+d8 1
+a8 1
+The current version of the SDD schema can always be found at CurrentSchemaVersion. Please do read through the report of changes, except perhaps for the few trivial at the start. 
+d16 3
+a18 3
+	* audiencekey in <nop>ProjectDefinition/Audiences/Audience was specified to have a pattern in the documentation, but the pattern was not defined in the schema, regular expression pattern added to schema 0.91.
+	* <nop>RevisionData were required in Description, Keys, and <nop>GlossaryEntries, now made optional.
+	* The Keys collection could be missing, or empty (0 to unlimited Key objects), now changed to 1 to unlimited Key objects.
+d23 3
+a25 3
+	* In an attempt to converge with ABCD:
+		* Document root element changed to <nop>DataSets/<nop>DataSet collection. <nop>DataSet takes the place of the original Document. Multiple "Projects" can now be transported in one file or data stream. This is not urgent for SDD, but does not hurt either.
+		* <nop>GenerationMetadata changed to <nop>TransformationHistory, conceived as a collection of at least one, possibly multiple Transformation elements. Alternative names: <nop>ConversionHistory, <nop>UBIF.DerivationHistory, <nop>HistoryMetadata, <nop>ContentHistoryMetadata, or <nop>DataHistoryMetadata.
+d28 22
+a49 22
+	* Element itself changed to <nop>ProjectMetadata
+	* <nop>AudienceSpecificData/Representation split into <nop>Description/Representation and <nop>IPRStatements/Representation.
+	* <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (new type common to SDD and ABCD schema). However, this is also present in <nop>TransformationHistory!
+	* <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@@@ To be discussed. The idea is that a project may point to a web resource that informs about details about the history of the data (previous versions or a detailed log of changes)." Unless somebody needs it now, I propose that this should be an addition in a later version rather than included in the first release.
+	* <nop>ProjectDefinition/Icon moved to new <nop>ProjectDefinition/Description/Representation, thus making it audience specific. 
+	  Icon (or logos) are not necessarily language independent since they may include text!
+	* <nop>ProjectDefinition/WebAddress moved as well, different audiences/languages may be referred to different URIs!
+	* _New_ after Berlin meeting: attempt to use across standards (see UBIF.SchemaDiscussion), therefore audience-dependent project Description and IPR-Statements changed to language dependent. Language should simplify the adoption of common framework elements for all TDWG/GBIF standards.
+	* _New_ after Berlin meeting: Version structure revised. 
+		* Version/PublicationDate changed to <nop>VersionReleaseDate to avoid possible confusion with <nop>LastRevision or data generation date in online situations.
+		* A Modifier element added (for beta, rel. candidate, etc.). 
+		* Increment removed (because considered application-internal management mechanism, no need for interoperability).
+		* Major and Minor left as integers to improve interoperability and comparability (nobody commented on the proposal "change version to string" posed in previous version of the change log.)
+	* _New_ after Berlin meeting: The narrative (unconstrained text) elements <nop>GeographicCoverage and <nop>TaxonomicCoverage in <nop>ProjectDefinition|Projectmetadata/Description/Representation combined to Coverage.
+		Constrained <nop>ClassScope added, __OtherScope needs a proposal how to link it to other vocabularies. <nop>SourcePublication changed from a single to possibly several, and considered a scoping mechanism as well.
+	* _NOTE_: Project Definition could also be called "Envelope". This avoids "project", which is meaningful in SDD, but perhaps problematic in ABCD/taxon names?)
+	* _QUESTION_: Can project definition be merged with transformation history?)
+	* _PROPOSAL_: Need documentation of quality control methods and standards, e. g. 
+		* <nop>QualityControlStandard: Name (and version, if applicable) of the published or internally documented quality control standard used.
+		* <nop>QualityControlDescription: Free-form description of methods used to ensure the quality of the descriptive data. In the absence of a standard, this should be a short description of the quality control procedures taken.
+	* _QUESTION_: <nop>ProjectDefinition/RevisionData/InitiationDate is xml:dateTime and required, which may cause problems in legacy projects. See discussion under InitiationDateForImportedLegacyData. The proposal makes sense in the context of project definition.
+	  However, <nop>RevisionDataType is also used in several other contexts (single descriptions, glossary, characters, etc.) and the proposal does not make sense there. Do we need two slightly derived types? Has anybody a better idea?
+d52 15
+a66 15
+	* New root section "<nop>GeneralDeclarations" created for concepts not specific to SDD, but needed in the schema. Alternative names for this section are: 
+	  <nop>GeneralDefinitions, <nop>OverarchingIssues/Functions, <nop>CrosscuttingIssues/Functions, <nop>GeneralTerminology, <nop>GeneralTerms, <nop>GeneralVocabulary (the latter three do not 
+	  cover the possible inclusion of "language rules"). The following elements moved there:
+		* <nop>ProjectDefinition/Audiences
+		* Terminology/<nop>CodingStatusValues
+		* Terminology/<nop>UnivariateStatisticalMeasures (was <nop>StatisticalMeasures)
+		* (Newly created:) Global definitions for <nop>MeasurementUnits (Character definition Numerical/<nop>MeasurementUnit is consequently changed to a ref type). The optional generalization allows to define relations between units such that two size measures, one expressed in mm the other in cm become comparable.
+	* In each of <nop>CodingStatus, <nop>UnivariateStatisticalMeasure, <nop>MeasurementUnit, the "Generalization" element 
+	  (containing the machine-readable partial semantics of an object) was renamed to Specification.
+	* The Audience definitions lang and expertiselevel, previously defined as attributes, have been reorganized to follow the pattern of Label + Specification.
+	* The defaultaudience attribute present at Audience was only appropriately placed because all audience definitions were considered part of the project definition.
+	  Now it is separated and moved to <nop>ProjectDefinition/DefaultAudience.
+	* <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bob's comment on TWIKI about ClosedTopicMultivariateStatistics).
+		* Related: the fact that Char. def. Numerical/StatisticalMeasures had both a ref and a key confused several reviewers. To clarify, the key has now been renamed from ref to <nop>GeneralDeclarationRef and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure is typed as <nop>StatisticalMeasureKeyValue.
+		* Element "Dimensionless" added to Specification of <nop>UnivariateStatisticalMeasures (answers whether the measurement unit apply to a statistic or not).
+d69 27
+a95 27
+	* Sequence of sections changed, Terminology section placed after Entities and Resources sections.
+	* Terminology/Glossary (= ontology definitions) strongly changed
+		* Multiple new ontological relations between terms added and subsumed under a new  Ontology element. This urgently needs review!
+		* <nop>SensuLabel and <nop>KindOfTerm added. The first allows to distinguish between multiple definitions of a term (Term does not have to be unique, but Term + <nop>SensuLabel has to be!), the latter categorizes terms (is that doubtful??).
+		* With the introduction of <nop>SensuLabel, Term is no longer a keyref in the ontological definitions (synonym, antonym, etc.). Replaced with <nop>TermListType = List of <nop>GlossaryEntryRefType.
+		* Ontology now refers to <nop>GlossaryEntry keys rather than Term strings in a specific language. This is partly necessitated by the introduction of a <nop>SensuLabel.
+		* As a result, other parts of the <nop>GlossaryEntry (Citations, <nop>RevisionData) have now been made language/audience-independent as well. This also resolves some anomalies, e.g. that <nop>RevisionData were one the audience-specific part instead on the language-independent object as in all other cases in SDD.
+		* <nop>ExternalReference changed to <nop>ExternalDefinitionURI
+	* <nop>CharacterDefType
+		* Label changed from <nop>LabelPlusAbbreviationType to <nop>SimpleLabelType. This simplifies the model: Only a single label can be defined at the character level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each character, the same expressiveness is maintained.
+		* Type changed to <nop>MeasurementScale, value list completed to include "ratio".
+		* Section Assumptions added to the character definition, <nop>MeasurementScale moved there
+		* Categorical and Numerical are tentatively changed to a choice rather than co-occurring. This needs discussion!
+		* PlausibilityRange added to numeric character definition. Applies to all values and statistics, except those that are dimensionless (like variance).
+	* <nop>GenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>GenericStates 
+	  was present). "Generic" was considered to be confusing since for biologists it may be understood as referring to states describing a Genus.
+	* "Probability modifiers" have been renamed back to "Certainty modifiers" (they were previously called "Uncertainty modifiers" before changing to "Probability". As 
+	  already discussed in Brazil (but later forgotten), Probability is ambiguous since low occurrence frequency of a state also results in a low probability that a given object has a given character state.
+	* Terminology/Modifiers/Sets (intended to define reusable modifier sets which would then be associated with characters) and <nop>CharacterDefType/ModifierSets where both replaced with a new Concept/ApplicableModifiers element in the concept trees. For the modifier sets a key and a label had to be defined so they could be selected in each characters through a keyref. The new solution avoids both the label and the key/keyref mechanism: The concept label also identifies the modifier set, and the characters are already defined by all characters included in a concept branch. The disadvantage is, that some tree-walking is required to find which modifier is applicable to which character.
+	* In frequency modifiers "ProbabilityRange" was changed to "CertaintyRange".
+	* Frequency and Certainty modifiers changed to now contain the Range definition inside a Specification element. 
+	* Concept trees: An organizing element "Specification" added (similar to definitions in <nop>GeneralDeclarations). The types, roles, etc. inside were reorganized and the enumerations changed (e.&nbsp;g., <nop>MethodHierarchy to <nop>InstrumentationHierarchy, <nop>PartHierarchy split into <nop>PartOfHierarchy and <nop>PartGeneralizationHierarchy). Also please critizise the current structure: "DesignedFor/Role=Filtering". Do the element and value names make sense to native speakers? Any better suggestions?
+
+	* _PROPOSAL_: Rename <nop>AutoAddStates to <nop>UpdateStateRefsTriggers (those state from a generic state set must be as <nop>StateReference in Character/Categorical/States). GH: I believe it should be the other way round, i.e. instead of a state-set reference at the character, there should be a list of characters referenced at the place concept node. I have started to do this, but not yet finished! See "####" at the end of the document!
+	* _QUESTION_: Allow multiple mappings of fine-grained states to coarse-grained states, and make these mappings expertise-specific (part of audience definition)?
+	  Do we need multiple state sets within a character? Broad categories and narrow categories? Currently mapping of state is within a single character, and the two state sets need to be detected by application (those present minus those mapped away. Note: mapping can be indirect a-> b-> c, only c should remain.)
+	  Do we need multiple <em>named</em> mapping definitions in the future? See StateMapping for further discussion.
+d98 17
+a114 17
+	* The "connector" metapher was not well received and not considered intuitive. As an attempt, I propose to use a proxy metapher: The proxy object is a local object "standing-in" for the external, often asynchronously available resource on the internet. In programming this is called the "proxy-pattern". As a variation proxy objects may, however, also "stand-in" if no external object can be found and a local object (e.g. in biology: taxon name, specimen) has to be defined. Specific changes:
+		* <nop>ResourceConnectorBaseType changed to <nop>ProxyBaseType
+		* <nop>ClassNameConnectorType, <nop>ClassHierarchyConnectorType, <nop>DescribedObjectConnectorType, etc. all changed to <nop>...ProxyType
+		* Within the <nop>ProxyBaseType, the <nop>FreeFormDescription was changed to Label. For all internal SDD object like characters or states, Label signifies a human readable representation, which is the intent of this data element as well.
+		* The ID/external object linking was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the <nop>ObjectLink rather than the old "ExternalID" points to the object in case of a single URI query string. The method and parameter names, and the ID-values are now given separately for web services. Furthermore, ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables that together uniquely refer to a specimen object. This is supported, but it would still be desirable to have a single ID to simplify ID comparison and distinguish ID from other parameter values that may be required to use a webservice method (but may be constant for different objects).
+		* In addition to URL and webservice, tentative support for DOI (digital object identifiers) and <nop>LifeScience ID (LSID) was added (including an LSIDs defining a pattern constraint).
+		* _New_ after Berlin meeting: Sequence of Label (= <nop>FreeFormDescription in 0.9) and <nop>ObjectLink changed; Label is now first. This agrees with the use of Label throughout the other parts of the schema (characters, states, etc.).
+	* Entities/Classes changed to Entities/ClassNames, //Class to //ClassName. Note: in addition to the <nop>ClassName (taxon name) pointers present we may need alternative pointers into the class concepts (taxon concepts) as present <nop>ClassHierarchy!
+	* "<nop>TaxonNameInSource" renamed to "<nop>ClassNameInSource". Related open issue: Combine with Location? Else we need to have a <nop>CitationBaseType without <nop>ClassNameInSource used in Glossary and Keys, and a derived type used in Descriptions!
+	* _New_ after Berlin meeting: <nop>ClassIdentification changed to <nop>ClassAssignment; the process will be an identification, but the result is assigning the object description to a class. The term Identification caused confusion in the discussion.
+	* Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of taxon/specimen) and still having taxon, taxonauthor, etc. in UBIF.FormattedText. For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back).
+	* Similarly, the biology-specific elements Sex and Stage were removed from <nop>ClassNameProxyType (= <nop>ClassNameConnectorType in 0.9; = the type of the proxy object defining links to external name databases).
+	  SDD assumes that <nop>ClassNameConnectorType in the future will connect to nomenclators or species databases and these are unlikely to provide separate records for sex and stage. It would have been possible to move Sex and Stage to <nop>DescriptionBaseType, but they are required at the end of the diagnostic keys as well (sexes or stages may be keyed out separately!). Thus, a new type <nop>ClassRefWithAdditionalClassifierType has been derived from the <nop>ClassRefType and used for <nop>DescriptionBaseType/Class (which is the basis for coded as well as natural language descriptions) and <nop>StoredKeyDefType/Lead/Class. Furthermore the Object identifications may be sex/stage specific (but also many objects will have multiple stages in a single specimen...). At the moment the new <nop>ClassRefWithAdditionalClassifierType has also been used at <nop>DescribedObjectConnectorType/ClassIdentification.
+		* The above mentioned type <nop>ClassRefWithAdditionalClassifierType should be defined generalized, avoiding biology-specific concepts like sex and stage.
+		* See SecondaryClassifiersProposal (and earlier: TheProblemOfSex)!
+	* <nop>ClassHierarchies was previously restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in SDD to define 
+	  taxon subsets (character subsets are defined in the <nop>ConceptTrees).
+d116 1
+a116 1
+	* _PROPOSAL_: Add an Abbreviation element to Class and Object in Entities? Would not likely be updated by service, but may be useful or even required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+d119 2
+a120 2
+	* In coded and natural language descriptions a Header element was introduced to improve the overview and organization of information. 
+	* <nop>CharacterData_BaseType/Sequence with values "terminology" or "description" was considered difficult to understand. Bob proposed to replace it with a boolean "<nop>StatesAreOrdered" which has been done.
+d122 1
+a122 1
+	* _PROPOSAL_: Rename <nop>CodedDescriptions to <nop>SymbolicDescriptions, see Analytical Philosophy (I only checked the Enc. Britannica, I am no expert in this!)
+d125 6
+a130 6
+	* Keys/Key was changed to <nop>IdentificationKey/IdentificationKeys. The term "key" was perceived as too general, causing especially misunderstanding for non-biologists like programmers.
+	  Instead of the depracated "guided key" other terms are "Pathway key" and "Stored key". "Dichotomous key" is inappropriate.
+	* <nop>CodedStatements in Keys (coded terminology equivalent to the natural language key statement) used to be a simple list of states. To accomodate the frequently occurring more complex statements in keys, e. g. "margin of fruitbody yellow (or orange and hairy)" -> i.e. not if only orange, or "margin of fruitbody yellow, never with denticles" -> other surface structures may be present, a boolean operator logic modeled after <nop>MathML has been added to <nop>CodedStatements inside Keys.  
+		* Related: Should Boolean logic (not, and, or) be added to any natural language markup?
+		* Should guided keys be marked up using the natural language markup method rather than using a separate section, as currently proposed? Currently, the key markup was thought to follow the coded description model, but now it has been extended. Problem: Boolean logic is frequently found in the lead statements of keys, but rarely in natural language taxon descriptions. However, if Boolean logic operators are introduced to both, it would be a strong argument to use the same method in NLD and Keys, rather than having three variants.
+		* Alternatively, we may want to extend the <nop>CodedDescriptions and provide Boolean logic operators there as well. This would be a heavy burden on database-oriented descriptive data processing, however. Or can someone provide a simple model how to handle arbitrary logical and/or combinations in a relatively simple database model?
+d133 6
+a138 6
+	* <nop>CitationType: optional <nop>LastVerified and <nop>InvalidSince date elements added, important for volatile online publications.
+	* The application-specific data containers (= extension mechanism to store non-SDD data) has been renamed from <nop>ApplicationData/Application to <nop>CustomExtensions/CustomExtension. Several applications may agree on common extensions, in which case the old names would not have been appropriate. The mechanism itself remains unchanged.
+	* Model groups like "(Rich)AnnotationGroup" containing only optional elements have been themself made optional. This changes nothing in the validation and schema, but seems to help when using Castor data binding.
+	* In the <nop>LabelPlusAbbreviationRepresentationType (used frequently in Label/Representation elements) the Selector element containing media (usually images) was renamed to <nop>MediaResources. This is the same element name used generically throughout the schema. 
+		* The name "Selectors" was intended to express that only certain media should be added here - those that are sufficiently informative and concise at the same time to be used as selectors instead of text labels. However, the use of Selector lead to more confusion than clarification, and the purpose of the media is expressed through the Label context, i.e. these are labeling images etc.
+		* The only other media resource is Icon which remains semantically labeled.
+d144 1
+a144 1
+	* Class names (= taxon names referenced in descriptions or keys) may have to be audience specific! See LanguageSpecificClassNames for a discussion!
+d146 6
+a151 6
+	* Descriptions generalization questions, i.e. inferring descriptions from other descriptions:
+		* Main.PrometheusII proposes to explictly reference descriptions that are to be included or generalized into a current description. Currently we expect in SDD this to rely on am automatic "description resource discovery" mechanism, i. e. _all_ object descriptions with the same class name are generalized, and classes are generalized to higher classes following the class (taxon) hierachy defined in Entities.
+		* <nop>BioLink proposes (correct?) to explicitly flag which characters or states allow generalization, and whether from above or below.
+		* (= the first is explicit generalization on the object/class hierarchy level, the second explicit which characters/states are included in generalization.)
+		* Related: SDD probably needs a mechanism to mark the results of aggregation/generalization, computed characters, calulated statistics to document whether they are calculated / inherited or directly entered.
+		* Related: Do we have to document original terminology labels during data entry (i.e. in the language/audience representation used during scoring). The audience itself may be interesting (as a code), but even more the terminology may have been changed slightly (evolution of terminology) since scoring. A record of score-time representation would increase the trust in the coded scores and allow some backtracking of problems.
+d153 1
+a153 1
+	* In Descriptions we call an element <nop>GeographicalScope, in <nop>ProjectDefinition basically the same thing <nop>GeographicalCoverage! However, Descriptions refers to defined objects in Resources, whereas in <nop>ProjectDefinition it is free-form text (modeled directly after <nop>DublinCore). Make this consistent and always use Resources/Geography/Location object references?
+d155 1
+a155 1
+	* Problem of storing calculated data and marking them as "autogenerated" (or which term to use?). Related to problem of inheriting information up and down taxonomic tree. Similar problems are already marked up in the "Origin" element in character and NLD data, and in the inherited attribute associated with character ratings. In the case of statistical measures, marking the Origin as calculated would refer to the raw data in an observation set. However, there is some discussion on the Wiki (see RepeatedObservations) whether we need a keyref to exactly one observation set or not.
+d157 1
+a157 1
+	* We probably need to have more than one class hierarchy and add a marker to indicate which hierarchy is formal, and which contains non-taxonomic groupings. In Brazil Kevin reported on Lucid providing a "tag" mechanism to mark "silly characters" intended only to group items like "100 worst weed species: yes/no". XPER reported a similar tag mechanism for items (instead of characters as in Lucid) to tags items for specific problems: diseases / quarantine species / disease vectors. To me both kind of problems seem to be most appropriately handled as a non-taxonomic class hierarchy. Any proposals how to handle this? As a first step an additional attribute "IsPhylogenetic" in the class hierarchy is proposed (already done).
+d159 3
+a161 3
+	* Glossary:
+		* Do we need some method to express ranges for cardinality: How many legs may there be etc.?
+		* Do we need some method to associate states with properties/types?
+d163 1
+a163 1
+	* Should the natural language markup be brought closer to xhtml by using &lt;span class=""&gt; for markup?
+d165 1
+a165 1
+	* Basing character states on concept states (= reuse of state sets in multiple characters) causes problem with order (ordinal scale) characters. The states in a character may be inherited from from multiple concepts nodes. Each of these will probably have order in the concept, but the final order can only be defined in each character. This seems unfortunate.
+d167 2
+a168 2
+	* Can we describe images? Is this automatically implied in reversing the association between a description and an image or not? 
+	  Images may only illustrate parts of the description.
+d170 1
+a170 1
+	* Can we format numeric values in reports? See DELTA  *DECIMAL PLACES. How do we format sets of statistical measures in natural language or other reports? The (min-) lowerrange - central - upperrange (-max) format is not necessarily universal. Currently it is nevertheless fixed in application code and cannot be defined by users. Since many variants which individual measures are present exist, this can probably not be done with a <nop>TextBefore/After strategy (possible for Min, Max, but not for ranges with/without mean, "3-6", "5", "3-5-6"). Also, open ranges exist, which should be output as "at least 3 cm long" in natural language. Also: formats are audience/language-specific!
+d172 1
+a172 1
+	* Can we find a smart method to format related and dependent value like width x length?
+d174 1
+a174 1
+	* Using polymorphism for character definitions. Color as separate character type?
+d176 1
+a176 1
+	* Media Resource may need a location detail (if figure has multiple labeled fragments). Perhaps call this <nop>FragmentLabel?
+d178 1
+a178 1
+	* Media-"FragmentLabels", but even more the "Location" in Citations may be language sensitive! "table 1", "tab. 2", "figure 3" in English, "Abbildung 3" in German etc.!
+d186 1
+a186 1
+	* We have a frequently used type that prevents validation of requiredness in SDD  schema: Most labels use <nop>FormattedSimpleTextType, which if the element is required should always be non-empty. However, in contrast to simple text strings, <nop>FormattedSimpleTextType allows limited formatting (sup/sub etc.) and has a mixed content model. As a result, it is not possible in xml schema to require the length of it to be at least 1. This may be a case where we have to make a recommendation not to output empty elements, and a requirement that a missing element and an empty element are to be considered identical (applications should not attach different semantics to empty elements).
+d188 1
+a188 1
+The missing element issue seems approachable by declaring things nillable and allowing xsi:nil="true" to distinguish from the missing case. This arose also in the discussion ResolvedTopicIsDiGIRadequateForSDD -- Main.BobMorris - 29 Apr 2004 
+d199 5
+a203 5
+	  Concept key="123"
+		 ConceptStates
+			StateDefinition key="1"
+			StateDefinition key="2"
+			StateDefinition key="3"
+d207 4
+a210 4
+	 StateReference ref="1"
+	 StateReference ref="2"
+	 StateReference ref="3"
+	 AutoAddStates ref="123"
+d217 7
+a223 7
+	  Concept key="123"
+		 ConceptStates
+			StateDefinition key="1"
+			StateDefinition key="2"
+			StateDefinition key="3"
+		 UpdateStateRefsTrigger
+			Character ref="123"
+d227 3
+a229 3
+	 StateReference ref="1"
+	 StateReference ref="2"
+	 StateReference ref="3"	 
+@
+
+
+1.18
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.17
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1097054118" format="1.0" version="1.17"}%
+d3 237
+a239 236
+<h1>Changes in 0.91 beta 15 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+
+<strong>This is an updated version containing most of the minor changes discussed at the [[SDD2004Berlin][meeting in Berlin]]. Some changes are still pending. 
+The current version of the SDD schema can always be found at CurrentSchemaVersion. Please do read through the report of changes, except perhaps for the few trivial at the start. 
+Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+
+<strong>Note:</strong> I have tried to document changes, but I cannot guarantee that everything is properly documented.
+In fact, since <nop>GenerationMetadata and <nop>ProjectDefinition are heavily changed in an attempt to find common
+ground between the various GBIF standards (current discussion involves only ABCD so far), I have given up on documenting all detailed changes therein (but some are commented).
+
+<h3>Trivial omissions that were present in 0.9, corrected in 0.91<a name="trivial"/></h3>
+	* audiencekey in <nop>ProjectDefinition/Audiences/Audience was specified to have a pattern in the documentation, but the pattern was not defined in the schema, regular expression pattern added to schema 0.91.
+	* <nop>RevisionData were required in Description, Keys, and <nop>GlossaryEntries, now made optional.
+	* The Keys collection could be missing, or empty (0 to unlimited Key objects), now changed to 1 to unlimited Key objects.
+
+<h3>Non-trivial changes enacted plus proposals not enacted<a name="nontrivial"/></h3>
+
+*Root*
+	* In an attempt to converge with ABCD:
+		* Document root element changed to <nop>DataSets/<nop>DataSet collection. <nop>DataSet takes the place of the original Document. Multiple "Projects" can now be transported in one file or data stream. This is not urgent for SDD, but does not hurt either.
+		* <nop>GenerationMetadata changed to <nop>TransformationHistory, conceived as a collection of at least one, possibly multiple Transformation elements. Alternative names: <nop>ConversionHistory, <nop>UBIF.DerivationHistory, <nop>HistoryMetadata, <nop>ContentHistoryMetadata, or <nop>DataHistoryMetadata.
+
+*<nop>ProjectDefinition*
+	* Element itself changed to <nop>ProjectMetadata
+	* <nop>AudienceSpecificData/Representation split into <nop>Description/Representation and <nop>IPRStatements/Representation.
+	* <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (new type common to SDD and ABCD schema). However, this is also present in <nop>TransformationHistory!
+	* <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@@@ To be discussed. The idea is that a project may point to a web resource that informs about details about the history of the data (previous versions or a detailed log of changes)." Unless somebody needs it now, I propose that this should be an addition in a later version rather than included in the first release.
+	* <nop>ProjectDefinition/Icon moved to new <nop>ProjectDefinition/Description/Representation, thus making it audience specific. 
+	  Icon (or logos) are not necessarily language independent since they may include text!
+	* <nop>ProjectDefinition/WebAddress moved as well, different audiences/languages may be referred to different URIs!
+	* _New_ after Berlin meeting: attempt to use across standards (see UBIF.SchemaDiscussion), therefore audience-dependent project Description and IPR-Statements changed to language dependent. Language should simplify the adoption of common framework elements for all TDWG/GBIF standards.
+	* _New_ after Berlin meeting: Version structure revised. 
+		* Version/PublicationDate changed to <nop>VersionReleaseDate to avoid possible confusion with <nop>LastRevision or data generation date in online situations.
+		* A Modifier element added (for beta, rel. candidate, etc.). 
+		* Increment removed (because considered application-internal management mechanism, no need for interoperability).
+		* Major and Minor left as integers to improve interoperability and comparability (nobody commented on the proposal "change version to string" posed in previous version of the change log.)
+	* _New_ after Berlin meeting: The narrative (unconstrained text) elements <nop>GeographicCoverage and <nop>TaxonomicCoverage in <nop>ProjectDefinition|Projectmetadata/Description/Representation combined to Coverage.
+		Constrained <nop>ClassScope added, __OtherScope needs a proposal how to link it to other vocabularies. <nop>SourcePublication changed from a single to possibly several, and considered a scoping mechanism as well.
+	* _NOTE_: Project Definition could also be called "Envelope". This avoids "project", which is meaningful in SDD, but perhaps problematic in ABCD/taxon names?)
+	* _QUESTION_: Can project definition be merged with transformation history?)
+	* _PROPOSAL_: Need documentation of quality control methods and standards, e. g. 
+		* <nop>QualityControlStandard: Name (and version, if applicable) of the published or internally documented quality control standard used.
+		* <nop>QualityControlDescription: Free-form description of methods used to ensure the quality of the descriptive data. In the absence of a standard, this should be a short description of the quality control procedures taken.
+	* _QUESTION_: <nop>ProjectDefinition/RevisionData/InitiationDate is xml:dateTime and required, which may cause problems in legacy projects. See discussion under InitiationDateForImportedLegacyData. The proposal makes sense in the context of project definition.
+	  However, <nop>RevisionDataType is also used in several other contexts (single descriptions, glossary, characters, etc.) and the proposal does not make sense there. Do we need two slightly derived types? Has anybody a better idea?
+
+*GeneralDeclarations*
+	* New root section "<nop>GeneralDeclarations" created for concepts not specific to SDD, but needed in the schema. Alternative names for this section are: 
+	  <nop>GeneralDefinitions, <nop>OverarchingIssues/Functions, <nop>CrosscuttingIssues/Functions, <nop>GeneralTerminology, <nop>GeneralTerms, <nop>GeneralVocabulary (the latter three do not 
+	  cover the possible inclusion of "language rules"). The following elements moved there:
+		* <nop>ProjectDefinition/Audiences
+		* Terminology/<nop>CodingStatusValues
+		* Terminology/<nop>UnivariateStatisticalMeasures (was <nop>StatisticalMeasures)
+		* (Newly created:) Global definitions for <nop>MeasurementUnits (Character definition Numerical/<nop>MeasurementUnit is consequently changed to a ref type). The optional generalization allows to define relations between units such that two size measures, one expressed in mm the other in cm become comparable.
+	* In each of <nop>CodingStatus, <nop>UnivariateStatisticalMeasure, <nop>MeasurementUnit, the "Generalization" element 
+	  (containing the machine-readable partial semantics of an object) was renamed to Specification.
+	* The Audience definitions lang and expertiselevel, previously defined as attributes, have been reorganized to follow the pattern of Label + Specification.
+	* The defaultaudience attribute present at Audience was only appropriately placed because all audience definitions were considered part of the project definition.
+	  Now it is separated and moved to <nop>ProjectDefinition/DefaultAudience.
+	* <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bob's comment on TWIKI about ClosedTopicMultivariateStatistics).
+		* Related: the fact that Char. def. Numerical/StatisticalMeasures had both a ref and a key confused several reviewers. To clarify, the key has now been renamed from ref to <nop>GeneralDeclarationRef and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure is typed as <nop>StatisticalMeasureKeyValue.
+		* Element "Dimensionless" added to Specification of <nop>UnivariateStatisticalMeasures (answers whether the measurement unit apply to a statistic or not).
+
+*Terminology*
+	* Sequence of sections changed, Terminology section placed after Entities and Resources sections.
+	* Terminology/Glossary (= ontology definitions) strongly changed
+		* Multiple new ontological relations between terms added and subsumed under a new  Ontology element. This urgently needs review!
+		* <nop>SensuLabel and <nop>KindOfTerm added. The first allows to distinguish between multiple definitions of a term (Term does not have to be unique, but Term + <nop>SensuLabel has to be!), the latter categorizes terms (is that doubtful??).
+		* With the introduction of <nop>SensuLabel, Term is no longer a keyref in the ontological definitions (synonym, antonym, etc.). Replaced with <nop>TermListType = List of <nop>GlossaryEntryRefType.
+		* Ontology now refers to <nop>GlossaryEntry keys rather than Term strings in a specific language. This is partly necessitated by the introduction of a <nop>SensuLabel.
+		* As a result, other parts of the <nop>GlossaryEntry (Citations, <nop>RevisionData) have now been made language/audience-independent as well. This also resolves some anomalies, e.g. that <nop>RevisionData were one the audience-specific part instead on the language-independent object as in all other cases in SDD.
+		* <nop>ExternalReference changed to <nop>ExternalDefinitionURI
+	* <nop>CharacterDefType
+		* Label changed from <nop>LabelPlusAbbreviationType to <nop>SimpleLabelType. This simplifies the model: Only a single label can be defined at the character level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each character, the same expressiveness is maintained.
+		* Type changed to <nop>MeasurementScale, value list completed to include "ratio".
+		* Section Assumptions added to the character definition, <nop>MeasurementScale moved there
+		* Categorical and Numerical are tentatively changed to a choice rather than co-occurring. This needs discussion!
+		* PlausibilityRange added to numeric character definition. Applies to all values and statistics, except those that are dimensionless (like variance).
+	* <nop>ResolvedTopicGenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>ResolvedTopicGenericStates 
+	  was present). "Generic" was considered to be confusing since for biologists it may be understood as referring to states describing a Genus.
+	* "Probability modifiers" have been renamed back to "Certainty modifiers" (they were previously called "Uncertainty modifiers" before changing to "Probability". As 
+	  already discussed in Brazil (but later forgotten), Probability is ambiguous since low occurrence frequency of a state also results in a low probability that a given object has a given character state.
+	* Terminology/Modifiers/Sets (intended to define reusable modifier sets which would then be associated with characters) and <nop>CharacterDefType/ModifierSets where both replaced with a new Concept/ApplicableModifiers element in the concept trees. For the modifier sets a key and a label had to be defined so they could be selected in each characters through a keyref. The new solution avoids both the label and the key/keyref mechanism: The concept label also identifies the modifier set, and the characters are already defined by all characters included in a concept branch. The disadvantage is, that some tree-walking is required to find which modifier is applicable to which character.
+	* In frequency modifiers "ProbabilityRange" was changed to "CertaintyRange".
+	* Frequency and Certainty modifiers changed to now contain the Range definition inside a Specification element. 
+	* Concept trees: An organizing element "Specification" added (similar to definitions in <nop>GeneralDeclarations). The types, roles, etc. inside were reorganized and the enumerations changed (e.&nbsp;g., <nop>MethodHierarchy to <nop>InstrumentationHierarchy, <nop>PartHierarchy split into <nop>PartOfHierarchy and <nop>PartGeneralizationHierarchy). Also please critizise the current structure: "DesignedFor/Role=Filtering". Do the element and value names make sense to native speakers? Any better suggestions?
+
+	* _PROPOSAL_: Rename <nop>AutoAddStates to <nop>UpdateStateRefsTriggers (those state from a generic state set must be as <nop>StateReference in Character/Categorical/States). GH: I believe it should be the other way round, i.e. instead of a state-set reference at the character, there should be a list of characters referenced at the place concept node. I have started to do this, but not yet finished! See "####" at the end of the document!
+	* _QUESTION_: Allow multiple mappings of fine-grained states to coarse-grained states, and make these mappings expertise-specific (part of audience definition)?
+	  Do we need multiple state sets within a character? Broad categories and narrow categories? Currently mapping of state is within a single character, and the two state sets need to be detected by application (those present minus those mapped away. Note: mapping can be indirect a-> b-> c, only c should remain.)
+	  Do we need multiple <em>named</em> mapping definitions in the future? See StateMapping for further discussion.
+
+*Entities*
+	* The "connector" metapher was not well received and not considered intuitive. As an attempt, I propose to use a proxy metapher: The proxy object is a local object "standing-in" for the external, often asynchronously available resource on the internet. In programming this is called the "proxy-pattern". As a variation proxy objects may, however, also "stand-in" if no external object can be found and a local object (e.g. in biology: taxon name, specimen) has to be defined. Specific changes:
+		* <nop>ResourceConnectorBaseType changed to <nop>ProxyBaseType
+		* <nop>ClassNameConnectorType, <nop>ClassHierarchyConnectorType, <nop>DescribedObjectConnectorType, etc. all changed to <nop>...ProxyType
+		* Within the <nop>ProxyBaseType, the <nop>FreeFormDescription was changed to Label. For all internal SDD object like characters or states, Label signifies a human readable representation, which is the intent of this data element as well.
+		* The ID/external object linking was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the <nop>ObjectLink rather than the old "ExternalID" points to the object in case of a single URI query string. The method and parameter names, and the ID-values are now given separately for web services. Furthermore, ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables that together uniquely refer to a specimen object. This is supported, but it would still be desirable to have a single ID to simplify ID comparison and distinguish ID from other parameter values that may be required to use a webservice method (but may be constant for different objects).
+		* In addition to URL and webservice, tentative support for DOI (digital object identifiers) and <nop>LifeScience ID (LSID) was added (including an LSIDs defining a pattern constraint).
+		* _New_ after Berlin meeting: Sequence of Label (= <nop>FreeFormDescription in 0.9) and <nop>ObjectLink changed; Label is now first. This agrees with the use of Label throughout the other parts of the schema (characters, states, etc.).
+	* Entities/Classes changed to Entities/ClassNames, //Class to //ClassName. Note: in addition to the <nop>ClassName (taxon name) pointers present we may need alternative pointers into the class concepts (taxon concepts) as present <nop>ClassHierarchy!
+	* "<nop>TaxonNameInSource" renamed to "<nop>ClassNameInSource". Related open issue: Combine with Location? Else we need to have a <nop>CitationBaseType without <nop>ClassNameInSource used in Glossary and Keys, and a derived type used in Descriptions!
+	* _New_ after Berlin meeting: <nop>ClassIdentification changed to <nop>ClassAssignment; the process will be an identification, but the result is assigning the object description to a class. The term Identification caused confusion in the discussion.
+	* Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of taxon/specimen) and still having taxon, taxonauthor, etc. in UBIF.FormattedText. For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back).
+	* Similarly, the biology-specific elements Sex and Stage were removed from <nop>ClassNameProxyType (= <nop>ClassNameConnectorType in 0.9; = the type of the proxy object defining links to external name databases).
+	  SDD assumes that <nop>ClassNameConnectorType in the future will connect to nomenclators or species databases and these are unlikely to provide separate records for sex and stage. It would have been possible to move Sex and Stage to <nop>DescriptionBaseType, but they are required at the end of the diagnostic keys as well (sexes or stages may be keyed out separately!). Thus, a new type <nop>ClassRefWithAdditionalClassifierType has been derived from the <nop>ClassRefType and used for <nop>DescriptionBaseType/Class (which is the basis for coded as well as natural language descriptions) and <nop>StoredKeyDefType/Lead/Class. Furthermore the Object identifications may be sex/stage specific (but also many objects will have multiple stages in a single specimen...). At the moment the new <nop>ClassRefWithAdditionalClassifierType has also been used at <nop>DescribedObjectConnectorType/ClassIdentification.
+		* The above mentioned type <nop>ClassRefWithAdditionalClassifierType should be defined generalized, avoiding biology-specific concepts like sex and stage.
+		* See SecondaryClassifiersProposal (and earlier: TheProblemOfSex)!
+	* <nop>ClassHierarchies was previously restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in SDD to define 
+	  taxon subsets (character subsets are defined in the <nop>ConceptTrees).
+
+	* _PROPOSAL_: Add an Abbreviation element to Class and Object in Entities? Would not likely be updated by service, but may be useful or even required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+
+*Descriptions*
+	* In coded and natural language descriptions a Header element was introduced to improve the overview and organization of information. 
+	* <nop>CharacterData_BaseType/Sequence with values "terminology" or "description" was considered difficult to understand. Bob proposed to replace it with a boolean "<nop>StatesAreOrdered" which has been done.
+
+	* _PROPOSAL_: Rename <nop>CodedDescriptions to <nop>SymbolicDescriptions, see Analytical Philosophy (I only checked the Enc. Britannica, I am no expert in this!)
+
+*Keys*
+	* Keys/Key was changed to <nop>IdentificationKey/IdentificationKeys. The term "key" was perceived as too general, causing especially misunderstanding for non-biologists like programmers.
+	  Instead of the depracated "guided key" other terms are "Pathway key" and "Stored key". "Dichotomous key" is inappropriate.
+	* <nop>CodedStatements in Keys (coded terminology equivalent to the natural language key statement) used to be a simple list of states. To accomodate the frequently occurring more complex statements in keys, e. g. "margin of fruitbody yellow (or orange and hairy)" -> i.e. not if only orange, or "margin of fruitbody yellow, never with denticles" -> other surface structures may be present, a boolean operator logic modeled after <nop>MathML has been added to <nop>CodedStatements inside Keys.  
+		* Related: Should Boolean logic (not, and, or) be added to any natural language markup?
+		* Should guided keys be marked up using the natural language markup method rather than using a separate section, as currently proposed? Currently, the key markup was thought to follow the coded description model, but now it has been extended. Problem: Boolean logic is frequently found in the lead statements of keys, but rarely in natural language taxon descriptions. However, if Boolean logic operators are introduced to both, it would be a strong argument to use the same method in NLD and Keys, rather than having three variants.
+		* Alternatively, we may want to extend the <nop>CodedDescriptions and provide Boolean logic operators there as well. This would be a heavy burden on database-oriented descriptive data processing, however. Or can someone provide a simple model how to handle arbitrary logical and/or combinations in a relatively simple database model?
+
+*General*
+	* <nop>CitationType: optional <nop>LastVerified and <nop>InvalidSince date elements added, important for volatile online publications.
+	* The application-specific data containers (= extension mechanism to store non-SDD data) has been renamed from <nop>ApplicationData/Application to <nop>CustomExtensions/CustomExtension. Several applications may agree on common extensions, in which case the old names would not have been appropriate. The mechanism itself remains unchanged.
+	* Model groups like "(Rich)AnnotationGroup" containing only optional elements have been themself made optional. This changes nothing in the validation and schema, but seems to help when using Castor data binding.
+	* In the <nop>LabelPlusAbbreviationRepresentationType (used frequently in Label/Representation elements) the Selector element containing media (usually images) was renamed to <nop>MediaResources. This is the same element name used generically throughout the schema. 
+		* The name "Selectors" was intended to express that only certain media should be added here - those that are sufficiently informative and concise at the same time to be used as selectors instead of text labels. However, the use of Selector lead to more confusion than clarification, and the purpose of the media is expressed through the Label context, i.e. these are labeling images etc.
+		* The only other media resource is Icon which remains semantically labeled.
+
+---
+
+<h1>Open Questions<a name="questions"/></h1>
+
+	* Class names (= taxon names referenced in descriptions or keys) may have to be audience specific! See LanguageSpecificClassNames for a discussion!
+
+	* Descriptions generalization questions, i.e. inferring descriptions from other descriptions:
+		* Main.PrometheusII proposes to explictly reference descriptions that are to be included or generalized into a current description. Currently we expect in SDD this to rely on am automatic "description resource discovery" mechanism, i. e. _all_ object descriptions with the same class name are generalized, and classes are generalized to higher classes following the class (taxon) hierachy defined in Entities.
+		* <nop>BioLink proposes (correct?) to explicitly flag which characters or states allow generalization, and whether from above or below.
+		* (= the first is explicit generalization on the object/class hierarchy level, the second explicit which characters/states are included in generalization.)
+		* Related: SDD probably needs a mechanism to mark the results of aggregation/generalization, computed characters, calulated statistics to document whether they are calculated / inherited or directly entered.
+		* Related: Do we have to document original terminology labels during data entry (i.e. in the language/audience representation used during scoring). The audience itself may be interesting (as a code), but even more the terminology may have been changed slightly (evolution of terminology) since scoring. A record of score-time representation would increase the trust in the coded scores and allow some backtracking of problems.
+
+	* In Descriptions we call an element <nop>GeographicalScope, in <nop>ProjectDefinition basically the same thing <nop>GeographicalCoverage! However, Descriptions refers to defined objects in Resources, whereas in <nop>ProjectDefinition it is free-form text (modeled directly after <nop>DublinCore). Make this consistent and always use Resources/Geography/Location object references?
+
+	* Problem of storing calculated data and marking them as "autogenerated" (or which term to use?). Related to problem of inheriting information up and down taxonomic tree. Similar problems are already marked up in the "Origin" element in character and NLD data, and in the inherited attribute associated with character ratings. In the case of statistical measures, marking the Origin as calculated would refer to the raw data in an observation set. However, there is some discussion on the Wiki (see RepeatedObservations) whether we need a keyref to exactly one observation set or not.
+
+	* We probably need to have more than one class hierarchy and add a marker to indicate which hierarchy is formal, and which contains non-taxonomic groupings. In Brazil Kevin reported on Lucid providing a "tag" mechanism to mark "silly characters" intended only to group items like "100 worst weed species: yes/no". XPER reported a similar tag mechanism for items (instead of characters as in Lucid) to tags items for specific problems: diseases / quarantine species / disease vectors. To me both kind of problems seem to be most appropriately handled as a non-taxonomic class hierarchy. Any proposals how to handle this? As a first step an additional attribute "IsPhylogenetic" in the class hierarchy is proposed (already done).
+
+	* Glossary:
+		* Do we need some method to express ranges for cardinality: How many legs may there be etc.?
+		* Do we need some method to associate states with properties/types?
+
+	* Should the natural language markup be brought closer to xhtml by using &lt;span class=""&gt; for markup?
+
+	* Basing character states on concept states (= reuse of state sets in multiple characters) causes problem with order (ordinal scale) characters. The states in a character may be inherited from from multiple concepts nodes. Each of these will probably have order in the concept, but the final order can only be defined in each character. This seems unfortunate.
+
+	* Can we describe images? Is this automatically implied in reversing the association between a description and an image or not? 
+	  Images may only illustrate parts of the description.
+
+	* Can we format numeric values in reports? See DELTA  *DECIMAL PLACES. How do we format sets of statistical measures in natural language or other reports? The (min-) lowerrange - central - upperrange (-max) format is not necessarily universal. Currently it is nevertheless fixed in application code and cannot be defined by users. Since many variants which individual measures are present exist, this can probably not be done with a <nop>TextBefore/After strategy (possible for Min, Max, but not for ranges with/without mean, "3-6", "5", "3-5-6"). Also, open ranges exist, which should be output as "at least 3 cm long" in natural language. Also: formats are audience/language-specific!
+  
+	* Can we find a smart method to format related and dependent value like width x length?
+
+	* Using polymorphism for character definitions. Color as separate character type?
+
+	* Media Resource may need a location detail (if figure has multiple labeled fragments). Perhaps call this <nop>FragmentLabel?
+
+	* Media-"FragmentLabels", but even more the "Location" in Citations may be language sensitive! "table 1", "tab. 2", "figure 3" in English, "Abbildung 3" in German etc.!
+
+---
+
+<h1>Problems I believe cannot be solved in xml schema</h1> 
+
+(please tell me if you disagree!)
+
+	* We have a frequently used type that prevents validation of requiredness in SDD  schema: Most labels use <nop>FormattedSimpleTextType, which if the element is required should always be non-empty. However, in contrast to simple text strings, <nop>FormattedSimpleTextType allows limited formatting (sup/sub etc.) and has a mixed content model. As a result, it is not possible in xml schema to require the length of it to be at least 1. This may be a case where we have to make a recommendation not to output empty elements, and a requirement that a missing element and an empty element are to be considered identical (applications should not attach different semantics to empty elements).
+---
+The missing element issue seems approachable by declaring things nillable and allowing xsi:nil="true" to distinguish from the missing case. This arose also in the discussion ResolvedTopicIsDiGIRadequateForSDD -- Main.BobMorris - 29 Apr 2004 
+
+I cannot follow your argument. The problem I state above is that I cannot constrain the Labels to actually contain a string, the element must be present but may contain nothing. There seems no mechanims in schema to prevent that. I know you warned us against mixed content model! -- Gregor Hagedorn - 3. May.
+---
+
+<h3>Appendix, see discussion marked "####" above:</h3>
+
+Current situation in 0.9:
+<pre>
+Concept
+  Concept
+	  Concept key="123"
+		 ConceptStates
+			StateDefinition key="1"
+			StateDefinition key="2"
+			StateDefinition key="3"
+
+Char
+  Categorical/States/
+	 StateReference ref="1"
+	 StateReference ref="2"
+	 StateReference ref="3"
+	 AutoAddStates ref="123"
+</pre>
+
+Proposed reversal:
+<pre>
+Concept
+  Concept
+	  Concept key="123"
+		 ConceptStates
+			StateDefinition key="1"
+			StateDefinition key="2"
+			StateDefinition key="3"
+		 UpdateStateRefsTrigger
+			Character ref="123"
+
+Char key="123"
+  Categorical/States/
+	 StateReference ref="1"
+	 StateReference ref="2"
+	 StateReference ref="3"	 
+</pre>
+
+One reason why this is relevant is that I believe we have to introduce a similar mechanism for <nop>StatisticalMeasures, to allow defining sets of statistical measures centrally (min-max range, a simple range/mean type like DELTA, extensions including variance and sample size, etc.).
+
+Also, we have modifier sets as well. Can we also run them over a concept-node-based system, so that we have very similar systems for States, Measures, and modifiers? That seems to improve the schema. Unfortunately, with modifiers I am uncertain how well this works. Modifiers almost cry for inheritance down the concept tree, something we have not yet done so far!
+
+---
+
+Looking for the most recent schema file? See CurrentSchemaVersion!
+
+-- Gregor Hagedorn - 25 May 2004
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089914520" format="1.0" version="1.16"}%
+d106 1
+a106 1
+	* Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of taxon/specimen) and still having taxon, taxonauthor, etc. in FormattedText. For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back).
+@
+
+
+1.15
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086945540" format="1.0" version="1.15"}%
+d23 1
+a23 1
+		* <nop>GenerationMetadata changed to <nop>TransformationHistory, conceived as a collection of at least one, possibly multiple Transformation elements. Alternative names: <nop>ConversionHistory, <nop>DerivationHistory, <nop>HistoryMetadata, <nop>ContentHistoryMetadata, or <nop>DataHistoryMetadata.
+d33 1
+a33 1
+	* _New_ after Berlin meeting: attempt to use across standards (see UnifiedBioInfoFramework), therefore audience-dependent project Description and IPR-Statements changed to language dependent. Language should simplify the adoption of common framework elements for all TDWG/GBIF standards.
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085765046" format="1.0" version="1.14"}%
+d33 1
+a33 1
+	* _New_ after Berlin meeting: attempt to use across standards (see OverarchingPatternsForTdwgSchemata), therefore audience-dependent project Description and IPR-Statements changed to language dependent. Language should simplify the adoption of common framework elements for all TDWG/GBIF standards.
+d142 1
+a142 1
+	* Class names (= taxon names referenced in descriptions or keys) may have to be audience specific! See AudienceSpecificClassNames for a discussion!
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085756700" format="1.0" version="1.13"}%
+d81 1
+a81 1
+	* <nop>GenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>GenericStates 
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085472830" format="1.0" version="1.12"}%
+d62 1
+a62 1
+	* <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bob's comment on TWIKI about MultivariateStatistics).
+d186 1
+a186 1
+The missing element issue seems approachable by declaring things nillable and allowing xsi:nil="true" to distinguish from the missing case. This arose also in the discussion IsDiGIRadequateForSDD -- Main.BobMorris - 29 Apr 2004 
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085405580" format="1.0" version="1.11"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 14 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 3
+a7 1
+<strong>This is an updated version containing most of the minor changes discussed at the [[SDD2004Berlin][meeting in Berlin]]. Some changes are still pending. The current version of the SDD schema can always be found at CurrentSchemaVersion. Please do read through the report of changes, except perhaps for the few trivial at the start. Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+d69 1
+d71 3
+a74 2
+		* Multiple new ontological relations between terms added and subsumed under a new  Ontology element. This urgently needs review!
+		* With the introduction of <nop>SensuLabel, Term is no longer a keyref in the ontological definitions (synonym, antonym, etc.). Replaced with <nop>TermListType = List of <nop>GlossaryEntryRefType.
+d80 1
+d236 3
+a238 1
+-- Gregor Hagedorn - 24 May 2004
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085401200" format="1.0" version="1.10"}%
+d5 1
+a5 1
+<strong>This is an updated version containing most of the minor changes discussed at the Berlin meeting. Some changes are still pending. The SDD schema beta version discussed here has been uploaded to the WIKI as an attached zip file, see at the end! Also, please do read through the report of changes, except perhaps for the few trivial at the start. The changes and notes therein are quite relevant to the [[SDD2004Berlin][discussion in Berlin]]. The current Beta 10 version should be considered the basis for the meeting! Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+d9 1
+a9 1
+ground between the various GBIF standards (current discussion involves only ABCD so far), I have given up on documenting any detailed changes there.
+d231 1
+a231 2
+-- Gregor Hagedorn - 24 May 2004
+
+d237 1
+a237 1
+%META:FILEATTACHMENT{name="SDD_091beta11.zip" attr="" comment="Beta 11 = Final for Berlin meeting!" date="1084279915" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta11.zip" size="77014" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1084280640" format="1.0" version="1.9"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 11 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 1
+a5 1
+<strong>The SDD schema beta version discussed here has been uploaded to the WIKI as an attached zip file, see at the end! Also, please do read through the report of changes, except perhaps for the few trivial at the start. The changes and notes therein are quite relevant to the [[SDD2004Berlin][discussion in Berlin]]. The current Beta 11 version should be considered the basis for the meeting! Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+a10 1
+
+d24 2
+a25 1
+	* <nop>ProjectDefinition/AudienceSpecificData/Representation split into <nop>ProjectDefinition/Description/Representation and <nop>ProjectDefinition/IPRStatements/Representation.
+d31 8
+a38 1
+
+a43 1
+	* _QUESTION_: <nop>ProjectDefinition/Version/Major|Minor are integers. To be more flexible in versions, the Version number could also be a single string, including things like "1.0.023 beta 2" or "2000 Professional". I believe software has little responsibility on this string other than comparison so that no parsing in major/minor is required. However, do we need "Increment"? The idea was that this allows to distinguish subversions that are _not_ separately published as version (and will all have the same version date!). Having this defined as integer would allow this to be managed automatically be software. However, it may not be required if <nop>ProjectDefinition/RevisionData/LastRevisionDate is already maintained by software; the date will effectively distinguish revisions within a version. Do we agree on this? Should Version become a simple string, Major, Minor, Increment be dropped, and <nop>PublicationDate maintained?
+d55 3
+a57 3
+	* In each of <nop>CodingStatus, <nop>UnivariateStatisticalMeasure, <nop>MeasurementUnit, the Generalization element 
+	  (containing the machine-readable partial semantics of an object) was renamed to Specialization.
+	* The Audience definitions lang and expertiselevel, previously defined as attributes, have been reorganized to follow the pattern of Label + Specialization.
+d62 1
+a62 1
+		* Element "Dimensionless" added to Specialization of <nop>UnivariateStatisticalMeasures (answers whether the measurement unit apply to a statistic or not).
+d65 1
+d67 1
+a67 1
+		* <nop>SensuLabel and <nop>KindOfTerm added (the latter doubtful?)
+d70 6
+a75 2
+	* <nop>CharacterDefType/Label changed from <nop>LabelPlusAbbreviationType to <nop>SimpleLabelType. This simplifies the model: Only a single label can be defined at the character level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each 
+	  character, the same expressiveness is maintained.
+a79 2
+	* <nop>CharacterDefType/Type changed to <nop>CharacterDefType/MeasurementScale, value list completed to include "ratio".
+	* Categorical and Numerical are tentatively changed to a choice rather than co-occurring. This needs discussion!
+d81 3
+a83 1
+	* Concept trees: An organizing element "Specialization" added (similar to definitions in <nop>GeneralDeclarations). The types, roles, etc. inside were reorganized and the enumerations changed (e.&nbsp;g., <nop>MethodHierarchy to <nop>InstrumentationHierarchy, <nop>PartHierarchy split into <nop>PartOfHierarchy and <nop>PartGeneralizationHierarchy). Also please critizise the current structure: "DesignedFor/Role=Filtering". Do the element and value names make sense to native speakers? Any better suggestions?
+d96 6
+a101 4
+		* In addition to URL and webservice, tentative support for a <nop>LifeScience ID (LSID) was added (including a type LSIDs).
+	* "<nop>TaxonNameInSource" renamed to "<nop>ClassNameInSource". Related open issue: Combine with Location? Else we need to have a <nop>CitationBaseType without 
+	  <nop>ClassNameInSource used in Glossary and Keys, and a derived type used in Descriptions!
+	* Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of taxon/specimen) and still having taxon, taxonauthor, etc. in FormattedText. For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back.
+d106 1
+a106 1
+	* <nop>ClassHierarchies was restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in SDD to define 
+d128 4
+a157 2
+	* The "partial-semantics" definitions present in several elements in <nop>GeneralDeclarations (audiences, statistical measures, units), but also in concept trees used to be called "Generalization" because they allow using the objects in a generalized way. This view has now been reversed, they are renamed "Specialization" because the values define a specialization of the general object type. Is this appropriate, or has anybody a completely different concept that summarizes the purpose of these object attributes in a more appropriate way? The level is not an object composition, but intended to communicate the intent of the "specialization" attributes.
+
+d231 4
+a234 4
+-- Gregor Hagedorn - 11 May 2004
+
+%META:FILEATTACHMENT{name="SDD_091beta3.zip" attr="" comment="SDD 0.91 Beta 3" date="1079962204" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta3.zip" size="52796" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="SDD_091beta6.zip" attr="" comment="SDD 0.91 Beta 6" date="1082737634" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta6.zip" size="57560" user="GregorHagedorn" version="1.1"}%
+d236 1
+a236 1
+%META:FILEATTACHMENT{name="SDD_091beta9.zip" attr="" comment="SDD 0.91 Beta 9" date="1083773230" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta9.zip" size="57050" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1084188780" format="1.0" version="1.8"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 10 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 1
+a5 1
+<strong>The SDD schema beta version discussed here has been uploaded to the WIKI as an attached zip file, see at the end! Also, please do read through the report of changes, except perhaps for the few trivial at the start. The changes and notes therein are quite relevant to the [[SDD2004Berlin][discussion in Berlin]]. The current Beta 10 version should be considered the basis for the meeting! Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+d216 3
+a218 3
+-- Gregor Hagedorn - 10 May 2004
+
+%META:FILEATTACHMENT{name="SDD_091beta3.zip" attr="" comment="" date="1079962204" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta3.zip" size="52796" user="GregorHagedorn" version="1.1"}%
+d220 1
+a220 1
+%META:FILEATTACHMENT{name="SDD_091beta7.zip" attr="" comment="SDD 0.91 Beta 7" date="1083591586" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta7.zip" size="56869" user="GregorHagedorn" version="1.1"}%
+d222 2
+a223 1
+%META:FILEATTACHMENT{name="SDD_091beta10.zip" attr="" comment="Beta 10 = Final for Berlin meeting!" date="1084188580" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_091beta10.zip" size="58257" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083773280" format="1.0" version="1.7"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 9 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 1
+a5 3
+<strong>The SDD schema beta version discussed here has been uploaded to the WIKI as an attached zip file, see at the end! Also, please do read through
+the report of changes, except perhaps for the few trivial at the start. The changes and notes therein are quite relevant to the discussion in Berlin! 
+Please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+d9 1
+a9 2
+ground between the various GBIF standards (current discussion involves only ABCD so far), 
+I have given up on documenting any detailed changes there.
+d13 1
+a13 2
+	* audiencekey in <nop>ProjectDefinition/Audiences/Audience was specified to have a pattern in the documentation, but the pattern was not defined in the schema, 
+	  regular expression pattern added to schema 0.91.
+d21 2
+a22 4
+		* Document root element changed to <nop>DataSets/<nop>DataSet collection. <nop>DataSet takes the place of the original Document.
+		  Multiple Projects can now be transported in one file or data stream. This is not urgent for SDD, but does not hurt either.
+		* <nop>GenerationMetadata changed to <nop>TransformationHistory, conceived as a collection of at least one, possibly multiple Transformation elements.
+		  Alternative names: <nop>ConversionHistory, <nop>DerivationHistory, <nop>HistoryMetadata, <nop>ContentHistoryMetadata, or <nop>DataHistoryMetadata.
+d27 1
+a27 3
+	* <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@@@ To be discussed. The idea is that a project may point to a web resource that informs 
+	  about details about the history of the data (previous versions or a detailed log of changes)." Unless somebody needs it now, I propose that this should be an 
+	  addition in a later version rather than included in the first release.
+d37 3
+a39 11
+	* _QUESTION_: <nop>ProjectDefinition/Version/Major|Minor are integers. To be more flexible in versions, the Version number could also be a single string, including things
+	  like "1.0.023 beta 2" or "2000 Professional". I believe software has little responsibility on this string other than comparison so that no parsing in 
+	  major/minor is required. However, do we need "Increment"? The idea was that this allows to distinguish subversions that are _not_ separately published
+	  as version (and will all have the same version date!). Having this defined as integer would allow this to be managed automatically be software. However,
+	  it may not be required if <nop>ProjectDefinition/RevisionData/LastRevisionDate is already maintained by software; the date will effectively distinguish revisions 
+	  within a version.
+	  Do we agree on this? Should Version become a simple string, Major, Minor, Increment be dropped, and <nop>PublicationDate maintained?
+	* _QUESTION_: <nop>ProjectDefinition/RevisionData/InitiationDate is xml:dateTime and required, which may cause problems in legacy projects. See discussion under 
+	  InitiationDateForImportedLegacyData. The proposal makes sense in the context of project definition.
+	  However, <nop>RevisionDataType is also used in several other contexts (single descriptions, glossary, characters, etc.) and the proposal does not make sense there. 
+	  Do we need two slightly derived types? Has anybody a better idea?
+d48 1
+a48 2
+		* (Newly created:) Global definitions for <nop>MeasurementUnits (Character definition Numerical/<nop>MeasurementUnit is consequently changed to a ref type). The 
+		  optional generalization allows to define relations between units such that two size measures, one expressed in mm the other in cm become comparable.
+d55 1
+a55 3
+		* Related: the fact that Char. def. Numerical/StatisticalMeasures had both a ref and a key confused several reviewers. To clarify, the key has now been
+		  renamed from ref to <nop>GeneralDeclarationRef and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure 
+		  is typed as <nop>StatisticalMeasureKeyValue.
+d63 1
+a63 2
+	* <nop>CharacterDefType/Label changed from <nop>LabelPlusAbbreviationType to <nop>SimpleLabelType. This simplifies the model: Only a single label can be defined at the character 
+	  level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each 
+d68 1
+a68 2
+	  already discussed in Brazil (but later forgotten), Probability is ambiguous since low occurrence frequency of a state also results in a low probability that a 
+	  given object has a given character state.
+d71 4
+a74 12
+	* Terminology/Modifiers/Sets (intended to define reusable modifier sets which would then be associated with characters) and <nop>CharacterDefType/ModifierSets
+	  where both replaced with a new Concept/ApplicableModifiers element in the concept trees. For the modifier sets a key and a label had to be defined so 
+	  they could be selected in each characters through a keyref. The new solution avoids both the label and the key/keyref mechanism: The concept
+	  label also identifies the modifier set, and the characters are already defined by all characters included in a concept branch. The disadvantage is, that 
+	  some tree-walking is required to find which modifier is applicable to which character.
+	* Concept trees: An organizing element "Specialization" added (similar to definitions in <nop>GeneralDeclarations). The types, roles, etc. inside were reorganized 
+	  and the enumerations changed (e.&nbsp;g., <nop>MethodHierarchy to <nop>InstrumentationHierarchy, <nop>PartHierarchy split into <nop>PartOfHierarchy and <nop>PartGeneralizationHierarchy). 
+	  Also please critizise the current structure: "DesignedFor/Role=Filtering". Do the element and value names make sense to native speakers? Any better suggestions?
+
+	* _PROPOSAL_: Rename <nop>AutoAddStates to <nop>UpdateStateRefsTriggers (those state from a generic state set must be as <nop>StateReference in Character/Categorical/States). 
+	  GH: I believe it should be the other way round, i.e. instead of a state-set reference at the character, there should be a list of characters referenced
+	  at the place concept node. I have started to do this, but not yet finished! See "####" at the end of the document!
+d80 1
+a80 3
+	* The "connector" metapher was not well received and not considered intuitive. As an attempt, I propose to use a proxy metapher: The proxy object is a local object 
+	  "standing-in" for the external, often asynchronously available resource on the internet. In programming this is called the "proxy-pattern". As a variation 
+	  proxy objects may, however, also "stand-in" if no external object can be found and a local object (e.g. in biology: taxon name, specimen) has to be defined. Specific changes:
+d83 3
+a85 8
+		* Within the <nop>ProxyBaseType, the <nop>FreeFormDescription was changed to Label. For all internal SDD object like characters or states, Label signifies
+		  a human readable representation, which is the intent of this data element as well.
+		* The ID/external object linking was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be 
+		  embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the 
+		  <nop>ObjectLink rather than the old "ExternalID" points to the object in case of a single URI query string. The method and parameter names, and the ID-values 
+		  are now given separately for web services. Furthermore, ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables 
+		  that together uniquely refer to a specimen object. This is supported, but it would still be desirable to have a single ID to simplify ID comparison and distinguish 
+		  ID from other parameter values that may be required to use a webservice method (but may be constant for different objects).
+d88 1
+a88 3
+	* Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of 
+	  taxon/specimen) and still having taxon, taxonauthor, etc. in FormattedText <!-- http://efgblade.cs.umb.edu/twiki/bin/view/SDD/FormattedText -->. 
+	  For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back.
+d90 1
+a90 6
+	  SDD assumes that <nop>ClassNameConnectorType in the future will connect to nomenclators or species databases and these are unlikely to provide separate records 
+	  for sex and stage. It would have been possible to move Sex and Stage to <nop>DescriptionBaseType, but they are required at the end of the diagnostic
+	  keys as well (sexes or stages may be keyed out separately!). Thus, a new type <nop>ClassRefWithAdditionalClassifierType has been derived from the <nop>ClassRefType and used 
+	  for <nop>DescriptionBaseType/Class (which is the basis for coded as well as natural language descriptions) and <nop>StoredKeyDefType/Lead/Class. 
+	  Furthermore the Object identifications may be sex/stage specific (but also many objects will have multiple stages in a single specimen...). 
+	  At the moment the new <nop>ClassRefWithAdditionalClassifierType has also been used at <nop>DescribedObjectConnectorType/ClassIdentification.
+d96 1
+a96 2
+	* _PROPOSAL_: Add an Abbreviation element to Class and Object in Entities? Would not likely be updated by service, but may be useful or even 
+		required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+d100 1
+a100 2
+	* <nop>CharacterData_BaseType/Sequence with values "terminology" or "description" was considered difficult to understand. Bob proposed to replace it with a boolean 
+	  "<nop>StatesAreOrdered" which has been done.
+d107 1
+a107 3
+	* <nop>CodedStatements in Keys (coded terminology equivalent to the natural language key statement) used to be a simple list of states. To accomodate the frequently 
+	  occurring more complex statements in keys, e. g. "margin of fruitbody yellow (or orange and hairy)" -> i.e. not if only orange, or "margin of fruitbody yellow, 
+	  never with denticles" -> other surface structures may be present, a boolean operator logic modeled after <nop>MathML has been added to <nop>CodedStatements inside Keys.  
+d109 2
+a110 7
+		* Should guided keys be marked up using the natural language markup method rather than
+		  using a separate section, as currently proposed? Currently, the key markup was thought to follow the coded description model, but
+		  now it has been extended. Problem: Boolean logic is frequently found in the lead statements of keys, but rarely in natural language 
+		  taxon descriptions. However, if Boolean logic operators are introduced to both, it would be a strong argument to use the same method in NLD and Keys, rather than having three variants.
+		* Alternatively, we may want to extend the <nop>CodedDescriptions and provide Boolean logic operators there as well. This would be a heavy burden on
+		  database-oriented descriptive data processing, however. Or can someone provide a simple model how to handle arbitrary logical and/or combinations in 
+		  a relatively simple database model?
+d114 1
+a114 3
+	* The application-specific data containers (= extension mechanism to store non-SDD data) has been renamed from <nop>ApplicationData/Application to 
+	  <nop>CustomExtensions/CustomExtension. Several applications may agree on common extensions, in which case the old names would not have been
+	  appropriate. The mechanism itself remains unchanged.
+d123 1
+a123 3
+		* Main.PrometheusII proposes to explictly reference descriptions that are to be included or generalized into a current description.
+		  Currently we expect in SDD this to rely on am automatic "description resource discovery" mechanism, i. e. _all_ object descriptions with 
+		  the same class name are generalized, and classes are generalized to higher classes following the class (taxon) hierachy defined in Entities.
+d127 7
+a133 18
+		* Related: Do we have to document original terminology labels during data entry (i.e. in the language/audience representation used during scoring). The audience itself
+		  may be interesting (as a code), but even more the terminology may have been changed slightly (evolution of terminology) since scoring. A record
+		  of score-time representation would increase the trust in the coded scores and allow some backtracking of problems.
+
+	* In Descriptions we call an element <nop>GeographicalScope, in <nop>ProjectDefinition basically the same thing <nop>GeographicalCoverage! 
+	  However, Descriptions refers to defined objects in Resources, whereas in <nop>ProjectDefinition it is free-form text (modeled directly after <nop>DublinCore).
+	  Make this consistent and always use Resources/Geography/Location object references?
+
+	* Problem of storing calculated data and marking them as "autogenerated" (or which term to use?). Related to problem of inheriting information up and
+	  down taxonomic tree. Similar problems are already marked up in the "Origin" element in character and NLD data, and in the inherited attribute 
+	  associated with character ratings. In the case of statistical measures, marking the Origin as calculated would refer to the raw data in an observation set.
+	  However, there is some discussion on the Wiki (see RepeatedObservations) whether we need a keyref to exactly one observation set or not.
+
+	* We probably need to have more than one class hierarchy and add a marker to indicate which hierarchy is formal, and which contains non-taxonomic 
+	  groupings. In Brazil Kevin reported on Lucid providing a "tag" mechanism to mark "silly characters" intended only to group items like "100 worst 
+	  weed species: yes/no". XPER reported a similar tag mechanism for items (instead of characters as in Lucid) to tags items for specific problems: 
+	  diseases / quarantine species / disease vectors. To me both kind of problems seem to be most appropriately handled as a non-taxonomic 
+	  class hierarchy. Any proposals how to handle this? As a first step an additional attribute "IsPhylogenetic" in the class hierarchy is proposed (already done).
+d141 1
+a141 9
+	* The "partial-semantics" definitions present in several elements in <nop>GeneralDeclarations (audiences, statistical measures, units), but also in 
+	  concept trees used to be called "Generalization" because they allow using the objects in a generalized way. This view has now been reversed, they 
+	  are renamed "Specialization" because the values define a specialization of the general object type. Is this appropriate, or has anybody a completely
+	  different concept that summarizes the purpose of these object attributes in a more appropriate way? The level is not an object composition, but 
+	  intended to communicate the intent of the "specialization" attributes.
+
+	* Basing character states on concept states (= reuse of state sets in multiple characters) causes problem with order (ordinal scale) characters.
+	  The states in a character may be inherited from from multiple concepts nodes. Each of these will probably have order in the concept, but the final 
+	  order can only be defined in each character. This seems unfortunate.
+d143 1
+d148 1
+a148 5
+	* Can we format numeric values in reports? See DELTA  *DECIMAL PLACES. How do we format sets of statistical measures in natural language or 
+	  other reports? The (min-) lowerrange - central - upperrange (-max) format is not necessarily universal. Currently it is nevertheless
+	  fixed in application code and cannot be defined by users. Since many variants which individual measures are present exist, this can 
+	  probably not be done with a <nop>TextBefore/After strategy (possible for Min, Max, but not for ranges with/without mean, "3-6", "5", "3-5-6"). 
+	  Also, open ranges exist, which should be output as "at least 3 cm long" in natural language. Also: formats are audience/language-specific!
+d156 1
+a156 1
+	* Media-"FragmentLabels", but even more the "Location" in Citations may be language sensitive! "table 1", "tab. 2", "figure 3" in English,  "Abbildung 3" in German etc.!
+d160 3
+a162 2
+<h1>Problems I believe cannot be solved in xml schema<br/>
+(please tell me if you disagree)</h1> 
+d164 1
+a164 5
+	* At a very frequent point there is a lack of validation of requiredness in SDD  schema: Most labels use <nop>FormattedSimpleTextType, which if the element is required 
+	  should always be non-empty. However, in contrast to simple text strings, <nop>FormattedSimpleTextType allows limited formatting (sup/sub etc.) and has a mixed content 
+	  model. As a result, it is not possible in xml schema to require the length of it to be at least 1. This may be a case where we have to make a recommendation not 
+	  to output empty elements, and a requirement that a missing element and an empty element are to be considered identical (applications should not attach different 
+	  semantics to empty elements).
+d166 1
+a166 2
+The missing element issue seems approachable by declaring things nillable and allowing xsi:nil="true" to distinguish from the missing case. 
+This arose also in the discussion IsDiGIRadequateForSDD -- Main.BobMorris - 29 Apr 2004 
+d168 1
+a168 2
+I cannot follow your argument. The problem I state above is that I cannot constrain the Labels to actually contain a string, the element must be present but may contain
+nothing. There seems no mechanims in schema to prevent that. I know you warned us against mixed content model! -- Gregor Hagedorn - 3. May.
+d211 2
+a212 3
+Also, we have modifier sets as well. Can we also run them over a concept-node-based system, so that we have very similar systems for States, Measures, and modifiers? That seems to improve the schema. 
+Unfortunately, with modifiers I am uncertain how well this works. Modifiers almost cry for inheritance down the concept tree, something we have not yet
+done so far!
+d216 2
+d222 1
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083591660" format="1.0" version="1.6"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 7 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 3
+a7 1
+<strong>The SDD schema beta version discussed here has been uploaded to the WIKI as an attached zip file, see at the end!</strong>
+d21 4
+a24 2
+<h3>Non-trivial changes already enacted<a name="nontrivial"/></h3>
+	* Changes already performed in an attempt to converge with ABCD:
+d27 1
+a27 1
+		* <nop>GenerationMetadata changed to <nop>TransformationHistory, which is a collection of at least one, possibly multiple Transformation elements.
+d30 26
+a55 5
+	* <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bob's comment on TWIKI about MultivariateStatistics).
+		* Related: the fact that Char. def. Numerical/StatisticalMeasures had both a ref and a key confused several reviewers. To clarify, the key has now been
+		  renamed from ref to <nop>GeneralDeclarationRef and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure 
+		  is typed as <nop>StatisticalMeasureKeyValue.
+		* Element "Dimensionless" added to Generalization of <nop>UnivariateStatisticalMeasures (answers whether the measurement unit apply to a statistic or not).
+d57 1
+d66 10
+a75 16
+		* In each of <nop>CodingStatus, <nop>UnivariateStatisticalMeasure, <nop>MeasurementUnit, the Generalization element 
+		  (containing the machine-readable partial semantics of an object) was renamed to Specialization.
+		* The Audience definitions lang and expertiselevel, previously defined as attributes, have been reorganized to follow the pattern of Label + Specialization.
+		* The defaultaudience attribute present at Audience was only appropriately placed because all audience definitions were considered part of the project definition.
+		  Now it is separated and moved to <nop>ProjectDefinition/DefaultAudience.
+
+	* <nop>ProjectDefinition issues:
+		* <nop>ProjectDefinition/AudienceSpecificData/Representation split into <nop>ProjectDefinition/Description/Representation and 
+		  <nop>ProjectDefinition/IPRStatements/Representation.
+		  <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (new type common to SDD and ABCD schema).
+		* <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@@@ To be discussed. The idea is that a project may point to a web resource that informs 
+		  about details about the history of the data (previous versions or a detailed log of changes)." Unless somebody needs it now, I propose that this should be an 
+		  addition in a later version rather than included in the first release.
+		* <nop>ProjectDefinition/Icon moved to new <nop>ProjectDefinition/Description/Representation, thus making it audience specific. 
+		  Icon (or logos) are not necessarily language independent since they may include text!
+		* <nop>ProjectDefinition/WebAddress moved as well, different audiences/languages may be referred to different URIs!
+d77 1
+a77 3
+	* <nop>CharacterDefType/Label changed from <nop>LabelPlusAbbreviationType to <nop>SimpleLabelType. This simplifies the model: Only a single label can be defined at the character 
+	  level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each 
+	  character, the same expressiveness is maintained.
+d82 25
+a106 1
+	* <nop>CitationType: optional <nop>LastVerified and <nop>InvalidSince date elements added, important for volatile online publications.
+d108 14
+a123 1
+
+a126 1
+
+d136 2
+d139 4
+a143 18
+
+	* The "connector" metapher was not well received and not considered intuitive. As an attempt, I propose to use a proxy metapher: The proxy object is a local object 
+	  "standing-in" for the external, often asynchronously available resource on the internet. In programming this is called the "proxy-pattern". As a variation 
+	  proxy objects may, however, also "stand-in" if no external object can be found and a local object (e.g. in biology: taxon name, specimen) has to be defined. Specific changes:
+		* <nop>ResourceConnectorBaseType changed to <nop>ProxyBaseType
+		* <nop>ClassNameConnectorType, <nop>ClassHierarchyConnectorType, <nop>DescribedObjectConnectorType, etc. all changed to <nop>...ProxyType
+		* Within the <nop>ProxyBaseType, the <nop>FreeFormDescription was changed to Label. For all internal SDD object like characters or states, Label signifies
+		  a human readable representation, which is the intent of this data element as well.
+		* The ID/external object linking was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be 
+		  embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the 
+		  <nop>ObjectLink rather than the old "ExternalID" points to the object in case of a single URI query string. The method and parameter names, and the ID-values 
+		  are now given separately for web services. Furthermore, ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables 
+		  that together uniquely refer to a specimen object. This is supported, but it would still be desirable to have a single ID to simplify ID comparison and distinguish 
+		  ID from other parameter values that may be required to use a webservice method (but may be constant for different objects).
+
+	* Related: <nop>ClassHierarchies was restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in SDD to define 
+	  taxon subsets (character subsets are defined in the <nop>ConceptTrees).
+	* <nop>CharacterDefType/Type changed to <nop>CharacterDefType/MeasurementScale
+d147 5
+d164 2
+a165 8
+	* <nop>GenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>GenericStates 
+	  was present). "Generic" was considered to be confusing since for biologists it may be understood as referring to states describing a Genus.
+
+
+	* "Probability modifiers" have been renamed back to "Certainty modifiers" (they were previously called "Uncertainty modifiers" before changing to "Probability". As 
+	  already discussed in Brazil (but later forgotten), Probability is ambiguous since low occurrence frequency of a state also results in a low probability that a 
+	  given object has a given character state.
+
+a171 30
+<h3>Proposals (not yet enacted)<a name="proposals"/></h3>
+
+	* Rename <nop>CodedDescriptions to <nop>SymbolicDescriptions, see Analytical Philosophy (I only checked the Enc. Britannica, I am no expert in this!)
+
+	* Resource and Entities: issues related to linking to external data sources (note: the "connector" metapher now changed to "proxy"):
+		* Add an Abbreviation element to Class and Object in Entities? Would not likely be updated by service, but may be useful or even 
+		  required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+
+	* <nop>ProjectDefinition/Version/Major|Minor are integers. To be more flexible in versions, the Version number could also be a single string, including things
+	  like "1.0.023 beta 2" or "2000 Professional". I believe software has little responsibility on this string other than comparison so that no parsing in 
+	  major/minor is required. However, do we need "Increment"? The idea was that this allows to distinguish subversions that are _not_ separately published
+	  as version (and will all have the same version date!). Having this defined as integer would allow this to be managed automatically be software. However,
+	  it may not be required if <nop>ProjectDefinition/RevisionData/LastRevisionDate is already maintained by software; the date will effectively distinguish revsions 
+	  within a version.
+	  Do we agree on this? Should Version become a simple string, Major, Minor, Increment be dropped, and <nop>PublicationDate maintained?
+	* <nop>ProjectDefinition/RevisionData/InitiationDate is xml:dateTime and required, which may cause problems in legacy projects. See discussion under 
+	  InitiationDateForImportedLegacyData. The proposal makes sense in the context of project definition.
+	  However, <nop>RevisionDataType is also used in several other contexts (single descriptions, glossary, characters, etc.) and the proposal does not make sense there. 
+	  Do we need two slightly derived types? Has anybody a better idea?
+	* Allow multiple mappings of fine-grained states to coarse-grained states, and make these mappings expertise-specific (part of audience definition)?
+	  Do we need multiple state sets within a character? Broad categories and narrow categories? Currently mapping of state is within a single character, and the two state sets need to be detected by application (those present minus those mapped away. Note: mapping can be indirect a-> b-> c, only c should remain.)
+	  Do we need multiple <em>named</em> mapping definitions in the future? See StateMapping for further discussion.
+
+	* Rename <nop>AutoAddStates to <nop>UpdateStateRefsTriggers (those state from a generic state set must be as <nop>StateReference in Character/Categorical/States). 
+	  GH: I believe it should be the other way round, i.e. instead of a state-set reference at the character, there should be a list of characters referenced
+	  at the place concept node. I have started to do this, but not yet finished! See "####" at the end of the document!
+
+
+---
+
+d191 4
+a194 1
+	* Problem of storing calculated data and marking them as "autogenerated" (or which term to use?).
+d208 28
+d250 2
+a251 1
+I cannot follow your argument. The problem I state above is that I cannot constrain the Labels to actually contain a string, the element must be present but may contain nothing. There seems no mechanims in schema to prevent that. I know you warned us against mixed content model! -- Gregor Hagedorn - 3. May.
+a299 2
+-- Gregor Hagedorn - 3 May 2004
+
+d303 1
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1083201607" format="1.0" version="1.5"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 6 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 1
+a5 1
+<strong>The SDD schema beta version discussed has been uploaded to the WIKI as an attached zip file, see at the end!</strong>
+d13 1
+a13 3
+
+<h3>Trivial omissions that were present in 0.9, corrected in 0.91</h3>
+
+d19 1
+a19 2
+<h3>Non-trivial changes already enacted</h3>
+
+d28 1
+a28 1
+		  renamed from ref to <nop>GeneralDeclarationRef  and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure 
+d40 5
+d73 1
+a73 1
+	* Similarly, the biology specific elements Sex and Stage were removed from <nop>ClassNameConnectorType (= the type of the proxy object defining links to external name databases). 
+d80 4
+a83 1
+	* The above mentioned type <nop>ClassRefWithAdditionalClassifierType should be generalized, avoiding biology-specific concepts like sex and stage.	
+d85 16
+a119 5
+	* <nop>ResourceConnectorBaseType was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be 
+	  embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the 
+	  <nop>ObjectProvider rather than the old "ExternalID" points to the object in case of a single URI query string. The method and parameter names, and the ID-values 
+	  are now given separately for web services. Furthermore, ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables 
+	  that together uniquely refer to a specimen object.	
+d124 5
+d131 1
+a131 1
+<h1>Proposal (not yet enacted)</h1>
+d134 2
+a135 3
+	* Resource and Entities: issues related to linking to external data sources:
+		* Rename Resources to <nop>ResourceInterfaces, Entities to <nop>EntityInterface? 
+		* Rename Connector type to Interface type? Or Connector type to <nop>ProxyBaseType? The programming pattern used is the Proxy-pattern!
+d138 1
+d161 1
+a161 1
+<h1>Open Questions</h1>
+d166 1
+a166 1
+		* Prometheus II proposes to explictly reference descriptions that are to be included or generalized into a current description.
+d188 5
+a192 1
+	* Should the natural language markup be brought closer to xhtml by using <span class=""> for markup?
+a193 2
+	* Sex and stage seems to be broken and needs discussion. Should not be in class, rather in descriptions? See TheProblemOfSex!
+-- Gregor Hagedorn - 23 Apr 2004
+d204 3
+a206 1
+-- Gregor Hagedorn - 23 Apr 2004
+d208 1
+a209 2
+The missing element issue seems approachable by declaring things nillable and allowing xsi:nil="true" to distinguish from the missing case. This arose also in the discussion IsDiGIRadequateForSDD -- Main.BobMorris - 29 Apr 2004 
+---------------------------------------------------------------------------------
+d211 1
+a211 1
+<h3>Regarding discussion marked "####" above:</h3>
+a254 1
+-- Gregor Hagedorn - 23 Apr 2004
+d257 2
+a258 2
+
+
+d261 1
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082737440" format="1.0" version="1.4"}%
+d170 1
+a170 1
+
+d181 1
+d183 2
+a184 1
+
+d231 1
+d234 2
+a235 2
+-- Gregor Hagedorn - 23 Apr 2004
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1080219037" format="1.0" version="1.3"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 beta 3 (relative to the 0.9 Dec. 1. 2003 release)</h1>
+d5 3
+a7 1
+Note: I have tried to document changes, but I cannot guarantee that everything is properly documented.
+d10 2
+a11 1
+I have given up on documenting any detailed changes there. See also SchemaChangeLog for a change log up to 0.9.
+d14 1
+a14 1
+<h3>Trivial omissions corrected in 0.91</h3>
+d16 2
+a17 1
+	* audiencekey in <nop>ProjectDefinition/Audiences/Audience was specified to have a pattern in the documentation, but the pattern was not defined in the schema, regular expression pattern added to schema 0.91.
+d23 15
+a37 10
+	* Document root element changed to <nop>DataSets/<nop>DataSet collection. <nop>DataSet takes the place of the original Document. Reason: Converging with ABCD. Multiple Projects in one file or data stream, does not hurt SDD and is required by ABCD.
+	* <nop>GenerationMetadata changed to <nop>TransformationHistory, which is a collection of at least one, possibly multiple Transformation elements. 
+	  Alternative names: <nop>ConversionHistory, <nop>DerivationHistory, <nop>HistoryMetadata, <nop>ContentHistoryMetadata, or <nop>DataHistoryMetadata.
+
+	* <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bobs comment on TWIKI about MultivariateStatistics).
+	* Related: the fact that Char. def. Numerical/StatisticalMeasures had both a ref and a key confused several reviewers. To clarify, the key has now been
+	  renamed from ref to <nop>GeneralDefinitionRef and both this and the key on <nop>GeneralDefinitions/<nop>UnivariateStatisticalMeasures/<nop>UnivariateStatisticalMeasure is typed as <nop>StatisticalMeasureKeyValue.
+	* Element "Dimensionless" added to Generalization of <nop>UnivariateStatisticalMeasures (answers whether the measurement unit apply to a statistic or not).
+
+	* New root section "<nop>GeneralDefinitions" created for concepts not specific to SDD, but needed in the schema. The following elements moved there:
+d41 2
+d44 19
+a62 6
+	* <nop>ProjectDefinition/AudienceSpecificData/Representation split into <nop>ProjectDefinition/Description/Representation and <nop>ProjectDefinition/IPRStatements/Representation.
+	  <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (common in SDD and ABCD schema).
+	* <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@@@ To be discussed. The idea is that a project may point to a web resource that informs about details about the history of the data (previous versions or a detailed log of changes)."
+	* <nop>ProjectDefinition/Icon moved to new <nop>ProjectDefinition/Description/Representation, thus making it audience specific. Icon (or logos) are not necessarily always
+	  language independent!
+	* <nop>ProjectDefinition/WebAddress moved as well, different audiences/languages may be referred to different URIs!
+a63 2
+	* <nop>CitationType: optional <nop>LastSeen date element added, important for online publications.
+	* <nop>DevelopsFrom added to Terminology/Glossary (= ontology definitions)
+d71 38
+a108 1
+	* <nop>CharacterData_BaseType/Sequence with values "terminology" or "description" was considered difficult to understand. Bob proposed to replace it with a boolean "StatesAreOrdered" which has been done.
+d110 1
+a110 11
+	* <nop>CodedStatements in Keys (coded terminology equivalent to the natural language key statement) used to be a simple list of states. To accomodate the frequently occurring more complex statements in keys, e. g. 
+	  "margin of fruitbody yellow (or orange and hairy)" -> i.e. not if only orange, or "margin of fruitbody yellow, never with denticles" -> other surface structures may be present,
+	  a boolean operator logic modeled after <nop>MathML has been added to the model. It should be discussed whether these are allowed in all coded descriptions (and in natural language markup)?
+
+	* <nop>GenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>GenericStates was present). "Generic" was considered to be 
+	  confusing since for biologists it may be understood as referring to states describing a Genus.
+
+	* <nop>ResourceConnectorBaseType was strongly changed. The previous version worked only if the object query could be embedded into a single URI query string, or if 
+	  the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the <nop>ObjectProvider rather than the old "ExternalID" points
+	  to the object in case of a single URI query string. The method and parameter names, and the ID-values are now given separately for web services. Furthermore, ABCD does not
+	  plan to provide a single or unified ID for collection units, but uses three separate variables that together uniquely refer to a specimen object.	
+d112 20
+d133 3
+a135 1
+<h1>Proposal (not yet enacted)</h1>
+a136 3
+	* Rename <nop>CodedDescriptions to <nop>SymbolicDescriptions, see Analytical Philosophy (I only checked the Enc. Brittannica, I am no expert in this!)
+	* Rename Resources to <nop>ResourceInterfaces, Entities to <nop>EntityInterface? 
+	* Rename Connector type to Interface type? Or Connector type to <nop>ProxyBaseType? The programming pattern used is the Proxy-pattern!
+d138 1
+a138 2
+	* Add an Abbreviation element to Class and Object in Entities? Would not likely be updated by service, but may be useful or even 
+	  required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+d142 28
+a169 3
+	* ### Rename <nop>AutoAddStates to <nop>UpdateStateRefsTriggers (those state from a generic state set must be as <nop>StateReference in Character/Categorical/States). 
+	  GH: I believe it should be the other way round, i.e. instead of a state-set reference at the character, there should be a list of characters referenced
+	  at the place concept node. I have started to do this, but not yet finished! ####
+d173 13
+a185 1
+Regarding discussion above:
+d231 2
+a232 12
+Sex and stage seems to be broken and needs discussion. Should not be in class, rather in descriptions?
+
+Data type seems to be broken and needs discussion
+
+
+Do we need multiple state sets within a character? Broad categories and narrow categories? Currently mapping of state is within a single character, and the two state sets need to be detected by application (those present minus those mapped away. Note: mapping can be indirect a-> b-> c, only c should remain.)
+Do we need multiple <em>named</em> mapping definitions in the future?
+
+---
+
+-- Gregor Hagedorn - 22 Mar 2004
+
+d234 1
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1079962500" format="1.0" version="1.2"}%
+d8 1
+a8 1
+I have given up on documenting any detailed changes there.
+d137 2
+a138 2
+-- Gregor Hagedorn - 22 Mar 2004
+
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1079434146" format="1.0" version="1.1"}%
+d3 1
+a3 1
+<h1>Changes in 0.91 (= Known issues)</h1>
+a19 1
+
+d23 4
+a26 1
+	* <nop>StatisticalMeasures renamed to <nop>UnivariateStatisticalMeasures (compare Bobs comment on TWIKI about multivariate statistics).
+d38 1
+d49 14
+a62 1
+<h3>Proposal (not yet enacted)</h3>
+d64 3
+a66 1
+	* Rename <nop>CodedDescriptions to <nop>SymbolicDescriptions, see EB Analytical Philosophy!
+d73 63
+a135 1
+-- Gregor Hagedorn - 16 Mar 2004
+d137 1
+a137 1
+---
+d139 2
+@

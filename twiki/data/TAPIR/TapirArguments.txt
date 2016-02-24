@@ -1,0 +1,70 @@
+   * *What problems is TAPIR supposed to solve from DiGIR and BioCASe?*
+
+ DiGIR and BioCASe are two different protocols. The main purpose of TAPIR was to unify them into a single protocol to increase the interoperability level between the existing networks. The new protocol also tried to improve specific parts of its predecessors.
+
+   * *What other good things it will do on top of that?*
+
+ Besides unifying DiGIR and BioCASe, there have been improvements in these areas:
+
+   * Metadata has been refactored, now using existing elements from well-known namespaces like DublinCore and VCARD. It also allows credits to be given to any number of globally unique identifiable entities related to the service (like data provider, technical host, sponsor, etc.). A new section includes indexing preferences (frequency, start time with timezone, maximum duration).
+   * Technical metadata can be retrieved using a separate "capabilities" operation.
+   * Inventories now accept more than one concept.
+   * Search filters include arithmetic operators and parameterised values. Environment variables, like current timestamp, service accesspoint, can also be used.
+   * TAPIR introduced the idea of output models, which define both an XML data structure and its meaning.
+   * It also introduced the idea of query templates, allowing the existence of simpler provider implementations (TapirLite).
+   * All operations can also be invoked by simple KVP (key-value pairs) in HTTP GET requests.
+
+   * *Why is the dynamic outputModel behaviour not trustable?*
+
+ Output models derived directly from the DiGIR response structure, inheriting the same limitations such as only allowing one-to-one mapping between XML leaf nodes and properties (concepts that are directly related to content). It was soon realized that this was not enough to fully represent the meaning of an XML format. Output models should be able to fully express the semantics of the XML in a machine readable way, allowing at least the usage of classes, relationships and properties, and also mapping non-leaf nodes when necessary. Although TAPIR doesn't prevent people to map non-leaf nodes, as well as it doesn't prevent people to use concepts that are not necessarily related to properties, the protocol is still not prepared to deal with richer mappings. For instance, the mapping section will need to be changed if we want to be able to specify associations between classes, the encoding of concepts will need to be changed if we want to use properties that can be related to more than one class, and so on. Not only the protocol, but the provider implementations are not prepared to handle richer mappings (they still don't have richer configuration interfaces and capacity to interpret richer output models). So what happens is that when the output model doesn't fully express the meaning of the XML, then providers need to somehow "figure out" how to produce the response. This can result in unexpected responses when complex output models need to be dynamically processed by data providers. But if the output model is known to the provider, then it is possible to manually include some extra configuration that will guarantee responses in the expected format. Or if the output model is simple enough (like flat DarwinCore + extensions) with underlying databases that are compatible with it, then no problem should arise. Meanwhile, the TAPIR task group is already working on a next version that should overcome these limitations.
+
+   * *What is the difference with the WASABI approach*
+
+ First of all, TAPIR is a protocol, while WASABI is a software. WASABI was designed to be multi-protocol, initially supporting SPARQL, DiGIR and WFS. There have always been plans to include support for TAPIR in WASABI, but it still didn't happen yet.
+
+   * *Does TAPIR support ABCD, Darwin Core, SDD, TCS, etc?*
+
+ TAPIR has been tested with ABCD, DarwinCore and BioCASE metadata. TCS and most other standards should be supported but haven't been tested yet. SDD is unlikely to be supported in this version though because of its recursive structures.
+
+   * *How can we deal with Darwin Core extensions in TAPIR?*
+
+ Data providers just need to map their local databases using DarwinCore and the desired extensions. TAPIR output models and filters accept mixing concepts from different schemas. The inherent flexibility of the DarwinCore + extensions approach strongly suggests a network made of providers with dynamic output model processing capabilities (anyOutputModel).
+
+   * *Why have you created a new protocol? Is WFS (others?) not ok?*
+
+ A new protocol unifying DiGIR and BioCASe seemed to be the best alternative considering the kind of functionalities being used by our networks and also the amount of work to adjust their existing software. There's nothing wrong with WFS - it is actually very porweful, including things that are not even attempted by TAPIR, like write back operations with transaction support. Spatial operators is also another strength of WFS. However, when it was studied as an alternative, the main impediments for its adoption were:
+   * All schemas being used by our networks would need to "derive" from Web Features. This could be a technical problem (very hard for schemas like SDD), or a "political" problem (most output schemas want to be as independent as possible from the protocol).
+   * A few functionalities were considered missing, like not having an inventory operation.
+ SOAP and XQuery were also studied as alternatives.
+
+   * *Why haven't you used SOAP?*
+
+ SOAP stands in a much higher level than TAPIR, DiGIR and BioCASe. It specifies a generic message wrapper (header/body) and encodings. It would be necessary anyway to specify almost an entire protocol on top of SOAP. We could use SOAP to wrap our messages, probably using the Document/Literal approach, since it is pointed out as the most flexible, fast and interoperable way of using it. However, being used this way, SOAP was considered just an additional dependency in the protocol without significant benefits.
+
+   * *Who is going to use TAPIR?*
+
+ In principle the same networks that are currently using DiGIR and BioCASe. In the future we hope to accomodate other networks related to other TDWG schemas, like TCS, SDD, etc.
+
+   * *Does TAPIR support RDF?*
+
+ It should be possible to define a TAPIR output model compatible with an XML encoding of RDF.
+
+   * *Why there are 3 provider implementation levels in TAPIR? (Lite, Intermediate, and Full)*
+
+ The main idea behind TapirLite was to ease implementation of data providers as much as possible, but still keeping compatibility with the other levels and sharing the same metadata/capabilities operations. The intermediate level was proposed as a "safe" alternative to exchange complex output models in environments where TAPIR Full is probably not prepared to handle yet. TAPIR Full is the most flexible (and difficult to implement) provider level, since it should be able to dynamically parse all parameters.
+
+   * *How can I set up a TAPIR network if there are 3 different levels of providers and so many different capabilities options?*
+
+ This question should be addressed by the user guide being prepared, but here are some hints:
+   * If the network wants to work with TAPIRLite providers (simple implementations) then it needs to be based on one or more query templates that will be used only through KVP requests. Capabilities options like <anyConcepts/> (inventory operations),  <anyOutputModels/> (search operations) and filters don't need to be supported. All search conditions need to be specified as specific query parameters.
+   * If the network wants to provide more flexible query conditions (including full filters and partial output models) in an environment where Full TAPIR probably cannot handle (complex output models being mapped by completely different data structures), then TAPIR Intermediate is recommended. This means that the provider software needs to offer additional features when mapping local databases to complex output models in order to always guarantee the desired output. These output models will need to be advertised by all data providers (except Full TAPIR providers) as "known output models".
+   * If the network wants to provide flexible query conditions in either a more "controlled" environment (similar underlying data structures), or using only simple output models (like flat DarwinCore), then TAPIR Full is probably the best choice.
+ Note that the main trade off here is simplicity on implementation versus flexibility on queries.
+
+   * *If TAPIRLite is just a REST interface, why do we need TAPIR for that?*
+
+ TAPIRLite, or maybe we should better say "the original idea behind TAPIR views", follows the REST principles by exposing resources (in the general sense) through easy http based URLs with no additional protocol layers. But TAPIRLite also conforms to the same predefined metadata and capabilities operations, unlike any random REST service. And it also enables interoperability with other types of TAPIR implementations.
+
+   * *Where are the output models stored?*
+
+ There is no official repository yet. Networks and individuals are free to define and store output models wherever they want. But it would be interesting to have a central repository, maybe hosted by TDWG, not only to avoid duplication of efforts but also to help clients and data provider configurators.

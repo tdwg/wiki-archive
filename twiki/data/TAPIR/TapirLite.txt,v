@@ -1,0 +1,456 @@
+head	1.23;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.23
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.23
+log
+@Revision 24
+@
+text
+@TapirLite is the notion that it should be possible to have minimal implementations of the Tapir protocol.
+
+There will be occasions where it will not be convenient or desirable for potential data suppliers to use one of the existing wrapper implementations. Reasons for this include:
+   * The data being served is stored in some form of enterprise application server and there is no simple mapping of concepts.
+   * The data provider does not have access to hosting facilities that support the available wrapper technologies.
+   * The data provider is being implemented and distributed as part of another application - e.g. a collections management system.
+   * Other unknown implemenations may be desirable (crazy things like peer2peer Tapir for something).
+Generally the easier it is to implement something that serves valid Tapir responses the more widely the protocol is likely to be used. There are two ways to make things easier one is to implement good, generally available provider software (which is being done by the Python and Java wrapper teams) the other is to make it easy to implement providers - possibly in an incremental fashion.
+
+I (RogerHyam) am therefore offering to champion the TapirLite cause. I am doing this because I don't think it is really that difficult or time consuming  :) and will generally just mean suggesting that complex things are kept optional. It also fits within my remit of coordinating a high level TDWG standards architecture. Some initial thought are given below.
+
+---++++ Hurdles to implementing a provider
+
+ 1 Query parsing. Does the provider have the ability parse arbitrary Tapir filters into it's own internal query language? This may not be possible if the provider is some kind of application server or a simple script. This would restrict their ability to do searches and inventories (though this wouldn't be so bad if SimpleFiltering is implemented). Some common inventory-like responses could be generated using view operations though.
+ 1 Dynamic views. Can the provider render results into an arbitrary form? This is being discussed currently with the reference implementation.
+
+---++++ Changes to the protocol to make 'Lite' implementations possible
+
+   1 Not all operations should be supported. Whether an operation is supported should be returned as part of the capabilities document. The only required operations should be: ping, meta and capabilities. Others should be optional and declared in the capabilities response.  A provider could just say "I just do views" and have a very simple cgi script to support it. The ping, meta and capabilities responses more or less be static files. Yes this means that you can have a provider that doesn't provide anything but that is strangely logical. This would also be useful for forward compatibility. If we need to add a new operation type in Tapir2 for example.
+   --->
+   MarkusDoering: The original proposal for capabilities was also to inlcude the different supported operations. In the LatestSchemaProposal this has been readded.
+   2. As DonaldHobern suggests views should be referred to by URL not by name. Eventually these may be stored in a view repository. The provider could say "I just do these well know views". The capabilities document could possibly map the URL to the local view name that can be used in a calling URL. (DonaldHobern said: "This approach allows TapirLite implementations not to have to understand view definitions at all.  They can just treat the URLs as URNs serving as identifiers for well-known service interfaces which they then can handle using a fairly basic CGI.  The whole thing is also a key step towards our developing real web services.")
+   --->
+   MarkusDoering: Referring views by URL was always possible. The option to refer to them as local names has been removed in the LatestSchemaProposal. You just wouldnt be interoperable if local names are interpreted differently between providers.
+   3. The capabilities document should not contain the definition of the views only the pointers to them. Consumers can just go and get them from the URL if they don't already have them cached. This is because:
+    * Capabilities docs are likely to become very verbose. If, for example, a provider supports 10 views that are based on TCS just with different filters then they would have to include the schema ten times rather than point to a series of URLs.
+    * Views may be TDWG standards in the future and should be maintained centrally to be sure the service isn't "tweaking them".
+    * This also facilitates view definitions being generated dynamically and managing multiple views becomes simpler (e.g. multiple filters for one conceptual view).
+   --->
+   MarkusDoering: The reference implementation has shown that the capabilities docs get too large very quickly. Therefore only the references and some _metadata_ has been left in the LatestSchemaProposal. It could be nice for views to also support an <include> statement to create more modular view libraries. But this is just an initial thought. Maybe schema imports/includes are good enough already.
+
+SimpleFiltering would be a very nice feature for 'Lite' implementations but is not required.
+
+---++++ Thoughts on forward compatibility and architecture integration
+This is vague and really belongs to the architectural discussions but is worth having here for context.
+
+ 1 We create a central ontology that contains a core mapped to the elements in the existing conceptual schemas.
+ 1 We create a central repository for views and views that prove useful are added to the central repository perhaps becoming TDWG standards.
+ 1 New views tend to be mappings of the core ontology rather than the older schemas (which are all synonymised in the ontology anyhow)
+ 1 We leave behind the old schemas and just deal in terms of different views of the core ontology.
+ 1 We can move onto other (non xml schema) ways of defining views in the future if we need to.
+ 1 We work out how to do all this in a distributed way - handing of bits of the ontology to different organisations like OGC etc ... :)
+
+I'll put a link in to the architecture discussions when I have one.
+
+Please add your thoughts to the above. (RogerHyam 2005-10-20).
+@
+
+
+1.22
+log
+@Revision 23
+@
+text
+@d21 1
+a21 1
+   MarkusDoering: The original proposal for capabilities was also to inlcude the different supported operations. In the latest improved protocol proposal this has been readded.
+d24 1
+a24 1
+   MarkusDoering: Referring views by URL was always possible. The option to refer to them as local names has been removed in the latest proposal. You just wouldnt be interoperable if local names are interpreted differently between providers.
+d30 1
+a30 1
+   MarkusDoering: The reference implementation has shown that the capabilities docs get too large very quickly. Therefore only the references and some _metadata_ has been left in the latest proposal. It could be nice for views to also support an <include> statement to create more modular view libraries. But this is just an initial thought. Maybe schema imports/includes are good enough already.
+@
+
+
+1.21
+log
+@Revision 22
+@
+text
+@d26 3
+a28 3
+      * Capabilities docs are likely to become very verbose. If, for example, a provider supports 10 views that are based on TCS just with different filters then they would have to include the schema ten times rather than point to a series of URLs.
+      * Views may be TDWG standards in the future and should be maintained centrally to be sure the service isn't "tweaking them".
+      * This also facilitates view definitions being generated dynamically and managing multiple views becomes simpler (e.g. multiple filters for one conceptual view).
+@
+
+
+1.20
+log
+@Revision 21
+@
+text
+@d20 2
+d23 2
+d29 3
+@
+
+
+1.19
+log
+@Revision 20
+@
+text
+@d14 1
+a14 1
+ 1 Query parsing. Does the provider have the ability parse arbitrary Tapir filters into it's own internal query language? This may not be possible if the provider is some kind of application server or a simple script. This would restrict their ability to do searches and inventories. Some common inventory-like responses could be generated using view operations though.
+@
+
+
+1.18
+log
+@Revision 19
+@
+text
+@d30 1
+a30 1
+ 1 We create a central ontology that contains a core mapped to the elements in the existing conceptual schema.
+@
+
+
+1.17
+log
+@Revision 18
+@
+text
+@d25 1
+a25 1
+1 SimpleFiltering would be a very nice feature for 'Lite' implementations but is not required.
+@
+
+
+1.16
+log
+@Revision 17
+@
+text
+@d22 4
+a25 3
+   * Capabilities docs are likely to become very verbose. If, for example, a provider supports 10 views that are based on TCS just with different filters then they would have to include the schema ten times rather than point to a series of URLs.
+   * Views may be TDWG standards in the future and should be maintained centrally to be sure the service isn't "tweaking them".
+   * This also facilitates view definitions being generated dynamically and managing multiple views becomes simpler (e.g. multiple filters for one conceptual view).
+@
+
+
+1.15
+log
+@Revision 16
+@
+text
+@d26 1
+a26 1
+---++++ Thoughts on forward compatibility and architecture integration 
+@
+
+
+1.14
+log
+@Revision 15
+@
+text
+@d10 1
+a10 1
+I (RogerHyam) am therefore offering to champion the TapirLite cause. I am doing this because I don't think it is really that difficult or time consuming  :) and will generally just mean suggesting that complex things are kept optional. Some initial thought are given below.
+d26 2
+d29 10
+a38 1
+Please add your thoughts to the above (RogerHyam 2005-10-20).
+@
+
+
+1.13
+log
+@Revision 14
+@
+text
+@d8 1
+a8 1
+Generally the easier it is to implement something that serves valid Tapir responses the more widely the protocol is likely to be used. There are two ways to make things easier one is to implement good, generally available provider software (which is being done by the Python and Java wrappers) the other is to make it easy to implement providers - possibly in an incremental fashion.
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d27 1
+a27 1
+Please add your thoughts to the above (RogerHyam).
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d20 5
+a24 2
+   2. As DonaldHobern suggests views should be referred to by URL not by name. Eventually these may be stored in a view repository. The provider could say "I just do these well know views". The capabilities document could map the URL to the local view name that can be used in a calling URL.
+   3. The capabilities document should not contain the definition of the views only the pointers to them. Consumers can just go and get them from the URL if they don't already have them cached. This is because capabilities docs are likely to become very verbose. If, for example, a provider supports 10 views that are based on TCS just with different filters then they would have to include the schema ten times rather than point to a series of URLs. This also facilitates view definitions being generated dynamically and managing multiple views becomes simpler.
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d22 3
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d20 1
+a20 1
+   2. As you suggest views should be referred to by URL not by name. Eventually these may be stored in a view repository. The provider could say "I just do these well know views"
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d12 1
+a12 1
+ = Hurdles to implementing a provider:
+d17 1
+a17 1
+==== Changes to the protocol to make 'Lite' implementations possible:
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d12 1
+a12 1
+= Hurdles to implementing a provider:
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d12 1
+a12 1
+==== Hurdles to implementing a provider:
+d14 2
+a15 2
+ # Query parsing. Does the provider have the ability parse arbitrary Tapir filters into it's own internal query language? This may not be possible if the provider is some kind of application server or a simple script. This would restrict their ability to do searches and inventories. Some common inventory-like responses could be generated using view operations though.
+ # Dynamic views. Can the provider render results into an arbitrary form? This is being discussed currently with the reference implementation.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d10 1
+a10 1
+I (RogerHyam) am therefore offering to champion the TapirLite cause. I am doing this because I don't think it is really that difficult or time consuming  :) and will generally just mean suggesting that complex things are kept optional.
+d12 1
+a12 1
+Hurdles to implementing a provider:
+d14 2
+a15 2
+   1 Query parsing. Does the provider have the ability parse arbitrary Tapir filters into it's own internal query language? This may not be possible if the provider is some kind of application server or a simple script. This would restrict their ability to do searches and inventories. Some common inventory-like responses could be generated using view operations though.
+   2. Dynamic views. Can the provider render results into an arbitrary form? This is being discussed currently with the reference implementation.
+d17 1
+a17 1
+Changes to the protocol to make 'Lite' implementations possible:
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d11 11
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d6 5
+a10 3
+   * The data provider is being implemented and distributed as part of another application - e.g. a collection management system.
+   * Other unknown unknowns..
+Generally the easier it is to implement something that serves valid Tapir responses the more widely the protocol is likely to be used. There are two ways to make things easier one is to implement good, generally available provider software the other is to make it easy to implement providers - possibly in an incremental fashion.
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d1 3
+a3 1
+TapirLite is the notion that it should be possible to have minimal implementations of the Tapir protocol. It will not be convenient or desirable for many potential data suppliers to use one of the existing wrapper implementations. Reasons for this include:
+d8 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 4
+a5 4
+      * The data being served is stored in some form of enterprise application server and there is no simple mapping of concepts.
+      * The data provider does not have access to hosting facilities that support the available wrapper technologies.
+      * The data provider is being implemented and distributed as part of another application - e.g. a collection management system.
+      * Other unknown unknowns..
+@

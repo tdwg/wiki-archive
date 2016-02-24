@@ -1,0 +1,99 @@
+%META:TOPICINFO{author="RicardoPereira" date="1176577455" format="1.1" reprev="1.6" version="1.6"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+!! LSID Resolver for Images
+
+
+---++ Basic *Use Cases* to justify the assignment of LSIDs to images.
+
+   1. A researcher found a digital image of a certain specimen on the web and wants to reference it in his article. As he writes the citation, he cuts the LSID published with the image and pastes it on its article.
+   2. An article reader wants to view an image cited in an article. He clicks on the hyperlink that appears on the image reference and views the image on his web browser. Controls on the web user interface allows the reader to zoom and pan on the image.
+   3. A software agent automatically discovers and retrieves distributed information about a given taxon and puts together a web page describing it. The information retrieved references various images, drawings, maps of the taxon that should all be dispayed on the taxon page.
+
+_(Please add more use cases and help refine the use cases listed above.)_
+
+_Recommendations should address how LSIDs should be used to implement those use cases. Also, we should provide justifications why LSID offer better support to implement the use cases._
+
+
+---++ Open Questions and Discussion
+
+---+++ 1. Assigning LSIDs to different encodings of the same image.
+
+Should the same image encoded in two different ways have the same LSID? 
+
+I, BobMorris, can make a trivial argument that a "no" answer to this leads to ridiculous cases: Given an encoding algorithm E, define a new algorithm E'(n) where E'(n) is defined by: Add n null bytes to the end of an image encoded by E.  This establishes an infinite set of images each of which is losslessly convertible to the other.
+
+%ICON{bubble}% *reply by RogerHyam:*
+
+Yes and no. I believe this can be approached in a similar way to the way versions are done in IPNI.
+
+Firstly you have a notion of a THING that you have different encodings of. You give this abstract thing an LSID that doesn't return data but specifies a series of dcterm:hasFormat properties that point to other LSIDs (or URIs) for each of the encodings. Each of these returns the image in the relevant format as data and the metadata has a dcterm:isFormatOf  that points back to base thing.
+
+The argument about multiple formats is somewhat specious - people will only create formats that are useful. There is an argument though where the image is available through a service that will provide it in the requested format - but it can't be guaranteed to be byte identical each time it is called - even with the same parameters. For this I think we would need
+metadata to describe the service but there would still be an LSID for the abstract THING that you are requesting version of.
+
+%ICON{bubble}% *reply by RicardoPereira:*
+
+Here is my first attempt to turn this discussion into recommendations.
+
+As a general rule, one should only assign individual LSIDs to different image encodings if there is a limited number of encodings available (up to some dozens, maybe, but certainly not infinite.) The most common case is when a small number of useful encodings are provided. In this case, the available encodings may be listed on the LSID metadata via the dcterm:hasFormat as RogerHyam suggested.
+
+A single LSID should identify all image encodings if there is a large number of encodings available (like in the case BobMorris mentioned). In this case some other identification scheme must be used to refer to individual encodings since one cannot refer uniquely to a specific encoding just by using its LSID. OpenURL or plain REST web services are feasible alternatives for identifying an specific image encoding. If web services are used, one should consider advertising it using WSDL.
+
+Providers should make explicit in their user interfaces the fact that the same LSID refer to all encodings of a single image, if that is the case.
+
+Some services may cache image encodings (or the parameters used to generate them) when a request is made and assign an LSID to uniquely identify the encoding. The LSID resolver would then return a reference to the cached image (or parameters) when resolving the LSID. Clients may then refer to that LSID to get back to the original image.
+
+Those setting up LSID resolvers should avoid using the image encoding parameters to form the object identification part of an LSID as that would somewhat break LSID opacity. Most importantly, there are other technologies designed to handle that case, such as OpenURL.
+
+
+---++ 2. Standards for image metadata
+
+Should there be standards for metadata, and if so, what should they represent?
+
+%ICON{bubble}% *reply by RogerHyam:*
+
+We don't have one but I think we should and I think it should just be an empty object that can have DublinCore properties used in it until we have very clear use cases and real people wanting to consume the data.
+
+There is some argument about whether we should have MediaObject or whatever but I don't see any reason not to have a simple DigitalImage object and leave it at that. We can always create higher level objects it inherits from later. They don't have to change the instance data.
+
+---
+---
+---+++ Material prior to April 13 2007
+See [[ImageAnnotationForTheSemanticWeb]] for discussion of the important new W3C draft recommendation.
+
+See [[http://wiki.gbif.org/guidwiki/wikka.php?wakka=LSIDResolverForImages][!TDWG GUID Wiki LSID for image resolver]] that umb is prototyping
+---
+
+Discussion about image LSIDs for biodiversity images and other media
+
+   * ImageLSIDData discussion of what should be the persistent part of an image LSID resolution
+   * ImageLSIDMetadata a discussion of what should be the varying part of an image LSID resolution
+
+Early on this may turn into Greg Riccardi and I being more informed than engaged by people's comments as we rush toward a prototype LSID resolver for images. Apologies in advance if it seems like we are not listening. We are. -- Main.BobMorris - 15 Feb 2006
+
+---
+Main.BobMorris initial thoughts. Interspersing responses, along with your identity and date of comment, would be helpful. Missed points would be really helpful.
+
+
+   * There are LSID resolvers lying around. Shouldn't be much trouble to deploy one.
+
+   * EXIF has an RDF description blessed by W3
+      * EXIF sucks for many reasons I'll put on the image Wiki
+      * DIG35 is better, and at least has a standardized, if disgusting, specification for content metadata, unlike EXIF
+      * DIG35 has an XML representation with a published schema. It has so much optional that it can probably be subsetted and converted to RDF by hand or by some kind of tools but:
+      * Descriptive data---here content metadata---is probably not going to be accepted by the biologists with representation in RDF. Tool robustness  remain with too much "but it will soon".
+#ExifStinks hence  
+      *  We hold our nose and make EXIF be the metadata information container represented in LSID metadata and do not return any  content  description  in the LSID metadata (thereby rendering the enterprise not that interesting...)
+   * We may need different LSID metadata protocols depending on the medium (e.g. the file type). This is VERY bad.
+   * The above implies that LSIDs for images is really for image \files/, which is really only marginally interesting. What would be good is if there was LSID on something underlying the media. That may be useful only for concrete objects, where the media object is simply LSID metadata in most cases. For example, if two image files differ by a single bit, it depends highly on which bit whether it is interesting to have different LSIDs on the files except that they are different files. But I doubt files are the right thing to make persistent in the first place.
+   * The above probably applies to any thing, e.g. species, where  interesting information suitable for LSID metadata is something descriptive and for which there are many plausible descriptions of the same thing. In this case, it is likely that the only interesting LSID metadata is a reference to some kind of registry (or registries) where people register their descriptive data of the underlying object. Images are probably more interesting as the targets of such registration than as the targets of an LSID resolution, \unless/ there is a good mechanism for expressing the relationships between the images each claiming to be a description of some underlying LSID'd object. RDF is an ideal vehicle for expressing those relationships, but the ontologies to support it is outside the scope of LSID.
+      * As we get further into DIG35 we will come to hate the word "Thing", especially if RDF is also in the picture. Except Rod Page, any biologist's eyes will glaze over in any discussion of reification, but that will end up critical in discussions of descriptive data in RDF.
+      * SDD in whatever form it ultimately takes---and that may or may not be RDF---should perhaps be at least one registered representation of descriptions in registries pointed by  media LSID resolution metadata. This issue probably does not need immediate discussion. See [[ImageLsidResolver#ExifStinks] [hence]] above.
+
+-- Main.BobMorris - 15 Feb 2006
+
+---
+
+Other venues discussing image metadata
+
+   * [[http://esw.w3.org/topic/ImageDescription][ESW Image Description Wiki]] Useful RDF pointers

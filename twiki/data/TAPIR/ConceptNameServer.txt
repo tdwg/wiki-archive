@@ -1,0 +1,99 @@
+%META:TOPICINFO{author="DonaldHobern" date="1171378545" format="1.1" reprev="1.11" version="1.11"}%
+A ConceptNameServer should provide information about simple aliases for concepts and at a later stage also their relations between each other - especially list the unambiguos synonyms. This should probably be acompanied by a simple XML-RPC service to look up unambiguous synonyms.
+
+This service should be based on one simple file which is always accessible by all services.
+It defines the allowed globally unique concepts (fully qualified) and optionally an alias for them.
+
+A service is free to use several CNS as long as they dont contradict. But is envisioned that each global community has a single CNS.
+
+---+++ Use cases
+The ConceptNameServer should offer services at least for the following cases:
+
+*Browse ontology* - Find classes and the properties defined for each class
+
+   * This use case is of particular relevance for a provider configuration tool.  The responses from this service should allow the configuration tool to prompt the user with properties which are available for mapping to the local data resource (including joins via _object properties_ to other ontology objects).
+   * Client provides an ontology identifier (class or property) and can retrieve associated definitions.
+
+*Get mappings (output models) for class/property* - Find known (XML Schema) mappings including a given ontology class or property
+
+   * This use case allows a configuration tool to determine appropriate output models to offer for a given data resource (based on its mapping to the ontology).  The tool can then offer the user a menu of output models which the resource could automatically be configured to provide.
+   * Client provides an ontology identifier (class or property) and receives a document listing available schema (and other?) representations with the mappings between their XPaths and ontology properties.  Configuration tool adds selected output models to TAPIR configuration.
+
+*Get mappings for schema* - Find classes and properties mapped to a particular (XML Schema) namespace
+
+   * This use case allows a consumer of data (potentially from sources not affiliated with this ConceptNameServer) to interpret data from an external schema as a set of ontology objects.  This allows a ConceptNameServer-aware client to consume data provided by applications that are not ConceptNameServer-aware and to interpret these data in terms of the ConceptNameServer ontology.
+   * Client provides an (XML Schema) namespace string and receives a document with mappings between schema XPaths and ontology properties.
+
+*Extend ontology* - Add classes and properties to the ontology
+
+   * User adds new classes to the ontology or defines properties for an existing class - need to consider authorisation and review processes.
+
+*Register output model* - Map (XML Schema or other?) output model to ontology
+
+   * User defines mappings between output model XPaths and ontology properties - need to consider authorisation and review processes.
+
+---+++ alias.txt
+[[http://ww2.biocase.org/svn/tapir/trunk/protocol/alias.txt][download latest alias.txt]]
+
+<verbatim>
+<!-- 
+ -->
+<!--  GLOBAL UNIQUE ALIASES FOR CONCEPTS
+ -->
+<!-- 
+ -->
+<!--  It is recommended to form aliases by using the following syntax:
+ -->
+<!--  CONCEPT_ABBREVIATION@NAMESPACE_ABBREVIATION
+ -->
+<!-- 
+ -->
+
+
+
+[concept_source]
+
+label          =  ABCD v1.20
+namespace      =  http://www.tdwg.org/schema/abcd/1.20
+alias          =  abcd120
+location       =  http://www.bgbm.org/TDWG/CODATA/Schema/ABCD-1.20.xsd
+
+[models]
+canonical      =  http://res.tdwg.org/tapir/models/ABCD-1.20.xml
+
+[aliases]
+
+SourceInstCode            ConceptNameServerDataSets/DataSet/OriginalSource/SourceInstitutionCode
+SourceName                ConceptNameServerDataSets/DataSet/OriginalSource/SourceName
+DateSupplied              ConceptNameServerDataSets/DataSet/OriginalSource/SourceLastUpdatedDate
+DateUpdated               ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied
+SupplierName              ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Person/PersonName
+TermsOfUse                ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/TermsOfUse
+LegalOwnerOrganisation    ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationName
+LegalOwnerPerson          ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Person/PersonName
+Disclaimer                ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Disclaimer
+Logo                      ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/LogoURL
+DatasetDescription        ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Description
+UnitID                    ConceptNameServerDataSets/DataSet/Units/Unit/UnitID
+RecordBasis               ConceptNameServerDataSets/DataSet/Units/Unit/RecordBasis
+HigherTaxon               ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon
+ScientificName            ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString
+AuthorString              ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/AuthorString
+BotGenus                  ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus
+Identifier                ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName
+IdentDate                 ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/ISODateTimeBegin
+TypeStatus                ConceptNameServerDataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeDesignation/TypeStatus
+ImageURI                  ConceptNameServerDataSets/DataSet/Units/Unit/UnitDigitalImages/UnitDigitalImage/ImageURI
+GatheringDate             ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeBegin
+Collector                 ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgent/Person/PersonName
+Project                   ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/Project/ProjectTitle
+Locality                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/LocalityText
+Country                   ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/CountryName
+Longitude                 ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal
+Latitude                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal
+Altitude                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementLowerValue
+Description               ConceptNameServerDataSets/DataSet/Units/Unit/UnitDescription
+
+</verbatim>
+
+%META:FILEATTACHMENT{name="alias.txt" attachment="alias.txt" attr="" comment="" date="1168444384" path="alias.txt" size="3891" stream="alias.txt" user="Main.RicardoPereira" version="1"}%

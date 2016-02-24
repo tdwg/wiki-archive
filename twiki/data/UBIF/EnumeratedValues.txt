@@ -1,0 +1,80 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147812400" format="1.1" version="1.12"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+---++++Introductory material
+
+Please see also:
+   * EnumeratedValuesAndOwl (relationship between xml-schema and OWL based vocabularies)
+   * SemiControlledEnumeratedValues (relationship between controlled vocabularies and extensibility)
+
+The [[HTML xxxxxxxxxxxxx UBIF-Docu-Enumerations.html#RevisionStatusEnum][HTML @@@ UBIF enumeration info]] in html format is created by an xslt script from the schema and may be more current. It is also the primary document to review. The topics below are primarily provided for discussion. The enumerations are grouped into:
+   * Generic enumerations
+   * Statistical categories
+   * Agent role codes
+   * Enumerations specific to the biological domain
+
+As of May 2006 the material from the schema (UBIF_EnumLib.xsd) were directly copied to this WIKI topic. They may later loose synchronicity, because the WIKI offers no reference linking mechanism to directly include schema comments here. 
+
+---
+
+<h3>a) Generic enumerations</h3>
+
+   * RevisionStatusEnum: Unrevised to fully revised, with 5 intermediate levels.
+   * ExpertiseLevelEnum: Restricted to integer values from 0 to 5, indicating expertise from schoolchildren to taxonomic expert.
+   * ResourceTypeEnum: This enumeration is identical with the DCMI Type Vocabulary (http://dublincore.org/documents/dcmi-terms/, as of 6/2004), except that an additional type "Other" has been added. Its purpose is to provide a framework of broad media or resource type terms, without the technical detail provided by the large number of MIME types. The annotations are largely based on those from the <nop>DublinCore metadata initiative vocabulary.
+   * TelephoneDeviceEnum: Kind of phone number: voice, fax, mobile, pager, modem. These enumerated values are identical with vCard 3.0 flags (several of which can be added to a single phone number; to represent this in the UBIF interface duplicate the phone number itself!)
+   * Rating1to5Enum: Enumeration restricted to integer values from 0 to 5, indicating an arbitrary rating.
+   * TextDirectionalityEnum: Values are ltr (left to right), rtl (right to left). Compare CSS2 and the XHTML 2.0 bi-directional text module.
+   * StringFormattingTypeEnum: Controlled vocabulary expressing whether and which kind of inline formatting may be contained in a text literal (plain, inline-entity-encoded, html-level-entity-encoded).
+   * MeasurementUnitPrefixEnum: Multiplication factor prefixes used in the scientific SI system (T, G, M, k, h, c, m, µ, n, p, f, a).
+
+<h3>b) Statistical and data analysis categories</h3>
+
+   * StatisticalMeasurementScaleEnum, with disjoint subclasses:
+      * QuantitativeMeasurementScaleEnum
+      * CategoricalMeasurementScaleEnum
+   * CodingStatusEnum
+   * UnivarAnyStatMeasureEnum, with disjoint subclasses:
+      * UnivarSimpleStatMeasureEnum and 
+      * UnivarParamStatMeasureEnum: An enumeration of univariate statistical measures (without and with parameters) supported by UBIF (esp. used by SDD).
+      * Related enumerations in UBIF_EnumSpecs.xsd are UnivarStatMeasureReportingClassEnum and UnivarStatMeasureMethodClassEnum, classifying statistical methods. These are not intended for direct use, but used in the xml data derived from the other enumerations (see the UBIF_EnumData.xml distributed together with the UBIF schema package).
+
+<h3>c) Agent role codes</h3>
+   * AgentRoleEnum: Provides codes for roles like author, editor, photographer, advisor, or copyright holder. Disjoint subclasses are:
+      * AgentCreatorRoleEnum
+      * AgentContributorRoleEnum
+      * AgentOwnerRoleEnum
+      * and (not disjoint, union of Creators and Contributors): AgentCreatorContribRoleEnum
+
+<h3>d) Label/Title/Detail roles, Media representation roles, Link relationships, IPR Statement roles</h3>
+
+   * LabelRoleEnum
+   * DetailRoleEnum
+   * MediaRepresentationRoleEnum
+   * IRPStatementRoleEnum
+   * LinkingRelEnum
+
+<h3>e) Sexual status</h3>
+
+   * SexStatusEnum, codes for human and biological sex status, with disjoint subclasses:
+      *  BasicSexStatusEnum and 
+      *  AdditionalSexStatusEnum
+
+<h3>f) Enumerations specific to the biological domain</h3>
+
+   * TaxonHierarchyTypeEnum
+   * IdentificationCertaintyEnum: To be used to handle "cf.", "aff." etc. 
+   * NomenclaturalTypeStatusOfSpecimensEnum: Status values to express type relations between units (specimen, objects) preserved in collections and taxonomic names. See also the separate NomenclaturalTypeStatusOfSpecimensDiscussion topic!
+   * NomenclaturalStatusEnum
+   * NomenclaturalCodesEnum: List of nomenclatural codes like ICBN, ICZN.
+   * TaxonomicRankEnum: Interoperable superset of taxonomic ranks used in Virology, Bacteriology, Botany and Zoology. In the schema this is implemented as a union of rank subsets (not listed here). See also the separate TaxonomicRankDiscussion topic!
+      * Several disjoint restricted subclasses (TaxonomicRankBelowSubspeciesEnum to TaxonomicRankAboveSuperfamilyEnum) are defined.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 May 2006
+
+----
+
+
+%META:FILEATTACHMENT{name="UBIF-Docu-Enumerations.html" attr="h" comment="" date="1093432077" path="C:\Data\Desktop\UBIF-Docu-Enumerations.html" size="114946" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1147251471" from="UBIF.EnumerationTypes" to="UBIF.EnumeratedValues"}%

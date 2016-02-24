@@ -1,0 +1,144 @@
+%META:TOPICINFO{author="RicardoPereira" date="1168433609" format="1.1" version="1.4"}%
+This page is an informal document where the differences between TAPIR and WFS will be described. The two main TAPIR implementations, Digir2 and pywrapper, will probable include WFS support as and aditional protocol. Therefore this information could be of interest for people working on the topic.
+
+---++ Examples
+
+A similar search request in WFS and TAPIR.
+
+
+*TAPIR:*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://www.tdwg.org/schemas/tapir/datasource/1.0">
+    <header/>
+    <search>
+        <outputModel location="http://url_to_outputModel_repository/darwinCore.xml"/>
+        <filter>
+            <and>
+                <like>
+                    <concept id="dwc:ScientificName"/>
+                    <literal2 value="Luzula*"/>
+                </like>
+                <!-- The BBOX would be an extension OP -->
+                <BBOX>
+                    <concept id="tdwg_spatial:the_geom"/>
+                    <Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+                        <coordinates>-75.102613,40.212597 -72.361859,41.512517</coordinates>
+                    </Box>
+                </BBOX>
+            </and>
+        </filter>
+        <orderBy>
+            <concept id="dwc:ScientificName"/>
+        </orderBy>
+    </search>
+</request>
+</verbatim>
+
+*WFS:*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<GetFeature xmlns="http://www.opengis.net/wfs">
+    <Query typeName="dwc:myCollection">
+        <Filter xmlns="http://www.opengis.net/ogc">
+            <And>
+                <PropertyIsLike wildCard="*" singleChar="." escapeChar="\">
+                    <PropertyName>dwc:ScientificName</PropertyName>
+                    <Literal>Luzula*</Literal>
+                </PropertyIsLike>
+                <BBOX>
+                    <PropertyName>the_geom</PropertyName>
+                    <Box xmlns="http://www.opengis.net/gml" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+                        <coordinates>-75.102613,40.212597 -72.361859,41.512517</coordinates>
+                    </Box>
+                </BBOX>
+            </And>
+        </Filter>
+        <SortBy xmlns="http://www.opengis.net/ogc">
+            <SortProperty>
+                <PropertyName>dwc:ScientificName</PropertyName>
+            </SortProperty>
+        </SortBy>
+    </Query>
+</GetFeature>
+</verbatim>
+
+---++ Other notes
+
+Some quick notes taken while reading the WFS specifications (https://portal.opengeospatial.org/files/?artifact_id=8339)
+
+---+++ Differences between TAPIR and WFS
+
+-In WFS GML must be used to express features within the interface. In TAPIR there is no schema binding. Let say that WFS ir more similar on this to Digir and TAPIR to BioCASe. Therefore in WFS they constantly talk about features as the basic constructustion. In Digir there was something similar. In TAPIR what is a feature (record) is defined within an outputFormat with the recordDefinition.
+
+-WFS operations support INSERT, UPDATE, DELETE, QUERY and DISCOVERY, TAPIR only QUERY. The WFS servers can specify which operations they support and according to this they are divided into Basic WFS (Read-only ->GetCapabilities,DescribeFeatureType, GetFeature) and Transaction WFS.
+
+-we can say that TAPIR is comprable to Basic WFS so the non-basic WFS operations are not analyzed.
+
+-In WFS, the capabilities document describes the operations that the WFS support and a list of feature types that it can service. To get the definetion of a particular feature type there is a different operation, called DescribeFeatureType (or something like this). In TAPIR in the capabilities document you also get the definition of the outputFormats that this service can return.
+
+-Operations in WFS Basic versus TAPIR: GetCapabilities -> GetCapabilities, DescribeFeatureType -> included in GetCapabilities, GetFeature -> search
+
+-There is no TAPIR inventory equivalence in WFS.
+
+-There is no metadata equivalent in WFS (this will probably fit better in the Catalog Service satndard from OGC).
+
+-TAPIR partial search is more or less done in WFS by specifying the properties you want to get from a featureType when doing a GetFeature request.
+
+-In WFS there is the notion of Feature Identifier and is required (a  kind of Record Identifier in TAPIR) that is not defined in TAPIR. So in some sense WFS is more record style than TAPIR.
+
+-In WFS there is the notion of GUID [[page][23]] talking about similar problem to ours. In TAPIR there is no concept of GUId in the protocol.
+
+-the only difference seen in the use of Xpath between TAPIR and WFS is in: "Each step in the path may optionally contain a predicate composed of the predicate delimiters ?[[?][and ?]]? and a number indicating which child of the context node is to be selected.  This allows feature properties that may be repeated to be specifically referenced. " Aprt of this rhe rest is the same (take a look at the similarities or page [25])
+
+-outputFormat in WFS is is used to indicate the schema description language that 
+should be used to describe feature type schemas.  The only mandatory output format in 
+response to a DescribeFeatureType operation is XML Schema, denoted by the value 
+XMLSCHEMA for the outputFormat attribute. sO other ways of defining featuretypes are possible. [31]
+
+-outputFormat in WFS can also indicate the format of the aoutput, being GML2 or even not XML format at all.
+
+
+---+++ Similartities between TAPIR and WFS
+
+-The predicate or filter language in WFS is defined in XML and be derived from CQL. Very similar to TAPIR.
+
+-The datastore used to store geographic features in WFS and any other data in TAPIR should be opaque to client applications and their only view of the data should be through the WFS, TAPIR interface. (this is the wrapper idea).
+
+-The use of a subset of XPath expressions for referencing properties (WFS), concepts (TAPIR). TAPIR make use of globally defined aliases.
+
+-In both there are two ways of encoding request: trough POST and GET. The first uses XML as the encoding language (XML).  The second method uses keyword-value pairs (KVP) to encode the various parameters of a request.
+
+-A WFS must use XPath [8] expressions, as defined in this document, for referencing the properties and sub-properties of a feature encoded as XML elements or attributes.  The same is valid for TAPIR. Xpath must be used to refeer to concepts inside an outputformat (well is not called aoutputformat no?).
+The WFS specification says: "This specification does not require a WFS implementation to support the full XPath language." In page [25] there is a description of what is mandatory to support from Xpath.
+
+
+-maxFeatures in WFS exist in TAPIR.
+
+
+---+++ Interesting for creating the TAPIR specifications:
+
+-From WFS and that can be applied to TAPIR too: "At present, the only distributed computing platform (DCP) explicitly supported by OGC Web Services is the World Wide Web itself, or more specifically, Internet hosts implementing the Hypertext Transfer Protocol (HTTP)[9].  Thus the Online Resource of each operation supported by a service instance is located by an HTTP Uniform Resource 
+Locator (URL). The URL may be different for each operation, or the same, at the discretion of the service provider. 
+
+Each URL must conform to the description in [9], but is otherwise implementation-dependent; only the parameters comprising the service request itself are mandated by the OGC Web Services specifications. HTTP supports two request methods: GET and POST.   One or both of these methods may be defined for a particular OGC Web Service type and offered by a service instance.  The use of the Online Resource URL differs in each case."
+
+-In the WFS specification is said that in the use of GET the WFS server can use as many parameters as it wants to define a particular service instance (like the dsa parameters in BPS2). The URL prefix must end in either a '?' (in the absence of additional server-specific parameters) or a '&'.  In practice, however, Clients should be prepared to add a necessary trailing '?' or '&' before appending the Operation parameters defined in this specification in order to construct a valid request URL. [[page][21]]
+
+-From WFS specification, interesting for: "Response objects must be accompanied by the appropriate Multipurpose Internet Mail Extensions (MIME) type [9] for that object. Response objects should be accompanied by other HTTP entity headers as appropriate and to the extent possible.  In particular, the Expires and Last-Modified headers provide important information for caching; Content-Length may be used by clients to know when data transmission is complete and to efficiently allocate space for results, and Content-Encoding or Content-Transfer-Encoding may be necessary for proper interpretation of the results." [[page][22]] 
+
+-Native element in WFS  is intended to allow access to vendor specific capabilities of any 
+particular web feature  server or datastore. And includes a safeToIgnore element that indicates "A value of False indicates that the <Native> element cannot be ignored and the operation that the element is associated with must fail if the web feature service cannot deal with it.  " [[pag][28]]
+
+-Version attribute to indicate the version of the protocol in WFS
+
+
+---+++ Same problem with multiple namespaces in an output formats:
+
+An XML Schema[6] document can only describe elements that belong to a single 
+namespace.  This means that a Web Feature Service cannot describe features from 
+multiple namespaces in a single XML Schema document.  To overcome this limitation, a 
+WFS may generate an XML Schema document that is a ?wrapper? schema that imports 
+the schemas of the features from the various namespaces in the request.
+
+The WFS service must be able to generate a schema that validates output formats. In the case of multiple ns throught this wrapper schema.

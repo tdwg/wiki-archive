@@ -1,0 +1,213 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.5
+date	2007.01.16.04.11.58;	author TWikiContributor;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.10.25.00.21.56;	author TWikiContributor;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.06.25.16.26.33;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.01.05.55.40;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.5
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Prefs=
+
+The Prefs class is a singleton that implements management of preferences.
+It uses a stack of TWiki::Prefs::PrefsCache objects to store the
+preferences for global, web, user and topic contexts, and provides
+the means to look up preferences in these.
+
+Preferences from different places stack on top of each other, so there
+are global preferences, then site, then web (and subweb and subsubweb),
+then topic, included topic and so on. Each level of the stack is tagged with
+a type identifier.
+
+The module also maintains a separate of the preferences found in every topic
+and web it reads. This supports the lookup of preferences for webs and topics
+that are not on the stack, and must not be chained in (you can't allow
+a user to override protections from their home topic!)
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($session[,$cache])</tt>
+
+Creates a new Prefs object. If $cache is defined, it will be
+pushed onto the stack.
+
+
+
+---++ ObjectMethod *finish* <tt></tt>
+Complete processing after the client's HTTP request has been responded
+to. 
+   1 breaking circular references to allow garbage collection in persistent
+     environments
+
+
+
+---++ ObjectMethod *pushPreferences* <tt>($web,$topic,$type)</tt>
+   * =$web= - web to read from
+   * =$topic= - topic to read
+   * =$type= - DEFAULT, SITE, USER, SESSION, WEB, TOPIC or PLUGIN
+   * =$prefix= - key prefix for all preferences (used for plugins)
+Reads preferences from the given topic, and pushes them onto the
+preferences stack.
+
+
+
+---++ ObjectMethod *pushWebPreferences* <tt>($web)</tt>
+
+Pushes web preferences. Web preferences for a particular web depend
+on the preferences of all containing webs.
+
+
+
+---++ ObjectMethod *pushGlobalPreferences* <tt>()</tt>
+Add global preferences to this preferences stack.
+
+
+
+---++ ObjectMethod *pushPreferencesValues* <tt>($type,\%values)</tt>
+Push a new preference level using type and values given
+
+
+
+---++ ObjectMethod *mark* <tt>()</tt>
+Return a marker representing the current top of the preferences
+stack. Used to remember the stack when new web and topic preferences
+are pushed during a topic include.
+
+
+
+---++ ObjectMethod *resetTo* <tt>($mark)</tt>
+Resets the preferences stack to the given mark, to recover after a topic
+include.
+
+
+
+---++ ObjectMethod *getPreferencesValue* <tt>($key) -> $value</tt>
+   * =$key - key to look up
+
+Returns the value of the preference =$key=, or undef.
+
+Looks up local preferences when the level
+topic is the same as the current web,topic in the session.
+
+
+
+---++ ObjectMethod *isFinalised* <tt>($key)</tt>
+Return true if $key is finalised somewhere in the prefs stack
+
+
+
+---++ ObjectMethod *getTopicPreferencesValue* <tt>($key,$web,$topic) -> $value</tt>
+
+Recover a preferences value that is defined in a specific topic. Does
+not recover web, user or global settings.
+
+Intended for use in protections mechanisms, where the order doesn't match
+the prefs stack.
+
+
+
+---++ getTextPreferencesValue( $key, $text, $meta, $web, $topic ) -> $value
+Get a preference value from the settings in the text (and/or optional $meta).
+The values read are *not* cached.
+
+
+---++ ObjectMethod *getWebPreferencesValue* <tt>($key,$web) -> $value</tt>
+
+Recover a preferences value that is defined in the webhome topic of
+a specific web.. Does not recover user or global settings, but
+does recover settings from containing webs.
+
+Intended for use in protections mechanisms, where the order doesn't match
+the prefs stack.
+
+
+
+---++ObjectMethod stringify() -> $text
+
+Generate a TML-formatted version of the current preferences
+
+@
+
+
+1.4
+log
+@buildrelease
+@
+text
+@a35 5
+---++ ObjectMethod *pushGlobalPreferences* <tt>()</tt>
+Add global preferences to this preferences stack.
+
+
+
+d53 5
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@d101 3
+a103 3
+---++ getTextPreferencesValue( $key, $text, $web, $topic ) -> $value
+Get a preference value from the settings in the text. The values are
+*not* cached.
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d28 8
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d94 2
+a95 2
+Get a preference value from the settings in the text. The parsed
+values are cached against the web, topic.
+@

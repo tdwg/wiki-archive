@@ -1,0 +1,194 @@
+head	1.6;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.6
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2005.09.28.17.27.42;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.06.17.02.24.54;	author KevinThiele;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.06.14.20.51.33;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2005.06.14.06.07.36;	author KevinThiele;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.06.13.18.36.36;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.6
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1127928462" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+In producing some !NaturalLanguageDescriptions(NLD)  from the Illinois FNA and some of our own data, we found that there are objects which might reasonably be called characters, but whose contents are unparsed fragments of natural language. A reason to call them characters is that software, including UI, can then easily find them in the Terminology and support NLP and UI on them by name. The problem with this is that for these partially marked-up characters to do this, they must carry a reference into a Character in the Terminology and in SDD 10b4, each of these must have one or more State objects. There is, however, no reasonable thing to call the state here. Indeed, using the content as state would often lead to a silly fully diagnostic character, since each of these text strings is often unique to the taxon it is describing.
+
+We see several options:
+	* make a global dummy state, say, !NaturalLanguageDummy, and refer every NLD character to a character that has this as one of its states (possibly the only one, if the character is genuinely un-parsed) 
+	* allow Characters in Terminology to have 0 or more, instead of 1 or more states.
+	* both
+
+We favor the 2nd case, because if several descriptions point into !NaturalLanguageDummy then a comparison by a stupid software agent would find that the two descriptions have the same state for the given character. But see below.
+
+From discussion with Main.KevinThiele we understand this to be related to a problem that Delta has dealing with "Text Characters" in which, for INTKey at leas,  comparisons are permitted on the text, possibly to the detriment of any real diagnostic meaning.
+
+Alas, the problem does not go away just by adopting the 2nd alternative, because as subsequent refinement proceeds on the NLD, one would need a mix of both real states and the dummy. So, the above notwithstanding, we seem to prefer the first option or maybe the third. What this might mean is that something has to discourage applications from doing comparisons (including comparisons that are modifier-aware) on the dummy state. That could be another boolean attribute on states, like "isComparable" or some mechanisms like Java has to explicitly define equality and other relations. The latter seems like more power than is needed here.
+
+Note to developers: It becomes confusing to look at pure SDD NLDs in the face of a !NaturalLanguageDummy and absent an "isComparable" attribute. The best thing to do is be sure that the debugRef tool is in play so that _in the description_ you can see that a state is the dummy. This doesn't help much in the question of comparison, but it will stop those pesky biologists from accusing you have having a meaningless state---which of course you do. :-)  Alas, at this writing, we have not brought that tool up to the current schema and possibly won't until the schema is stabilized.
+
+-- Main.BobMorris, Main.JacobAsiedu - 13 Jun 2005
+----
+
+It seems to me the problem is that there is no equivalent of the &lt;Characters&gt; list for the &lt;Items&gt; that are used to mark up natural language (is this correct, that there is indeed no equivalent?). As you say, &lt;Characters&gt; in &lt;DescriptiveTerminology&gt; provides a convenient way of finding and enumerating them; while the &lt;Items&gt; in &lt;NaturalLanguageDescriptions&gt; would need to be gathered laboriously.
+
+The way in which you've treated these types of data in the EFG-SDD (see http://panda.cs.umb.edu/efg2sdd/) seems to me to be inconsistent. So, for example, in the Solanaceae dataset you treat "Pollinator" as a character with pseudostates "bees", "euglossine bees", "large bees", orchid bees", "small insects including bees, wasps, flies, buterflies, beetles and occasionally hummingbirds". And "Species Range" as a character with pseudostates "Mexico to South America", "Mexico to Peru" and "Mexico to Colombia (and possibly Peru)". But in the Trees of Monteverde you treat "Local Distribution" as a natural language &lt;item&gt; without enumeration of pseudostates. ---- Main.KevinThiele - 14 Jun 2005
+
+---
+
+We do indeed treat these inconsistently but that is in part because we just have got started and mean to fix the inconsistencies and in part because some statelike data in our databases is _usually_ but not always, reasonable states (even parseable multi-states). Our biggest constraint is that we allow data providers to use arbitrary database systems, and in the end, they usually offer us text data in every database cell. We would be better off if we could control the db, but our game is that we don't. All that said, there are a few things we can do, and since we are at the beginning, we don't know how it will play out. First, for each field in our data, which corresponds to an Item name in  the EFGDocument schema, we have some metadata that tells whether the corresponding character is to be coded or NL. Furthermore, the metadata supports a regular expression that can control a tokenization of text like "birds,bees,bats,butterflies" into its component parts in the case the metadata asserts the Item is to be a character for use in !CodedDescriptions. As above, the main problem here is social: has the data provider been consistent enough in data entry that this doesn't produce silly states? When not, we would usually be forced into NL characters. However, this is always just a matter of the metadata configuration for us. If an SDD producer should be forced to be NL because 300 taxa are have Pollinators one of "birds,bees", "birds", "bees", "ants" and one has "birds or bees on the Pacific slope; bees on the Atlantic slope, but some species attract nocturnal moths in the rainy season", then we can negotiate with the provider for a more reasonable coding in her back end and then we just push a button and generate a new set of Java routines that will turn Pollinators into a multi-state character with an orModel. In the bleating words of software developer's everywhere: "the problem is in the data, not the software." :-) -- Main.BobMorris - 14 Jun 2005
+
+---
+
+I don't think it is reasonable to call these characters. I'd also be loathe to repeat the DELTA solution of having pseudocharacters of type TEXT to accommodate these data.-- Main.KevinThiele - 14 Jun 2005
+
+---
+
+I agree, that is why we would might prefer to see a Boolean attribute on states that signals something like "don't compare me to anything that isn't marked like me. I am not a real state". This would let applications know that it is ok to use this "state" in descriptions (either NL or coded) but not in diagnoses. In turn, that would support incremental parsing over time of NL items. What I mean here, and I am not sure it is a good thing, is that in some taxa you might be able to parse fully and move the coding into the !CodedDescription while in others you might leave it in the NLD. -- Main.BobMorris - 14 Jun 2005
+---
+
+To me, a character defines a constrained terminology for a feature of a thing - that is, a character has states and the terminology is constrained to the states. So, "Pollinator: birds/bees/bats/butterflies" is to me a character with states. -- Main.KevinThiele - 14 Jun 2005
+
+---
+If you could enumerate &lt;items&gt; more easily, could all your data of this type be marked up using &lt;items&gt;? -- Main.KevinThiele - 14 Jun 2005
+
+---
+
+Not sure, but out of time to think about it for this week... Maybe Jacob or others will continue. Except in the case where you just make everything NLDs, I now believe NLDs are more subtle than I thought -- Main.BobMorris - 14 Jun 2005
+
+ -- Main.BobMorris - 14 Jun 2005
+
+OK, I'd like to start at the extreme position and say that <i>all</i> &lt;CodedDescriptions&gt; <i>must</i> be based on a constrained terminology, and if you don't have a constrained terminology (with the constraint either enforced on the user as we do by using a checklist of states and tickboxes, or socially enforced in a looser manner), then your data must sit in NL bins. Please argue the case against this.
+
+-- Main.KevinThiele - 17 Jun 2005
+
+Note that we do have an UnconstrainedText boolean in the definition of the character state, exactly for representing text characters. -- Gregor.
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1118975094" format="1.0" version="1.4"}%
+a5 1
+
+d8 1
+a8 1
+	 * both
+d18 2
+a20 2
+-- Main.BobMorris, Main.JacobAsiedu - 13 Jun 2005
+---
+d24 1
+d26 1
+d28 1
+d30 1
+d32 1
+d34 1
+d44 1
+d53 2
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1118782293" format="1.0" version="1.3"}%
+d41 6
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1118729256" format="1.0" version="1.2"}%
+d21 1
+a21 1
+
+d24 8
+a31 3
+The way in which you've treated these types of data in the EFG-SDD (see http://panda.cs.umb.edu/efg2sdd/) seems to me to be inconsistent. So, for example, in the Solanaceae dataset you treat "Pollinator" as a character with pseudostates "bees", "euglossine bees", "large bees", orchid bees", "small insects including bees, wasps, flies, buterflies, beetles and occasionally hummingbirds". And "Species Range" as a character with pseudostates "Mexico to South America", "Mexico to Peru" and "Mexico to Colombia (and possibly Peru)". But in the Trees of Monteverde you treat "Local Distribution" as a natural language &lt;item&gt; without enumeration of pseudostates.
+
+I don't think it is reasonable to call these characters. I'd also be loathe to repeat the DELTA solution of having pseudocharacters of type TEXT to accommodate these data.
+d33 1
+a33 1
+To me, a character defines a constrained terminology for a feature of a thing - that is, a character has states and the terminology is constrained to the states. So, "Pollinator: birds/bees/bats/butterflies" is to me a character with states.
+d35 2
+a36 1
+If you could enumerate &lt;items&gt; more easily, could all your data of this type be marked up using &lt;items&gt;?
+d38 2
+a39 1
+-- Main.KevinThiele - 14 Jun 2005
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1118687796" format="1.0" version="1.1"}%
+d22 12
+@

@@ -1,0 +1,511 @@
+head	1.13;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.13
+date	2009.11.25.03.14.42;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2009.11.20.02.35.37;	author LeeBelbin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.05.04.11.26.31;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2005.03.12.11.01.37;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.10.06.09.16.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.08.18.15.10.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.08.18.14.06.52;	author TrevorPaterson;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.08.18.11.17.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.06.21.11.30.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.16.10.26.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.03.09.13.05.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.08.21.57.09;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.13
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118882" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="BDI.SDD_.ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+<h2>Text formatting (italics, bold, super/subscript) and other publishing artifacts</h2>
+
+<h3>Problem</h3>
+
+First an apology: I (Gregor Hagedorn) was the main proponent of insisting on some minimal text formatting facility in BDI.SDD_. Bob Morris was always very critical of our current solution since basing it on a mimized xhtml inline-formatting structure meant we had mixed content in BDI.SDD_. (A related case of possible mixed content in the natural language markup was carefully avoided, requiring complete markup with Text elements!) I do agree now that "xml mixed content" poses a significant burden. For example, a product like Altova Mapforce that supports graphical xslt creation to map to and from databases and xml instance documents can not handle elements with mixed content. 
+
+Furthermore, using xhtml-style mixed content markup to format label and other text elements, creates an impedance problem between database and xml: The database most likely uses ANSI or Unicode to encode &amp;, &lt;, &gt;, rather than natively storing character entities (&amp;amp;, &amp;lt;, &amp;gt;). It would thus have to distinguish between passing these through unencoded if used in combination of the few recognized markup tags, and encoding them where used to express greater-than, or even xml-tag examples that may be present in the text.
+
+Example: the Database content "A&lt;sub&gt;1&lt;/sub&gt; &gt; A&lt;sub&gt;2&lt;/sub&gt;" would have to be recoded into: "A&lt;sub&gt;1&lt;/sub&gt; &amp;gt; A&lt;sub&gt;2&lt;/sub&gt;" when creating BDI.SDD_ xml content. This is especially problematic, since some validation may have to occur in the conversion process to avoid ill-formed xml or non-valid BDI.SDD_. For example, unbalanced markup like: "A&lt;sub&gt;1&lt;/sup&gt;" should be converted to "A&amp;lt;sub&amp;gt;1&amp;lt;/sup&amp;gt;"!
+
+<h3>New Proposal</h3>
+
+Trevor Patterson proposed to also encode the markup parts. I think this is a workable solution, provided some schema-external conventions are agreed upon which elements should be allowed to have some markup. Basically it means that the task of the database-to-BDI.SDD_ interface is minimized (usually the automatic xml recoding will work) and that the task of recognizing certain text as non-verbatim and having formatting semantics is shifted to those processes that process the data.
+
+In principle the tags should be based on xhtml, and implicit in the proposal is that any xhtml encountered in a database is to be escaped (by encoding &lt;/&gt; to entities &amp;lt;/&amp;gt;). However, for the purpose of interoperability I believe it is necessary to have a standard or recommendation which tags should be recognized and reverted into formatting. The current list is limited to: "em", "strong", "sub", "sup", "i", and "br". All these tags are inline formatting and do not affect any block-level (e.g., paragraph, list, table) layout that may be used in reports. (See also TextPublishingArtifacts for a later addition of recommended tags for page- and other publishing artifacts.)
+
+I have written some xslt to recover a defined set of encoded formatting markup (similar to the previously proposed <nop>StringWithFormatting type, see Appendix below). Please see the following attachment, containing xslt code, example files, expected output and a html document containing the proposal:
+
+   * [[%ATTACHURL%/EncodedFormattingProposal.zip][EncodedFormattingProposal.zip]]
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 August 2004, revised 12. March 2005 
+---
+
+I think this makes good sense, my only comment would be that I don't know if it is necessary to define the list of supported tags - this can be up to individual users/applications. Obviously it would be better if everyone at least stuck to xhtml - but is a subset of tags necessary?  I'm not sure any rules are necessary beyond explicitly requiring all invalid xml characters to be converted to entities when creating XML, and converting all entities back when converting from xml to whatever.
+
+BTW - I do think that adding formatting will greatly impair any ability to compare and index strings etc, i.e. make it very difficult for any applications wanting to do this. This might be really difficult when multiple nested tags are used. I guess any application doing this will just have to strip away all the tags - which does suggest you might want to have an unformatted version of any formatted string also stored in the schema.
+
+-- Main.TrevorPaterson - 18 Aug 2004
+---
+
+I believe the replace-any-entity-routine will not work, since a) this may create invalid and even ill-formed xml - see the example above which also contains an entity truly meaning greater, and not markup; b) I believe some agreement between content authors and processing applications is necessary as to where (in which elements) and which formatting is supported; this is addressed in the documentation in the zip file); c) allowing complete xhtml would most likely potentially break any report or form generator. It would become extremely difficult to write a report that should be presented as a valid xhtml document, but is able to incorporate text blocks from a datastructure that may include arbitrary xhtml tags. This is the reason behind recommending only a few inline (= character formatting) tags plus the break. It avoids any block-level xhtml. Note that the xslt example code (although not correctly dealing with same-tag nesting), always creates well-formed xml and a valid xhtml fragment. - I encourage reviewers to find an example text that does not perform to this criterion!
+
+However, the UBIF text formatting rules are certainly only recommendations. Any collaboration may wish to extend this, knowing that the additional formatting will only be retrieved among themselves. Other consuming applications would then present the additional tags simply as plain text (like in xhtml source code view), visible to the human consumer and not generating the added functionality. This is still as desirable solution, because it does not break the validity of the 
+
+The comment about problems with indexing is very valid. The example file already contains a case where the feature is "abused" to format an entire field and comments on the difficulty of preventing this. I think this is catch-22: either we want to validate where and how much formatting is possible - this is what the previous BDI.SDD_ versions did and which resulted in mixed content, or we do not validate, you can be agnostic about formatting, but you also have no longer validating control over what happens.
+
+My hope is, given the relative simplicity of the example xslt code, it will be common knowledge to strip exactly the same encoded tags before comparing or indexing. To make this clearer, I have updated the attached zip file: It now includes a second example xslt for such a "StripEncodedFormatting" template.
+
+I believe the comparison/indexing problem cannot be avoided, even if there is no convention on which formatting shall be accepted. I believe having a "public" agreement reduces the urge to create your own private convention (i.e. between your own database and your own processing tool). The public agreement can be dealt with by all consumers, the multiple private subcoding schemes would be very difficult to deal with.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 August 2004, revised 12. March 2005 
+---
+
+<h2>Appendix: Original xml Schema definition of the <nop>StringWithFormatting mixed content type</h2>
+
+This type is now *obsolete* and placed here for reference and comparison. It may be used if post-<nop>RecoverEncodedFormatting shall be validated. 
+
+Note: On August 18, I removed most of the previous discussion that was addressing issues now considered solved with the proposal above (since BDI.SDD_ 1.0 beta 2). Please look at Revision 1.4 of this topic to see the earlier discussion.
+
+<verbatim>
+<xs:complexType name="StringWithFormatting" mixed="true">
+  <xs:annotation><xs:documentation xml:lang="en-us">Allows basic limited text formatting using a few xhtml elements. The list of formatting options is purposely limited as strongly as possible. No block level formatting (p, ul, hr, table) is supported here). Furthermore, deprecated text formatting (u, b, etc.) is not supported. The list can be extended if arguments are made. Types derived from this could support img and a, or block level formats.</xs:documentation></xs:annotation>
+  <xs:choice minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation><xs:documentation xml:lang="en-us">(Note that this is a mixed content model, allowing text between elements!)</xs:documentation></xs:annotation>
+    <xs:element name="em" type="StringWithFormatting">
+       <xs:annotation><xs:documentation xml:lang="en-us">'Emphasis' logical markup (phrase): usually rendered italic.</xs:documentation></xs:annotation>
+    </xs:element>
+    <xs:element name="strong" type="StringWithFormatting">
+      <xs:annotation><xs:documentation xml:lang="en-us">'Strong' logical markup (phrase): usually rendered bold.</xs:documentation></xs:annotation>
+    </xs:element>
+    <xs:element name="sub" type="StringWithFormatting">
+      <xs:annotation><xs:documentation xml:lang="en-us">Logical markup: subscript</xs:documentation></xs:annotation>
+    </xs:element>
+    <xs:element name="sup" type="StringWithFormatting">
+      <xs:annotation><xs:documentation xml:lang="en-us">Logical markup: superscript</xs:documentation></xs:annotation>
+    </xs:element>
+    <xs:element name="i" type="StringWithFormatting">
+      <xs:annotation><xs:documentation xml:lang="en-us">Font style markup: italic markup that could not be interpreted as (preferred) emphasis, esp. for taxon markup.</xs:documentation>
+    </xs:annotation>
+    </xs:element>
+    <xs:element name="br">
+      <xs:annotation><xs:documentation xml:lang="en-us">line break (empty element)</xs:documentation></xs:annotation>
+    </xs:element>
+  </xs:choice>
+</xs:complexType>
+</verbatim>
+
+And an xml-spy schema diagram for the above:<br />
+   <img src="%ATTACHURLPATH%/OldStringWithFormatting.png" alt="OldStringWithFormatting.png"  />
+
+Again, the above illustrated the old BDI.SDD_ solution, which by this discussion has become *obsolete*. It may still be useful to illustrate which xhtml tags are recommended.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 August 2004, revised 12. March 2005 
+---
+
+%META:FILEATTACHMENT{name="OldStringWithFormatting.png" attr="h" comment="" date="1092827030" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\1.0\OldStringWithFormatting.png" size="5650" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="EncodedFormattingProposal.zip" attr="h" comment="" date="1092842270" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\1.0\EncodedFormattingProposal.zip" size="16885" user="GregorHagedorn" version="1.2"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1097054110" from="SDD.FormattedText" to="UBIF.FormattedText"}%
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="LeeBelbin" date="1258684537" format="1.1" reprev="1.12" version="1.12"}%
+%META:TOPICPARENT{name="BDI.SDD.ClosedTopicSchemaDiscussionSDD09"}%
+d9 1
+a9 1
+First an apology: I (Gregor Hagedorn) was the main proponent of insisting on some minimal text formatting facility in BDI.SDD. Bob Morris was always very critical of our current solution since basing it on a mimized xhtml inline-formatting structure meant we had mixed content in BDI.SDD. (A related case of possible mixed content in the natural language markup was carefully avoided, requiring complete markup with Text elements!) I do agree now that "xml mixed content" poses a significant burden. For example, a product like Altova Mapforce that supports graphical xslt creation to map to and from databases and xml instance documents can not handle elements with mixed content. 
+d13 1
+a13 1
+Example: the Database content "A&lt;sub&gt;1&lt;/sub&gt; &gt; A&lt;sub&gt;2&lt;/sub&gt;" would have to be recoded into: "A&lt;sub&gt;1&lt;/sub&gt; &amp;gt; A&lt;sub&gt;2&lt;/sub&gt;" when creating BDI.SDD xml content. This is especially problematic, since some validation may have to occur in the conversion process to avoid ill-formed xml or non-valid BDI.SDD. For example, unbalanced markup like: "A&lt;sub&gt;1&lt;/sup&gt;" should be converted to "A&amp;lt;sub&amp;gt;1&amp;lt;/sup&amp;gt;"!
+d17 1
+a17 1
+Trevor Patterson proposed to also encode the markup parts. I think this is a workable solution, provided some schema-external conventions are agreed upon which elements should be allowed to have some markup. Basically it means that the task of the database-to-BDI.SDD interface is minimized (usually the automatic xml recoding will work) and that the task of recognizing certain text as non-verbatim and having formatting semantics is shifted to those processes that process the data.
+d39 1
+a39 1
+The comment about problems with indexing is very valid. The example file already contains a case where the feature is "abused" to format an entire field and comments on the difficulty of preventing this. I think this is catch-22: either we want to validate where and how much formatting is possible - this is what the previous BDI.SDD versions did and which resulted in mixed content, or we do not validate, you can be agnostic about formatting, but you also have no longer validating control over what happens.
+d52 1
+a52 1
+Note: On August 18, I removed most of the previous discussion that was addressing issues now considered solved with the proposal above (since BDI.SDD 1.0 beta 2). Please look at Revision 1.4 of this topic to see the earlier discussion.
+d85 1
+a85 1
+Again, the above illustrated the old BDI.SDD solution, which by this discussion has become *obsolete*. It may still be useful to illustrate which xhtml tags are recommended.
+@
+
+
+1.11
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1146741991" format="1.0" version="1.10"}%
+%META:TOPICPARENT{name="SDD.ClosedTopicSchemaDiscussionSDD09"}%
+d9 1
+a9 1
+First an apology: I (Gregor Hagedorn) was the main proponent of insisting on some minimal text formatting facility in SDD. Bob Morris was always very critical of our current solution since basing it on a mimized xhtml inline-formatting structure meant we had mixed content in SDD. (A related case of possible mixed content in the natural language markup was carefully avoided, requiring complete markup with Text elements!) I do agree now that "xml mixed content" poses a significant burden. For example, a product like Altova Mapforce that supports graphical xslt creation to map to and from databases and xml instance documents can not handle elements with mixed content. 
+d13 1
+a13 1
+Example: the Database content "A&lt;sub&gt;1&lt;/sub&gt; &gt; A&lt;sub&gt;2&lt;/sub&gt;" would have to be recoded into: "A&lt;sub&gt;1&lt;/sub&gt; &amp;gt; A&lt;sub&gt;2&lt;/sub&gt;" when creating SDD xml content. This is especially problematic, since some validation may have to occur in the conversion process to avoid ill-formed xml or non-valid SDD. For example, unbalanced markup like: "A&lt;sub&gt;1&lt;/sup&gt;" should be converted to "A&amp;lt;sub&amp;gt;1&amp;lt;/sup&amp;gt;"!
+d17 1
+a17 1
+Trevor Patterson proposed to also encode the markup parts. I think this is a workable solution, provided some schema-external conventions are agreed upon which elements should be allowed to have some markup. Basically it means that the task of the database-to-SDD interface is minimized (usually the automatic xml recoding will work) and that the task of recognizing certain text as non-verbatim and having formatting semantics is shifted to those processes that process the data.
+d23 1
+a23 1
+	* [[%ATTACHURL%/EncodedFormattingProposal.zip][EncodedFormattingProposal.zip]]
+d39 1
+a39 1
+The comment about problems with indexing is very valid. The example file already contains a case where the feature is "abused" to format an entire field and comments on the difficulty of preventing this. I think this is catch-22: either we want to validate where and how much formatting is possible - this is what the previous SDD versions did and which resulted in mixed content, or we do not validate, you can be agnostic about formatting, but you also have no longer validating control over what happens.
+d52 1
+a52 1
+Note: On August 18, I removed most of the previous discussion that was addressing issues now considered solved with the proposal above (since SDD 1.0 beta 2). Please look at Revision 1.4 of this topic to see the earlier discussion.
+d58 20
+a77 20
+	 <xs:annotation><xs:documentation xml:lang="en-us">(Note that this is a mixed content model, allowing text between elements!)</xs:documentation></xs:annotation>
+	 <xs:element name="em" type="StringWithFormatting">
+		 <xs:annotation><xs:documentation xml:lang="en-us">'Emphasis' logical markup (phrase): usually rendered italic.</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="strong" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">'Strong' logical markup (phrase): usually rendered bold.</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="sub" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">Logical markup: subscript</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="sup" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">Logical markup: superscript</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="i" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">Font style markup: italic markup that could not be interpreted as (preferred) emphasis, esp. for taxon markup.</xs:documentation>
+	 </xs:annotation>
+	 </xs:element>
+	 <xs:element name="br">
+		<xs:annotation><xs:documentation xml:lang="en-us">line break (empty element)</xs:documentation></xs:annotation>
+	 </xs:element>
+d83 1
+a83 1
+	<img src="%ATTACHURLPATH%/OldStringWithFormatting.png" alt="OldStringWithFormatting.png"  />
+d85 1
+a85 1
+Again, the above illustrated the old SDD solution, which by this discussion has become *obsolete*. It may still be useful to illustrate which xhtml tags are recommended.
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1110625297" format="1.0" version="1.9"}%
+%META:TOPICPARENT{name="SDD.SchemaDiscussionSDD09"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1097054160" format="1.0" version="1.8"}%
+d3 85
+a87 75
+(On August 18, I removed the previous discussion, addressing issues that are solved in SDD 1.0 beta 2. Please look at Revision 1.4 to see this discussion.)
+---
+
+<h2>Proposal for fundamental change in text formatting</h2>
+
+I (Gregor) was the main proponent of insisting on some minimal text formatting facility in SDD. Bob was always very critical of our current solution since basing it on a mimized xhtml inline-formatting structure meant we had mixed content in SDD. (A related case of possible mixed content in the natural language markup was carefully avoided, requiring complete markup with Text elements!)
+
+I now agree that indeed the "xml mixed content" poses a significant burden. For example, a product like Altova Mapforce that allows graphical xslt creation to map to and from databases can not handle elements with mixed content. Furthermore, the element validation that is implicit in using xhtml-style markup to format label or definitional text, creates an impedance problem between database and xml: The database most likely uses ANSI or Unicode to encode &amp;, &lt;, &gt;, rather than natively storing character entities (&amp;amp;, &amp;lt;, &amp;gt;). It would thus have to distinguish between passing these through unencoded if used in combination of the few recognized markup tags, and encoding them otherwise.
+
+Example: the Database content "A&lt;sub&gt;1&lt;/sub&gt; &gt; A&lt;sub&gt;2&lt;/sub&gt;" would have to be recoded into: "A&lt;sub&gt;1&lt;/sub&gt; &amp;gt; A&lt;sub&gt;2&lt;/sub&gt;" when creating SDD xml content. This is especially problematic, since some validation may have to occur in the conversion process to avoid ill-formed xml or non-valid SDD. For example, unbalanced markup like: "A&lt;sub&gt;1&lt;/sup&gt;" should be converted to "A&amp;lt;sub&amp;gt;1&amp;lt;/sup&amp;gt;"!
+
+Now Trevor Patterson proposed to also encode the markup parts. I think this is a workable solution, provided some schema-external conventions are agreed upon which elements should be allowed to have some markup. Basically this means that the task of the database-SDD interface is minized (usually the automatic xml recoding will work) and that the task of recognizing certain text as non-verbatim and having formatting semantics is shifted to those processes that process the data.
+
+I have figured out some xslt to recover a defined set of encoded formatting markup (similar to the previously proposed <nop>StringWithFormatting type, see Appendix below). Please see the following attachment, containing xslt code, example files, expected output and a html document containing the proposal:
+
+	* [[%ATTACHURL%/EncodedFormattingProposal.zip][EncodedFormattingProposal.zip]]
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 August 2004
+---
+
+I think this makes good sense, my only comment would be that I dont know if it is necessary to define the list of supported tags - this can be up to individual users/applications. Obviously it would be better if everyone at least stuck to xhtml - but is a subset of tags necessary?  I'm not sure any rules are necessary beyond explicitly requiring all invalid xml characters to be converted to entities when creating XML, and converting all entities back when converting from xml to whatever. 
+
+BTW - I do think that adding formatting will greatly impair any ability to compare and index strings etc, i.e. make it very difficult for any applications wanting to do this. This might be really difficult when multiple nested tags are used. I guess any application doing this will just have to strip away all the tags - which does suggest you might want to have an unformatted version of any formatted string also stored in the schema.
+
+-- Main.TrevorPaterson - 18 Aug 2004
+---
+
+I believe the replace-any-entity-routine will not work, since a) this may create invalid and even ill-formed xml - see the example above which also contains an entity truly meaning greater, and not markup; b) I believe some agreement between content authors and processing applications is necessary as to where (in which elements) and which formatting is supported; this is addressed in the documentation in the zip file); c) allowing complete xhtml would most likely potentially break any report or form layout. This is the reason behind supporting only a few inline (= character formatting) tags plus the break. It avoids any block-level xhtml. Note that the xslt example code (although not correctly dealing with same-tag nesting), always creates well-formed xml and a valid xhtml fragment. - I encourage reviewers to find an example text that does not perform to this criterion!
+
+The comment about problems with indexing is very valid. The example file already contains a case where the feature is "abused" to format an entire field and comments on the difficulty of preventing this. I think this is catch-22: either we want to validate where and how much formatting is possible - this is what the previous SDD versions did and which resulted in mixed content, or we do not validate, you can be agnostic about formatting, but you also have no longer validating control over what happens.
+
+My hope is, given the relative simplicity of the example xslt code, it will be common knowledge to strip exactly the same encoded tags before comparing or indexing. To make this clearer, I have updated the attached zip file: It now includes a second example xslt for such a "StripEncodedFormatting" template.
+
+I believe the comparison/indexing problem cannot be avoided, even if there is no convention on which formatting shall be accepted. I believe having a "public" agreement reduces the urge to create your own private convention (i.e. between your own database and your own processing tool). The public agreement can be dealt with by all consumers, the multiple private subcoding schemes would be very difficult to deal with.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 August 2004
+---
+---
+<h2>Appendix: Original xml Schema definition of the <nop>StringWithFormatting mixed content type</h2>
+
+This type is now obsolete and placed here for reference and comparison. It may be used if post-<nop>RecoverEncodedFormatting shall be validated.
+
+<verbatim>
+<xs:complexType name="StringWithFormatting" mixed="true">
+  <xs:annotation><xs:documentation xml:lang="en-us">Allows basic limited text formatting using a few xhtml elements. The list of formatting options is purposely limited as strongly as possible. No block level formatting (p, ul, hr, table) is supported here). Furthermore, deprecated text formatting (u, b, etc.) is not supported. The list can be extended if arguments are made. Types derived from this could support img and a, or block level formats.</xs:documentation></xs:annotation>
+  <xs:choice minOccurs="0" maxOccurs="unbounded">
+	 <xs:annotation><xs:documentation xml:lang="en-us">(Note that this is a mixed content model, allowing text between elements!)</xs:documentation></xs:annotation>
+	 <xs:element name="em" type="StringWithFormatting">
+		 <xs:annotation><xs:documentation xml:lang="en-us">'Emphasis' logical markup (phrase): usually rendered italic.</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="strong" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">'Strong' logical markup (phrase): usually rendered bold.</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="sub" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">Logical markup: subscript</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="sup" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">Logical markup: superscript</xs:documentation></xs:annotation>
+	 </xs:element>
+	 <xs:element name="i" type="StringWithFormatting">
+		<xs:annotation><xs:documentation xml:lang="en-us">Font style markup: italic markup that could not be interpreted as (preferred) emphasis, esp. for taxon markup.</xs:documentation>
+	 </xs:annotation>
+	 </xs:element>
+	 <xs:element name="br">
+		<xs:annotation><xs:documentation xml:lang="en-us">line break (empty element)</xs:documentation></xs:annotation>
+	 </xs:element>
+  </xs:choice>
+</xs:complexType>
+</verbatim>
+
+And an xml-spy schema diagram for the above:<br />
+	<img src="%ATTACHURLPATH%/OldStringWithFormatting.png" alt="OldStringWithFormatting.png"  />
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 August 2004
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1092841800" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+d8 1
+a8 1
+I was the main proponent of insisting on some minimal text formatting facility in SDD. Bob was always very critical of our current solution since basing it on a mimized xhtml inline-formatting structure meant we had mixed content in SDD. (A related case of possible mixed content in the natural language markup was carefully avoided, requiring complete markup with Text elements!)
+d10 1
+a10 1
+In the meantime I have come to the conclusion that indeed the mixed content poses a significant burden. For example, a product like Altova Mapforce that allows graphical xslt creation to map to and from databases can not handle elements with mixed content. Furthermore, the element validation that is implicit in using xhtml-style markup to format label or definitional text, creates an impedance problem between database and xml: The database most likely uses ANSI or Unicode to encode &amp;, &lt;, &gt;, rather than natively storing character entities (&amp;amp;, &amp;lt;, &amp;gt;). It would thus have to distinguish between passing these through unencoded if used in combination of the few recognized markup tags, and encoding them otherwise.
+d32 1
+a32 1
+The comment about problems with indexing is very valid. The example file already contains a case where the feature is "abused" to format an entire field and comments on the difficulty of preventing this. I think this is catch-22: either we want to validate where and how much formatting is possible - this is what the previous versions did and which resulted in mixed content, or we do not validate, you can be agnostic about formatting, but you also have no longer validating control over what happens.
+d40 1
+a40 1
+
+d80 1
+a80 1
+%META:TOPICMOVED{by="GregorHagedorn" date="1078837501" from="SDD.CaptionContents" to="SDD.FormattedText"}%
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1092838012" format="1.0" version="1.6"}%
+d16 1
+a16 1
+I have figured out some xslt to recover a defined set of encoded formatting markup (similar to the previously proposed <nop>StringWithFormatting type, see Appendix below). Please see the following attachment, containing xslt code, example files, expected output and some documentation:
+d25 1
+a25 1
+BTW - I do think that adding formatting will greatly impair any ability to compare and index strings etc, ie make it very difficult tfor any applications wanting to do this. this might be really difficult when multiple nested tags are used. I guess any application doing this will just have to strip away all the tags - which does suggest you might want to have an unformatted version of any formatted string also stored in the schema.
+d28 7
+d36 3
+d40 1
+d79 1
+a79 1
+%META:FILEATTACHMENT{name="EncodedFormattingProposal.zip" attr="h" comment="" date="1092831231" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\1.0\EncodedFormattingProposal.zip" size="13819" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1092827820" format="1.0" version="1.5"}%
+d23 7
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087817403" format="1.0" version="1.4"}%
+d3 14
+a16 1
+I find it hard to accept having taxon, a citationauthor, and a taxonauthor in the Text of a <nop>MediaResource caption. These things are special to taxonomy, and have nothing to do with an object of <nop>FormattedSimpleTextType in general.
+d18 1
+a18 1
+-- Main.BobMorris - 08 Mar 2004
+d20 1
+d23 1
+a23 1
+Good point on consistency. These were defined before we attempted to remove biological references from SDD in favor of a more general terminology (e.g. class and object instead of taxon and specimen).
+d25 1
+a25 1
+The fact that the semantic markup exists at all goes actually back to you :-) !
+d27 27
+a53 1
+I had only italics to support presentation-oriented formatting, but you requested the ability to make semantic markup whenever possible. Shall we remove these semantic markup options? Any suggestions how to rename them?
+d55 2
+a56 1
+-- Gregor Hagedorn, 9. Mar. 2004
+d58 1
+a58 1
+For the moment I have removed the taxon, a citationauthor, and a taxonauthor from all elements with formatted text in the next revision of SDD. We can easily put them (or equivalent markup options) back in later.
+d60 2
+a61 2
+-- Gregor Hagedorn, 16. Mar. 2004
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1079432763" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1078837500" format="1.0" version="1.2"}%
+d7 2
+d15 5
+a19 1
+-- Gregor Hagedorn, 9. mar. 2004
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1078783029" format="1.0" version="1.1"}%
+d6 10
+@

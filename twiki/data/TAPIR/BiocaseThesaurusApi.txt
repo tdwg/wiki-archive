@@ -1,0 +1,98 @@
+---+ ThesaurusApi
+
+---+ public API Methods
+See ThesaurusApiSql for the SQl behind these methods.
+
+fixed:
+<verbatim>
+ (Vector subjectObj) getSubjects()
+ (Vector domainObj) getDomains()
+ (Vector domainObj) getDomains( (string)subjectID )
+ (Vector localDomainObj) getLocalDomains()
+ (Vector localDomainObj) getLocalDomains( (string)ID, (char)type )
+   -- with ID = key of subject/domain and type = 'S' or 'D'
+ (Vector conceptGroupObj) getConceptGroups()
+ (Vector conceptGroupObj) getConceptGroups( (string)ID, (char)type )
+   -- with ID = key of subject/domain/localdomain and type = 'S', 'D' or 'L'
+ (Vector languageObj) getLanguages()
+ (Vector languageObj) getLanguages( (string)conceptGroupID )
+ (Vector termObj) getStopWords()
+ (Vector termObj) getStopWords( (string)languageID )
+ (Vector termObj) getRootTerms( (string)conceptGroupID )
+
+methods if you only have terms as a string and can restrict its meaning to subjects/domains/etc:
+ (Vector termObj) getSynonymTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList)
+ (Vector termObj) getParentTerms(  (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+ (Vector termObj) getChildTerms(   (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+
+overloaded methods if you have already term objects:
+ (Vector termObj) getSynonymTerms( (termObj)termObj )
+ (Vector termObj) getSynonymTerms( (termObj)termObj, (int)relationId )
+ (Vector termObj) getParentTerms(  (termObj)termObj, (int)level )
+ (Vector termObj) getParentTerms(  (termObj)termObj, (int)level, (int)relationId )
+ (Vector termObj) getChildTerms(   (termObj)termObj, (int)level )
+ (Vector termObj) getChildTerms(   (termObj)termObj, (int)level, (int)relationId )
+</verbatim>
+optional additional methods:
+<verbatim>
+ (Vector termObj) getPotentialSynonymTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList)
+ (termObj) getPreferredTerm( (termObjVector)termObjects )
+</verbatim>
+---+ Classes
+---+++++ term Class
+   * inherits conceptGroup Class
+   * properties
+   * tId
+   * tTerm
+   * tPlaintext
+   * tLlanguageId
+   * tLanguage
+   * tListPreferred
+   * tAuthorString
+   * tRank
+   * tTermType
+   * tListCode
+   * tSortCode
+   * methods
+   * get/set properties
+
+---+++++ conceptGroup Class
+   * inherits localDomain Class
+   * properties
+   * cgId (string) <--  (concept_group.concept_group_key)
+   * cgName (string) <--  (concept_group.item_name)
+   * cgAuthority (string) <--  (concept_group.authority)
+   * cgUrl (string) <--  (concept_group.url)
+   * methods
+   * get/set properties
+
+---+++++ localDomain Class
+   * inherits domain Class
+   * properties
+   * ldId
+   * ldName
+   * ldLanguage
+   * methods
+   * get/set properties
+
+---+++++ domain Class
+   * inherits subject Class
+   * properties
+   * dId
+   * dName
+   * methods
+   * get/set properties
+
+---+++++ subject Class
+   * properties
+   * sId
+   * sName
+   * methods
+   * get/set properties
+
+---+++++ language Class
+   * properties
+   * lId
+   * lName
+   * methods
+   * get/set properties

@@ -1,0 +1,130 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118879" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---+!! %TOPIC%
+
+Plea - Kevin and I, Gregor need some one else to think this through as well. Please try to find the time to discuss this.
+
+-----
+
+I have been thinking about the text character issue we discussed as the last issue in St. Petersburg. I fully agree that the current mechanism to use a special subclass of state definitions of "non-analytical states" containing only unconstrained text, although general, is hard to understand and has a number of undesirable properties, mostly that the kind of state can only be found in terminology, but is invisible in data.
+
+We agreed to introduce a new character type for proper text characters. The open issue is how to handle the combination of categorical with text character: "Other, please specify".  The most logical proposition seems to be to abandon the combination. So we would only have <nop>TextCharacter.
+
+The combination is probably still a left-over from my originally favored proposal to define characters abstract and allow them to be represented in various forms, (e.g. size both quantitative and categorical: 23 cm, 1.50 m, small tree, large tree). I believe the text issue is closely related to this.
+
+I hate having to define multiple characters for abstract character, and have no good analytical means to figure out there relationship. In the case of categorical/quantitative I became convinced by you that the mapping is sufficient. In the text case: can we have an analogous thing somehow, to make is possible in a user interface to keep three character presented together, because all express the same thing?
+
+-- Main.GregorHagedorn - 28 Sep 2005
+
+----
+
+One side issue to this: DELTA data will regularly have text without a state (DELTA OM, UM) and without quantitative data (DELTA RN, IN). How shall these be converted? The issue exists independent of the above, since in the voting version of BDI.SDD_ we only had a mechanism for handling the DELTA text-override for the categorical case, not the quantitative.
+
+It seems that this issue probably has to be solved by a <nop>CodingStatus, but I am uncertain which. Do we need an additional one? Please check the enumeration for Coding status values.
+
+-- Main.GregorHagedorn - 28 Sep 2005
+
+Concerning the DELTA conversion - I think this may be an insoluble problem, given the overloading of the &lt;comments&gt; in DELTA. If a DELTA items file has 23,1/2&lt;occasionally&gt; 24,1&lt;or sometimes ovate with a drawn out tip&gt; 25&lt;bluish with purple spots&gt;, where characters 23-25 are all UM, then only a human could tell that the first is a modifier, the second is perhaps a new state (your original conception of a state "other") and the third is perhaps a text character.
+
+The other option, of course, is that it's up to whoever writes a DELTA-BDI.SDD_ export routine to try to find a way to sort this out.
+
+The idea of the "other" freetext state available for all categorical characters is a good one - is there a reason why we can't have both freetext states and freetext characters? It's not maximally efficient in the schema, but I've never believed completely in efficiency anyway.
+
+-- Main.KevinThiele - 28 Sep 2005     
+
+Yes we could have separate mechanisms, but I strongly dislike using extremely different mechanism (text character using named element, other-text-extension of categorical using a structure looking like a Note on a State reference, with a reference to a state id, which then carries metadata that it is to be handled specially). Also, a number of DELTA files do not use "TE" at all, but "UM" for exactly the same purpose. There is little difference between calling something a text character, and using the "other" mechanism. My writing here is a kind of plea to consider alternatives - some mechanisms in a categorical or quantitative character expressing that another character of type text is a kind of extension of the structured one. I keep thinking of it as an extension mechanism, but this seems to be not quite correct. Who can help me?
+
+With regard to your DELTA examples: the first two cases are supported by BDI.SDD_ (Notes text on a state) anyway, despite all the problems that people can abuse it. The support seems justified by the need to support legacy data, as well as valid reason why one would make unconstrained text notes on a state. So not supporting the other-text-instead-of-constrained-expression feature of DELTA may be justifiable, but is not immediately obvious.
+
+-- Main.GregorHagedorn - 1 Oct 2005
+
+Not sure what position you're putting here, Gregor. I agree we need to support legacy DELTA data, of course, but we shouldn't be creating solutions that have the same inherent problems!
+
+<i>"Also, a number of DELTA files do not use "TE" at all, but "UM" for exactly the same purpose. There is little difference between calling something a text character, and using the "other" mechanism."</i> That's true, and DELTA was loose enough with it's &lt;comments&gt; that people could get away with this. But a text character is <i>logically</i> different from a categorical character with one unconstrained state. In fact the latter is a logical horror - a noncategorical categorical character. That's why I think data efficiency has a limit, particularly when it conflicts with pedagogical efficiency. 
+
+So I think searching for solutions that are efficient from a schema point of view (treating freetext characters and freetext states using the same mechanism) should be a design goal, but not a design requirement.
+
+-- Main.KevinThiele - 03 Oct 2005       
+
+Now I am confused. You say in the previous comment "idea of the "other" freetext state for all categorical characters is a good one" and here "in fact the latter is a logical horror". I think we are loosing the discussion. Sorry for my confusing start, I know I am not clearly expressing the rather vague idea I am after!!! I will try again:
+
+----
+
+<h1>An attempt to restart...</h1>
+
+1. Let us forget about DELTA. <br/>
+2. I think we agree that well isolated unconstrained text characters are a good idea in certain scenarios. If not, please contradict.<br/>
+3. It seems that we largely agree that the option to provide for "other" free-form text option in categorical characters is a good idea.<br/>
+4. My feeling is, however, that this should be well controlled by terminology designers and readily understood by consumers (esp. including programmers writing software that needs to make a distinction between a comparable state, and an extension containing free-form text.
+
+The last point is why I resent leaving it unvalidated by schema itself, which is where we had to leave the discussion in St. Peterburg.
+
+Now, trying to look around for similarities, I observe that we have (perhaps among other extensions)
+   * Categorical character (C)
+   * Quantitative character (Q)
+   * Text character (T)
+
+We can observe or measure a feature in an organism part that may be expressed in all three forms. Or it may be recorded such. A slightly silly scenario, assuming not new data input, but a project converting/cleaning printed legacy data:
+
+Plant A 3-5 cm high, Plant B small shrub, Plant C horse-high. One may want to express A as quantitative, B as categorical, and resent introducing a category of C and thinking it best treated as free-form text. 
+
+5. We thus can have mixtures of C/Q, C/T (the "other" free-form text option), Q/T (relatively rare, but at least useful to support DELTA legacy data), and C/Q/T. 
+
+6. We have have other cases, where two C characters are related, one with broadly defined states, the other with narrowly defined states.
+
+7. Now <i>assuming that we do not want</i> to have special character types for "combined" characters (which C/T = "other" would be), and that we do not want to limit "other"-option to terminology-designer selected characters (i.e. not treating all C as potentially including a T item), I am *searching* for a way to express the combinations by other means.
+
+8. We already have a way to relate C/Q and C/C (broad/narrow) by means of the mappings.
+
+9. What would be an appropriate concept/term/label/element-name to associated either a T to a C or Q, or a C/Q with a T? I keep thinking of it that the unconstrained "enables/extends" the constrained one (i.e. it allows extensions beyond what was designed by the authors of terminology), but in practice the relation is probably rather the reverse. I feel that there must be a good intuitive concept for this, but eludes me.
+
+-- Main.GregorHagedorn - 4 Oct 2005
+
+----
+Let me throw out notions from compiler theory to see if (at least for me) any light is shed on the issues Gregor raised on 4 Oct 2005 above. When you compile a program text there are typically two distinguishable steps: the syntactic and the semantic. For example, the syntactic translations of c := a + b and c := a * b typically build expression trees from things of the form
+<verbatim>
+           <op>
+          /    \
+        a      b
+</verbatim>
+where &lt;op> is a symbol like "add" or "mul". Two such fragments are syntactically indistinguisable.
+Typically, a subsequent semantic step turns this into a series of instructions for something that is like machine language, so that now the interpretation of this abstract syntactic tree is a series of text that can be acted upon. This is where the semantic difference between "add" and "mul" first becomes knowable. Sometimes it is quite difficult to tell from the syntax analysis whether two expression trees involving only those three symbols will, when given specific values for &lt;op>, a, and b, will yield the same result. 
+
+Now, it is perfectly possible that moving from the syntactical to the semantic processing phase takes place in several stages, so that _some_ of the parse tree is semantically evaluated---and so comparable to other parts which have also been semantically evaluated---but _other_ parts have not been. To me, the semantically unevaluated parts are the analog of "other": you know their syntax but can gain little or no insight into what they mean, except in the case where they come equipped with their own semantic processing by virtue of being identified as one of the enumerated semantically known types, here C and Q. In that case, the tagging is presumed to signify that any existing rules for semantic processing (e.g. comparison) of C and Q may be blindly applied. In this model, mixtures of C,Q,T are simply syntax structures which have only partially been semantically iterpreted and the main issue is identifying for which parts the semantic processing has been done. 
+
+Tagging states as C, Q, T seems to provide for that, and what this leads me to is a (previously discarded?) proposal that it is not the character, but rather the state, which needs to be typed. This removes the notion of various special "mixtures" that Gregor describes. Each of his mixtures represents either a fully or partially semantically processed expression. The latter, in the present discussion, are exactly those with a "T" in his mixture.
+
+Sorry if this came out drivel, or worse, doesn't lead to any action item...
+
+-- Main.BobMorris - 04 Oct 2005
+
+First with regard to the last paragraph: this looks very close to the earlier BDI.SDD_ model where the atomic unit was the state, statistical measure, coding status, or unconstrained text "state". Only in Lisbon 2003 we changed this to having character id references in the descriptive data at all. The reasons to abondon this were largely that almost everybody (at least partly influenced by DELTA concepts, but also by database and object-oriented information models) seemed to identify the concept of a character with a "data type" in database 
+or programming concepts, rather than with an abstract concept of an observable/measurable quantity. I had the impression that
+I failed to make myself understood, so I agreed with changing to a more DELTA-like model. However, I also had a number of unresolved 
+problems, the unsatisfactorily unconstrained text discussed here being only one. The major other I can remember was that indeed states are only partly atomic and in most situations have a relation with the set of all states from which they were selected. "red" in a set of 30 color names is different than "red" in 5 color names. Although in the Lisbon model it was possible to map broad/narrow state concepts freely both within and between characters, it was rather difficult to think how applications might handle this. In an indentification use case only broad state concepts may be desirable, in expert data recording only narrow concepts, and when transcribing legacy data both narrow and broad concepts. Already in the first two use cases it may be difficult for an application to decide which set of states is which, and in the latter case one might even have two "red" states, one broad and one narrow. Probably these things can be solved, but at the time we did not find any solutions.
+
+-- Main.GregorHagedorn - 04 Oct 2005 
+
+Before we try to turn the entire BDI.SDD_ around again (I welcome detailed proposals, but I will not try elaborate it myself at the present time) let us try whether we can develop something close to the current character concept, base on data-typed rather than concept-typed  characters. In the present model the concept character as an abstract conceptual measurable/observable quantity is in Concepts, combining multiple "data type characters".
+
+I like Bob's idea of "semantically unevaluated parts are the analog of 'other'. Making it really hard to distinguish between evaluated and unevaluated parts, was a problem with the previous model overloading states. And if we follow Kevin's suggestion (further up) to keep the old model for the "other" case, we keep this problem (except for the pure text character case).
+
+Note that the information that part of the data is semantically unevaluated is highly relevant for identification. Consider assuming two descriptions, states 1-3 are categorical, state 4 is unconstrained text. Then <br/>
+ D1 (1,2) matches D2 (1,3)<br/>
+ D1 (1) does not match D2 (2)<br/>
+ D1 (1) matches D2 (4)<br/>
+Essentially, in such comparisons the unconstrained text in the mixed C/T case is equivalent to a coding status. That is why I had been asking about ideas to handle it through coding status further above.
+
+Keeping C,Q,T in separate characters has some advantages, it makes it clear which comparison methods apply, it makes software-human user interface and programming relatively easy. In contrast to treating the text as coding status, it requires to know about a C/T or Q/T relation however (the problem with using coding status is that also through decision in Lisbon, use of coding status is global, not constrained by terminology).
+
+Currently Q "maps" to C, and C (narrow state concepts) "maps" to C (broad state concepts). It seems to be consistent, if T would "map" to C or Q; except "map" is a poor concept, because the mappings are operational definitions, allowing semantic reasoning, whereas here, as Bob points out, we know only minimal semantics (i.e. that unless we do NLP, we have an uncomparable entity).
+
+Can we think of a relation concept pointing from T to a C or Q, expressing that T tries to record the same abstract concept in a different way? "UnconstrainedEquivalentOf" "ConstrainedIn"? I do not like these. 
+
+(Also note that not all T have an equivalent C/Q, many wide text characters may be covered by no, or perhaps many C/Q characters. This is simply handled if the T to C or T to Q relation is optional.)
+
+-- Main.GregorHagedorn - 04 Oct 2005 
+
+---
+
+(See also earlier discussions under TextCharacters)

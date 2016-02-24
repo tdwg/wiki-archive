@@ -1,0 +1,69 @@
+%META:TOPICINFO{author="RogerHyam" date="1226412668" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="WebHome"}%
+%RED% These ideas are still under discussion. %BLACK%
+
+---+ <nop>%TOPIC%
+
+At TDWG2008 in Fremantle there was a Wild Ideas session where people could propose crazy things that might not be serious or urgent. RogerHyam did a presentation call SpeciesIndex: A practical alternative to fantasy mashups. This was meant to be a bit of fun but actually went down quiet well with the audience so this page is created to formalise the idea and see if we can move it to an actual implementation. (The abstract of the talk is [[http://www.tdwg.org/proceedings/article/view/338][here]] though the actual talk varied from it a bit. The PowerPoint of the talk is [[http://www.tdwg.org/fileadmin/2008conference/slides/Hyam_20_04_SpeciesIndex.ppt][here]] and their is a flash movie with audio [[http://www.tdwg.org/fileadmin/2008conference/slides/Hyam_20_04_SpeciesIndex.swf][here]])
+
+%TOC%
+
+---++ Summary
+The basic idea is that anyone on the web who publishes species pages should put together a  SiteMap file that just contains the URLs of their species pages. They should then register the SiteMap file with an species index register at an indexer of species pages. Users can go to the index, type a species name and get a list descriptions of that species. This is the basis of a global taxon concept architecture around which many innovative services can be built.
+
+---++ Definitions
+   $ *Species Page*: A species page is a single web page describing a named species taxon. It contains descriptive information about the species such as morphology, ecology, geography, uses etc. It may include text and/or still and moving images and/or sound files. The information may be free standing or may be interpreted in context of other pages in which case it is obvious from the presentation that this is the case. Analogs to species pages in the physical world are entries for species in encyclopedias, floras, faunas and guide books. Questions that *SpeciesPages* help *Users* answer are: Given a name what kind of organism is this? What does it look like? How does it live? Where can I find it? Is it endangered?  Given a specimen how can I confirm its identity? Does this match the descriptive data given in the page? Species pages contain more than one piece of information about the species - they are compiled works. A single photograph is not therefore a species page but a photograph with notes pointing out why the specimen in the photograph should be consider a particular species would count as a species page. Generally species pages are only existed for taxa that are considered accepted by the *Publisher*. If they exist for non-accepted taxa (e.g. synonymous taxa) then they are clearly linked to the accepted taxa.
+   $ *User*: Some one who wants to do either of two things: Find information about a species based on its name or some other discovery mechanism or unambiguously describe which species taxon they mean by citing a *SpeciesPage* URL in addition to the species name. e.g. "I saw a specimen of _Aus bus_ that matched the description at this URL." This is useful because it clarifies the use of a plain species name which can be misleading or confusing. It is similar to a scientist accurately citing the method used to obtain the results of an experiment.
+   $ *Publisher*: Some one (possibly an institution or project) who has created one or more *SpeciesPages* and shares their locations with *Users* by producing a *SiteMap* and registering the *SiteMap* with a *Species Index Register*.
+   $ *SiteMap*: A file conforming to the [[http://www.sitemaps.org/protocol.php][SiteMaps Protocol]] that contains a list of URLs for *SpeciesPages* and only *SpeciesPages*.
+   $ *Species Index Register*: An application that manages a list of *SiteMap* files so that *Indexers* can index the *SpeciesPages* and help *Users* find them.
+   $ *Indexer*: An application that helps *Users* find *SpeciesPages* from *Publishers* and helps *Publishers* expose their *SpeciesPages* to *Users*. A minimal implementation of an *Indexer* would just provide a search box for species names and return a list of *SpeciesPages* in a random order. A more sophisticated *Indexer* would provide more information and rank *SpeciesPages* base on their content. A fully developed *Indexer* may feed back to *Publishers* on how they can improve their *SpeciesPages* and provide metrics to *Users* on whether they should trust the *Publishers*.
+
+---++ Publishers
+
+---+++ Instructions for Publishers
+There are three steps to getting your species pages into indexes:
+   1 Generate a *SiteMap* file for your species pages. This is easy. You can read the [[http://www.sitemaps.org/protocol.php][SiteMaps protocol]] itself and/or you can visit the excellent Google [[http://www.google.com/webmasters/][Webmaster Tools]] site (registration required). Other search engines may provide similar tools. *SiteMaps* are very widely used web technology so any competent web developer should be able to help you.
+   1 Register the location of your *SiteMap* with one or more Species Index Registrar (The first one is here...).
+   1 Consider improving the meta tags on your species pages so the indexers can do a better job. See SpeciesPagesMetaTags for more discussion on this.
+
+---+++ Notes for Publishers
+   * Your *SiteMap* file should only contain URLs for your *SpeciesPages*. It should not be a general *SiteMap* file for your website. *Indexers* have to be able to rely on the *SiteMaps* registered with them only containing URLs to *SpeciesPages*. If an *Indexer* notices that your *SiteMap* contains other pages they will likely drop all your *SpeciesPages* from their index.
+   * You should try to obey the rules on the [[http://www.sitemaps.org/protocol.php#location][location of your SiteMap file]] in the standard but if you can not do this for some reason you can place your *SiteMap* at any web accessible location. The danger with not following the standard is that the indexer can not automatically tell that the owner of the *SiteMap* is the same as the owner of the species pages. There is therefore a chance that indexers will ignore your *SiteMap* and so also ignore your *SpeciesPages*. Another downside is that the validation tools supplied by Google will also fail.
+
+---++ Species Index Registrars
+*Indexers* need to be able to find the *SiteMaps* with *SpeciesPage* URLs in them. To do this there needs to be some form of registry where the locations of *SiteMaps* are stored. Having a single registry would be useful but does not support the spirit of the web - where services are as decentralised as possible to allow for maximum competition/innovation. Species Index Registrars are therefore requested to follow a simple moral code that should enable *Indexers* to find all the *SpeciesPages* that are relevant to them:
+   * The contents of any register of *SiteMaps* should be made readily available for download by other registrars or *Indexers* using CSV, RSS or some similar encoding. This should allow *SiteMaps* that have been registered with one registrar to be propagated to other registrars.
+   * Registrars should publish the existence of other registrars to *Users* who register their *SiteMaps* with them so that *Users* can ensure their *SiteMaps* are registered in multiple locations.
+
+---++ Discussion
+
+---+++ Trust and Junk
+Won't this system just let people expose a whole load of junk without any control over the quality and thereby make things worse than they are today?
+Yes. _Caveat Emptor_ is the defining means of judging quality on the web. It is not possible to have free speech and simultaneously stop people from saying things you don't like. There is much possibility for *indexers* to add value by flagging up preferred *Publishers* and possibly ignoring other *Publishers* altogether.
+
+---+++ A Web Page Isn't a Taxon Concept 
+This is a difficult philosophical question. A web page is a document that talks about a thing, in this case a species, not the species itself. This is problematic especially when making assertions in the meta tags of the page about the taxon. How, for example, does one differentiate between the created date for the taxon and the created date for the page? Ideally all real world taxa should have URIs that redirect to associated pages. This is desirable but puts a hurdle in the way of publishers without adding too much. Better to have the pages available than the semantics 100% correct but no data!
+
+---+++ *SiteMaps* or something similar?
+I very much support the approach and goals, and definitely don't want to cloud things by adding more complexity or getting us to start designing a new protocol and standard, but...
+
+*SiteMaps* seem to me to have a key weakness for our purpose.  *SiteMaps* give us no obvious standard way to identify the species addressed by a given page.  We are therefore left to rely upon determining this dynamically (based presumably on the title, most frequent names in the page, etc.) or by defining some tags which providers should ideally include in the headers of the pages or something similar.
+
+Since the critical question for us is knowing which species is covered by each page, and since these *SiteMaps* are not going to be suitable for all of the normal purposes of a *SiteMap*, should we just take the bull by the horns and mandate our own simple *SiteMap*-like format for this purpose?  This could for example be a document with two standard columns, one for the URL and one for the taxon name, and perhaps with a third optional column so publishers can provide a set of keywords indicating the types of content in the pages (for example as a comma-separated set of SPM categories).
+
+-- Main.DonaldHobern - 06 Nov 2008
+
+Sitemaps, in their XML form, are nicely extensible with other namespaces so we could add DwC or other vocabularies directly in the SiteMap. We could also make up our own CSV format with columns for different things as you suggest. The problem with this approach is that it puts a burden on the publisher to maintain two things; the web pages and the sitemap/index file.
+
+On the other hand putting something in the pages themselves is done synchronously with updating the pages and is more likely to occur. Even if the pages are generated from a database there is only one template to maintain not two (one for the pages and one for the more complex sitemap).
+
+Here I have suggested that we move to capturing more semantically rich content in the page header using the recognised DC way of doing it but I think even this may be too difficult for people. Consider some one using wiki or some other CMS software to generate their species accounts. It may be more appropriate to take the [[http://en.wikipedia.org/wiki/Taxobox#Taxoboxes][Wikipedia Taxobox]] approach in such cases. These people may have difficulty building a regular SiteMap as well.
+
+All this aside I think that semantic mark up of the pages (even to the degree of indicating a standard name format) is "phase 2". First build a list of the pages then work out what we need to do to make them more semantically rich.
+
+-- RogerHyam 2008-11-6
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%

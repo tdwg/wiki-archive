@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Walter Berendsohn (Freie Universität Berlin) -->
+<!-- Extracted from v. 1.20
+Uses Donald Hobern's regrouping of the TaxonIdentifiedType
+HigherTaxonRankType added
+RankAbbreviationType added
+Corrected all xs:appinfo elements to sea: space
+ -->
+<!-- Taken from ABCD v 1.30 by Robert Kukla
+- removed types that are irrelevant for TDWG schema 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sea="http://www.bgbm.org/biodivinf/Schema/sea" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="NameAtomizedType">
+		<xs:annotation>
+			<xs:documentation>Atomized data items of the scientific name, with subtypes according to the different Codes of Nomenclature.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName>Higher taxa</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>Berendsohn 02 Mar 2003</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content/>
+				<sea:Example/>
+				<sea:Comment>Mandatory (at least one) for unit identifications, but optional in other contexts (e.g. synecology).</sea:Comment>/>
+						<sea:Rule/>
+				<sea:EditorialNote/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Bacterial" type="NameBacterialType" minOccurs="0"/>
+			<xs:element name="Botanical" type="NameBotanicalType" minOccurs="0"/>
+			<xs:element name="Zoological" type="NameZoologicalType" minOccurs="0"/>
+			<xs:element name="Viral" type="NameViralType" minOccurs="0"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="NameBacterialType">
+		<xs:annotation>
+			<xs:documentation>An atomized name under the International Code of Nomenclature of Bacteria</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Genus" type="GenusType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Genus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Genus</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+						<sea:Content>A generic name as a bacterial scientific name or as part of it.</sea:Content>
+						<sea:Example>Acetobacter</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>First letter capitalized</sea:Rule>
+						<sea:Rule>No spaces included.</sea:Rule>
+						<sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Subgenus" type="GenusType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Subgenus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Subgenus</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+						<sea:Content>A subgenus name as (part of) a bacterial scientific name.</sea:Content>
+						<sea:Example>Gluconoacetobacter</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>First letter capitalized</sea:Rule>
+						<sea:Rule>No spaces included.</sea:Rule>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SubgenusAuthorAndYear" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Author team and year of the subgenus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Author team and year of subgenus.</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>Author(s) and year of the subgenus name.</sea:Content>
+						<sea:Example>Yamada and Kondo 1985</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpeciesEpithet" type="EpithetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Species epithet</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Species epithet</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Species.</sea:ExistingStandard>
+						<sea:Content>The first epithet occurring in a bacterial name (after genus and, optionally, subgenus names)</sea:Content>
+						<sea:Example>liquefaciens</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SubspeciesEpithet" type="EpithetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Maps to Darwin Core 2: Subspecies</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Subspecies epithet</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Subspecies.</sea:ExistingStandard>
+						<sea:Content>The second epithet of a bacterial name of subspecies rank (after Genus, optional subgenus, and species epithet).</sea:Content>
+						<sea:Example>aceti</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ParentheticalAuthorTeamAndYear" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Author team and Year of the basionym of a species or subspecies combination.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Author team and year</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>HISPID4: has Basionym (basnam) as an element but not the author team.</sea:ExistingStandard>
+						<sea:Content>Author(s) of the original name for a taxon which has subsequently been revised but retains the same stem or epithet.</sea:Content>
+						<sea:Example>Asai</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorTeamAndYear" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The author(s) who published the full name as it stands and its year.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Author team and year</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>Author(s) for the taxonomic name combination (i.e. the author team of the new combination where there is a basionym, and the name author  team where there is none).</sea:Content>
+						<sea:Example>Yamada and Kondo</sea:Example>
+						<sea:Example>Ames and Correll</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameApprobation" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Approbation of name according to approved list, validation list,or validly published, paper in IJSB after 1980.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NameBotanicalType">
+		<xs:annotation>
+			<xs:documentation>An atomized scientific name under the International Code of Botanical Nomenclature or the International Code of Nomenclature for Cultivated Plants</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GenusOrMonomial" type="GenusType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Genus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Genus</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>HISPID: Genus Name (gen) as to content, not all rules.</sea:ExistingStandard>
+						<sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+						<sea:Content>A generic name as a botancal scientific name or as part of it. A generic name under one of the established nomenclatural codes, or a manuscript name, or an intergeneric hybrid name under the ICBN, without the leading multiplication sign,  or the name of an intergeneric graft hybrid or graft chimaera, published under the Cultivated Code.</sea:Content>
+						<sea:Example>Abies</sea:Example>
+						<sea:Example>Halimiocistus</sea:Example>
+						<sea:Example>Crataegomespilus</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>First letter capitalized</sea:Rule>
+						<sea:Rule>No spaces included.</sea:Rule>
+						<sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FirstEpithet" type="EpithetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The first epithet in a botanical name combination.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>First epithet</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>HISPID 3: "Subgeneric Group Name" (subgen) but without the preceding rank abbreviation (entered under Rank).</sea:ExistingStandard>
+						<sea:ExistingStandard>HISPID 3: "Species Epithet" (sp).</sea:ExistingStandard>
+						<sea:ExistingStandard>Darwin Core 2: Species (included).</sea:ExistingStandard>
+						<sea:Content>The first epithet in a botanical name combination, i.e. the epithet of a genus subdivision or a species epithet.</sea:Content>
+						<sea:Example>alba</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>No uppercase</sea:Rule>
+						<sea:Rule>No space</sea:Rule>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SecondEpithet" type="EpithetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The second epithet of a botanical name of infraspecific rank.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Second epithet</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer/>
+						<sea:ExistingStandard>HISPID: "Infraspecific Epithet" (isp) without the hybrid parts.</sea:ExistingStandard>
+						<sea:ExistingStandard>Darwin Core 2: Subspecies (included).</sea:ExistingStandard>
+						<sea:Content>The infraspecific epithet, i.e. the epithet following the indication of the infraspecific rank in the name string</sea:Content>
+						<sea:Example/>
+						<sea:Comment/>
+						<sea:Rule>No uppercase</sea:Rule>
+						<sea:Rule>No space</sea:Rule>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Rank" type="RankAbbreviationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The rank of the name where  needed to form it.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName/>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>HISPID: covers "Infraspecific Rank Flag" (isprk) as well as the rank ("group") of a "subgeneric group name" given in that field.</sea:ExistingStandard>
+						<sea:Content>The rank of the name where  needed to form it (i.e. in infraspecies and in names of a rank between genus and species)</sea:Content>
+						<sea:Example>subgen.</sea:Example>
+						<sea:Example>subsp.</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HybridFlag" type="HybridFlagType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Flag indicating that this is a named hybrid or a graft chimaera.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName/>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>HISPID: Hybrid Flag (hyb) .</sea:ExistingStandard>
+						<sea:Content>Flag indicating that this is a named hybrid or a graft chimaera. Attribute Rank defines if this applies to the generic, species, or infraspecific level.</sea:Content>
+						<sea:Example/>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorTeamParenthesis" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Author team of the basionym of a combination.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName/>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>HISPID4: has Basionym (basnam) as an element but not the author team.</sea:ExistingStandard>
+						<sea:Content>Author(s) of the original name for a taxon which has subsequently been revised but retains the same stem or epithet. May be preceded by a sanctioning author. If possible, preceding "ex" authors should be avoided.</sea:Content>
+						<sea:Example>L.</sea:Example>
+						<sea:Example>Ames and Correll</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorTeam" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The author(s) who published the full name as it stands.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Author team</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>Author(s) for the taxonomic name combination (i.e. the author team of the new combination where there is a basionym, and the name author  team where there is none).  May be preceded by a sanctioning author. If possible, preceding "ex" authors should be avoided.</sea:Content>
+						<sea:Example>DC.</sea:Example>
+						<sea:Example>Ames and Correll</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CultivatedPlantNameElements" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Horticultural and trade name element for plants</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Cultivated plant name elements</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>Horticultural and trade name element for plants</sea:Content>
+						<sea:Example/>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CultivarGroupName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Cultivar group name</xs:documentation>
+								<xs:appinfo>
+									<sea:FullName>Cultivar group name</sea:FullName>
+									<sea:Audience>BioCASE</sea:Audience>
+									<sea:Audience>CODATA TDWG</sea:Audience>
+									<sea:Reviewer>Berendsohn</sea:Reviewer>
+									<sea:ExistingStandard>HISPID4: culgnam</sea:ExistingStandard>
+									<sea:ExistingStandard>ITF</sea:ExistingStandard>
+									<sea:ExistingStandard>Trehane(1995)</sea:ExistingStandard>
+									<sea:Content>The name of a cultivar group as specified in the ICNCP.</sea:Content>
+									<sea:Example>Granny Smith Group</sea:Example>
+									<sea:Comment/>
+									<sea:Rule/>
+									<sea:EditorialNote/>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CultivarName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Cultivar name according to the ICNCP.</xs:documentation>
+								<xs:appinfo>
+									<sea:FullName/>
+									<sea:Audience>BioCASE</sea:Audience>
+									<sea:Audience>CODATA TDWG</sea:Audience>
+									<sea:Reviewer>Berendsohn</sea:Reviewer>
+									<sea:ExistingStandard>HISPID4: culnam</sea:ExistingStandard>
+									<sea:ExistingStandard>ITF</sea:ExistingStandard>
+									<sea:ExistingStandard>Trehane(1995)</sea:ExistingStandard>
+									<sea:Content>The name of a cultivar as specified in the ICNCP.</sea:Content>
+									<sea:Example>Firmgold</sea:Example>
+									<sea:Example>Granny Smith</sea:Example>
+									<sea:Example>Sturmer Pippin</sea:Example>
+									<sea:Comment/>
+									<sea:Rule>For output, cultivar names must be enclosed in single quotes.</sea:Rule>
+									<sea:EditorialNote/>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="TradeDesignationName" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Trade name used for a specific cultivar</xs:documentation>
+								<xs:appinfo>
+									<sea:FullName>Trade name</sea:FullName>
+									<sea:Audience>BioCASE</sea:Audience>
+									<sea:Audience>CODATA TDWG</sea:Audience>
+									<sea:Reviewer>Berendsohn</sea:Reviewer>
+									<sea:ExistingStandard>HISPID4: tranam</sea:ExistingStandard>
+									<sea:ExistingStandard>ITF</sea:ExistingStandard>
+									<sea:ExistingStandard>Trehane(1995)</sea:ExistingStandard>
+									<sea:Content>A trade name of a cultivar as specified in the ICNCP.</sea:Content>
+									<sea:Example/>
+									<sea:Comment/>
+									<sea:Rule/>
+									<sea:EditorialNote/>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NameViralType">
+		<xs:annotation>
+			<xs:documentation>An atomized scientific name under the International Code of Virus Classification and Nomenclature</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Genus" type="GenusType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Genus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Genus</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+						<sea:Content>A generic name as a scientific name of a virus or as part of it.</sea:Content>
+						<sea:Example>Cambarus</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>First letter capitalized</sea:Rule>
+						<sea:Rule>No spaces included.</sea:Rule>
+						<sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ViralSpeciesDesignation" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The non-latinised designation of a formal viral name. Examples: vaccinia virus; human herpes virus 2 (herpes simplex virus 2); poliovirus 1; Saccharomyces cerevisiae virus L-A; enterobacteria phage PRD1 [Source: ICTV].</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName/>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer/>
+						<sea:ExistingStandard/>
+						<sea:Content/>
+						<sea:Example/>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NameZoologicalType">
+		<xs:annotation>
+			<xs:documentation>An atomized scientific name under the International Code of Zoological Nomenclature</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GenusOrMonomial" type="GenusType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Genus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Genus</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+						<sea:Content>A generic name as a zoological scientific name or as part of it.</sea:Content>
+						<sea:Example>Cambarus</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>First letter capitalized</sea:Rule>
+						<sea:Rule>No spaces included.</sea:Rule>
+						<sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Subgenus" type="GenusType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Subgenus name.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Subgenus</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+						<sea:Content>A subgenus name as a zoological scientific name or as part of it.</sea:Content>
+						<sea:Example>Jugicambarus</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>First letter capitalized</sea:Rule>
+						<sea:Rule>No spaces included.</sea:Rule>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpeciesEpithet" type="EpithetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Species epithet</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Species epithet</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Species.</sea:ExistingStandard>
+						<sea:Content>The first epithet occurring in a zoological name (after genus and, optionally, subgenus names)</sea:Content>
+						<sea:Example>monongalensis</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SubspeciesEpithet" type="EpithetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Maps to Darwin Core 2: Subspecies</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Subspecies epithet</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard>Darwin Core 2: Subspecies.</sea:ExistingStandard>
+						<sea:Content>The second epithet of a zoological name of subspecies rank (after genus, optional subgenus, and species epithet).</sea:Content>
+						<sea:Example>monongalensis</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorTeamOriginalAndYear" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The first person(s) who validly published a species-group name and the year of publication.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName>Original authors and year of publication.</sea:FullName>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>The first person(s) who validly published a species-group name and the year of publication.</sea:Content>
+						<sea:Example>L.</sea:Example>
+						<sea:Comment/>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorTeamParenthesisAndYear" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The parenthetical citation of the original author when a species-group was transferred to another genus and the year of the original publication.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName/>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>Author(s) of the original name for a taxon which has subsequently been revised but retains the same stem or epithet and the year of the original publication.</sea:Content>
+						<sea:Example>L.</sea:Example>
+						<sea:Comment/>
+						<sea:Rule>Set in parenthesis upon output</sea:Rule>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CombinationAuthorTeamAndYear" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The citation of the authors responsible for the new combination and the year of its publication.</xs:documentation>
+					<xs:appinfo>
+						<sea:FullName/>
+						<sea:Audience>BioCASE</sea:Audience>
+						<sea:Audience>CODATA TDWG</sea:Audience>
+						<sea:Reviewer>Berendsohn</sea:Reviewer>
+						<sea:ExistingStandard/>
+						<sea:Content>The citation of the authors responsible for the new combination when a species-group is transferred to another genus and the year of publication of  the transfer.</sea:Content>
+						<sea:Example>L.</sea:Example>
+						<sea:Comment>Purely optional under the zoological code.</sea:Comment>
+						<sea:Rule/>
+						<sea:EditorialNote/>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Breed" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Name of the breed of an animal</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NamedIndividual" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="DateTimeISOType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>	
+	<!-- this is too complex right now - will revisit later, Robert -->
+	<xs:simpleType name="DateTimeISOType1">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The date and time expressed in a way conforming to a subset of ISO 8601</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName xml:lang="en">ISO/ANSI Date and Time</sea:FullName>
+				<sea:Content xml:lang="en">A representation of the date and time of (the beginning of) an event in ISO/ANSI standard structured format.</sea:Content>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Audience>HISPID</sea:Audience>
+				<sea:Reviewer>M. Doering, A. Guentsch and W. Berendsohn 2003</sea:Reviewer>
+				<sea:ExistingStandard>ISO Standard 8601:1988</sea:ExistingStandard>
+				<sea:ExistingStandard>HISPID</sea:ExistingStandard>
+				<sea:ExistingStandard>ITF</sea:ExistingStandard>
+				<sea:Content xml:lang="en">Any chronologically acceptable date and time in ISO/ANSI format</sea:Content>
+				<sea:Example xml:lang="en">1966-12-05T23:55:46</sea:Example>
+				<sea:Example xml:lang="en">1925-02-21</sea:Example>
+				<sea:Example xml:lang="en">1925-02</sea:Example>
+				<sea:Example xml:lang="en">1925</sea:Example>
+				<sea:Example xml:lang="en">--12-05T23:55:46</sea:Example>
+				<sea:Example xml:lang="en">---05T23:55</sea:Example>
+				<sea:Example xml:lang="en">1966-12-05T23:55</sea:Example>
+				<sea:Rule xml:lang="en">This field is a representation of the date and time in its structured form</sea:Rule>
+				<sea:Rule xml:lang="en">The values are in order Year-Month-Day, separated by hyphens, followed by the letter T and the time, in order Hour:Minutes:Seconds, separated by colons</sea:Rule>
+				<sea:Rule xml:lang="en">Partial dates in the form of Year-Month or Year only are acceptable</sea:Rule>
+				<sea:Rule xml:lang="en">The year is expressed as a 4-digit value, left zero padded if necessary</sea:Rule>
+				<sea:Rule xml:lang="en">The year can be omitted, the month is than preceeded by two hyphens</sea:Rule>
+				<sea:Rule xml:lang="en">The year and the month can be omitted, the day is than preceeded by three hyphens</sea:Rule>
+				<sea:Rule xml:lang="en">The month of the year is expressed in as 2-digit value, left zero padded if necessary, ranging between 01 and 12</sea:Rule>
+				<sea:Rule xml:lang="en">The day of the month is expressed as a 2-digit value, left zero padded if necessary, ranging between 01 and 31.</sea:Rule>
+				<sea:Rule xml:lang="en">Parts can be omitted from the right, whereas a year is replaced by '--' and only a day would look like '---31'.</sea:Rule>
+				<sea:Rule xml:lang="en">The hour is expressed as a 2-digit value, left zero padded if necessary, ranging between 01 and 31.</sea:Rule>
+				<sea:Comment xml:lang="en">This field will nearly always be a representation derived from the date on the specimen. The DateText field is available for recording verbatim date information for generalized or ambiguous dates.</sea:Comment>
+				<sea:Comment xml:lang="en">The year must be represented as four digits to avoid ambiguity between centuries. Month and Day values are left zero padded to two digits to facilitate machine readability.</sea:Comment>
+				<sea:Comment xml:lang="en">In the rare instances of multiple exact dates or periods those can be recorded in this DateText field.</sea:Comment>
+				<sea:Comment xml:lang="en">In the rare instances of dates for periods before the year 0000, BC and similar dates can be recorded in this DateText field.</sea:Comment>
+				<sea:Comment xml:lang="en">Parts can be omitted from the right, whereas a year is replaced by '--' and only a day would look like '---31'.</sea:Comment>
+				<sea:Comment xml:lang="en">In the ISO standard element, time can only be specified when there is a full date.</sea:Comment>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d\d\d\d(\-(0[1-9]|1[012])(\-((0[1-9])|1\d|2\d|3[01])( (0\d|1\d|2[0-3])(:[0-5]\d){0,2})?)?)?|\-\-(0[1-9]|1[012])(\-(0[1-9]|1\d|2\d|3[01]))?|\-\-\-(0[1-9]|1\d|2\d|3[01])"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EpithetType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A name element dependent on a genus name under the bacteriological, botanical, and zoological code.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName xml:lang="en">Epithet</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>S.Blum 2003.  W. Berendsohn 12/2003.</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content/>
+				<sea:Example>alba</sea:Example>
+				<sea:Comment/>
+				<sea:Rule/>
+				<sea:EditorialNote xml:lang="en">Add existing standards [WGB].</sea:EditorialNote>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="GenusType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A generic name under the bacteriological, botanical, viral, and zoological code.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName>Genus</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>S.Blum 12/2002. W.Berendsohn 12/2003.</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content/>
+				<sea:Example/>
+				<sea:Comment/>
+				<sea:Rule xml:lang="en">First character must be upper case [A-Z]</sea:Rule>
+				<sea:Rule xml:lang="en">Second and following characters must be lower case [a-z]</sea:Rule>
+				<sea:Rule xml:lang="en">May not contain any other characters except dash.</sea:Rule>
+				<sea:EditorialNote>The rules above should apply to generic names under all codes; if an exception is discovered, the change in constraints should be implemented as an extension [SB]</sea:EditorialNote>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="HybridFlagType">
+		<xs:annotation>
+			<xs:documentation>A multiplication or plus sign designating a hybrid or draft chimaera in botany.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName>Hybrid or draft chimaera indicator</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>.Berendsohn 12/2003.</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content/>
+				<sea:Example/>
+				<sea:Comment/>
+				<sea:Rule xml:lang="en">Only used for botanical names</sea:Rule>
+				<sea:Rule xml:lang="en">Can only be multiplication sign, plus sign, x or X</sea:Rule>
+				<sea:EditorialNote/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="InstitutionCodeType">
+		<xs:annotation>
+			<xs:documentation>An abbreviated designation of an institution.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName>Unique institute designation</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>Berendsohn 12/2003</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content>A globally unique designation of a collection holding institution or the name of the holder of a private collection.</sea:Content>
+				<sea:Example/>
+				<sea:Comment/>
+				<sea:Rule/>
+				<sea:EditorialNote/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="RankAbbreviationType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The abbreviation of a taxonomic rank as used in (botanical) name strings.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName xml:lang="en">Rank abbreviation</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>W.Berendsohn 12/2003</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content xml:lang="en">This is the abbreviation for a rank that is used in a (botanical) infraspecific name or the subdividion of a genus, as it appears in the name.</sea:Content>
+				<sea:Example/>
+				<sea:Comment/>
+				<sea:Rule/>
+				<sea:EditorialNote xml:lang="en">The controlled vocabulary must contain terms with spaces [WGB].</sea:EditorialNote>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="subgen."/>
+			<xs:enumeration value="sect."/>
+			<xs:enumeration value="subsp."/>
+			<xs:enumeration value="ssp."/>
+			<xs:enumeration value="var."/>
+			<xs:enumeration value="subvar."/>
+			<xs:enumeration value="forma"/>
+			<xs:enumeration value="f."/>
+			<xs:enumeration value="subforma"/>
+			<xs:enumeration value="subf."/>
+			<xs:enumeration value="formaSPACEspec."/>
+			<xs:enumeration value="formaSPACEspecialis"/>
+			<xs:enumeration value="f.SPACEspec."/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The role of an agent or contact.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName>Role</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>D.Hobern 11/2002. W.Berendsohn 12/2003.</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content/>
+				<sea:Example/>
+				<sea:Comment/>
+				<sea:Rule/>
+				<sea:EditorialNote/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="SystemIDType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Controlled identifiers used by the system.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName>System ID</sea:FullName>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>Berendsohn 12/2003.</sea:Reviewer>
+				<sea:ExistingStandard/>
+				<sea:Content/>
+				<sea:Example/>
+				<sea:Comment/>
+				<sea:Rule/>
+				<sea:EditorialNote>Is this used [WGB]? What's an xs:NCName?</sea:EditorialNote>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:NCName"/>
+	</xs:simpleType>
+	<xs:simpleType name="HigherTaxonRankType">
+		<xs:annotation>
+			<xs:documentation>A taxonomic rank designation above the rank of genus.</xs:documentation>
+			<xs:appinfo>
+				<sea:FullName/>
+				<sea:Audience>BioCASE</sea:Audience>
+				<sea:Audience>CODATA TDWG</sea:Audience>
+				<sea:Reviewer>D.Hobern 10/2003. W.Berendsohn 12/2003</sea:Reviewer>
+				<sea:ExistingStandards/>
+				<sea:Content>The the fully spelled out rank value (in latin but for the "unranked" term and the "group" levels) that can be used as metadata for any name for a taxon of rank above the genus-level.</sea:Content>
+				<sea:Example xml:lang="en">Subphylum</sea:Example>
+				<sea:Comment/>
+				<sea:Rule/>
+				<sea:EditorialNote xml:lang="en">This is not  the abbreviation for a rank that is used in a botanical infraspecific name, as it appears in the name [WGB].</sea:EditorialNote>
+				<sea:EditorialNote xml:lang="en">Should this be an enumerated type, or will we have to split RankType into ICxN-specific, or even discipline-specific versions?  For example, the rank "Tribe" has different positions in Entomology and Ichthyology [DH].</sea:EditorialNote>
+				<sea:EditorialNote xml:lang="en">The controlled vocabulary must contain terms with spaces [WGB].</sea:EditorialNote>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="regnum"/>
+			<xs:enumeration value="subregnum"/>
+			<xs:enumeration value="superphylum"/>
+			<xs:enumeration value="phylum"/>
+			<xs:enumeration value="subphylum"/>
+			<xs:enumeration value="superclassis"/>
+			<xs:enumeration value="classis"/>
+			<xs:enumeration value="subclassis"/>
+			<xs:enumeration value="superordo"/>
+			<xs:enumeration value="ordo"/>
+			<xs:enumeration value="subordo"/>
+			<xs:enumeration value="superfamilia"/>
+			<xs:enumeration value="familia"/>
+			<xs:enumeration value="subfamilia"/>
+			<xs:enumeration value="tribus"/>
+			<xs:enumeration value="genusSPACEgroup" xml:lang="en"/>
+			<xs:enumeration value="unranked" xml:lang="en"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RecordBasisType">
+		<xs:annotation>
+			<xs:documentation>A standard designator for the nature of the object of the record.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="Specimen"/>
+			<xs:enumeration value="Observation"/>
+			<xs:enumeration value="DrawingSPACEorSPACEPhotograph"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

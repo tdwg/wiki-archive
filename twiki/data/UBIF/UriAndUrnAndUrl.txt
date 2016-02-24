@@ -1,0 +1,52 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1110776562" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="ObjectIdentifierPattern"}%
+Proposal: there is a single attribute type !ObjectIdentifierType, whose value is xs:anyURI. When a provider wishes an idiosyncratic URI, they use the pending (and very interesting) [[http://www.taguri.org][tag]] scheme.  See the separate topic UriAndUrnAndTag.
+
+Some examples will appear here shortly, but they amount to little more than the removal of idtype from the proposals in ObjectIdentifierPatterns. Here's why it works:
+
+="A Uniform Resource Identifier (URI) is a compact string of characters  for identifying an abstract or physical resource."= [[http://www.faqs.org/rfcs/rfc2396.html][IETF RFC 2396]]. 
+
+URNs and URLs are a special kind of URIs as described below.
+
+URIs can be names, locators, or both. Every URI has the form &lt;scheme>:&lt;scheme-specific-part>. The &lt; and > are not part of the syntax, but the separator ':' is. There are some constraints on what characters can be used in URIs, mainly having to do with separators and a few other things in the scheme-specific-part. Some familiar schemes are 'http', 'ftp', 'mailto', 'file' and 'urn'. Schemes are registered with the Internet Assigned Number Authority (IANA), along with a specification of the scheme-specific-part of the URI and of how the URIs for the scheme will be issued. There are only a [[http://www.iana.org/assignments/uri-schemes][small number of them]]. The IETF standard [[http://www.faqs.org/rfcs/rfc3404.html][RFC3404]], part of the Dynamic Delegation Discovery System (DDDS), is a standard for the specification of resolution services for URIs. One (and presently the only) resolution service archictecture for LSIDs is specifically described in the LSID spec and is based on DDDS. LSIDs are a URI in the urn scheme.
+
+URIs can be names, locators, or both. When they are names, they are called URNs, when locators they are called URLs:
+ 
+="A URI can be further classified as a locator, a name, or both.  The term "Uniform Resource Locator" (URL) refers to the subset of URI  that identify resources via a representation of their primary access mechanism (e.g., their network "location"), rather than identifying the resource by name or by some other attribute(s) of that resource. The term "Uniform Resource Name" (URN) refers to the subset of URI  that are required to remain globally unique and persistent even when the resource ceases to exist or becomes unavailable."= [[http://www.faqs.org/rfcs/rfc2396.html][RFC 2396 Sec 1.2]].
+
+'mailto' is probably the only scheme that is both a URN and URL. 
+
+There is a registered scheme named 'urn'. Its syntax demands that after the ':' there be a "Namespace ID" (NID). The NID for LSIDs is lsid.
+
+The scheme plays exactly the role that the idtype does in the various proposals in ObjectIdentifierPattern perhaps except that the idtype enumeration specifically identifies something as a URL to no particular effect. Whether a scheme has a resolution service and whether it is a URN are part of the IANA registration documents, and making an idtype advance a claim about either of these facets is no guarantee of anything, nor does it add anything, since the URI scheme in essence determines the resolution mechanism (if there is one). Very likely, by idtype="url" is meant by most people  something that can be accessed by a browser, or possibly something in the http scheme that can use the associated http protocol. This is a narrow view of URL. For example, it is conceivable that IANA would entertain a registration for a wsdl scheme for use of wsdl as access via SOAP independently of transport protocol. 
+
+#AnchorDOI *DOI*. There is no need for a separate doi type, as there is an Internet Draft for a URI implementation for DOI described in [[http://www.doi.org/handbook_2000/enumeration.html#2.9.2][section 2.9.2]] of the [[http://www.doi.org/hb.html][DOI Handbook]]. Such a thing looks like doi:10.123/456 and is presently resolvable as a URL:  http://dx.doi.org/10.123/456. The former of these is the only one guaranteed to be a URN and is probably what should be used. Because DOIs meet the urn scheme requirements, urn:doi:10.123/456 would be possible if doi.org chooses to register a doi namespace. This is discussed in section 2.9.3. of the DOI Handbook, and is not presently contemplated. URI representation is presently supported. The handbook itself has URI doi:10.1000/182.
+
+*Resolution* Because of the aforementioned standards, programming languages which can support resolution at all can do so simply by parsing the URI and applying known resolution methods. An attribute idtype does little or nothing to assist in resolution in actual applications. 
+
+*Local IDs* (Needs some thought. URIs can be absolute or relative and can sometimes include document "fragments" using '#' separator. The URI spec uses this to define local URIs in a way familiar in HTML, but key/keyref might be suitable, with key values using either a tag scheme or just the # as lead character, thereby being a URI). Generally, there is an issue of whether local URIs (or any other luid mechanism) are URNs. However, something like tag:unique:<whatever> might do. 
+
+-- Main.BobMorris - 13 Mar 2005
+---
+
+Many thanks for the thorough explanations and links! 
+
+I agree that it is possible to embed DOI either in a URI or URN, and it is good to see that the two methods seem to be less under discussion than I had understood previously. A slight worry for me is that this needs education for UBIF readers. DOI where I see them are not normally cited as URIs (usually a blank is after DOI, or "DOI" is only in header information, see http://www.labmedicine.com/indices/doititles.html, an example from short random googling). An aspect of this is that xs:anyURI is usually not validated at all, it is only information of intent. The problem may be that it is difficult to validate in the face of change, and already used but yet proposed schemes (e.g., neither DOI is registered in http://www.iana.org/assignments/uri-schemes nor LSID in http://www.iana.org/assignments/urn-namespaces - guess because they are pending proposals?). Thus to xmlspy "10.123/456" is a perfectly legal xs:anyURI.
+
+One thing you don't mention are numeric GUIDs (e.g. "{CAFEEFAC-0014-0002-0006-ABCDEFFEDCBA}" for java plugins...).
+
+Local IDs in my view are not neglibable. In fact, except for URLs they are the only type currently used in existing data sources. Most name databases have an ID, species databases like www.fishbase.org, all DELTA, Lucid, DeltaAccess based data sets operate using local IDs or global numeric IDs. So to activate datasources in GBIF, without only having the non-reliable URLs in my view it would be important to make it easy for those datasources to publish their IDs. Even if not resolvable without external knowledge, to me the real important information about a local ID is whether it is permanent or temporary. A permanent one is worth comparing in data obtained at different times or from different providers, and to use for linking. The Index Fungorum local ID for Microbotryum violaceum (Pers.) G. Deml & Oberw. is 110229. There is also a URL for that (http://www.indexfungorum.org/Names/SynSpecies.asp?RecordID=110229), but the URL is much more likely to change over time. In a linking schema I would much rather note that this is 110229 in indexfungorum, which currently resolves through URL ... (and also through a separate webservice, using the same ID but a different URL).
+
+The activation of local IDs can probably also be reached also by providing guidelines how to rewrite them into e.g. LSIDs. But this seems to be slowly coming, and in fact was questioned in Amsterdam in its entirety. 
+
+This is not supposed to be read as an argument resulting in requiring the "idtype" attribute and enumeration, but I think we have some unsolved problems. The [[http://www.taguri.org][tag]] scheme is rather prescriptive and in my eyes is no real help in making it easy for data bases to publisher their identifiers. The date requirement seems to be superfluous where identifier uniqueness is already guaranteed within a namespace and the DNS name may in fact change over time with reorganization of institutions and organizations (without causing a change in object identity). Technically older DNS names may be continued to use, but legally and socially this is often impossible.
+
+One aspect of limiting IDs to fully blown URI schemes is that this may be socially unacceptable where internal cross references are desired (see ObjectTypePattern). Forcing all SDD documents to use them may increase the file size of large data sets by 50% (assuming an LSID is 25 characters longer than the plain id).
+
+Perhaps this leads to a separation of issues and a design giving non-resolvable IDs a special place limited to document-internal cross-referencing? For example an ID attribute in the outer element may be defined only for the purpose of cross-referencing. For relations and global identity, a collection of Link elements could be placed inside the object. I find this rather attractive (given we do want multiple URI expressions, e.g. to have URL and LSID concurrently during migration). However, this leads to another duplication of data: where an LSID is used for both cross referencing and as a global ID, it would have to appear twice.
+
+Gregor Hagedorn - 13 Mar 2005
+---
+

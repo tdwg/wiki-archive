@@ -1,0 +1,97 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.04.13.11.30.16;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1176463816" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ <nop>%TOPIC%
+
+A frequently asked question is "What is an ontology?" or "What is the TDWG ontology?". This page answers that question.
+
+---++ A Definition
+From the current [[http://en.wikipedia.org/wiki/Ontology_%28computer_science%29][Wikipedia entry]]: "In both computer science and information science, an ontology is a data model that represents a set of concepts within a domain and the relationships between those concepts. It is used to reason about the objects within that domain."
+
+This appears to be a good general definition but may not make much sense to a biologist interested in doing something practical with least effort.
+
+There are a number of key points in the definition and each one of them is valuable in facilitating the exchange of data. They don't all have to be implemented for an ontology to be useful.
+
+---++ Set of Concepts
+
+Normally we use words to represent concepts. In the taxonomy domain the words "specific epithet" represent a widely accepted concept of the second word in the binomial of a species name. When we read a book we normally identify the specific epithet of a name from its context. Just about 100% of taxonomist would do this is the same way. In the XML Schema based TDWG standards this context based approach has continued. In ABCD a species epithet can be found here:
+
+<code>
+/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/NameAtomised/Botanical/FirstEpithet
+</code>
+
+and here:
+
+<code>
+/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/NameAtomised/Zoological/SpeciesEpithet
+</code>
+
+and in DarwinCore it is here:
+
+<code>
+/DarwinCoreRecord/SpecificEpithet
+</code>
+
+We have a single concept but three different paths to it over two schemas. It would be useful from a computing point of view if there was a single place that defined "specific epithet" that a computer could map the data in these three xml elements to. A single point of focus. This is the primary  role of the TDWG ontology. Some people would refer to this as a controlled vocabulary (although that term has other meanings).
+
+The ontology provides distinct URIs for each of the concepts it contains. This is the URI for the specific epithet. If you click on it you will see a definition of the term.
+
+<code>
+http://rs.tdwg.org/ontology/voc/TaxonName#specificEpithet
+</code>
+
+This URI can be used as a globally unique identifier for this concept in many technologies. The part before # is known as the namespace. In XML an element that has the name "specificEpithet" and is in the namespace http://rs.tdwg.org/ontology/voc/TaxonName# should be uniquely understandable as containing a specific epithet. This is independent of the XML Schema that is used to validate the document or the documents overall structure.
+
+---++ Within a Domain
+
+People studying biodiversity don't use entirely their own language. They make use of existing languages and embed their specialist terms. The TDWG ontology therefore only contains terms that are peculiar to the biodiversity informatics domain. Quite what the bounds of this domain are is disputable. Does the ontology define the scope of TDWG or does the scope of TDWG define the ontology?
+
+Because we want biodiversity data to be understandable to the widest range of audiences and we want to make use of tools that were not designed for biodiversity alone we should make as much use as possible of other peoples ontologies.
+
+---++ Relationships Between Concepts
+
+There are three types of concept in the TDWG ontology.
+   * *Classes* are kinds of things - like a [[http://rs.tdwg.org/ontology/voc/TaxonName#Specimen][Specimen]] or [[http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName][TaxonName]]
+   * *DatatypeProperties* are properties of things who's values is a literal - like [[http://rs.tdwg.org/ontology/voc/TaxonName#authoship][TaxonName::authorship]] which is an xsd:string.
+   * *ObjectProperties* are properties of things who's values are other objects - like [[http://rs.tdwg.org/ontology/voc/TaxonName#hasBasionym][TaxonName::hasBasionym]] which points to another [[http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName][TaxonName]]
+
+The ontology also has hierarchical relationships between concepts but these are currently in some flux as the higher level ontology is debated. The important thing is that these high level relationships are not required for the primary function of the ontology i.e. providing the single point of focus for concepts. They are required if you want to reason about the data using inference engines...
+
+---++ Reasoning
+
+Reasoning (inference) across a network of resources is the holy grail of semantic web technologies. It is an area of active computing research and does work in some scenarios. The TDWG ontology will no doubt facilitate reasoning about biodiversity data in the future but if we were to try and build an ontology that enabled inference across our domain now - before we were exchanging data freely - it would probably be a matter of years before we could do the simple things that don't requiring inference but that need an ontology. The focus is therefore on data exchange and integration first.
+
+If reasoning does become feasible it is worth considering whether it is worth building a single high level ontology for TDWG or whether multiple ontologies will be needed. The hierarchical relationships of concepts used in the exchange of data do not have to be specified in the definitions of those concepts. It is feasible to define separate ontologies that specify how the data instances are related to each other for a particular purpose. 
+
+The important point to note is that the atomic level semantics and data need not change in the future. A specific epithet will always be a <code>http://rs.tdwg.org/ontology/voc/TaxonName#specificEpithet</code> once we have established it as so.
+
+---++ Concepts of Metadata Not Data
+It is worth noting that the TDWG ontology is about concepts of metadata. Biological taxonomies can be modeled as ontologies. A research project may define an ontology that contains a concept for "Homo" that is labeled as being of rank "genus". The TDWG ontology provides the concept of "genus" that the research project could utilize but the TDWG ontology does not provide the concepts of "Homo".
+
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@

@@ -1,0 +1,284 @@
+head	1.10;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.10
+date	2009.11.25.03.14.37;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2009.11.20.02.45.30;	author LeeBelbin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.05.08.10.20.46;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.05.04.11.26.30;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.21.11.30.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.28.17.27.20;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2003.12.09.11.17.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.11.28.15.00.32;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.11.28.13.38.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.10
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118877" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+<h2>Changes in BDI.SDD_ 0.9 beta 29 (general distribution)</h2>
+
+<strong>"keyref" attribute names changed to "ref"</strong>! This is the pattern used in xml-schema itself and more commonly found. The "key" in keyref is unneccary technical, we do not want to refer to a key but to an object (and we use the key value to accomplish that).
+
+---
+
+<nop>DateMandatoryYearType and <nop>DateType removed from schema.
+
+<nop>DateMandatoryYearType was a complex data structure (derived from the otherwise unused <nop>DateType) similar to the variant-date used in ABCD and other collection models.It allowed to leave unknown parts of the date empty (day, month, year) and provided for verbal dates ("summer 1920", "around 1990").
+
+In the last BDI.SDD_ beta versions it was only used for <nop>PublicationDate of the current project version (<nop>ProjectDefinition/Version). Since we now have <nop>InitiationDate/<nop>LastRevisionDate in the <nop>RevisionData, detailed information about the the project can be found there. 
+
+(Note: Another place where <nop>DateType was expected to be used was in the <nop>PublicationResourceConnector, but since the format provided by external services is difficult to know, an unconstrained text for data will probably be a better solution.)
+
+However, there is still a problem behind this, please see InitiationDateForImportedLegacyData.
+
+
+
+---
+
+Revisiondata changed to <nop>RevisionData (uppercase D). Other ...Data elements used so far are uppercase as well. See also Trash.SDDResolvedTopicMetaDataAsTypeOrModelGroup.
+
+Further, I have now added two optional attributes <nop>FirstEditDate and <nop>LastEditDate. These are intended to support statistics who was active
+on the project in the last period. This should be helpful to produce overview statistics in collaborative projects that encourage participation (it still is NOT thought to be a continous track of activity).
+
+(<nop>AgentRef is only used in the context of creators/editors of objects (the project itself, characters, descriptions, etc.). If we use agents for other purposes we may have to change the type name -- but not the element names...).
+
+---
+
+In Character/Numerical/<nop>StatisticalMeasures: <nop>FormatString renamed to <nop>FormatPattern, redefined to use identical pattern as xsl, 
+typed including a regular expression facet. Problem: xsl has no internationalization, this has to be achieved separately! Advantage: in Character/Numerical/<nop>StatisticalMeasures internationalization (audience specific representations) is rather inappropriate, was originally not planned to be audience specific. This makes more sense to provide centrally, rather than defining the number format for each audience in each character! However, the general format is well in the character: tree height or spore diameter will usually be presented with different number of decimals.
+
+Typing of Values in <nop>CharacterData and <nop>NatLangDescrData revised (no changes in example documents required). Value in Natural language descriptions can now enclose Text with the value in formatted in the original language.
+
+---
+
+Terminology/<nop>StatisticalMeasures: Type derivation error, <nop>StatisticalMeasure was derived from <nop>CharacterStateData_BaseType. This affected only the <nop>NaturalLanguage Report Wording (which was single and needs to be around the value instead), fixed.
+
+Question: should there be a format string at the generic definition as well? Perhaps to be used as template?
+
+---
+
+See SchemaChangeLog09beta28 for changes in the previous version.
+
+Gregor Hagedorn - 28 Nov 2003
+
+%META:FILEATTACHMENT{name="Lisbon2003-SDD_09beta29.zip" attr="" comment="" date="1070031631" path="C:\Data\Desktop\DESCR\SDD\2003Lisbon\SchemaVersions\Lisbon2003-SDD_09beta29.zip" size="68322" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685130" format="1.1" reprev="1.9" version="1.9"}%
+d5 1
+a5 1
+<h2>Changes in BDI.SDD 0.9 beta 29 (general distribution)</h2>
+d15 1
+a15 1
+In the last BDI.SDD beta versions it was only used for <nop>PublicationDate of the current project version (<nop>ProjectDefinition/Version). Since we now have <nop>InitiationDate/<nop>LastRevisionDate in the <nop>RevisionData, detailed information about the the project can be found there. 
+@
+
+
+1.8
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1147083645" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+<h2>Changes in SDD 0.9 beta 29 (general distribution)</h2>
+d15 1
+a15 1
+In the last SDD beta versions it was only used for <nop>PublicationDate of the current project version (<nop>ProjectDefinition/Version). Since we now have <nop>InitiationDate/<nop>LastRevisionDate in the <nop>RevisionData, detailed information about the the project can be found there. 
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1146741990" format="1.0" version="1.6"}%
+d23 1
+a23 1
+Revisiondata changed to <nop>RevisionData (uppercase D). Other ...Data elements used so far are uppercase as well. See also ResolvedTopicMetaDataAsTypeOrModelGroup.
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 48
+a48 47
+%META:TOPICINFO{author="GregorHagedorn" date="1087817401" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+<h2>Changes in SDD 0.9 beta 29 (general distribution)</h2>
+
+<strong>"keyref" attribute names changed to "ref"</strong>! This is the pattern used in xml-schema itself and more commonly found. The "key" in keyref is unneccary technical, we do not want to refer to a key but to an object (and we use the key value to accomplish that).
+
+---
+
+<nop>DateMandatoryYearType and <nop>DateType removed from schema.
+
+<nop>DateMandatoryYearType was a complex data structure (derived from the otherwise unused <nop>DateType) similar to the variant-date used in ABCD and other collection models.It allowed to leave unknown parts of the date empty (day, month, year) and provided for verbal dates ("summer 1920", "around 1990").
+
+In the last SDD beta versions it was only used for <nop>PublicationDate of the current project version (<nop>ProjectDefinition/Version). Since we now have <nop>InitiationDate/<nop>LastRevisionDate in the <nop>RevisionData, detailed information about the the project can be found there. 
+
+(Note: Another place where <nop>DateType was expected to be used was in the <nop>PublicationResourceConnector, but since the format provided by external services is difficult to know, an unconstrained text for data will probably be a better solution.)
+
+However, there is still a problem behind this, please see InitiationDateForImportedLegacyData.
+
+
+
+---
+
+Revisiondata changed to <nop>RevisionData (uppercase D). Other ...Data elements used so far are uppercase as well. See also ResolvedTopicMetaDataAsTypeOrModelGroup.
+
+Further, I have now added two optional attributes <nop>FirstEditDate and <nop>LastEditDate. These are intended to support statistics who was active
+on the project in the last period. This should be helpful to produce overview statistics in collaborative projects that encourage participation (it still is NOT thought to be a continous track of activity).
+
+(<nop>AgentRef is only used in the context of creators/editors of objects (the project itself, characters, descriptions, etc.). If we use agents for other purposes we may have to change the type name -- but not the element names...).
+
+---
+
+In Character/Numerical/<nop>StatisticalMeasures: <nop>FormatString renamed to <nop>FormatPattern, redefined to use identical pattern as xsl, 
+typed including a regular expression facet. Problem: xsl has no internationalization, this has to be achieved separately! Advantage: in Character/Numerical/<nop>StatisticalMeasures internationalization (audience specific representations) is rather inappropriate, was originally not planned to be audience specific. This makes more sense to provide centrally, rather than defining the number format for each audience in each character! However, the general format is well in the character: tree height or spore diameter will usually be presented with different number of decimals.
+
+Typing of Values in <nop>CharacterData and <nop>NatLangDescrData revised (no changes in example documents required). Value in Natural language descriptions can now enclose Text with the value in formatted in the original language.
+
+---
+
+Terminology/<nop>StatisticalMeasures: Type derivation error, <nop>StatisticalMeasure was derived from <nop>CharacterStateData_BaseType. This affected only the <nop>NaturalLanguage Report Wording (which was single and needs to be around the value instead), fixed.
+
+Question: should there be a format string at the generic definition as well? Perhaps to be used as template?
+
+---
+
+See SchemaChangeLog09beta28 for changes in the previous version.
+
+Gregor Hagedorn - 28 Nov 2003
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085765240" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1070968621" format="1.0" version="1.3"}%
+d23 1
+a23 1
+Revisiondata changed to <nop>RevisionData (uppercase D). Other ...Data elements used so far are uppercase as well. See also MetaDataAsTypeOrModelGroup.
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1070031632" format="1.0" version="1.2"}%
+d43 3
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1070026680" format="1.0" version="1.1"}%
+d45 1
+@

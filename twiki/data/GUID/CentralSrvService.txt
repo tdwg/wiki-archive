@@ -1,0 +1,18 @@
+%META:TOPICINFO{author="RicardoPereira" date="1170080344" format="1.1" version="1.6"}%
+---++ Central SRV Record Service
+
+*Central SRV record service as an aid to LSID resolution*
+
+Three problems were identified that could be mitigated by the use of a central SRV hosting service:
+   1.  How can responsibility for a known collection of objects identified by LSIDs be passed from one LSID Authority to another?
+   1.  How can a smaller organisation, a sub-organisation (such as a university department) or a project (that may have a limited lifespan) issue LSIDs?
+   1.  How can an organisation that doesn't have access to a DNS server set up an LSID Authority? This has been identified as a hurdle to establishing an authority.
+
+Resolution of LSIDs makes use of the 3rd part of the LSID that contains the Authority Name. It takes the form of a DNS domain name. This may cause problems, for example, if the herbarium at Brum University uses the domain herbarium.brumuni.ac.uk then the administrator of the DNS for brumuni.ac.uk will have to maintain a SRV records for the herbarium server forever even if the herbarium (and its server) is moved to the city museum and no longer has anything to    do with the university. The physical server running the Authority may move but the DNS record has to remain.
+   
+This problem could be overcome if a 3rd party (such as TDWG) were to provide a service that hosted the SRV records on behalf of people wishing to establish LSID Authorities. The herbarium in the example could then set up an SRV record at brumherb.lsid.tdwg.org or similar. When the herbarium moves its server it simply has to inform TDWG who point the SRV to the new location.
+
+There are other advantages to a central SRV hosting service including:
+   * If two collections merge (that is the LSIDs need to resolve to a single LSID Authority) then the SRV records can simply be pointed to the same place.
+   * If an LSID Authority fails permanently then the central service can become the new Authority and return the appropriate 400 error message so that the LSIDs still conform to the standard.
+

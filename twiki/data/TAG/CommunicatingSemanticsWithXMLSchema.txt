@@ -1,0 +1,52 @@
+%META:TOPICINFO{author="GregorHagedorn" date="1146214024" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="ArchitectureOverview"}%
+---+ <nop>%TOPIC%
+
+These are some notes on problems in communicating *meaning* with XML Schema and possible solutions.
+
+---++ Are the Semantics in the Schema or in the XML?
+XML Schema defines possible XML structures. It is not clear whether:
+   1 The schema contains the semantics and instance docs can't be interpreted without it. This would be the case if the simple and complex types are semantically significant.
+   1 XML instance documents contain the semantics and the schema does not need to be consulted. The schema just ensures the instance docs contain the semantics.
+   1 All instance docs that validate with a schema are guaranteed to be semantically correct. This is particularly difficult when xs:any are used. This is also awkward without clear rules to control character data. Element content could make a nonsense of data structure e.g. two words in an element that is supposed to contain a genus name.
+
+---++ Are Complex Types Concepts?
+
+---+++ Examples from ABCD
+
+ABCD2 has a complexType for 'PersonName'. This is clearly a concept that maps to a real world object - a person's name. The complexType is used  4 times in the schema as a whole:
+   1 Within the Identifier element it is used as an element called PersonName. Here it clearly means a person's name. The Identifier element can be assumed to be a person because it *contains* a PersonName. There is no other indication that Identifier is a human. 
+   1 Within the GatheringAgent element. Here it is used for an element called 'Person'. A person is not a type of PersonName - even though that is what the schema actually says. A person is more than a name. So here it is a data structure not a concept. But again the fact that the GatheringAgent contains a element of type PersonName may suggest that GatheringAgent is a person (if we ignore that the element is called Person). But the Person element is optional so it is possible for a GatheringAgent to only contain an Organisation element. This would suggest that GatheringAgent is not a person but some other notion. So in this case containing an element of type PersonName is no indication of being a person - which seems reasonable.
+   1 Within the Contact complexType it is also used for an optional element called Person so similar confusion exists here. 
+   1 Within NomenclaturalTypeDesignation it is used for an element called Verifier. Here it is being used as a structure. Verifier is clearly a person not a PersonName.
+It appears that, PersonName is generally used to mean a person but that in some cases the containing element is the person and it is used to mean a person's name (a property of a person), although this can only probably only be worked out by a human.
+
+The complexType PersonName has a 3 subelements: FullName; SortingName; AtomisedName. Semantically these appear to be instances of PersonName i.e. FullName  _is a_ PersonName. So here the XML containing relationship appears to imply derivation (separate from mechanisms within XML Schema) but looking at the TelephoneNumber complex type this is clearly not true. It contains Number, Device, UsageNotes. These are clearly attributes of TelephoneNumber. 
+
+What can be concluded from this is that the meaning of the elements is not contained within the XML Schema. Neither element names nor the complexTypes that describe the structure of the data within the elements seem to be capable of consistent interpretation.   Containing relationships can also be interpreted in different ways. What wasn't considered is adjacency of element but, from a brief examination of the elements, this appears to be arbitrary. 
+
+---+++ Examples from TCS
+
+NomenclaturalNote complex type is used to mean radically different things.
+
+
+-----
+
+---+ Comment:
+
+Main.GregorHagedorn - 28 Apr 2006: I believe the questions posed are a bit misleading. Strictly, w3c xml schema is about syntax, not semantics. Schema is designed to separate these issues. However, semantics are expected to be externally defined and linked. 
+   * XML instance document: If somebody tells me what the semantics of xhtml:link or xhtml:code are, I can interpret the document semantically without referring to any schema.
+   * XML schema 1: A schema checks syntax and adds data type information to the post validation infoset. Data types simplify the analysis of semantics. If I understand that a string content is xs:datetime or xs:anyURI I have gained a better understanding. Note that this depends on externally defined semantics what a xs:anyURI is - but I need to learn this only once. Similarly, the type information is given for complex types. If I know the semantics of a complex type (which may occur multiple times in the instance document, schema helps me to find where these semantics are used. I do not have to retrieve external semantics for each occurrence of a type in a document.
+   * XML schema 2: w3c schema offers certain features that enable (but not require) schema authors to make use of externally defined semantic concepts to develop a better schema. The main such concepts are class inheritance on both simple and complex types. Class inheritance can be extension or restriction. The main advantage is that the schema is more consistent and it is easier to link schema elements to external semantics (which may simply be human readable schema annotation text.)
+   * XML schema 3: With regard to the string example (Genus with two words): w3c xml schema does allow to define syntax rules for a semantic concept. You can define GenusString being a simple type containing only a single word, first letter to be upper case and remaining lower case. 
+   * XML schema-semantic linking: Schema provides several methods for linking with external semantics.
+      * xs:annotation/xs:documentation: human readable text.
+      * xs:annotation/xs:appinfo: any form of machine-readable xml, including owl/rdf semantics.
+      * xs:@id attribute: adding the optional id allows external semantic definitions (in the form of human readable text or machine-readable semantics like owl) to describe semantics of these elements. 
+
+Note that due to the fact that the schema validation adds the datatypes to the elements, it is not necessary to define the semantics for each element that may occur in an instance document. With a well-designed schema using extension/restriction, the number of semantics that need to be defined is much lower.
+
+----
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%

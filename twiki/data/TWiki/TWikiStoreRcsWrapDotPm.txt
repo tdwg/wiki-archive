@@ -1,0 +1,30 @@
+---+ Package =TWiki::Store::RcsWrap=
+*extends* <tt>[[TWikiStoreRcsFileDotPm][TWiki::Store::RcsFile]]</tt>
+
+
+This package does not publish any methods. It implements the
+virtual methods of the [[TWikiStoreRcsFileDotPm][TWiki::Store::RcsFile]] superclass.
+
+Wrapper around the RCS commands required by TWiki.
+There is one of these object for each file stored under RCS.
+
+
+%TOC%
+
+---++ ObjectMethod *finish* <tt></tt>
+Complete processing after the client's HTTP request has been responded
+to.
+   1 breaking circular references to allow garbage collection in persistent
+     environments
+
+
+
+---++ StaticMethod *parseRevisionDiff* <tt>($text) -> \@diffArray</tt>
+
+| Description: | parse the text into an array of diff cells |
+| #Description: | unlike Algorithm::Diff I concatinate lines of the same diffType that are sqential (this might be something that should be left up to the renderer) |
+| Parameter: =$text= | currently unified or rcsdiff format |
+| Return: =\@diffArray= | reference to an array of [ diffType, $right, $left ] |
+| TODO: | move into RcsFile and add indirection in Store |
+
+

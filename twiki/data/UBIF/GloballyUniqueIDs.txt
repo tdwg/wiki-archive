@@ -1,0 +1,48 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258682523" format="1.1" version="1.6"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+---+!! %TOPIC%
+
+(Note: this is written fast - please correct the statements if you think they are inaccurate)
+
+Shirley Cohen asked by mail: "I heard that Main.BDI was talking about adopting the LSID standard for resolving taxonomic namespace issues. Can you explain to me briefly why this is important to the Main.BDI community and also, send me a specific example of how that would work?"
+
+---
+
+Scenario:
+
+I publish a set of descriptions. All descriptions are of the same taxon, which I refer to by a taxon ID, so that machines can make ID-based connections and data integration (as opposed to the name string, which is so variable that only humans can make the connection). Description 1 is derived from publication 2 for which a DOI is known, Description 2 is derived from publication 2 for which no ID is known. It is specific, however, to the taxon as found in South Africa (which is referenced through an ID in a Gazetteer). All descriptions use measurement units, modifier terms (frequently, perhaps...) and characters and states defined in a shared descriptive terminology. All these terms are referenced by IDs.
+
+As a consumer, I may have an interest to integrate data, or to obtain background information. For integration, any GUID (see discussion below) would do, provide both datasets would use the same GUID for the same object (which, e.g., concept providers like ITIS or Species 2000 do not do, each uses their own version of a taxon name string). However, if I want to get the geographical coordinates of ZA, or the publication reference of the taxon name, or the definition of a descriptive term, I have to resolve the ID to obtain a web resource.
+
+---
+
+Should we use GUIDs in biodiversity?
+
+We need to identify objects across data sources (e.g. different specimen collection databases) and across knowledge domains. Descriptive data, for example, reference Agent names, taxon names, geographical place names, specimen units in collections, publications, etc. 
+
+Further concept, character, state, modifier, statistical measures, measure units, etc. terms may be shared among multiple projects.
+
+The problem of simple GUIDs
+
+Each URI is by definition a globally unique identifier. However, most URI (universal resource identifiers) are not stable ("immutable"). The URL type commonly used in the internet is able to express how the resource can be obtained, but usually becomes obsolete after a short while. URN-type resources (URN = universal resource name) are usually stable, but give not clue how to obtain resources. For example, a namespace urn is fully satisfying, but if a schema is referenced it would be beneficial to have a mean of obtaining the schema or information about it.
+
+GUIDs with a resolution service:
+
+Examples: DOI = Digital Object Identifiers, LSID = Life Science ID. (For both simple xml types are tentatively defined in the UBIF-type library, see the annotations there for further information and links)
+
+These are basically a URN that can be recognized by a parser as a specific type for which methods of resolution are prescribed. This allows changes in the location (different server, different path) and allows negotiation of return type (html for human information, various xml types for machine processing).
+
+<strong>Advantage of DOI:</strong> very visible, used by the publishing industry. Resolution services are run by the publishing industry. Needs to be supported by UBIF anyway, because of existing or future use in publications. <strong>Disadvantage of DOI:</strong> Expensive, a fee is charged for each ID. Although the amount of money can probably negotiated, the discrepancy between the granularity of publishing objects (articles, books) and that of biodiversity objects (taxon names, specimens, parts of specimens, terms for description) is very large, so that negotiation would be difficult. 
+
+<strong>Advantage of LSID:</strong> proposed for the molecular bioinformatics, like genomics/proteonomics. Resolution service is a two step process, with step one identifying a service and step 2 using this service for further resolution. For step 2 GBIF could set up a resolution service. No expenses. <strong>Disadvantage of LSID:</strong> Uncertain whether they will be used on a larger scale.
+
+---
+
+The question which kind of GUID with resolution service should be used may have to be decided separately for different knowledge domains. Each DOI needs to be registered. Handling negotiated and paid for DOI block would be possible for large institutional specimen collections. It would, however, preclude small collections (esp. those of research scientists) to use the same mechanism.
+
+Using DOIs for taxon names would be possible only if registries are institutionalized and the publication of new names requires a fee. Whether science should be bureaucratized like this is still an open question.
+
+Using DOIs for knowledge based objects like descriptive terminology and descriptions seems unlikely, LSID in my opinion provides more flexibility here.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 09 Jul 2004
+%META:TOPICMOVED{by="GregorHagedorn" date="1089923145" from="SDD.GloballyUniqueIDs" to="UBIF.GloballyUniqueIDs"}%

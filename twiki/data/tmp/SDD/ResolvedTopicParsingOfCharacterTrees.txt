@@ -1,0 +1,66 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741989" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+Consider the following character tree:
+
+<verbatim>
+leaves
+	 shape
+		  ovate
+		  elliptic
+	 indumentum
+		  upper surface
+				glabrous
+				pubescent
+		  lower surface
+				glabrous
+				pubescent
+	 ...etc		  
+</verbatim>
+
+We can tell from this tree that "ovate" and "elliptic" are character states
+(they have no children), "shape" is a character (it has only states as
+children) and "leaves" is a character group (it has only characters or other character groups as
+children). 
+
+It's tempting then to say that there's no need to specify a type for each node of the tree, since we can easily parse the tree to work out what type any node is.
+
+However, partially marked up natural language descriptions may
+have character trees with no character states:
+
+e.g.
+
+<verbatim>
+"<Leaves>Leaves simple, ovate to elliptic, with toothed margins,
+undersurface pale, pubescent.</Leaves> <Flowers>Flowers blue.</Flowers>"
+</verbatim>
+
+This would require a simple tree:
+
+<verbatim>
+Leaves
+Flowers
+</verbatim>
+
+The simple rules than can be used to deduce the types of nodes in a complete character tree (one in which all branches eventually lead to states) cannot be used to identify the nodes in this partial tree as character group nodes.
+
+So - the types of nodes in character trees will need to specified.
+
+-- Main.KevinThiele - 29 Sep 2003
+
+---
+Character trees are subsumed in the object called <nop>CharacterGroup, and nodes are the recursive object called <nop>CharacterGroupItem. The main defect I see in version 0.62 is not that it is difficult to tell what branch is a Character definition in Definitions (resp a <nop>CharacterReference in a Description) ---that is easy because in both <nop>CharacterGroupItem and <nop>CharacterReference character definitions are by keyref only---. Rather, I think the (small) defect is that there are two ways to represent a flat character list either in Terminology or Descriptions, namely as a sequence of <nop>CharacterDefinition objects (resp. <nop>Character keyrefs). The second is inside a <nop>CharacterGroupItem whose tree happens to be of depth two---a root and a bunch of nodes each with a single Character and nothing else).
+
+-- Main.BobMorris - 29 Sep 2003
+
+---
+
+"defect is that there are two ways to represent a flat character list either in Terminology or Descriptions, namely as a sequence of <nop>CharacterDefinition objects [... or ...] <nop>CharacterGroupItem tree"
+
+This is not correct. The sequence of characters in Terminology/Characters is <em>not</em> informative, it may change without changing the arrangement of the characters. A flat sequence of character can <em>only</em> be defined in character (or now "concept") trees. The character list itself does not define a sequence, it should be considered an unordered set. Unfortunatly, there is no support in schema to express whether a sequence has semantics or not (in RDF we have set, seq, and alt collections!).
+
+Gregor Hagedorn - 24 Nov 2003
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085753116" from="SDD.ParsingOfCharacterTrees" to="SDD.ResolvedTopicParsingOfCharacterTrees"}%

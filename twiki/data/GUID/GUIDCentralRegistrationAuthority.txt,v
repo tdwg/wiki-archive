@@ -1,0 +1,255 @@
+head	1.10;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.10
+date	2007.01.19.00.00.00;	author LeeBelbin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.04.21.11.46.14;	author DonaldHobern;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.04.20.23.03.16;	author DonaldHobern;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.04.20.01.25.15;	author BobMorris;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.04.19.15.50.27;	author DonaldHobern;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.04.19.15.44.40;	author DonaldHobern;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.04.19.15.39.29;	author DonaldHobern;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.04.19.12.21.11;	author DonaldHobern;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.19.12.20.41;	author DonaldHobern;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.13.19.51.00;	author RicardoPereira;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.10
+log
+@Comment added
+.
+@
+text
+@---++ Central GUID Registration Authority
+
+*Coordinator(s):* DonaldHobern
+
+*Participants:*
+
+----
+---+++ Description
+
+This group will investigate the need for a central LSID registration authority.
+
+----
+---+++ Discussion
+A *central LSID registration authority* could take several different forms.  The following is an attempt to outline some options, so that subsequent discussion can focus more clearly on the benefits of each.
+
+_I'm going to start by ignoring the possibility of establishing a *central LSID registration authority* as some kind of registrar approving or recording new LSID authorities within our domain.  I'm also going to ignore the possibility of requiring all LSIDs to be registered within a single namespace.  I cannot see value in either of these "options".  If anyone wishes to propose them, please go ahead._
+
+It is assumed here that the purpose of such an authority would be to provide a mechanism for data providers to associate LSIDs with their records without having to establish and maintain an LSID resolver in their own namespace.  This could for example be because the data set in question is likely to be moved to a different home, or because the data provider cannot get permission to register an LSID provider with DNS, or because the data provider's host institution has restrictive rules on firewall access.
+
+Under these circumstances a data provider may still wish to be able to assign LSIDs to each data record and to have the LSID resolve correctly to the appropriate data and metadata.
+
+Some options:
+
+   * --+++++ 1. Central hosting of data/metadata
+   The simplest option technically (or at least simplest with respect to the assignment of LSIDs) may be for the *central LSID registration authority* actually to host the data sets in question on behalf of the data provider.  
+   
+   * --+++++ 2. Central proxy LSID resolver
+   If the data provider is able to establish an LSID resolver but is unable or unwilling to register this resolver with DNS, a *central LSID registration authority* might establish a proxy LSID resolver, which redirects to the known location of the actual LSID resolver.  In other words, assuming that the central LSID registration authority has an LSID resolver registered for *clra.org* and running on lsid.clra.org, and the data provider has established its own unregistered LSID resolver on lsid.dp.org, the data provider can issue LSIDs of the form *urn:lsid:clra.org:<DatasetName>:<RecordId>*.  Requests for data or metadata will be directed to lsid.clra.org, which resolves <DataSetName> to be associated with the unregistered LSID resolver on lsid.dp.org, and directs the request to lsid.dp.org for resolution.
+   
+   This again should be relatively simple to implement, and could be of use in some circumstances.  The data provider and the central LSID registration authority clearly need to coordinate the elements included in the LSID string.
+   
+   * --+++++ 3. Central LSID resolver with non-LSID proxy resolution
+   Slightly more complex (and potentially with too many uncertainties), a data provider could register a provider tool using some other protocol (e.g. TAPIR) and rely on an external proxy LSID resolver to map LSID requests to the appropriate protocol.  For example, assume that a TAPIR provider is set up on tapir.dp.org to serve data in some version of darwin core which includes a <darwin:lsid> element.  The records in the TAPIR provider are all set up to include values for this element of the form *urn:lsid:clra.org:<DatasetName>:<RecordId>*.  Requests for data or metadata will be directed to lsid.clra.org, which resolves <DataSetName> to be associated with the TAPIR provider on tapir.dp.org, issues an appropriate TAPIR request for the record with the appropriate value for <darwin:lsid> and then formats the data or metadata appropriately for an LSID response.
+   
+   This is again not complex to implement, but requires even more coordination than with option 2.  It could however be applicable in any case in which a data provider has any mechanism for sharing their data online, regardless of what additional firewall restrictions are in place.
+
+This is doubtless not a complete set of options, but should be enough to begin discussion.  So, do you see value in considering any of these options as part of the infrastructure we plan to adopt?  It may of course be that any and all of these can be used transparently within any LSID-based network, but we should consider whether there are immediate benefits in offering some kind of central service (through TDWG, GBIF or others) for these purposes.
+----
+I miss why/if these are mutually exclusive options. A resolution client can't tell the difference between them, so what difference does it make if several of them are in play at once, as convenient? If none, then this is not an architecture question, but more of a budgetary one in the sense that each has some cost associated with deploying and administering it. BobMorris 2006-04-19
+----
+Bob, you are quite right.  I feel the point here is more a question of whether setting up a service along these lines would make it simpler and more acceptable for some of our key stakeholders to adopt LSIDs.  If so, should we set something up at an early stage?  If so, how should it work?  These are social questions that cannot be addressed simply by considering the technical aspects.  DonaldHobern 2006-04-20
+----
+---+++ Conclusions and Recommendations
+
+
+
+
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryInfrastructureWG
+
+
+---++ Comments
+Use the space below to make comments about this page.
+
+------
+
+%ICON{bubble}% Posted by Main.LeeBelbin - 2006-04-20 06:02:04
+
+Wouldn't a separate authority be an effective option for a data provider who did not want to develop and maintain that level of LSID expertise or service?
+
+------
+
+%ICON{bubble}% @
+
+
+1.9
+log
+@
+.
+@
+text
+@d52 15
+a66 1
+CategoryInfrastructureWG@
+
+
+1.8
+log
+@
+.
+@
+text
+@d37 1
+a37 1
+This is doubtless not a complete set of options, but should be enough to begin discussion.  So, do you see value in considering any of these options as part of the infrastructure we plan to adopt.  It may of course be that any and all of these can be used transparently within any LSID-based network, but we should consider whether there are immediate benefits in offering some kind of central service (through TDWG, GBIF or others) for these purposes.
+@
+
+
+1.7
+log
+@
+.
+@
+text
+@d41 2
+@
+
+
+1.6
+log
+@
+.
+@
+text
+@d39 2
+d50 1
+a50 1
+CategoryInfrastructureWG
+@
+
+
+1.5
+log
+@
+.
+@
+text
+@d20 1
+a20 1
+Under these circumstances a data provider may wish to be able to assign LSIDs to each data record and to have the LSID resolve correctly to the appropriate data and metadata.
+@
+
+
+1.4
+log
+@
+.
+@
+text
+@d16 2
+@
+
+
+1.3
+log
+@
+.
+@
+text
+@d22 12
+a33 12
+---+++++ 1. Central hosting of data/metadata
+The simplest option technically (or at least simplest with respect to the assignment of LSIDs) may be for the *central LSID registration authority* actually to host the data sets in question on behalf of the data provider.  
+
+---+++++ 2. Central proxy LSID resolver
+If the data provider is able to establish an LSID resolver but is unable or unwilling to register this resolver with DNS, a *central LSID registration authority* might establish a proxy LSID resolver, which redirects to the known location of the actual LSID resolver.  In other words, assuming that the central LSID registration authority has an LSID resolver registered for *clra.org* and running on lsid.clra.org, and the data provider has established its own unregistered LSID resolver on lsid.dp.org, the data provider can issue LSIDs of the form *urn:lsid:clra.org:<DatasetName>:<RecordId>*.  Requests for data or metadata will be directed to lsid.clra.org, which resolves <DataSetName> to be associated with the unregistered LSID resolver on lsid.dp.org, and directs the request to lsid.dp.org for resolution.
+
+This again should be relatively simple to implement, and could be of use in some circumstances.  The data provider and the central LSID registration authority clearly need to coordinate the elements included in the LSID string.
+
+---+++++ 3. Central LSID resolver with non-LSID proxy resolution
+Slightly more complex (and potentially with too many uncertainties), a data provider could register a provider tool using some other protocol (e.g. TAPIR) and rely on an external proxy LSID resolver to map LSID requests to the appropriate protocol.  For example, assume that a TAPIR provider is set up on tapir.dp.org to serve data in some version of darwin core which includes a <darwin:lsid> element.  The records in the TAPIR provider are all set up to include values for this element of the form *urn:lsid:clra.org:<DatasetName>:<RecordId>*.  Requests for data or metadata will be directed to lsid.clra.org, which resolves <DataSetName> to be associated with the TAPIR provider on tapir.dp.org, issues an appropriate TAPIR request for the record with the appropriate value for <darwin:lsid> and then formats the data or metadata appropriately for an LSID response.
+
+This is again not complex to implement, but requires even more coordination than with option 2.  It could however be applicable in any case in which a data provider has any mechanism for sharing their data online, regardless of what additional firewall restrictions are in place.
+d35 1
+@
+
+
+1.2
+log
+@
+.
+@
+text
+@d30 2
+a31 2
+==3. Central LSID resolver with non-LSID proxy resolution*
+Slightly more complex (and potentially with too many uncertainties), a data provider could register a provider tool using some other protocol (e.g. TAPIR) and rely on an external proxy LSID resolver to map LSID requests to the appropriate protocol.  For example, assume that a TAPIR provider is set up on tapir.dp.org to serve data in some version of darwin core which includes a <darwin:lsid> element.  The records in the TAPIR provider are all set up to include values for this element of the form *urn:lsid:clra.org:<DatasetName>:<RecordId>**.  Requests for data or metadata will be directed to lsid.clra.org, which resolves <DataSetName> to be associated with the TAPIR provider on tapir.dp.org, issues an appropriate TAPIR request for the record with the appropriate value for <darwin:lsid> and then formats the data or metadata appropriately for an LSID response.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 1
+a3 1
+*Coordinator(s):*
+d14 1
+d16 1
+d18 16
+@

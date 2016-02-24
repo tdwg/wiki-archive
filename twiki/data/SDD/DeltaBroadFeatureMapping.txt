@@ -1,0 +1,123 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118872" format="1.1" version="1.5"}%
+%META:TOPICPARENT{name="DELTAandBDI.SDD"}%
+---+!! %TOPIC%
+
+---++Broad comparison of DELTA and SDD features
+
+---+++Synopsis
+
+The primary object types of SDD are shown in a tabular display and annotations are provided pointing to relations and differences with the [[http://biodiversity.bio.uno.edu/delta/][DELTA]] format. See also the overview [[DELTAandBDI.SDD][SDD for DELTA experts]].
+
+---+++Object classes of SDD
+
+Note: the left side represents first-class and some second-class objects in SDD. Names in bracketed are not directly represented in SDD but are used to group objects.  
+
+<!-- html-tables in TWIKI may not contain formatting blank lines, else invalid p-elements inside table are being generated! -->
+<table border="0" cellspacing="0" cellpadding="3" summary="Schema class overview">
+<tr style="vertical-align:top;"><td colspan="4" style="border-bottom:2px solid black;"><b>SDD model</b></td>
+<td style="border-bottom:2px solid black;"><b>Notes on related DELTA features</b></td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="font-size:1pt;">&nbsp;</td>
+<td rowspan="50" style="font-size:1pt;">&nbsp;</td>
+<td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr style="vertical-align:top"><td colspan="3" style="border:1px solid silver;border-bottom:0px solid white">
+Datasets</td>
+<td>(The root element of SDD is called Datasets; containing a single TechnicalMetadata element and an unlimited number of Dataset elements. All other objects are inside one of the Dataset elements.)</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid gray;">
+ <b>TechnicalMetadata</b></td>
+ <td>SDD provides creation date/time, metadata about the software (name, version) that created the file (in /Generator), etc. No equivalent information is available in DELTA, often leading to problems in recognizing "DELTA dialects" (e.g. between CSIRO Delta, Pankey, and DeltaAccess)</td>
+</tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid black;">
+ <b>Dataset<br />
+    /Representation</b></td>
+ <td>Project or data set metadata is sparse in DELTA. Some information about the entire descriptive project (title, date, authors) may be available in "*SHOW" and "*COMMENT" directives. No information (including copyright statement) is required, however.<br />
+The DELTA "*NUMBER OF CHARACTERS", "*MAXIMUM NUMBER OF STATES", and "*MAXIMUM NUMBER OF ITEMS" directives contain some technical project information which are redundant in SDD.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="vertical-align:bottom;border-left:1px solid silver;border-right:1px solid silver">
+(Biological Entities:)</td>
+<td>&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid blue;">
+<b>TaxonNames</b></td>
+<td>SDD provides a controlled vocabulary for taxon names (including concepts) which may be linked to or derived from external taxonomic databases. DELTA provides taxon names only through the Item Name, which may be a mixture or taxon name, specimen information, sex, etc.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid blue;">
+<b>TaxonHierarchies</b></td>
+<td>DELTA does not support a general taxonomic hierarchy. It does provide one-level hierarchy through the multi-item taxon mechanism with main and variant items.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid blue;">
+<b>Specimens</b></td>
+<td>If biological specimens are studied in DELTA, it is possible to add the specimen identifier or description (Collector, date, etc.) as comments in the Item Name.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="vertical-align:bottom;border-left:1px solid silver;border-right:1px solid silver">
+(Descriptive Terminology:)</td>
+<td>(= similar to content of CHARS file in CSIRO DELTA)</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border-left:2px solid green;border-top:2px solid green;border-right:2px solid green;">
+<b>!DescriptiveConcepts</b></td>
+<td rowspan="2">SDD !DescriptiveConcepts express basic terminological concepts (structural hierarchy, property hierarchy, methods) not directly available in DELTA. DELTA has limited support for "headings" to define concepts more general than characters. These single-level-hierarchies are "*CHAR HEADINGS" for character list report, "*ITEM SUBHEADINGS" for natural language reporting, and "*DEFINE CHARACTERS" for Intkey. In SDD, the concepts expressed in such hierarchies are defined here, and the relation to characters in the character trees detailed further below.</td></tr>
+<tr><td colspan="3" style="vertical-align:bottom;border-left:2px solid green;border-right:2px solid green;">(Second-class objects:)</td><!-- no right-hand td here, this is rowspan from above! --></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;">&nbsp;</td><td style="border:2px solid green;">
+<b>Modifiers</b></td><td style="border-right:2px solid green;">&nbsp;</td>
+<td>In SDD all modifiers for probability, frequency ("rarely"), degree ("strongly", "weakly"), timing ("when mature"), location ("at the base"), etc. are centrally managed and may be centrally translated; probability, frequency, and by-misinterpretation modifiers further provide an analytical description. In contrast, DELTA can express modifier information only through free-form text comments. When translating descritions into multiple languages, such DELTA comments have to be translated in every description.</td></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;font-size:1pt;">&nbsp;</td><td style="font-size:1pt;">&nbsp;</td><td style="border-right:2px solid green;font-size:1pt;">&nbsp;</td><td style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;">&nbsp;</td><td style="border:2px solid green;">
+<b>ConceptStates</b></td><td style="border-right:2px solid green;">&nbsp;</td>
+<td>SDD provides a mechanism to centrally define state values that are reusable in multiple characters. DELTA has no equivalent of this.</td></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;font-size:1pt;">&nbsp;</td><td style="font-size:1pt;">&nbsp;</td><td style="border-right:2px solid green;font-size:1pt;">&nbsp;</td><td>The following Coding Status and Statistical Measures used to be second-class objects in early versions of SDD (0.9), supporting freely definable values and labels for these. Implementation attempts of SDD revealed, however, that this was not accepted well and caused significant application interoperability problems. The final release of SDD 1.0 has therefore reverted to globally defined semantics (controlled through enumerated values) for coding status values and statistical measures.</td></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;">&nbsp;</td><td style="border:2px dashed silver;">
+(Coding Status)</td><td style="border-right:2px solid green;">&nbsp;</td>
+<td>DELTA has 3 fixed "special symbols" or "pseudo-values": "U", "-", and "V". SDD supports DELTA "U" (Data not available) and "-" (not applicable), has rejected support for an equivalent to DELTA "V", and adds further status values (not interpretable, data withheld, not to be coded, etc.).</td></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;font-size:1pt;">&nbsp;</td><td style="font-size:1pt;">&nbsp;</td><td style="border-right:2px solid green;font-size:1pt;">&nbsp;</td><td style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;">&nbsp;</td><td style="border:2px dashed silver;">
+(Statistical Measures)</td><td style="border-right:2px solid green;">&nbsp;</td>
+<td>DELTA has 5 fixed measures: minimum, undefined lower range, undefined central value, undefined upper range, maximum. SDD adds various defined ranges and central values, variance measures, sample size as well as a generic extensible mechanism to define these.</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="font-size:1pt;border-left:2px solid green;border-bottom:2px solid green;border-right:2px solid green;">&nbsp;</td><td></td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border-left:2px solid green;border-top:2px solid green;border-right:2px solid green;">
+ <b>Characters</b></td>
+<td rowspan="2">The single flat character list containing states is relatively similar in SDD and DELTA. The character definition in SDD also contains information from the DELTA !*CHAR TYPES, !*KEY STATES (= SDD Mappings) directives. In contrast to DELTA, the order of characters in SDD is not informative and is instead defined exclusively in the character trees. This enables different character sequences for different reporting purposes and splitting characters into multiple files or reusing characters from different terminologies.<br />
+Representation/Detail with role="Description" or role="Normative" enables to supply simple textual definitions and is related to the DELTA !*CHAR NOTES directive.</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="vertical-align:bottom;border-left:2px solid green;border-right:2px solid green;">(Second-class objects:)</td><!-- no right-hand td here, this is rowspan from above! --></tr>
+<!-- NEXT TR --><tr><td style="border-left:2px solid green;">&nbsp;</td><td style="border:2px solid green;">
+<b>States</b></td><td style="border-right:2px solid green;">&nbsp;</td>
+<td>SDD States may be defined either local within a character (equivalent of DELTA states) or enabled by reference to concept states.</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="font-size:1pt;border-left:2px solid green;border-bottom:2px solid green;border-right:2px solid green;">&nbsp;</td><td></td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid green;">
+<b>!CharacterTrees</b></td>
+<td>These define operational hierarchies for listing characters in a character definition report, in interactive keys, or in natural language reports. The nodes may be labeled by reference to descriptive concepts. Character trees define both a hierarchy and an order for the unstructured and unordered list of characters.<br />
+In contrast to DELTA, SDD can express multiple character hierarchies, and also alternative character sequences (order in which characters are arranged) by using multiple character trees.<br />
+Furthermore, when used for natural language reporting (equivalent to the CSIRO DELTA TONAT command), the format and structure of the natural language description is defined here as well (!*LINK CHAR, !*NEW PARAGRAPHS AT CHARACTERS, !*Replace Semicolon By Comma, etc. directives)</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="vertical-align:bottom;border-left:1px solid silver;border-right:1px solid silver">
+(Descriptions and keys:)</td>
+<td>(= similar to ITEMS file in CSIRO DELTA)</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid red;">
+<b>NaturalLanguageDescriptions</b></td>
+<td>DELTA has no option to markup existing natural language descriptions. Note that this type of description is not related to the creation of formatted natural language descriptions from coded data.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid red;">
+<b>CodedDescriptions</b></td>
+<td>This is directly equivalent to !*ITEM DESCRIPTIONS in DELTA.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid red;">
+<b>IdentificationKeys</b></td>
+<td>DELTA provides no data structure for dichotomous/multifurcating keys that are manually created or digitized from publications.</td>
+</tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="vertical-align:bottom;border-left:1px solid silver;border-right:1px solid silver">
+(General resources:)</td>
+<td>DELTA has no similar feature, but the proposal for a DELTA II system contains !*NUMBERED LIST and !*ALPHABETIC LIST directives with a similar aim. The DELTA II proposal provides only for DELTA-internal lists, not for linking with external data providers.</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid #FF6600;">
+<b>Agents</b></td>
+<td>No management of authors, editors, contributors, translators and their respective contributions is available in DELTA. In SDD, this is a central repository for names of persons or organization, and is used throughout the data when attributing intellectual work.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid #FF6600;">
+<b>Publications</b></td>
+<td>Publications are not handled in the original DELTA (but proposal were made for DELTA II). Commonly information from published sources is handled as a free-form comment in DELTA.</td></tr>
+<tr><td colspan="3" style="font-size:1pt;border-left:1px solid silver;border-right:1px solid silver">&nbsp;</td><td  style="font-size:1pt;">&nbsp;</td></tr>
+<!-- NEXT TR --><tr><td colspan="3" style="border:2px solid #FF6600;">
+<b>MediaObjects</b></td>
+<td>In DELTA images are directly identified through path and filename. SDD allows external references, embedded resource data, and provides for a multilingual caption.</td></tr>
+</table>
+
+-- Main.GregorHagedorn - 10 May 2006 (First version published outside of the Wiki by Gregor Hagedorn on 24. November 2003)

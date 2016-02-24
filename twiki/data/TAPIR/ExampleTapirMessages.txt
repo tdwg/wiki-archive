@@ -1,0 +1,534 @@
+%META:TOPICINFO{author="RenatoDeGiovanni" date="1229969698" format="1.1" reprev="1.36" version="1.36"}%
+This section provides some examples of common TAPIR messages.
+The latest version of the examples can always be found in the subversion repository. This page is only updated once in a while, so it might be that the examples below are not valid against the latest schema. But they will only vary in minor details.
+
+http://ww2.biocase.org/svn/tapir/trunk/protocol/examples/
+
+Messages in TAPIR should be sent through HTTP.
+Every TAPIR message can be sent as an XML encoded document as defined by the TAPIR schema or alternatively through a list of URL [[GetInvokedOperations][parameters]] specified by TAPIR as well.
+
+This allows to invoke all TAPIR operations through HTTP GET (using the [[GetInvokedOperations][parameters]]) or trough HTTP POST (using [[GetInvokedOperations][parameters]] or sending an XML document).
+
+Here we provide a parameterized version of every example and the corresponding XML version. They MUST generate the same result from a TAPIR compliant service. The parameterized version is represented with an*unencoded* URL string.
+----
+---+++ TAPIR Operations
+   * [[#p][Ping]]
+      * [[#preq][request]]
+      * [[#presp][response]]
+   * [[#c][Capabilities]]
+      * [[#creq][request]]
+      * [[#cresp][response]]
+   * [[#m][Metadata]]
+      * [[#mreq][request]]
+      * [[#mresp][response]]
+   * [[#i][Inventory]]
+      * [[#it][inventory template]]
+      * [[#ireq][request]]
+      * [[#iresp][response]]
+   * [[#s][Search]]
+      * [[#om][output model]]
+      * [[#st][search template]]
+      * [[#sreq][request]]
+      * [[#sresp][response]]
+
+----
+<a name="p"></a>
+---++ Ping operation
+
+*HTTP Parameters*
+
+   * http://wrapper_end_point?op=ping
+
+<a name="preq"></a>
+*XML message*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://url_from_client" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+        <destination>http://accesspoint_url</destination>
+    </header>
+    <ping/>
+</request>
+</verbatim>
+
+<a name="presp"></a>
+*Response*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:57.023+01:00"></source>
+    </header>
+    <pong/>
+</response>
+</verbatim>
+----
+<a name="m"></a>
+---++ Metadata operation
+
+*HTTP Parameters*
+
+   * http://wrapper_end_point?op=metadata
+
+<a name="mreq"></a>
+*XML message*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://url_from_client" sendtime="2005-11-11T12:23:56.023+01:00">
+        </source>
+    </header>
+    <metadata/>
+</request>
+</verbatim>
+
+<a name="mresp"></a>
+*Response*
+<verbatim>
+<?xml version='1.0' encoding='utf-8'?>
+<metadata xmlns='http://rs.tdwg.org/tapir/1.0' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:dct='http://purl.org/dc/terms/' xmlns:geo='http://www.w3.org/2003/01/geo/wgs84_pos#' xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'>
+  <dc:title>BioCASe training</dc:title>
+  <dc:type>http://purl.org/dc/dcmitype/Service</dc:type>
+  <accesspoint>http://localhost:8080/tapir/pywrapper/training</accesspoint>
+  <dc:description>This testing database is used in BioCASE workshops and other events.
+    This database was gratefully provide by the Herbarium at the Universidad of Barcelona CeDocBiv, 
+    but the data has been greatly modified so DO NOT CONSIDER IT AS REAL DATA
+  </dc:description>
+  <dc:language>en-us</dc:language>
+  <dc:subject>BioCASe, Barcelona, CeDocBiv, herbarium, plantae, specimen</dc:subject>
+  <dct:bibliographicCitation>The BioCASE training database</dct:bibliographicCitation>
+  <dc:rights>You can distribute this database freely but only for testing purposes and training.</dc:rights>
+  <dct:modified>2005-03-17</dct:modified>
+  <indexingPreferences frequency='P14D' maxDuration='PT3H' startTime='02:00:00Z'/>
+  <relatedEntity>
+    <role>data supplier</role>
+    <role>data supplier</role>
+    <entity>
+      <identifier>http://ww3.bgbm.org/biocase/datasources/training/metadata.xml</identifier>
+      <name>Botanic Garden &amp; Botanical Museum Berlin-Dahlem</name>
+      <acronym>BGBM</acronym>
+      <logoURL>http://www.biocase.org/images/bdi_logo.gif</logoURL>
+      <description>The Botanic Garden Berlin-Dahlem comprises an area of 126 acres and hence is one of the world´s largest and most important gardens. About 22,000 different species of plants are cultivated here. In the 39 acres of the plant-geography section - one of the biggest of its kind in the world - you can travel all the way around the Northern Hemisphere, and in the 42 acre Arboretum and taxonomy section you can get an insight into the relationship among woody and herbaceous plants. The greenhouse complex consists of 16 houses open to the public and offers the possibility to travel through tropical and subtropical vegetation. These living collections, along with the preserved collections, form the basis for the continued expansion of scientific study within the plant kingdom, with the goal to deepen the knowledge necessary for the utilization and protection of plant diversity on earth.</description>
+      <address>Königin-Luise-Straße 6-8, D-14191 Berlin, Germany</address>
+      <relatedInformation>http://www.bgbm.org/</relatedInformation>
+      <hasContact>
+        <role>technical</role>
+        <vcard:VCARD>
+          <vcard:FN>Frank Sinatra</vcard:FN>
+          <vcard:TITLE>senior developer</vcard:TITLE>
+          <vcard:TEL>+49 30-5555-55</vcard:TEL>
+          <vcard:EMAIL>frank@worldstars.org</vcard:EMAIL>
+        </vcard:VCARD>
+      </hasContact>
+      <hasContact>
+        <role>administrative</role>
+        <vcard:VCARD>
+          <vcard:FN>Frankenstein</vcard:FN>
+          <vcard:TITLE>head of biodiversity department</vcard:TITLE>
+          <vcard:TEL>+49 30-5555-56</vcard:TEL>
+          <vcard:EMAIL>fstein@worldstars.org</vcard:EMAIL>
+        </vcard:VCARD>
+      </hasContact>
+      <geo:Point>
+        <geo:lat>52.458356</geo:lat>
+        <geo:long>13.305017</geo:long>
+      </geo:Point>
+    </entity>
+  </relatedEntity>
+</metadata>
+</verbatim>
+----
+<a name="c"></a>
+---++ Capabilities operation
+
+*HTTP Parameters*
+
+   * http://wrapper_end_point?op=capabilities
+
+<a name="creq"></a>
+*XML message*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://url_from_client" sendtime="2005-11-11T12:23:56.023+01:00">
+        </source>
+    </header>
+        <capabilities/>
+</request>
+</verbatim>
+
+<a name="cresp"></a>
+*Response*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+    </header>
+    <capabilities>
+        <operations>
+            <ping/>
+            <metadata/>
+            <capabilities/>
+            <view>
+                <queryTemplates>
+                    <queryTemplate location="http://url_to_searchtemplateA"/>
+                    <queryTemplate location="http://url_to_searchtemplateB"/>
+                    <queryTemplate location="http://url_to_inventorytemplate"/>
+                </queryTemplates>
+            </view>
+            <inventory/>
+            <search>
+                <staticOutputModels>
+                    <outputModel location="http://url_to_raw_outputmodelA"/>
+                    <outputModel location="http://url_to_raw_outputmodelB"/>
+                </staticOutputModels>
+            </search>
+        </operations>
+        <filter>
+            <encoding>
+                <expression>
+                    <concept/>
+                    <literal2/>
+                    <parameter/>
+                    <variable/>
+                    <arithmetic>
+                        <add/>
+                        <sub/>
+                    </arithmetic>
+                </expression>
+                <booleanOperators>
+                    <logical>
+                        <not/>
+                        <and/>
+                        <or/>
+                    </logical>
+                    <comparative>
+                        <equals/>
+                        <greaterThan/>
+                        <greaterThanOrEquals/>
+                        <lessThan/>
+                        <lessThanOrEquals/>
+                        <in/>
+                        <isNull/>
+                        <like/>
+                    </comparative>
+                </booleanOperators>
+            </encoding>
+        </filter>
+        <concepts>
+            <conceptNameServers>
+                <server location="http://url_to_primary_concept_server"/>
+                <server location="http://url_to_secondary_concept_server"/>
+            </conceptNameServers>
+            <schema namespace="http://www.tdwg.org/schemas/abcd/1.2"
+                location="http://www.bgbm.org/TDWG/CODATA/Schema/ABCD-1.20.xsd">
+                <mappedConcept
+                    id="/DataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied"
+                    searchable="true"/>
+                <mappedConcept
+                    id="/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Description"
+                    searchable="true"/>
+            </schema>
+            <schema namespace="http://digir.net/schema/conceptual/darwin/extension/curatorial/1.0"
+                location="http://digir.net/schema/conceptual/darwin/extension/curatorial/1.0/curatorialWithDiGIRv1.3.xsd">
+                <mappedConcept id="/CatalogNumberNumeric" searchable="true" mandatory="true"/>
+                <mappedConcept id="/IdentifiedBy" searchable="true"/>
+            </schema>
+        </concepts>
+
+        <variables>
+            <environment>
+                <timestamp/>
+                <lastUpdate/>
+                <date/>
+                <datasourceName/>
+                <accessPoint/>
+            </environment>
+        </variables>
+        
+        <settings>
+            <minQueryTermLength>2</minQueryTermLength>
+            <maxElementRepetitions>10</maxElementRepetitions>
+            <maxElementLevels>20</maxElementLevels>
+            <maxResponseTags>500</maxResponseTags>
+            <maxResponseSize>500</maxResponseSize>
+        </settings>
+        
+    </capabilities>
+</response>
+</verbatim>
+
+
+----
+<a name="i"></a>
+---++ Inventory operation
+
+*HTTP Parameters*
+
+   * Without aliases
+   * http://wrapper_end_point?op=inventory&start=10&limit=10&concept=http://digir.net/schema/conceptual/darwin/2003/1.0#/Country&concept=http://digir.net/schema/conceptual/darwin/2003/1.0#/Genus
+   * With global concept aliases
+   * http://wrapper_end_point?op=inventory&start=10&limit=10&concept=Country@dwc&concept=Genus@dwc
+   * With template
+   * http://wrapper_end_point?op=inventory&start=10&limit=10&template=http://you.net/inventory3.xml&name=Inula*
+
+<a name="it"></a>
+*Inventory template*
+An inventory template can be referred to in a request and allows simple parameter bindings to a more complex operation. Example template:
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<inventoryTemplate xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <label>Specimen Names</label>
+    <documentation>Search and list unique scientific names of specimen identifications ordered
+        alphabetically by their name. The filter parameter "name" is used to build the filter</documentation>
+    <concepts>
+        <concept id="dwc:/ScientificName"/>
+    </concepts>
+    <filter>
+        <like>
+            <concept id="dwc:/ScientificName"/>
+            <parameter name="name"/>
+        </like>
+    </filter>
+</inventoryTemplate>
+</verbatim>
+
+<a name="ireq"></a>
+*XML message*
+In the XML messages aliases could also be used, but we only shows here the example with complete concept IDs
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://url_from_client" sendtime="2005-11-11T12:23:56.023+01:00">
+        </source>
+    </header>
+    <inventory count="false" limit="100" start="0">
+        <concepts>
+            <concept id="http://digir.net/schema/conceptual/darwin/2003/1.0#/Country"/>
+            <concept id="http://digir.net/schema/conceptual/darwin/2003/1.0#/Genus"/>
+        </concepts>
+    </inventory>
+</request>
+</verbatim>
+
+<a name="iresp"></a>
+*Response*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+    </header>
+    <inventory>
+        <concepts>
+            <concept id="http://digir.net/schema/conceptual/darwin/2003/1.0#/Country"/>
+            <concept id="http://digir.net/schema/conceptual/darwin/2003/1.0#/Genus"/>
+        </concepts>
+        <record>
+            <value>AUSTRALIA</value>
+            <value>Calicium</value>
+        </record>
+        <record>
+            <value>AUSTRALIA</value>
+            <value>Fellhanera</value>
+        </record>
+        <summary start="1" totalReturned="2" totalMatched="15" next="3"/>
+    </inventory>
+</response>
+</verbatim>
+
+----
+<a name="s"></a>
+---++ Search operation
+Search operations make use of [[#om][output models]].
+
+*HTTP Parameters*
+   * Without aliases
+   * http://wrapper_end_point?op=search&start=0&limit=10&model=http://res.tdwg.org/tapir/models/abcd206.xml&filter=http://www.tdwg.org/schemas/abcd/2.06/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString like "Luzu*"&orderby=http://www.tdwg.org/schemas/abcd/2.06/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString
+   * With global concept aliases
+   * http://wrapper_end_point?op=search&start=0&limit=10&model=http://res.tdwg.org/tapir/models/abcd206.xml&filter=FullScientificName@abcd206 like "Luzu*"&orderby=FullScientificName@abcd206
+   * With template
+   * http://wrapper_end_point?op=search&start=0&limit=10&template=http://you.net/search3.xml&name=Luzu*
+
+<a name="om"></a>
+*Output Model*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<outputModel xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://rs.tdwg.org/tapir/1.0
+        http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd
+        http://www.w3.org/2001/XMLSchema
+        http://www.w3.org/2001/XMLSchema.xsd">
+    <structure>
+        <xs:schema targetNamespace="http://example.net/simple_specimen">
+            <xs:element name="dataset">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="specimen" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="identification" maxOccurs="unbounded"
+                                        minOccurs="0">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="name">
+                                                    <xs:complexType>
+                                                        <xs:simpleContent>
+                                                            <xs:extension base="xs:string">
+                                                                <xs:attribute name="family"
+                                                                    type="xs:string"/>
+                                                            </xs:extension>
+                                                        </xs:simpleContent>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="identifier" type="xs:string"
+                                                    minOccurs="0"/>
+                                            </xs:sequence>
+                                            <xs:attribute name="date" type="xs:string"
+                                                use="optional"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="catnum" type="xs:int" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </structure>
+    <indexingElement path="/dataset/specimen"/>
+    <mapping>
+        <node path="/dataset/specimen@catnum">
+            <concept id="dwc:/CatalogNumber"/>
+        </node>
+        <node path="/dataset/specimen/identification/name">
+            <concept id="dwc:/ScientificName"/>
+        </node>
+        <node path="/dataset/specimen/identification/name@family">
+            <concept id="dwc:/Family"/>
+        </node>
+        <node path="/dataset/specimen/identification/identifier">
+            <concept  id="abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName"/>
+        </node>
+        <node path="/dataset/specimen/identification@date">
+            <concept  id="abcd:/DataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/DateText"/>
+        </node>
+    </mapping>
+</outputModel>
+</verbatim>
+
+<a name="st"></a>
+*Search template*
+A search template can be referred to in a request and allows simple parameter bindings to a more complex operation. Example template:
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<searchTemplate xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <label>Specimen by Name</label>
+    <documentation>Search specimens by their scientific name. Result is returned ordered by name and
+        catalogue number. The filter parameter "name" is used to build the filter.</documentation>
+    <outputModel location="http://the.same.host/output_model1.xml"/>
+    <filter>
+        <like>
+            <concept id="dwc:/ScientificName"/>
+            <parameter name="name"/>
+        </like>
+    </filter>
+    <orderBy>
+        <concept id="dwc:/ScientificName"/>
+        <concept id="dwc:/CatalogNumber"/>
+    </orderBy>
+</searchTemplate>
+</verbatim>
+
+<a name="sreq"></a>
+*XML message*
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://rs.tdwg.org/tapir/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0
+    file:/Users/javi/workspace/tapirProtocol/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://url_from_client" sendtime="2005-11-11T12:23:56.023+01:00"/>
+    </header>
+    <search start="0" limit="10">
+        <outputModel
+            location="http://ww2.biocase.org/svn/tapir/trunk/protocol/examples/output_model1.xml"/>
+        <filter>
+            <like>
+                <concept id="dwc:/ScientificName"/>
+                <literal2 value="Luzu*"/>
+            </like>
+        </filter>
+        <orderBy>
+            <concept id="dwc:/Family"/>
+            <concept id="dwc:/ScientificName"/>
+        </orderBy>
+    </search>
+</request>
+</verbatim>
+
+<a name="sresp"></a>
+*Response*
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0
+    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://url_from_client" sendtime="2005-11-11T12:23:56.023+01:00"/>
+    </header>
+    <search>
+        <dataset xmlns="http://example.net/simple_specimen"
+            xsi:schemaLocation="http://example.net/simple_specimen
+            http://ww2.biocase.org/svn/tapir/trunk/protocol/examples/schema_used_in_output_model.xsd">
+            <specimen catnum="234">
+                <identification>
+                    <name>Luzula luzuloides</name>
+                </identification>
+            </specimen>
+            <specimen catnum="290">
+                <identification>
+                    <name>Luzula alpestris</name>
+                </identification>
+            </specimen>
+        </dataset>
+        <summary start="0" totalReturned="2"/>
+    </search>
+</response>
+</verbatim>
+

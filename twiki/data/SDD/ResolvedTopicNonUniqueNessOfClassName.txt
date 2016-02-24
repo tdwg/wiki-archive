@@ -1,0 +1,52 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118876" format="1.1" version="1.6"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+---+!! %TOPIC%
+
+I have noticed that SDD or should i say UBIF does not ensure that Classname's are unique even in the same Dataset.
+ 
+A Class can be defined twice with the same Label,Rank,LSID etc etc with different keys of course.
+
+I am in the process of writing some kind of a simplistic SDD editor and this is an issue i am struggling with right now.
+
+Here is a snippet of an example borrowed from Gregor's SDD_tech.xml with a few additions.
+
+<verbatim>
+<ClassName key="1">
+    <Label>
+   <Representation language="en">
+       <Text>Cypselurus heterurus (Rafinesque, 1810)</Text>
+   </Representation>
+   </Label>
+   <Link>
+   <LSID>lsid.gbif.net:www.fishbase.org:1029</LSID>
+   <URL>http://www.fishbase.org/Summary/SpeciesSummary.cfm?ID=1029</URL>
+   </Link>
+   <RankLevel>species</RankLevel>
+</ClassName>
+<ClassName key="5">
+  <Label>
+   <Representation language="en">
+      <Text>Cypselurus heterurus (Rafinesque, 1810)</Text>
+   </Representation>
+  </Label>
+  <Link>
+   <LSID>lsid.gbif.net:www.fishbase.org:1029</LSID>
+   <URL>http://www.fishbase.org/Summary/SpeciesSummary.cfm?ID=1029</URL>
+  </Link>
+  <RankLevel>species</RankLevel>
+</ClassName>
+</verbatim>
+
+-- Main.JacobAsiedu - 28 Jul 2004
+
+Thanks for pointing this out. What do you propose? I would think, requiring the label to be unique for each language should be sufficient. Of course, really the different linking IDs should be unique as well, but that is a bit still under development and discussion.
+
+-- Gregor - 29 Jul 2004
+
+---
+
+I have added language specific uniqueness constraints and close the topic. Many thanks!
+
+-- Gregor Hagedorn - 18 August 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1092822970" from="SDD.NonUniqueNessOfClassName" to="SDD.ResolvedTopicNonUniqueNessOfClassName"}%

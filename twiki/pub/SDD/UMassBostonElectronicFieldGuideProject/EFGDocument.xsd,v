@@ -1,0 +1,145 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+	
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2004.05.10.17.57.49;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@Schema for native EFG output
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by UMASS Boston CSLabs (UMASS Boston CSLabs) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="TaxonReferenceType">
+		<xsd:annotation>
+			<xsd:documentation>A type for encapsulating all TaxonReference</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Taxon" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string">
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TaxonReferenceListType">
+		<xsd:annotation>
+			<xsd:documentation>A list of TaxonReference types</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="TaxonReference" type="TaxonReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="EntryListType">
+		<xsd:annotation>
+			<xsd:documentation>An entry list .</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Entry" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TaxonGroupListType" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="TaxonGroup" type="TaxonReferenceListType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="EFGDocument">
+		<xsd:annotation>
+			<xsd:documentation>Comment describing your root element</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="TaxonEntry" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:complexContent>
+							<xsd:extension base="TaxonEntryType">
+								<xsd:attribute name="dataSourceName" type="xsd:string" use="optional"/>
+								<xsd:attribute name="uri" type="xsd:anyURI" use="optional"/>
+							</xsd:extension>
+						</xsd:complexContent>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="TaxonEntryType">
+		<xsd:choice maxOccurs="unbounded">
+			<xsd:element name="Item" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string">
+							<xsd:attribute name="name" type="xsd:string" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="TaxonGroupList" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="TaxonGroupListType">
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:extension>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="EntryList" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="EntryListType">
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:extension>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="MediaResources" type="MediaResourcesType" minOccurs="0"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="MediaResourcesType">
+		<xsd:sequence>
+			<xsd:element name="MediaResourceGroup" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="MediaResourceGroupType">
+							<xsd:attribute name="caption" type="xsd:string" use="optional"/>
+							<xsd:attribute name="type" use="required">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:enumeration value="Image"/>
+										<xsd:enumeration value="Audio"/>
+										<xsd:enumeration value="Video"/>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:attribute>
+						</xsd:extension>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MediaResourceGroupType">
+		<xsd:sequence>
+			<xsd:element name="MediaResource" type="xsd:string" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
+@

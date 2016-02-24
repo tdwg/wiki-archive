@@ -1,0 +1,164 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@The current protocol schema advertises mapped concepts as part of the capabilities response. Here's the related part in the XML Schema:
+
+<verbatim>
+<xsd:element name="concepts">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="conceptNameServers">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="server" type="externalResourceType" maxOccurs="unbounded">
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="schema" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="mappedConcept" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:complexContent>
+                  <xsd:extension base="qualifiedConceptReferenceType">
+                    <xsd:attribute name="searchable" type="xsd:boolean" use="optional" default="true"/>
+                    <xsd:attribute name="mandatory" type="xsd:boolean" use="optional" default="false"/>
+                  </xsd:extension>
+                </xsd:complexContent>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="namespace" type="xsd:anyURI" use="required"/>
+          <xsd:attribute name="location" type="xsd:anyURI" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+</verbatim>
+
+The suggested changes to support semantic mapping are:
+
+   * Concepts are now classes, properties or relationships.
+   * Properties and relationships (associations) are defined inside classes.
+   * All types of concepts are defined under a single <mapping> element.
+   * The <schema> element (unbounded) was replaced by a <source> element, specifying only namespace and location for each ontology referenced by concepts in the <mapping>.
+   * Any mapped class, property or relationship must be defined in one of the source ontologies.
+
+<verbatim>
+<xsd:element name="concepts">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="conceptNameServers">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="server" type="externalResourceType" maxOccurs="unbounded">
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="source" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:attribute name="namespace" type="xsd:anyURI" use="required"/>
+          <xsd:attribute name="location" type="xsd:anyURI" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="mapping">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="class" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:complexContent>
+                  <xsd:extension base="qualifiedConceptReferenceType">
+                    <xsd:sequence>
+                      <xsd:element name="property" maxOccurs="unbounded">
+                        <xsd:complexType>
+                          <xsd:complexContent>
+                            <xsd:extension base="qualifiedConceptReferenceType">
+                              <xsd:attribute name="searchable" type="xsd:boolean" use="optional" default="true"/>
+                              <xsd:attribute name="mandatory" type="xsd:boolean" use="optional" default="false"/>
+                            </xsd:extension>
+                          </xsd:complexContent>
+                        </xsd:complexType>
+                      </xsd:element>
+                      <xsd:element name="relationship" maxOccurs="unbounded">
+                        <xsd:complexType>
+                          <xsd:complexContent>
+                            <xsd:extension base="qualifiedConceptReferenceType">
+                              <xsd:attribute name="myRole" type="xsd:string" use="required"/>
+                              <xsd:attribute name="withClass" type="xsd:qualifiedConceptIdType" use="required"/>
+                              <xsd:attribute name="othersRole" type="xsd:string" use="required"/>
+                            </xsd:extension>
+                          </xsd:complexContent>
+                        </xsd:complexType>
+                      </xsd:element>
+                    </xsd:sequence>
+                  </xsd:extension>
+                </xsd:complexContent>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+</verbatim>
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d42 1
+a42 1
+   * All types of concepts defined under a single <mapping> element.
+d44 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d85 1
+a85 1
+                              <xsd:attribute name="localRole" type="xsd:string" use="required"/>
+d87 1
+a87 1
+                              <xsd:attribute name="otherRole" type="xsd:string" use="required"/>
+@

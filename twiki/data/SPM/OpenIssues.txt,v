@@ -1,0 +1,397 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2009.11.09.22.11.31;	author BobMorris;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2009.11.05.18.06.46;	author BobMorris;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.07.20.10.04.09;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.07.12.13.19.18;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.05.14.13.50.30;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.05.09.12.00.20;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.6
+log
+@none
+@
+text
+@%META:TOPICINFO{author="BobMorris" date="1257804691" format="1.1" reprev="1.6" version="1.6"}%
+%META:TOPICPARENT{name="WebHome"}%
+If an issue here gets large, start an separate topic and link it here.
+
+  See also [[PlaziFinalReport]] for issues identified by the [[PlaziEOLProject]]
+
+   * [[Concept of Descriptions]] - What are descriptions? Is Behavior or DNA sequence not a description? But physiology, anatomy, chemistry, morphology are?
+
+------
+
+   * Recommended Instance Form: Should an instance document be valid OWL?
+
+I think yes. It makes it easier to write robust applications. On the other hand, it needs usable tools... -- Main.BobMorris - 09 May 2007
+
+------
+   * Rendering Instance Documents: What are the recommended tools for rendering instance documents? Does this depend on the above? -- Main.BobMorris - 14 May 2007
+------
+   * Repeated targets of the same hasInformation: Suppose an info item, say Range, has multiple values, e.g. representing that the range of a certain species includes Germany, France, and Belgium. Does this require three hasInformation triples (I suppose the answer is yes) and how do we guarantee that they are all talking about the same thing (I suppose the answer is use owl:sameAs). -- Main.BobMorris - 20 Jul 2007
+
+---++Issues and Questions from PlaziFinalReport
+Below we discuss 12 issues that Plazi faced during the development, including what we did about them and what recommendations we have based on our experiences.&nbsp; Some of these issues are not about SPM per-se except to the extent we found ambiguities or silence in SPM. Some may be addressed in the recent GBIF draft recommendations on&nbsp; the (<i>Cryer, et. al 2009 Adoption of Persistent Identifiers for Biodiversity Informatics</i>, http://imsgbif.gbif.org/File/retrieve.php?PATH=4&amp;FILE=2efc20187e6ad3dd828bbeadaa1040e6&amp;FILENAME=LGTGReportDraft.pdf&amp;TYPE=application/pdf)<br>
+
+*Issue 1*. Validation of the RDF to ensure RDF being produced was valid. This was accomplished by testing against the web-based [[http://www.w3.org/RDF/Validator/ !W3C RDF validator]]. We found this a particularly useful tool since it yields easy to understand representations of the RDF triples generated. By contrast, easy as the XML form of RDF is for humans to read, it is not always easy to understand from it whether one or another RDF predicate is being correctly or appropriately used.
+
+_Conclusions and Recommendations about Issue1:_
+
+Best practices for ontology annotation should be developed, perhaps with particular attention to documenting predicates.<br>
+
+*Issue 2.*Even for valid RDF there was still a question as to whether it was valid OWL RDF, or whether OWL RDF was a goal.
+
+No clear goals have been set and documented by GBIF or TDWG about reasoning on SPM, or other TDWG ontology vocabularies. It is generally accepted that the OWL Full dialect of OWL promotes data integration robustly in the sense that OWL Full has enough expressiveness to give integrators confidence in semantic equivalences or near equivalences in their mappings between one vocabulary and another.  However, the OWL DL (Description Logics) dialect of OWL promotes tractable&nbsp; reasoning computation, making it easier to determine, e.g. whether a pair of vocabularies are logically inconsistent with one another, or whether data violates some quality control axioms that an application might wish to enforce. SPM invokes quite a bit of the current TDWG ontology, with the consequence that SPM is OWL FULL but not DL, because some of the TDWG ontology is not.
+
+The "Open World" assumption for RDF is presently frequently cited as the slogan "AAA" (Anyone can say Anything Anywhere). One consequences is that misuses of ontology constructs can inadvertently pass into instances (by instance generation code), without discovery merely by RDF validation.&nbsp; This can happen if known applications do not fail on the misuse because it addresses issues the application ignores, or because particular consequences are harmless (e.g. because they return empty resource URI's and so are about nothing). One such SPM instance generation error was discovered only at the time of this writing in trying to understand why the Manchester !WonderWeb OWL validator ( http://www.mygrid.org.uk/OWL/Validator) was asserting that _!TaxonConcept_ was being used as both an RDF Class and an RDF Property. That is forbidden in OWL DL, but not OWL Full, for which the SPM instances were valid OWL. No such invalidity appeared in either the SPM ontology or the TDWG Ontology.  The problem proved to be that the Plazi XSLT was generating incorrect RDF for the _hasRelationship_ object property of _TaxonConcept_ where it expected a Relationship object, which is one of the low level classes in the TDWG ontology.
+We were intending to model not only what taxa were associated with the
+_!TaxonConcept_ being described&nbsp; (as supported by SPM
+_!InfoItems_), but also what those associations are. (The SPM
+annotations give predator-prey relationships as an example.) The
+result was that the instance document used _TaxonConcept_ as both a
+Property and a Class, and this forces the instance document into OWL
+Full. Moreover, the underlying set of kinds of taxonomic relationships
+available to _tc:hasRelationship_ is presently defined by an
+enumeration that arose historically from a set of concerns of
+taxonomists, largely about the nomenclatural issues surrounding
+taxonomic revisions. This is nowhere near broad enough to cover the
+kinds of _Associations_ envisioned in SPM, which includes such things
+as predator/prey and other ecological relationships. Pending future
+additions to !TaxonX, the underlying schema representing the documents
+from which we extract SPM-based knowledge, we are no longer attempting
+to output _tc:hasRelationship_. 
+
+_Conclusions and Recommendations about Issue 2:_
+
+(1) The SPM concept _associatedTaxon_ is underspecified. It does not
+provide a robust mechanism for specifying the nature of the
+association. It is possibly that this can be remedied with a robust
+appeal to _tc:hasRelationship_, although that presently has overly
+narrow range. 
+
+(2) Clear goals for reasoning support for SPM should be elucidated.
+
+*Issue 3a.* Some vocabulary items in SPMI lacked definition or guidance
+for their use. For example, the SPMI ontology defines a set of
+sublasses of the SPM _InfoItem_ class, of which one or more instances
+is given for an SPM object using the _hasInformation_ property of
+SPM. One such type of _InfoItem_ is the _Description. _But this term
+is rather broadly used in biology. In systematics literature it is
+ambiguous whether the concept should apply to the entire section
+designated as the taxonomic treatment of a taxon in the article, or
+should refer only to the morphological description section. By
+practice or by nomenclatural codes, the morphological description
+section serves, strictly speaking, only to determine which specimens
+are circumscribed by that morphological description. We addressed this
+ambiguity with a user-settable parameter in the stylesheet which
+determines which of these is extracted. We offer a service parameter
+that allows the client to determine whether they wish a narrowly(
+i.e. morphology only) or broadly defined description. 
+
+*Issue 3b.* Insufficient SPMI concepts. Anyone providing data in SPM
+faces a potential mismatch between domain concepts and those SPMI
+classes they select to represent the domain classes.  SPM can
+address this by adding more types of _InfoItems_, but this will tend
+to increase the complexity in creating and processing SPM. Conversely,
+SPM could decrease the number of concepts and heighten ambiguity. For
+example, we found no way to signal the important "Materials Examined"
+section of typical systems papers. This might make it difficult to
+mine our service for occurrence records. 
+
+*Issue 3c.* Potentially overlapping SPMI classes.  There are three
+different concepts in SPMI about description.  These are the
+_InfoItem_ subclasses _Description_, _GeneralDescription,_ and
+_DiagnosticDescription._ Lacking definitions it is impossible to
+determine what relations these have to one another.
+
+_Conclusions and Recommendations about Issue 3: _
+
+(1) There should be more guidance about the semantics of
+_InfoItem_. Right now, they are little more than concept names. By
+virtue of having no substructure other than what is inherited from
+class _InfoItem_, these concepts are able to express little more than
+the taxonomic concerns modeled by the class _TaxonConcept_, which are
+probably of little importance for many of the subclasses of
+_InfoItem_. 
+
+(2) Consideration should be given to major ontological elucidation of
+the substructures of the InfoItem subclasses, with particular
+attention to existing relevant ontologies.
+
+*Issue 4.* Should text extracted from publications permit or require
+markup? At the moment, we offer the choice as a runtime parameter, to
+signify whether the service should return plain text or XHTML. Current
+use for by EOL chooses the XHTML in order to render paragraph
+boundaries faithfully to the original literature.
+
+ _Conclusions and Recommendations about Issue 4:_
+
+We have no recommendation beyond leaving the issue as a service parameter.
+
+*Issue 5.* How to handle statements of Intellectual Property
+Rights. Taxonomic treatment data is in the public domain and not
+copyrightable. EOL's practices required a Creative Commons license,
+but such licenses (or any license) applies only to copyrightable
+material. We insert an RDF statment a statement that the material has
+no copyright restrictions: 
+
+  <font face="Courier New">&lt;<span class=start-tag>dcterms:rights</span><span class=attribute-name> xmlns:dcterms</span>=<span class=attribute-value>"http://dublincore.org/2008/01/14/dcterms.rdf#"</span>&gt;</font>No known copyright restrictions.<font face="Courier New">.&lt;/<span class=end-tag>dcterms:rights</span>&gt;
+  </font>
+We discussed whether more clarity is required about attribution of
+non-copyrightable material. Should there be both a text statement
+and a machine processable indication that the material is in the
+public domain because it is not copyrightable? How should consumers
+be warned that the non-copyrightable material is extracted from
+copyrighted material which still requires attribution. The issues
+are laid out in Agosti and Egloff (2009:
+(http://www.biomedcentral.com/1756-0500/2/53). The current solution
+to be adopted by EoL is to output the text mentioned above in our
+dc:rights term. 
+
+*Issue 6. * Completeness and adequacy of data provided. It's unclear
+how much detail the  data provider should offer a data
+recipient. For example, it may be evident to a human that the object
+"Donisthorpe, H. S. J. K." of the  _tpcit:authorship_ predicate is
+the name of a person,  that "Donisthorpe" is a surname, etc. This
+semantics may be available through an ontology but not be of
+interest if the recipient has no need of machine reasoning or even
+integrating across authors. It's difficult to know at what point
+enough information has been provided satisfy the data recipient's
+purposes.  We serve whatever data we found that is  expressible in
+the vocabularies commonly in use in TDWG applications. 
+
+_Conclusions and Recommendations about Issue 6:_
+
+Educate consumers to the possibility that implict information can be
+inferred by machine reasoning over the applicable ontologies, and
+applications that don't do this can only have access to the explictly
+asserted relationships. 
+
+*Issue 7.* Open World Issues. The Open World assumption (now often
+described as the AAA slogan:  Anybody can say Anything Anywhere )
+means that some issues cannot be addressed by the data being served.
+AAA means that everything is unknown unless explicitly known. Should
+"unknown" be signaled in some cases? For example, a taxonomic
+description might be extracted from something whose author is
+unknown. Normally RDF would simply be silent on this point, but it
+may be important to distinguish that a piece of data is important but
+simply unknown. There is a risk in assigning "unknown" to something
+which in fact is possibly somewhere known. That risk is that future
+semantic data integration with data contradicting the "unknown"
+semantics will then be logically inconsistent. Unfortunately, in the
+First Order Logic that underlies RDF reasoning, if there is one
+contradiction in a set of assertions, it can be proved that every
+assertion is both true and false. This is not nice. 
+
+_Conclusions and Recommendations about Issue 7:_
+
+Best practices should be established about unknown data. Probably the
+ community needs to be educated about AAA. A possible best practice
+ is to use RDF annotations when signifying "unknown" is desired.
+ These can be read by machines (and humans) but do not participate in
+ semantic analysis. 
+
+*Issue 8.* Updates: It is unclear how to handle URI's assigned to
+different versions of the same SPM record. Should a URI resolve one
+record regardless of what information is in it, or should each
+version have it's own URI. Like most data providers, we largely
+ignore this issue, although we do embed an XML comment with a service
+timestamp on it. 
+
+_Conclusions and Recommendations about Issue 8:_
+This is probably a general problem for RDF and should be the subject
+of a uniform best practice. There is a recent GBIF workgroup report
+on the subject. (Cryer et al. 2009) 
+
+
+*Issue 9.* Strings or URIs: As a data provider we sometimes faced the
+choice of providing a URI or a string value for much of the data. In
+principle, a URI should be sufficient but in practice it is helpful
+to have both e.g., for scientific names. In the absence of guidance
+from the data consumer it is impossible to know what is necessary or
+sufficient. Other examples that SPM does not directly address, and
+for which there seem to be no authorities presently recommended,
+include URIs for taxonomies, ranks within those taxonomies, authors,
+journals, articles, etc. Some of the issue is addressed by SPM's
+provision of both _hasContent_ and _hasValue_ properties. The former
+provides strings, and the latter provides objects from the TDWG
+Ontology class _definedTerm_. The only case in which we might have
+been able to use _definedTerm _would be to build some application
+that attempts to place the publication's taxonomic rank in some
+named taxonomy. We deemed that outside of the scope of this work,
+particularly since a client might choose to ignore it and use their
+own preferred taxonomy. 
+
+Elsewhere, we provide both strings and URIs where the publication is
+unambiguous. See for example, the element _spm:aboutTaxon_ in the
+first table above. For its target _!TaxonConcept_,  we provide a
+URI-identified rdf:about as required, but _!TaxonConcept _also has
+an element _nameString_ with which we provide a string that should
+correspond to a scientific name. An integrating provider such as EOL
+possibly would choose to ignore the URI and base their integration
+on the name string. 
+
+_Conclusions and Recommendations about Issue 9:_
+
+Unless a consumer has specified preferences, whenever possible include
+both string and URI values. It may be that best practices need to be
+established for doing this in ways specific to SPM, or even to
+individual SPMI _!InfoItems_. 
+
+*Issue 10:* Multiple identifiers:  resources may have multiple ids in
+multiple GUID schemes associated with them. 
+
+_Conclusions and Recommendations about Issue 10:_
+
+SPM should specify means to associate multiple ids with the same
+resource. It may be that owl:sameAs is  adequate, but use cases
+should be developed and the semantics of owl:sameAs  examined to see
+if it satisfies them. This may be in the scope of (Cryer et
+al. 2009) 
+
+
+*Issue 11:* It is unclear how the data provider is to explain the
+intended meaning behind possibly ambiguous sets of statements. For
+example- A taxon name string may be provided twice with different
+languages, for example English or Latin. In this case it's to be
+understood that the name can be in either Latin or English but
+depending on the consuming applications' reasoning -the first may be
+taken as the primary, the second as the second. But the generated
+RDF would usually be order independent, making it difficult to
+track. 
+
+_Conclusions and Recommendations about Issue 11:_
+
+SPM should specify mechanisms and practices that allow a provider to
+signify relationships among alternatives. rdf:List may not be
+adequate if statements appear independently of one another (for
+example, after data integration). 
+
+
+*Issue 12:* Lack of Metadata about the served SPM: We found no clear
+way to document within the SPM file how the SPM itself was
+produced. We resorted to XML comments, but it is unclear whether
+some standard RDF annotation mechanism might be better. Of special
+importance might be provenance of the SPM, including original
+source, changes, versions, etc. 
+
+_Conclusions and Recommendations about Issue 12:_
+
+There should be best practices established for annotating service
+output, and it should be examined whether SPM has any specific
+needs. 
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1257444406" format="1.1" version="1.5"}%
+d18 252
+a269 1
+   * Repeated targets of the same hasInformation: Suppose an info item, say Range, has multiple values, e.g. representing that the range of a certain species includes Germany, France, and Belgium. Does this require three hasInformation triples (I suppose the answer is yes) and how do we guarantee that they are all talking about the same thing (I suppose the answer is use owl:sameAs). -- Main.BobMorris - 20 Jul 2007@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1184925849" format="1.1" reprev="1.4" version="1.4"}%
+d5 2
+d18 1
+a18 1
+   * Repeated targets of the same hasInformation: Suppose an info item, say Range, has multiple values, e.g. representing that the range of a certain species includes Germany, France, and Belgium. Does this require three hasInformation triples (I suppose the answer is yes) and how do we guarantee that they are all talking about the same thing (I suppose the answer is use owl:sameAs). -- Main.BobMorris - 20 Jul 2007
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1184246358" format="1.1" version="1.3"}%
+d14 3
+a16 1
+   * Rendering Instance Documents: What are the recommended tools for rendering instance documents? Does this depend on the above? -- Main.BobMorris - 14 May 2007@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1179150630" format="1.1" version="1.2"}%
+d5 1
+a5 2
+---
+---
+d7 3
+a9 1
+   * RecommendedInstanceForm: Should an instance document be valid OWL?
+d13 2
+a14 4
+
+---
+---
+   * RenderingInstanceDocuments: What are the recommended tools for rendering instance documents? Does this depend on the above? -- Main.BobMorris - 14 May 2007@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1178712020" format="1.1" reprev="1.1" version="1.1"}%
+d8 1
+a8 1
+   * Recommended form: Should an instance document be valid OWL?
+d15 1
+@

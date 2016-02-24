@@ -1,0 +1,212 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@---+ Capabilities Response, Proposal I
+
+---+++++ General Idea
+
+We could add more information to this capabilities request. Everything related to machine readable data describing the capabilities, abilities of a providers resource like the limit to the number of returned records. Also every concept should include a flag indicating whether it is searchable.
+
+Information we would like to add to the capabilities:
+   * provider configuration parameters affecting the response:
+      * minQueryTermLength
+      * maxSearchResponseRecords
+      * maxInventoryResponseRecords
+   * type & version of the protocols supported by a software
+   * type of FilterOperators supported by a software
+      * logical
+      * comparative
+      * functions
+     * min, max
+     * len
+      * SpatialOperators
+   * type of operations or RequestMethods supported
+   * is ContentCompression supported ?
+   * ConceptualSchemas and their "mapped" concepts supported (see above)
+   * a slot for security related information
+      * access restriction
+      * encryption mechanisms
+
+---+++++ Example
+<verbatim>
+<capabilities>
+   <configurations>
+      <minQueryTermLength>3</minQueryTermLength>
+      <maxSearchResponseRecords>100</maxSearchResponseRecords>
+      <maxInventoryResponseRecords>1000</maxInventoryResponseRecords>
+   </configurations>
+   <protocols>
+      <protocol schema="http://www.altova.com" name="String"/> *
+   </protocols>
+   <filter>
+      <comparative>
+         <operator name="String" type="String"/> *
+      </comparative>
+      <logical>
+         <operator name="String" type="String"/> *
+      </logical>
+      <function>
+         <operator name="String" type="String"/> *
+      </function>
+      <spatial>
+         <operator name="String" type="String"/> *
+      </spatial>
+   </filter>
+   <operations>
+      <operation requesttype="String"/> *
+   </operations>
+   <compression>
+      <method name="zip"/> *
+   </compression>
+   <conceptualSchemas>
+      <schema namespace="http://www.altova.com"> *
+         <concept searchable="1" path="/abcd/efg/@@h"/> *
+      </schema>
+   </conceptualSchemas>
+   <security>Text</security>
+</capabilities>
+
+with* indicating repeatable elements
+</verbatim>
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d30 34
+a63 22
+  <conceptualSchemas> *
+    <schema namespace="http://xx" location="http://xx"> *
+      <mappedConcept>String</mappedConcept> * 
+      <mappedConcept>String</mappedConcept>
+      <mappedConcept>String</mappedConcept> 
+    </schema>
+  </conceptualSchemas>
+  <requestMethods>
+    <method>String</method> *
+    <method>String</method>
+  </requestMethods>
+  <localConfigurations>
+    <configuration name="String">Value</configuration> *
+    <configuration name="String">Value</configuration>
+    <configuration name="String">Value</configuration>
+  </localConfigurations>
+  <protocols>
+    <protocol name="String"> *
+      <version>String</version> *
+      <version>String</version>
+    </protocol>
+  </protocols>
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d32 3
+a34 3
+      <concept>String</concept> * 
+      <concept>String</concept>
+      <concept>String</concept> 
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d30 7
+a36 5
+  <conceptualSchema namespace="http://xx" location="http://xx"> *
+    <concept>String</concept> * 
+    <concept>String</concept>
+    <concept>String</concept> 
+  </conceptualSchema>
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d35 15
+a49 1
+
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d31 4
+a35 1
+  </conceptualSchema> 
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d5 21
+@

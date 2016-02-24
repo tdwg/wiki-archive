@@ -1,0 +1,18 @@
+%META:TOPICINFO{author="GregorHagedorn" date="1141226209" format="1.0" version="1.2"}%
+%META:TOPICPARENT{name="ImageLsidResolver"}%
+---++%TOPIC%
+
+It is tempting to say that the image pixels are the persistent data. But even this notion is about image _representation_ perhaps. If a digital image is rendered in a lossy compression scheme such as JPEG, are the original and compressed images given different LSIDs? Is the first capture of an impage the persistent image? Does the rendering representation data have to be part of the persistent data? (I think YES, but it is often hard to capture it.). If two images have identical image pixels, do they get the same LSID (not necessarily according to the LSID spec).
+
+-- Main.BobMorris - 27 Feb 2006
+
+Not sure this is a problem. An image (or any resource) can have a concept ID, which in LSID would be data-less as far as I understand. In the [[http://www.diversitycampus.net/Workbench/Resources/Model/2003-09-24/DiversityResourcesModel.html][DiversityResources]] model we call this the "abstract item".
+
+The concrete file/document ("instance" in the <nop>DiversityResources model) has binary data and metadata.
+
+Whether two identical resources with same pixel or binary data get the same lsid or not is nowhere guarenteed. Different agents can assign different lsids to the same same conceptual/abstract image  (e.g. "Mona Lisa") (or to the same specimen, taxon concept, etc.). The property of being a unique identifier for an object is not guaranteed to be unique when the relation is read in the opposite direction.
+
+More worrysome to me is JPG 2000. Here the binary representation can combine several binary subdocuments plus metadata. Perhaps in general, metadata embedded in a binary document are problematic for LSIDs. You need to assign a new LSID every time the embedded metadata change, because from the point of LSID they are considered data.
+
+-- Main.GregorHagedorn - 01 Mar 2006
+

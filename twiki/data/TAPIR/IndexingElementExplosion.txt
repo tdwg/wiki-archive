@@ -1,0 +1,25 @@
+A too complex datasource structure is mapped to a simpler ResponseStructure view.
+This results in a repetition of the same "object". E.g. specimen with multiple identifications appear in a view which allows only 1 name for a specimen multiple times. So the result is several specimen with different names but the same ID.
+
+<verbatim>
+<specimen id="3785" name="Abies alba L." IndexingElementExplosion>
+<specimen id="3785" name="Abies negra Oberdorfer." IndexingElementExplosion>
+<specimen id="3785" name="Pinus picea L." IndexingElementExplosion>
+</verbatim>
+
+This is not really wanted in many cases, though its the only reasonable answer for this data.
+If the view was mapped using DarwinCore this should not really happen, because DwC should only bring back a single identification. But if the view was done using ABCD, multiple identifications are fine and the view therefore in itself is somehow wrong! There should be a way though to accumulate multiple records, e.g. through concatenation. See AdditionalIdeas for this too.
+
+---+++ Comments
+
+If we want to get the same result out of different data models, then we will almost certainly need to use different queries. I really don't think that this is an intrinsic problem with the protocol or with any implementation, it's just a general known issue.
+
+DarwinCore was designed so that each specimen is bound to a single identification. If someone builds a query that relies on that, but wants to use it against an ABCD data source, it will (and should) not work as expected. To get back the same kind of result the query must be different, for instance specifying that only the "preferred" identification must be returned. (If "preferred" is not mapped, the response should return an error. If "preferred" is mapped but not used or is wrongly used, then it seems a problem with the local data or with the data source configuration).
+--
+Renato
+
+
+If I understand this correctly then it is very much an implementation rather than a protocol problem unless it implies that part of the protocol is unimplementable in some way? -- RogerHyam
+
+It might be that an implementation is lacking enough information to produce 
+predictable results. So the protocol would have to transmit more infos... but first we gotta find out what information would help us at all to do so. I am also afraid that I am thinking too much with an RDBMS in the back of my head. It could be that there are different/more problems for people implementing a wrapper on top of XML/RDF like the Kansas team.  -- MarkusDoering

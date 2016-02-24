@@ -1,0 +1,26 @@
+%TMPL:INCLUDE{"oops"}%
+%TMPL:INCLUDE{"messages"}%
+
+
+
+%TMPL:DEF{"titleaction"}%%MAKETEXT{"(change language)"}% %TMPL:END%
+%TMPL:DEF{"webaction"}% *%MAKETEXT{"Attention"}%* %TMPL:END%
+%TMPL:DEF{"heading"}%%MAKETEXT{"Language Changed"}%%TMPL:END%
+%TMPL:DEF{"topicaction"}%%TMPL:END%
+
+
+%TMPL:DEF{"pagetitle"}%<h1 class="patternTemplateTitle">%TMPL:P{"heading"}%</h1>%TMPL:END%
+
+
+
+%TMPL:DEF{"message"}%
+%SESSION_VARIABLE{"LANGUAGE" set="%URLPARAM{language}%"}%
+
+%MAKETEXT{"Your language will be changed to [_1] from the next screen. You will be redirected to there right now. If you aren't, ~[~[[_2]~]~[click here~]~] to proceed." args="*%SESSION_VARIABLE{LANGUAGE}%*, %SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%"}%%TMPL:END%
+
+
+%TMPL:DEF{"templatejavascript"}%<script type="text/javascript">
+//<![CDATA[
+	window.location.href = '%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%';
+//]]>
+</script>%TMPL:END%

@@ -1,0 +1,450 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@Notes to be incorporated into the proper TAPIR specs which are not covered by the protocol xml schema itself.
+This page is based on the specs developed for the PyWrapper implementation.
+
+---+++ The Service
+---+++++ Protocol namespace
+   * http://rs.tdwg.org/tapir/1.0
+---+++++ Access points
+   * Every datasource has its own accesspoint
+   * It is compliant to use GET parameters in the accesspoint URL. E.g. for datasource "test_db":
+   http://www.example.com/pywrapper.cgi?dsa=test_db
+---+++++ PassingParameters
+   * Parameters can be passed as GET or POST data
+   * For XML doc based requests the parameter*request* should be used to send the XML TAPIR message. The message can be one out of the following:
+      * a valid XML TAPIR request doc
+      * an URI pointing to such a valid XML TAPIR request doc
+   * If an operation is invoked via http GET/POST parameters only, GetInvokedOperations describes the set of allowed parameters including a simple way of serializing complex filters.
+
+---+++ Protocol Framework
+---+++++ ProtocolHeader
+   * The list of sources acts like a stack and is ordered with the first entry representing the initial entry. For portals it is recommended to include the IP of users accessing their interface.
+   * GET based requests are lacking a header. Therefore the server environment should be used to retrieve the requestors IP address.
+---+++++ ProtocolDiagnostics
+   * There should be a set of common ErrorCodes. To be specified
+
+---+++ Request Types
+
+---+++++ UnknownRequest
+If the protocol cant be parsed, if there is no request at all or if the request is unknown, the wrapper defaults to a simple metadata request. 
+
+---+++++ CapabilitiesRequest
+
+   * Each mapped concept can indicate an optional "alias" attribute in capabilities response. Providers can advertise a short alias they understand as a short reference to the concept. This alias should be taken from a global ConceptNameServer, so the alias name is shared. This way clients don't have to interact with a CNS to know the alias.
+
+---+++++ MetadataRequest
+
+---+++++ InventoryRequest
+
+   * Inventory request allows the caller to provide a lists of n concepts on which to perform an inventory.
+   * Concepts for inventory can be specified as FullyQualifiedConceptName or as ConceptAlias, provided the TAPIR implementation is configured to use a ConceptNameServer
+   * The inventory response sends back each unique combinations of the n concepts with a count of how often they appear in the distribution of values for the n concepts.
+   * The results should be ordered by the same order of the specified concepts.
+   * TBD: how to treat inventories? specimen-name table discussion. which join style?
+   * PyWrapper implementation problems:
+      * In this request there is no natural "root" table. All concepts are equal and therefore a left join to link the tables is not appropiate. A regular join is implemented. This brings the following problems:
+    * It is impossible to retrieve NULLs in the response
+    * If I ask for example just for distinct specimen names in the database, there is no relation to a specimen in the query anymore and ALL names will be returned, regardless if there is a specimen belonging to it. To prevend this the query must specify a filter with for example: SPECIMEN_ID IS NOT NULL. This forces the query generator to include the specimen table and to make sure there is a specimen attached to a name.
+      * Multiple db attributes mapped to a single concept. It should be possible to map several db attributes or literals to a concept. For example some databases have 2 columns for collector1 and collector2 which both map to the concept "collector".
+     * Is it possible to generate a proper SQL in this case? 
+     * Are UNIONS needed? 
+     * how can the distinct combinations be counted?
+     * *!!! Currently an error is raised if an inventory is done on a concept that has several mappings !!!*
+
+---+++++ SearchRequest
+   * A search that does not match any data in the database should return empty content and a warning diagnostic message.
+   * Response envelope (=all elements from TAPIR namespace in response) is on by default. It can be turned off only for searches, no matter if the request encoding is KVP or XML. However, the envelope gets turned on automatically for searches when:
+   * error occurs
+   * count is requested
+   * If the TAPIR messaging envelope is turned off an empty XML document with just the XML definition at the top and maybe some comments, but no elements should be returned. With the envelope turned on the payload of the response message is simply missing. So this is a valid response:
+<verbatim>
+<response>
+  <header>...</header>
+  <search>
+    <summary start="0" totalMatched="0" PreliminaryProtocolNotes>
+  </search>
+</response>
+</verbatim>
+
+---+++++ ViewRequest
+
+   * Give reason why the View operation exists:
+      * to accommodate TAPIRLite providers. Apparently it was the easiest way to do that. Their requirements:
+     * No need to parse XML requests (only GET requests with simple key/value parameters)
+     * No need to parse filters.
+     * No need to implement "partial".
+     * All queries based on templates.
+   There could be other ways to allow the existence of TAPIRLite without having the view operation, such as including many new attributes in the search operation capabilities, but it would easily get confusing and contradictory.
+   Searches and inventories can make use of templates already.
+
+---+++++ LogRequest
+   * All operations previously described accept an optional boolean attribute called "logOnly" (part of operationRequestGroup). When set to true, the client is only propagating a request (probably made on top of cached data) to the original provider. This way the request can be logged in the original source.
+   * The response content of such requests are the usual ones, with inventories and searches returning empty results.
+   * Providers can advertise their behaviour related to log requests through the attribute "logRequests" in the <operations> element of capabilities. The controlled vocabulary is: [[required][| accepted | denied]].
+
+---+++ Response Content
+
+---+++++ Error Response
+Errors should show up in the diagnostics with a level=error.
+In case no response content could be created, the message body should contain the element Error with the reason for the fatal exit corresponding to a diagnostic entry:
+<verbatim><error code="DB_CONNECT" level="error">Could not connect to the database</error></verbatim>
+
+---+++ Response Models
+
+---+++++ Response models
+   * response models must have a public URL to be accessed.
+   * the mapping section has an attribute automapping which defaults to true. If automapping is turned on conceptual schema paths (nodes) are automatically mapped to local concept paths if they are the same (namespace and path). So to map a canonical ABCD model to ABCD it is enough to turn on automapping (which is by default, so actually no mapping section would be needed!).
+
+---+++++ Query templates
+   * filter optionally
+   * providers have to list the understood querytempalte URIs in their capabilities.
+
+---+++ Filter Handling
+
+---+++++ Concept Binding
+   * Fully qualified concepts consist of: NAMESPACE#LOCAL_CONCEPT_ID. For example <verbatim>http://www.tdwg.org/schemas/abcd/1.20#/DataSets/DataSet/Units/Unit/UnitID</verbatim>
+   * A local concept id does not require to start with a slash "/" if based on XPath style. The concepts _#/scientificName_ and _#scientificName_ are treated as the same. But as XML they are case sensitive!
+   * A global ConceptNameServer potentially issues a short globally unique alias for a qualified concept. The alias can be used anywhere instead of a fully qualified concept id. The format of aliases should follow: <verbatim>LOCAL_CONCEPT_ID_ABBREV@@NAMESPACE_ABBREV</verbatim> for example: <verbatim>UnitID@@acbd1.20</verbatim>
+   * A concepts local id does not require to start with a slash "/" if its based on xpaths ?!? The concepts dwc:scientificName and dwc:/scientificName are treated as the same.
+---+++++ FilterOperators
+
+---+++++ FilterEvaluation
+   * Comparisons to a non mapped concept evaluate to False
+   * If entire filter evaluates to 
+      * False, the query is canceled and no data is returned.
+      * True, the filter is omitted and the query runs without it
+   * Parameters without values (not supplied via http-get) are removed from the filter - no matter if they are within an <or> or <and>. They dont evaluate to False nor True
+
+---+++ Response Content
+
+---+++++ ResponseSummary
+   * The next attribute specifies the index of the next record which was not returned because of the paging. If there is no more record, the next attribute is not existing.
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d5 2
+d26 1
+d29 1
+d31 3
+d35 1
+a36 2
+   * Inventory request allows the caller to provide a lists of n concepts on which to 
+perform an inventory.
+d38 1
+d40 2
+a41 3
+
+   * The inventory response sends back each unique combinations of the n concepts with a count
+of how often they appear in the distribution of values for the n concepts.
+a52 1
+
+d54 5
+a58 2
+   * A search that does not match any data in the database should return nothing.
+If the TAPIR messaging envelope is turned off an empty XML document with just the XML definition at the top and maybe some comments, but no elements should be returned. With the envelope turned on the payload of the response message is simply missing. So this is a valid response:
+d68 16
+d85 1
+d92 1
+d102 1
+d104 1
+a104 1
+   * fully qualified concepts consist of: NAMESPACE#LOCAL_CONCEPT_ID. For example <verbatim>http://www.tdwg.org/schemas/abcd/1.20#/DataSets/DataSet/Units/Unit/UnitID</verbatim>
+d107 1
+a107 1
+   *  A concepts local id does not require to start with a slash "/" if its based on xpaths ?!? The concepts dwc:scientificName and dwc:/scientificName are treated as the same.
+d109 1
+d118 1
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d49 10
+a58 1
+   * A search that does not match any data in the database should return <NoMatches> if the TAPIR messaging envelope is turned off. Otherwise there are situations with no xml returned at all!
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d11 1
+a11 1
+   * For XML doc based requests the parameter _request_ should be used to send the XML TAPIR message. The message can be one out of the following:
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d82 1
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d60 2
+d71 1
+d74 5
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d49 1
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d25 1
+d36 11
+a47 1
+   * how to treat inventories? specimen-name table discussion. which join style? ...
+a48 1
+---+++++ ViewRequest
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d31 1
+a31 1
+   * Concepts for inventory can be specified as FullyQualifiedConceptName or as ConceptAlias, provided the TAPIR implementation is configured to use a ConceptNameService
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d28 8
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d28 1
+d35 2
+a36 2
+In case no response content could be created, the message body should contain the element Error with the reason for the fatal exit:
+<verbatim><Error code="DB_CONNECT">Could not connect to the database</Error></verbatim>
+d38 6
+a43 2
+---+++ View Handling
+---+++++ LocalViewDefinition
+d46 4
+a49 1
+   * A*concept* path does not require to start with a slash "/". The concepts _dwc:scientificName_ and _dwc:/scientificName_ are treated as the same. But as XML they are case sensitive!
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d31 6
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d21 1
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d14 2
+a15 1
+   * If an operation is invoked via http GET/POST parameters only, GetInvokedOperations describes the set of allowed parameters.
+d18 2
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d10 2
+a11 15
+---+++ Parameters can be passed as GET or POST data
+
+   * debug: turn on/off debugging with:
+      * debug=0: show only errors (default)
+      * debug=1: show also warnings
+      * debug=2: show infos related to performance only (time it took for certian processes, eg pure database SQL processing)
+      * debug=3: show all infos
+      * debug=4: show also debug infos
+      * debug=5: show also debug infos related to individual records and data items
+   * dsa: the addressed datasource when a single cgi script is responsing to for different datasources. Belongs to the AccessPoint URL
+   * operation: operations that dont need parameters can be invoked directly with an operation call
+      * operation=ping
+      * operation=capabilities
+      * operation=metadata
+   * request: a TAPIR protocol request document
+d13 2
+a14 5
+      * an URL pointing to such a valid XML TAPIR request doc
+      * an absolute local filepath pointing to such a valid XML TAPIR request doc
+   * xsl: optionally include an xslt stylesheet processing instruction in the response doc. the xsl parameter should be the URL of the xslt.
+   * verbose: if false turns off the protocol and shows only the content section in the response (default=true)
+
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d6 3
+d10 20
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 28
+@

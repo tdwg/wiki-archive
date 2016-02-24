@@ -1,0 +1,94 @@
+%META:TOPICINFO{author="RicardoPereira" date="1188479871" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="TdwgLsidApplicabilityStatement"}%
+---++ TDWG !LSID Applicability Statement - Request for Comments from Oct/2006 (now obsolete)
+
+*Notice:* This Request for Comments is now *obsolete*. A new Request for Comments has been issued: LsidApplicabilityStatementRfC2007Sep.
+
+-- Main.RicardoPereira - 30 Aug 2007
+
+----
+----
+
+---+++ Comments and Discussion
+
+The TDWG GUID has reviewed [[http://www.tdwg.gbif.org/uploads/media/TDWG_LSID_Applicability_Statement_11_10_2006.doc][this version of the TDWG !LSID Applicability Statement]]. See comments below.
+
+------
+%ICON{bubble}% Subject:	*No mention of testing*     Posted by: Main.RodPage
+
+Regarding the document, there is no mention of testing, such as testing that the service is valid, returns standard error codes, and that metadata served is valid RDF (if, indeed, it is RDF).
+
+-- Main.RicardoPereira - 30 Aug 2007 - It is implied that LSID resolvers are set up correctly. What recommendations about testing could we make in the applicability statement? Could you be more specific?
+
+------
+%ICON{bubble}% Subject:	*No standard use of constraint terms (must, may, etc)*     Posted by: Main.BobMorris on 2006-10-11
+
+The document seems to mix recommendations with requirements. "Should" is not an imperative. Rod _should_ identify each of his comments so discussion here doesn't get confusing. :-)   Also, I would prefer to see TDWG adopt a specific set of constraint terms across all documents, e.g. those of W3C(?) ("must", "may", "must not", etc. (?))
+
+-- Main.RicardoPereira - 30 Aug 2007 - This issue has been addressed on the [[LsidApplicabilityStatementRfC2007Sep][new revision of the applicability statement]].
+
+
+------
+%ICON{bubble}% Subject:	*Section 2.1 - first three portions of LSID should be lowercase - why?*     Posted by: Main.RodPage
+
+From the document: _2.1 The first three portions of an LSID (the labels "urn", "lsid", and the authority identification) should all be lowercase, unless a specific need requires them to be otherwise_
+
+What specific need do you imagine could arise? Why not simply say that comparisons of LSIDs are case insenstive, and hence recommend lower case at all times. 
+
+-- Main.BobMorris 2006-10-11 - "urn" and "lsid" are required by [[http://rfc.net/rfc2141.html][rfc2141]], the specification of a urn to be case insensitive. The rest are not (by RFC2141). Section 5 of that rfc permits the "lsid" part to add further syntactic restrictions, such as case insensitivity. Section 8.1.1 of the [[http://www.omg.org/docs/formal/04-12-01.pdf][LSID spec]] requires that the third part, the authority, also be case insensitive, but that the remainder be case sensitive.  Requiring case insensitivity for the rest adds a risk that existing LSID compliant tools could not be used without additional processing and is therefore possibly a bad idea. LSID compliant software could happily generate a urn-compliant label starting "URN" which would then be TDWG-noncompliant. So I disagree with Rod's suggestion, as well as the original suggestion, which although harmless is also mooted by the aforementioned specifications.
+
+-- Main.RodPage - My comment was motivated by concerns that LSIDs that differ in case could be regarded as different, when I think this would be a bad thing. For example, when playing with DOIs in Connotea and SPARQL ([[http://semant.blogspot.com/2006/09/connotea-tags.html][described here]]) I discovered that Connotea makes DOIs lower case, even if the publisher's site has them in uppercase. [[http://www.doi.org/handbook_2000/appendix_1.html][Appendix 1]] of the DOI Handbook makes it clear that DOIs are case insensitive, and that any comparison should first convert all characters 'a'-'z' to lower case. I know that the OMG LSID standard allows the LSID to be case sensitive, but that strikes me as just asking for *trouble*. The reasons given for case sensitivity in LSID were:
+   _"This allows LSIDs to be more compatible with RDF URI syntax, and also provides simpler mapping onto existing URLs, which are also case sensitive for their path and query string portions."_
+
+Which strike me as pretty weak (LSIDs are not URLs, and I fail to see what case has to do with URIs in RDF). I guess what I was tyring to say earlier was that I'd be happier with an explicit statement that two LSIDs that differ in case only are, in fact, the same LSID.
+
+-- Main.RicardoPereira - 30 Aug 2007 - Bob Morris' concern is relevant. We still believe however, that it is sensible to keep this recommendation as an attempt to simplify how RDF applications verify object identity via identifier comparisons. As compromise solution, we have demoted the requirement to a recommendation. 
+
+
+------
+%ICON{bubble}% Subject:	*Section 2.2 - revision part of LSID should not be used*     Posted by: Main.RodPage
+
+From the document: _2.2 The revision part of the LSID, as explained in the LSID specification, will not be used within the TDWG domain_
+
+Not sure this is sensible. What about GenBank records, which are explicitly versioned? Why not simply allow people to use this feature if they wish? In the case of reproducing experiments, being able to access a version of a record seems useful (that was one of the original goals of LSIDs, I thought). 
+
+Regarding "or what if a version is requested but there is a later version - should you return the latest version?" Surely, if I want version _x_, give me version _x_!
+
+-- Main.RicardoPereira - 30 Aug 2007 - This issue has been addressed on the [[LsidApplicabilityStatementRfC2007Sep][new revision of the applicability statement]]. We now provide specific recommendations on how to use the revision part of LSIDs.
+
+------
+%ICON{bubble}% Subject:	*Section 2.3 - Objects must be typed according to the TDWG ontology*     Posted by: Main.RodPage
+
+From the document: _2.3 Objects identified by an LSID must be typed using the TDWG ontology or other well-known vocabularies according to TDWG common architecture_
+
+This presupposes TDWG will get it's act together to make such ontologies available. This sounds like a rate limiting step to me. Nice idea, but do we have to wait to get things started? My assumption is that the community, rather than TDWG itself will drive this.
+
+-- Main.BobMorris on 2006-10-11 - I agree with whoever wrote the above comment. (I think I can guess who :-) )
+
+------
+%ICON{bubble}% Subject:	*Section 4 - TDWG DNS SRV Service for LSID Authority Identifications*     Posted by: Main.RodPage
+
+Good idea. Minor comment. Need to be careful when doing this that SRV records match the server software. For example, Index Fungorum's service is broken because the SRV record points to a different port to that required by the server.
+
+-- Main.RicardoPereira - 30 Aug 2007 - It is implied in the recommendation that the DNS SRV is set correctly.
+
+
+------
+%ICON{bubble}% Subject:	*Specifying XML as the default representation of RDF for getMetadata()*     Posted by: Main.GregRiccardi on [[http://mailman.nhm.ku.edu/pipermail/tdwg-guid/2006-October/000149.html][mailing list]]
+
+The applicability document says that getMetadata should return RDF. Because getMetadata returns XML, the applicability document is implicitly requiring a specific mapping from RDF to XML. I wonder whether the serialization of RDF as XML is an accepted standard, or whether the requirement for RDF needs clarification.
+
+Possibly the applicability document should explicitly refer to appropriate schemas and/or namespaces. For example, the XML documents produced by my LSID getMetadata services start with an rdf:RDF tag that specifies a variety of namespaces. Those namespaces, plus some implicit XML schema, constrain the serialization of the RDF triples.
+
+Sample list of namespaces:
+<verbatim>
+<rdf:RDF 
+   xmlns:daml="http://www.daml.org/2001/03/daml+oil#" 
+   xmlns:owl="http://www.w3.org/2002/07/owl#" 
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+</verbatim>
+
+Please comment on whether the applicability document requires additional detail to specify the XML representation of RDF documents that are produced by getMetadata.
+
+-- Main.RicardoPereira - 30 Aug 2007 - The serialization of RDF as XML is an accepted standard (see [[http://www.w3.org/TR/rdf-syntax-grammar/][RDF/XML Syntax Specification]]), so there is no need for us to be more specific about it in the applicability statement. The namespace declarations should be enough to ensure the RDF/XML document valid.

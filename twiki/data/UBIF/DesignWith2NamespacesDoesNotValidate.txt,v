@@ -1,0 +1,559 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2009.11.25.03.14.41;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2009.11.20.02.35.37;	author LeeBelbin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2004.07.16.10.39.53;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.07.15.18.02.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.07.07.16.22.15;	author BobMorris;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.07.07.14.44.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.06.16.08.44.35;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.06.11.16.27.49;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.06.11.14.09.36;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.06.11.10.53.02;	author DonaldHobern;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.06.11.10.15.49;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.11.09.08.11;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.06.11.07.52.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.06.10.11.19.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.06.09.16.11.45;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.06.09.10.36.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.17
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118881" format="1.1" version="1.17"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+---+!! %TOPIC%
+
+To produce a common schema for UBIF.SchemaDiscussion BDI.SDD_ tries to split the functionality into a common schema and into specific payload schemata. This describes problems with this. <em>Note: "CDI" will ultimately have a different name, at the moment probably "UBIF", see UBIF.ResolvedTopicCommonSchemaSearchingName</em>.
+
+I tried to design the relation between common and specific (BDI.SDD_, ABCD, <nop>TaxonNames) schemata as two namespaces but run into a problem that instance documents under this design are not validated. See attached examples in [[%ATTACHURL%/CDI-beta4.zip][CDI-beta4.zip]]: In SDD_min1.xml go to &lt;s:DescriptiveData&gt;. Everything validates, and  errors in the CDI part and its identity constraints (e.g. Agent) are correctly reported. However, any nonsense (xxx) in the BDI.SDD_ part is valid as well, and the BDI.SDD_ identity constraints work no longer either. I tried various options of defining namespace in Xmlspy, and Jacob Asiedu verified that with xerces 2.6.2 (latest), the same invalid stuff is not caught, even with the parser set to its most severe parsing.
+
+I found an article, which may point to this issue: http://www.xml.com/pub/a/2003/12/03/versioning.html?page=2 says: <em>"We've articulated that reusing namespace names for compatible extensions are good practice. The counter position is that the namespace owner could use a new namespace for the compatible changes by providing extensibility points allowing other namespaces -- &lt;xs:any namespace="##other"&gt;. This technique suffers from the problem that an extension in a different namespace means that the combined schema cannot be fully validated. Specifically, there is no way to create a new schema that constrains the wildcard."</em>
+
+This seems to be the case in the example file attached here. Any insight? Else we can have no independent Common schema and need to import the common stuff. The above-quoted article seems to be arguing in general in favor of documents having a single namespace: <em>"Further, the reuse of the same namespace has better tooling support. Many applications use a single schema to create the equivalent programming constructs. These tools often work best with single namespace support for the "generated" constructs."</em>
+
+Can anybody comment on this?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9. June 2004
+---
+
+If we have to go back to square one and use the common types from an included type library that has no targetnamespace and build everything in an BDI.SDD_ schema, the drawback (besides some minor points with key/keyref uniqueness which I can fix more or less) is that I would have liked to allow dataset objects from different knowledge domains in a single dataset collection:
+
+<verbatim>
+Datasets
+  Dataset
+    Derivation
+    Metadata
+    DescriptiveData
+  Dataset
+    Derivation
+    Metadata
+    DescriptiveData
+  Dataset
+    Derivation
+    Metadata
+    ABCDUnitData 
+</verbatim>
+
+This seems not possible now. The only deterministic schema I can think of is a kind of superschema that imports BDI.SDD_, ABCD, <nop>TaxonNames as type libraries. Any other solutions?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9. June 2004
+
+Donald pointed me to the fact that CDI.xsd in CDI-beta4.zip uses &lt;xs:any namespace="##other" processContents="lax" minOccurs="0"&gt;, and that &lt;xs:any namespace="##other" processContents="strict" minOccurs="0"&gt; may be more appropriate. That seems indeed get us a long way. At least with <nop>XmlSpy 2004.4 we can now validate a mixture of CDI and BDI.SDD_ - thanks Donald! One drawback is that the validation is a bit shaky. It only works if:
+   * A schema location is given.
+   * It is defined at the root level element (i.e. not in &lt;DescriptiveData xmlns="http://www.tdwg.org/2004/BDI.SDD_"  xsi:schemaLocation="http://www.tdwg.org/2004/BDI.SDD_ BDI.SDD_.xsd"&gt;).
+   * The schema is acutally found
+
+In all other cases it claims the file to be valid though it is not. See [[%ATTACHURL%/CDI-beta5.zip][CDI-beta5.zip]] for an invalid example, that claims to be valid in Spy, simply because BDI.SDD_.xsd cannot be found. See also <nop>"ProblemDescription.txt" inside the zip file!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 10. June 2004
+
+---
+
+   * Altova, the makers of xmlspy have confirmed the instable validation as a known bug: "Unfortunately, this is a known issue in our validating engine and is in our defects tracking software as Defect #649, "##other namespace attribute causes validation error". Please excuse us for this inconvenience! When this bug is fixed, hopefully in our new validator for our next release, (2005), we will post the announcement directly on our website at, http://www.altova.com/fixed_defects.html" -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16. June 2004
+
+---
+
+The statement you quoted is puzzling: "This technique suffers from the problem that an extension in a different namespace means that the combined schema cannot be fully validated. Specifically, there is no way to create a new schema that constrains the wildcard." I guess this just means that it would not be possible for BDI.SDD_.xsd to restrict the xs:any from the UBIF.xsd from allowing for the
+possibility of further extension. If UBIF.xsd allows:
+<verbatim>
+<ubif:DataSets>
+  <ubif:DataSet>
+    <!-- xs:any here -->
+  </ubif:DataSet>
+</ubif:DataSets>
+Then UBIF.xsd combined with SDD.xsd could allow:
+<ubif:DataSets>
+  <ubif:DataSet>
+    <sdd:Stuff/>
+  </ubif:DataSet>
+</ubif:DataSets>
+However there would be no way for the creator of SDD.xsd to disallow the following:
+<ubif:DataSets>
+  <ubif:DataSet>
+    <sdd:Stuff/>
+    <trojanHorse:ElementToDoReallyBadThings/>
+  </ubif:DataSet>
+</ubif:DataSets>
+</verbatim>
+
+-- Main.DonaldHobern - 10 June 2004
+
+I am puzzled by the article as well, it is beyond my informatics capability. However, the cardinality of the extension element is one of the few things that was validated in all my experiments. Thus the trojan Horse never works. However, you could use ubif: and then a single element from trojan horse. That is in line with the logic, we want to allow any other namespace to decentralize the use of the ubif schema. So with namespace = other the consuming application must decide with which dataset objects inside a dataset collection it can or would like to deal. We could restrict it by listing the exact namespaces that are allowed in the xs:any element - which is support in xml schema. So we don't understand the statement in the article...?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 11 June 2004
+
+I guess it is only important for us to understand the article fully if it is telling us we can't do something we would like to do.  However I think I may now understand what he is saying.  If UBIF.xsd allows any document matching my first fragment above, the author of BDI.SDD_.xsd cannot create a schema which uses UBIF.xsd and only allows documents like my second fragment, because <b>all</b> valid UBIF documents remain valid and BDI.SDD_.xsd only controls what happens if the UBIF document includes an element from the BDI.SDD_ namespace.  If my software can only handle valid BDI.SDD_ documents I cannot use schema validation based just on UBIF.xsd and BDI.SDD_.xsd to determine whether an XML document falls into this subset of UBIF documents.  I think the article is poorly expressed at this point, but the problem it describes is not one which we particularly care about.
+
+-- Main.DonaldHobern - 11 Jun 2004
+
+I agree we don't care about this situation; BDI.SDD_ and others would depend on UBIF and should not care if other dataset objects have other namespaces. So I go ahead with trying the two schema design now.
+
+A first UBIF version is available at BDI.SDD_.CurrentSchemaVersion now.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 11 June 2004
+---
+
+I tried to design a type library without a target namespace, and use that both included into a UBIF and BDI.SDD_ namespace. This caused many problems, and at least one is now confirmed as a bug of xmlspy. The Altova support engineer writes:
+
+<verbatim>
+"... analysis of the problem looks like this:
+
+The included schemas - which themselves declare no targetNamespace - are
+converted to the targetNamespace of the parent schema.
+
+Both parent schemas (SDD.xsd and UBIF.xsd) declare a different
+targetNamespace. Hence, the components of the included schema
+(UBIF_Lib.xsd) in fact exist two times - once in each targetNamespace;
+
+SDD.xsd additionally imports UBIF.xsd. However, the definitions which
+came from UBIF_Lib.xsd are already in two different namespaces and do
+not collide.
+
+Thus the error message issued by our validator is a bug. Accordingly I
+have entered it into our issues tracking database under the tracking
+number and title:
+
+"6286 - Spy incorrectly issues validator error when encountering
+components of an included schema that exist two namespaces"
+</verbatim>
+
+Even if it is a bug: the fact that a commonly used tools like spy has such bugs when using chameleon namespace design to me seems to hint that it may be wise to use a single namespace. Any comments on this?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 7 July 2004
+---
+
+Maybe. But a possible alternative is to make available on several platforms a convenient wrapping of the apache xerces parser (assuming it does the right thing). 
+-- Main.BobMorris - 07 Jul 2004
+
+%META:FILEATTACHMENT{name="CDI-beta4.zip" attr="" comment="Common data infrastructure without SDD!" date="1086779383" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\CDI-beta4.zip" size="73915" user="GregorHagedorn" version="1.3"}%
+%META:FILEATTACHMENT{name="CDI-beta5.zip" attr="" comment="" date="1086865910" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\EarlierBetas\CDI-beta5.zip" size="73615" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1089974391" from="SDD.DesignWith2NamespacesDoesNotValidate" to="UBIF.DesignWith2NamespacesDoesNotValidate"}%
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258684537" format="1.1" reprev="1.16" version="1.16"}%
+d5 1
+a5 1
+To produce a common schema for UBIF.SchemaDiscussion BDI.SDD tries to split the functionality into a common schema and into specific payload schemata. This describes problems with this. <em>Note: "CDI" will ultimately have a different name, at the moment probably "UBIF", see UBIF.ResolvedTopicCommonSchemaSearchingName</em>.
+d7 1
+a7 1
+I tried to design the relation between common and specific (BDI.SDD, ABCD, <nop>TaxonNames) schemata as two namespaces but run into a problem that instance documents under this design are not validated. See attached examples in [[%ATTACHURL%/CDI-beta4.zip][CDI-beta4.zip]]: In SDD_min1.xml go to &lt;s:DescriptiveData&gt;. Everything validates, and  errors in the CDI part and its identity constraints (e.g. Agent) are correctly reported. However, any nonsense (xxx) in the BDI.SDD part is valid as well, and the BDI.SDD identity constraints work no longer either. I tried various options of defining namespace in Xmlspy, and Jacob Asiedu verified that with xerces 2.6.2 (latest), the same invalid stuff is not caught, even with the parser set to its most severe parsing.
+d18 1
+a18 1
+If we have to go back to square one and use the common types from an included type library that has no targetnamespace and build everything in an BDI.SDD schema, the drawback (besides some minor points with key/keyref uniqueness which I can fix more or less) is that I would have liked to allow dataset objects from different knowledge domains in a single dataset collection:
+d36 1
+a36 1
+This seems not possible now. The only deterministic schema I can think of is a kind of superschema that imports BDI.SDD, ABCD, <nop>TaxonNames as type libraries. Any other solutions?
+d40 1
+a40 1
+Donald pointed me to the fact that CDI.xsd in CDI-beta4.zip uses &lt;xs:any namespace="##other" processContents="lax" minOccurs="0"&gt;, and that &lt;xs:any namespace="##other" processContents="strict" minOccurs="0"&gt; may be more appropriate. That seems indeed get us a long way. At least with <nop>XmlSpy 2004.4 we can now validate a mixture of CDI and BDI.SDD - thanks Donald! One drawback is that the validation is a bit shaky. It only works if:
+d42 1
+a42 1
+   * It is defined at the root level element (i.e. not in &lt;DescriptiveData xmlns="http://www.tdwg.org/2004/BDI.SDD"  xsi:schemaLocation="http://www.tdwg.org/2004/BDI.SDD BDI.SDD.xsd"&gt;).
+d45 1
+a45 1
+In all other cases it claims the file to be valid though it is not. See [[%ATTACHURL%/CDI-beta5.zip][CDI-beta5.zip]] for an invalid example, that claims to be valid in Spy, simply because BDI.SDD.xsd cannot be found. See also <nop>"ProblemDescription.txt" inside the zip file!
+d55 1
+a55 1
+The statement you quoted is puzzling: "This technique suffers from the problem that an extension in a different namespace means that the combined schema cannot be fully validated. Specifically, there is no way to create a new schema that constrains the wildcard." I guess this just means that it would not be possible for BDI.SDD.xsd to restrict the xs:any from the UBIF.xsd from allowing for the
+d84 1
+a84 1
+I guess it is only important for us to understand the article fully if it is telling us we can't do something we would like to do.  However I think I may now understand what he is saying.  If UBIF.xsd allows any document matching my first fragment above, the author of BDI.SDD.xsd cannot create a schema which uses UBIF.xsd and only allows documents like my second fragment, because <b>all</b> valid UBIF documents remain valid and BDI.SDD.xsd only controls what happens if the UBIF document includes an element from the BDI.SDD namespace.  If my software can only handle valid BDI.SDD documents I cannot use schema validation based just on UBIF.xsd and BDI.SDD.xsd to determine whether an XML document falls into this subset of UBIF documents.  I think the article is poorly expressed at this point, but the problem it describes is not one which we particularly care about.
+d88 1
+a88 1
+I agree we don't care about this situation; BDI.SDD and others would depend on UBIF and should not care if other dataset objects have other namespaces. So I go ahead with trying the two schema design now.
+d90 1
+a90 1
+A first UBIF version is available at BDI.SDD.CurrentSchemaVersion now.
+d95 1
+a95 1
+I tried to design a type library without a target namespace, and use that both included into a UBIF and BDI.SDD namespace. This caused many problems, and at least one is now confirmed as a bug of xmlspy. The Altova support engineer writes:
+@
+
+
+1.15
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1089974393" format="1.0" version="1.14"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+To produce a common schema for UBIF.SchemaDiscussion SDD tries to split the functionality into a common schema and into specific payload schemata. This describes problems with this. <em>Note: "CDI" will ultimately have a different name, at the moment probably "UBIF", see UBIF.ResolvedTopicCommonSchemaSearchingName</em>.
+d7 1
+a7 1
+I tried to design the relation between common and specific (SDD, ABCD, <nop>TaxonNames) schemata as two namespaces but run into a problem that instance documents under this design are not validated. See attached examples in [[%ATTACHURL%/CDI-beta4.zip][CDI-beta4.zip]]: In SDD_min1.xml go to &lt;s:DescriptiveData&gt;. Everything validates, and  errors in the CDI part and its identity constraints (e.g. Agent) are correctly reported. However, any nonsense (xxx) in the SDD part is valid as well, and the SDD identity constraints work no longer either. I tried various options of defining namespace in Xmlspy, and Jacob Asiedu verified that with xerces 2.6.2 (latest), the same invalid stuff is not caught, even with the parser set to its most severe parsing.
+d18 1
+a18 1
+If we have to go back to square one and use the common types from an included type library that has no targetnamespace and build everything in an SDD schema, the drawback (besides some minor points with key/keyref uniqueness which I can fix more or less) is that I would have liked to allow dataset objects from different knowledge domains in a single dataset collection:
+d23 3
+a25 3
+	 Derivation
+	 Metadata
+	 DescriptiveData
+d27 3
+a29 3
+	 Derivation
+	 Metadata
+	 DescriptiveData
+d31 3
+a33 3
+	 Derivation
+	 Metadata
+	 ABCDUnitData 
+d36 1
+a36 1
+This seems not possible now. The only deterministic schema I can think of is a kind of superschema that imports SDD, ABCD, <nop>TaxonNames as type libraries. Any other solutions?
+d40 4
+a43 4
+Donald pointed me to the fact that CDI.xsd in CDI-beta4.zip uses &lt;xs:any namespace="##other" processContents="lax" minOccurs="0"&gt;, and that &lt;xs:any namespace="##other" processContents="strict" minOccurs="0"&gt; may be more appropriate. That seems indeed get us a long way. At least with <nop>XmlSpy 2004.4 we can now validate a mixture of CDI and SDD - thanks Donald! One drawback is that the validation is a bit shaky. It only works if:
+	* A schema location is given.
+	* It is defined at the root level element (i.e. not in &lt;DescriptiveData xmlns="http://www.tdwg.org/2004/SDD"  xsi:schemaLocation="http://www.tdwg.org/2004/SDD SDD.xsd"&gt;).
+	* The schema is acutally found
+d45 1
+a45 1
+In all other cases it claims the file to be valid though it is not. See [[%ATTACHURL%/CDI-beta5.zip][CDI-beta5.zip]] for an invalid example, that claims to be valid in Spy, simply because SDD.xsd cannot be found. See also <nop>"ProblemDescription.txt" inside the zip file!
+d51 1
+a51 1
+	* Altova, the makers of xmlspy have confirmed the instable validation as a known bug: "Unfortunately, this is a known issue in our validating engine and is in our defects tracking software as Defect #649, "##other namespace attribute causes validation error". Please excuse us for this inconvenience! When this bug is fixed, hopefully in our new validator for our next release, (2005), we will post the announcement directly on our website at, http://www.altova.com/fixed_defects.html" -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16. June 2004
+d55 1
+a55 1
+The statement you quoted is puzzling: "This technique suffers from the problem that an extension in a different namespace means that the combined schema cannot be fully validated. Specifically, there is no way to create a new schema that constrains the wildcard." I guess this just means that it would not be possible for SDD.xsd to restrict the xs:any from the UBIF.xsd from allowing for the
+d60 1
+a60 1
+	 <!-- xs:any here -->
+d66 1
+a66 1
+	 <sdd:Stuff/>
+d72 2
+a73 2
+	 <sdd:Stuff/>
+	 <trojanHorse:ElementToDoReallyBadThings/>
+d84 1
+a84 1
+I guess it is only important for us to understand the article fully if it is telling us we can't do something we would like to do.  However I think I may now understand what he is saying.  If UBIF.xsd allows any document matching my first fragment above, the author of SDD.xsd cannot create a schema which uses UBIF.xsd and only allows documents like my second fragment, because <b>all</b> valid UBIF documents remain valid and SDD.xsd only controls what happens if the UBIF document includes an element from the SDD namespace.  If my software can only handle valid SDD documents I cannot use schema validation based just on UBIF.xsd and SDD.xsd to determine whether an XML document falls into this subset of UBIF documents.  I think the article is poorly expressed at this point, but the problem it describes is not one which we particularly care about.
+d88 1
+a88 1
+I agree we don't care about this situation; SDD and others would depend on UBIF and should not care if other dataset objects have other namespaces. So I go ahead with trying the two schema design now.
+d90 1
+a90 1
+A first UBIF version is available at SDD.CurrentSchemaVersion now.
+d95 1
+a95 1
+I tried to design a type library without a target namespace, and use that both included into a UBIF and SDD namespace. This caused many problems, and at least one is now confirmed as a bug of xmlspy. The Altova support engineer writes:
+d126 1
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089914520" format="1.0" version="1.13"}%
+d88 1
+a88 1
+A first UBIF version is available at CurrentSchemaVersion now.
+d126 1
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="BobMorris" date="1089217335" format="1.0" version="1.12"}%
+%META:TOPICPARENT{name="UnifiedBioInfoFramework"}%
+To produce a common schema for UnifiedBioInfoFramework SDD tries to split the functionality into a common schema and into specific payload schemata. This describes problems with this. <em>Note: "CDI" will ultimately have a different name, at the moment probably "UBIF", see ResolvedTopicCommonSchemaSearchingName</em>.
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089211440" format="1.0" version="1.11"}%
+d121 3
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087375475" format="1.0" version="1.10"}%
+d93 28
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086971269" format="1.0" version="1.9"}%
+a28 1
+
+d46 5
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086962976" format="1.0" version="1.8"}%
+d84 2
+d87 2
+a88 2
+---
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonaldHobern" date="1086951182" format="1.0" version="1.7"}%
+a56 1
+ 
+a62 1
+ 
+d72 1
+a72 1
+-- Main.DonaldHobern -  10 June 2004
+d82 5
+a86 1
+---
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086948949" format="1.0" version="1.6"}%
+d29 1
+d74 1
+a74 1
+Donald Hobern -  10 June 2004
+d79 5
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="GregorHagedorn" date="1086944891" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="OverarchingPatternsForTdwgSchemata"}%
+To produce a common schema for OverarchingPatternsForTdwgSchemata SDD tries to split the functionality into a common schema and into specific payload schemata. This describes problems with this. <em>Note: "CDI" will ultimately have a different name, at the moment probably "UBIF", see ResolvedTopicCommonSchemaSearchingName</em>.
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086940320" format="1.0" version="1.4"}%
+d3 1
+a3 1
+To produce a common schema for OverarchingPatternsForTdwgSchemata SDD tries to split the functionality into a common schema and into specific payload schemata. This describes problems with this. <em>Note: "CDI" will ultimately have a different name, at the moment probably "UBIF", see CommonInfrastructureSearchingName</em>.
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086866340" format="1.0" version="1.3"}%
+d5 1
+a5 3
+I tried to design the relation between common and specific (SDD, ABCD, <nop>TaxonNames) schemata as two namespaces but run into a problem that instance documents under this design are not validated. See attached examples in [[%ATTACHURL%/CDI-beta4.zip][CDI-beta4.zip]]: In SDD_min1.xml go to &lt;s:DescriptiveData&gt;. Everything validates, and  errors in the CDI part and its identity constraints (e.g. Agent) are correctly reported. However, any nonsense (xxx) in the SDD part is valid as well, and the SDD identity constraints work no longer either.
+
+I tried various options of defining namespace in Xmlspy, and Jacob Asiedu verified that with xerces 2.6.2 (latest), the same invalid stuff is not caught, even with the parser set to its most severe parsing.
+d48 31
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086797505" format="1.0" version="1.2"}%
+d3 1
+a3 1
+To produce a common schema for OverarchingPatternsForTdwgSchemata SDD tries to split the functionality into a common schema and into
+d5 1
+a5 1
+Note: I tried to design the relation between common and specific (SDD, ABCD, <nop>TaxonNames) schemata as two namespaces but run into a problem that instance documents under this design are not validated. See attached examples in [[%ATTACHURL%/CDI-beta4.zip][CDI-beta4.zip]]: In SDD_min1.xml go to &lt;s:DescriptiveData&gt;. Everything validates, and  errors in the CDI part and its identity constraints (e.g. Agent) are correctly reported. However, any nonsense (xxx) in the SDD part is valid as well, and the SDD identity constraints work no longer either.
+d39 11
+d51 1
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086777360" format="1.0" version="1.1"}%
+d16 23
+@

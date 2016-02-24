@@ -1,0 +1,334 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@TAPIR could be used to work in a very object oriented way. Based on exchanging objects only it simplifies many things as it is not document based. Similar to WFS.
+
+NOTE: this content is unfinished and was not revised! It has "brainstorming" status"!
+
+---+++ Changes envisioned
+   * respond only with fixed object structures. no dynamic models
+      * easier paging and counting. no record definition needed anymore
+      * a new TAPIR collection bag element might be needed in case the protocol envelope is turned off
+   * object classes are defined by schema namespace + global element name
+   * use compound objects referencing other objects by their ID. 
+      * Does not need to be GUIDs, can also work with local IDs for now.
+      * compound objects without referencing - directly nested xml - could be possible, but is not desired to gain full benefit
+   * new search parameters
+      * a request needs to select an object class. Maybe this could be optional as you could retrieve different object classes from the same service.
+      * a new request flag might indicate to resolve the object into a full, explicit, denormalized compound object
+     * max resolving depth should be specified. could be limited by provider
+   * A single service accesspoint would serve different object classes. this is needed to serve compound objects. otherwise one would have to use many different services at the same time just to assemble a single full object
+   * need a generic extension mechasim. Only allow extension on "root" level of object. If other extension slots are required, the object class probably should be decomposed into smaller object classes
+      * extension via an optional unlimited list of pointers to other objects at the end of any object. This avoids xsd:any, is generic and forces extensions to be well defined in another object class. Extension slots for ppinters would have to be defined in the class. So you would be able to define "closed/final" and "open" classes.
+   * search on compound objects via joins of several objects. could be done with through either of these:
+      * joins in filter query on object pointer and object ID. For example:
+    _/abcd:specimen/abcd:identification/abcd:taxon@@id EQUALS ObjectOrientedApproachtcs:taxon@@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"_
+      * joins through full filter path down to element crossing mulstiple namespaces if needed. For example:
+    _/abcd:specimen/abcd:identification/abcd:taxon/tcs:taxon/tcs:genus LIKE "Abies"_
+   * object aliasing is still not solved. If we want to query on the same object class but on different instances, we need proper aliasing of objects. Required for SDD and lacking in current TAPIR, BioCASe, WFS but exists in SPARQL
+   * capabilities reports about existing classes and their definitions (xml schema)
+   * new GET bindings required (easy, just a reminder)
+---+++ questions
+   * what would pointers to other objects look like?
+      * [[http://www.w3.org/TR/xlink/#simple-links][simple XLinks]] would allow us to point to URLs (not gained anything) and also be generically recognized as such from applications! Basically its just a URI link similar to html links.
+     Example assuming _xmlns:xlink="http://www.w3.org/1999/xlink"_ alread defined somewhere:
+     _<abcd:taxon xlink:type="simple" xlink:href="zvon.gif"/>_
+      * should links be typed? Should they specify which class of object they are pointing too? would be good for clients to know what links to resolve. how could this be done?
+   * do class defining schemas need to import other namespaces they are pointing too? probably yes, so one can use other schema types and elements. But this would result in a full blown up super TDWG schema suite, similar to GML (?). A tightly interlinked schema suite could mean:
+      * versioning problems. if may abcd object points to TCS1.0 but I have TCS 1.2 objects, can I use them? what if external services upgrade to TCS1.2 and my abcd specimen still points to the TCS1.0 GUID? So its seems to me its better to not tightly bind the schemas together if this is possible at all.
+     * Do objects based on the same db record but in different schema versions have the same GUID? is a TCS1.0 object the same as the TCS1.2 if the underlying record is the same?
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d30 1
+a30 2
+      * could we use simple XLinks? http://www.w3.org/TR/xlink/#simple-links 
+     Basically its just a URI link similar to html links. but made for xml and ready do be discovered as such by applications!
+d33 1
+a33 1
+      * should they specify which class of object they are pointing too? would be good for clients to know what links to resolve. how could this be done?
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d3 2
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d28 2
+a29 1
+      * could we use simple XLinks: http://www.w3.org/TR/xlink/#simple-links 
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d29 1
+a29 1
+     Example assuming xmlns:xlink="http://www.w3.org/1999/xlink" alread defined somewhere:
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d28 3
+a30 3
+      * could we use simple XLinks: http://www.w3.org/TR/xlink/#simple-links Example:   
+   assuming xmlns:xlink="http://www.w3.org/1999/xlink" alread defined somewhere.
+   _<abcd:taxon xlink:type="simple" xlink:href="zvon.gif"/>_
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d28 3
+a30 1
+      * could we use XLink: http://www.w3.org/TR/xlink/#simple-links
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d28 1
+a28 1
+      * could we use XLink: http://www.w3.org/TR/xlink/
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d28 1
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@a6 1
+      * a request needs to select an object class. Maybe this could be optional as you could retrieve different object classes from the same service.
+d11 5
+a15 1
+      * a new request flag might indicate to resolve the object into a full explicit compound object
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d14 1
+a14 2
+      * extension via an optional unlimited list of pointers to other objects at the end of any object. This avoids xsd:any, is generic and forces extensions to be well defined in another object class
+      * alternatively allow extensions via xsd:any slot in all objects
+d22 7
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d18 1
+a18 1
+   _/abcd:specimen/abcd:identification/abcd:taxon@@id EQUALS ObjectOrientedApproachtcs:taxon@@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"_
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d18 1
+a18 1
+     _/abcd:specimen/abcd:identification/abcd:taxon@@id EQUALS ObjectOrientedApproachtcs:taxon@@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"_
+d20 1
+a20 1
+     _/abcd:specimen/abcd:identification/abcd:taxon/tcs:taxon/tcs:genus LIKE "Abies"_
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d17 4
+a20 4
+      * joins in filter query on object pointer and object ID
+     For example _/abcd:specimen/abcd:identification/abcd:taxon@@id EQUALS ObjectOrientedApproachtcs:taxon@@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"_
+      * joins through full filter path down to element crossing mulstiple namespaces if needed. 
+     For example _/abcd:specimen/abcd:identification/abcd:taxon/tcs:taxon/tcs:genus LIKE "Abies"_
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d18 1
+a18 1
+     For exmaple _/abcd:specimen/abcd:identification/abcd:taxon@@id EQUALS ObjectOrientedApproachtcs:taxon@@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"_
+d20 1
+a20 1
+     For exmaple _/abcd:specimen/abcd:identification/abcd:taxon/tcs:taxon/tcs:genus LIKE "Abies"_
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d18 1
+a18 1
+     For exmaple*/abcd:specimen/abcd:identification/abcd:taxon@@id EQUALS ObjectOrientedApproachtcs:taxon@@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"*
+d20 1
+a20 1
+     For exmaple*/abcd:specimen/abcd:identification/abcd:taxon/tcs:taxon/tcs:genus LIKE "Abies"*
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d16 7
+a22 1
+   * search on compound objects
+@

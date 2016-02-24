@@ -1,0 +1,73 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.1
+date	2007.03.27.15.42.01;	author BartMeganck;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@Perl script : takes in a csv, writes out kml for Google Earth
+@
+text
+@#!/usr/local/bin/perl
+
+
+$infile="/home/bmeganck/Desktop/input.txt";
+#$outfile="/Users/bmeganck/Desktop/outfile.txt";
+
+open inputfile, $infile;
+
+$part1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><kml xmlns=\"http://earth.google.com/kml/2.0\"><Placemark><description>";
+$part2 = "</description><name>";
+$part3 = "</name><LookAt><longitude>";
+
+# default values
+$name = "0°N 0°E";
+$description = "Zero - zero";
+$longitude = "0" ; 
+$latitude = "0";
+
+$part4 = "</longitude><latitude>";
+$part5 = "</latitude><range>305.8880792294568</range><tilt>46.72425699662645</tilt><heading>49.06133439171233</heading></LookAt><visibility>0</visibility><Style><IconStyle><Icon><href>root://icons/palette-3.png</href><x>96</x><y>160</y><w>32</w><h>32</h></Icon></IconStyle></Style><Point><extrude>1</extrude><altitudeMode>relativeToGround</altitudeMode><coordinates>";
+$part6=",50</coordinates></Point></Placemark></kml>";
+
+while (<inputfile>) {
+
+
+# $_=<inputfile>;
+
+@@details=split /,/ ;
+
+
+$name = @@details[0];
+$description = @@details[1];
+$longitude = @@details[2] ; 
+$latitude = @@details[3];
+print "$name";
+
+
+$outfile = "/home/bmeganck/Desktop/$name.kml";
+open outputfile, ">>$outfile";
+print outputfile ($part1,$description,$part2,$name,$part3,$longitude,$part4,$latitude,$part5,$longitude,",",$latitude,$part6) or die "cannot";
+
+close outputfile;
+
+
+}
+
+
+close inputfile;
+@

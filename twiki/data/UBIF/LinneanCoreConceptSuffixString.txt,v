@@ -1,0 +1,138 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.09.25.15.23.47;	author RicardoPereira;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.11.04.12.02.37;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="RicardoPereira" date="1159197827" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="LinneanCore"}%
+My goal in LinneanCore is to provide for a structure that is cabable of storing linnean name as governed by the code as well as other accepted forms of scientific names. Among accepted names are ranks below those recognized by the code and suffixes indicating something close to concepts.
+
+---
+
+<h3>Examples for "infracode" (please has someone a better term??) ranks</h3>
+
+- Alternaria dauci (Kühn) Gr. et Sk. <strong>f. sp.</strong> solani (Ell. et Mart.) Neerg<br/>
+(Note that while:<br/>
+- Puccinia coronata Corda var. avenae W.P. Fraser Ledingham <br/>
+should correctly omit the species author citation when the name is changed to a canonical form:<br/>
+- Puccinia coronata var. avenae W.P. Fraser Ledingham<br/>
+I believe this is not true for the formae speciales, since they are not governed by the code!)
+
+There can be further ranks below these. The worst example I found is:<br/>
+- Fusarium solani f. sp. cucurbitae race 2 (mating population V)<br/>
+(Note: This has *three* ranks below the ranks covered by the botanical code. However, I would be willing to provide just two extra elements in the LC schema, forcing to combine race and mating population).
+
+Bacteriological examples from a CABRI query:<br/>
+- Xanthomonas campestris pv. pelargonii, (Brown 1923) Dye 1978 <br/>
+- Xanthomonas campestris pvar. pelargonii, (Pammel 1895) Dowson 1939<br/> 
+(I am not a bacteriologist; I believe pv. and pvar. are synonymous abbreviations of pathovar. The author differences below simply relate to the fact that DSMZ seems to cite the authors of the species, instead of the authors of the pathovar. They also cite: Xanthomonas campestris pvar. juglandis, (Pammel 1895) Dowson 1939, Xanthomonas campestris pvar. malvacearum, (Pammel 1895) Dowson 1939!)
+
+Proposal: add two extra epithet/rank combinations below the canonical name.
+
+---
+
+<h3>Examples for "sensu suffixes"</h3>
+
+Caltha palustris R. Br. <strong>s. str.</strong><br/>
+Caltha palustris R. Br. <strong>s. lat.</strong><br/>
+Buellia mamillana (Tuck.) W. A. Weber <strong>s. lat.</strong><br/>
+Rinodina cana (Arnold) Arnold <strong>s. lat.</strong><br/>
+Acarospora schleicheri (Ach.) Massal. <strong>s. latissimo</strong><br/>
+Acarospora fuscata (Nyl.) Arnold <strong>s. latissimo</strong> -- latissimo is extremely rare, but I love it :-)<br/>
+Psilocybe aztecorum R. Heim <strong>emend.</strong> Guzmán var. aztecorum -- note correct author position - this is an autonym!<br/>
+
+Proposal: add an element ConceptSuffix to capture these parts, as well as more explicit sensu/secundum author parts.
+
+Clarification: This is *not* intended to make concept relations or expressions operational - that is reserved for TNC. It is *only* a place where these string-parts of a name can go in an atomized form - something like a named garbage can. It does serve as a simple mechanism to express the names as they exist in single-table checklist etc. It also highlights the fact, that some special concept knowledge should rather be applied, and that a simple type-based comparison is already known to be misleading. This is really the purpose I see in the extremely ambiguous and context dependent use of "s. str." etc.
+
+I am NOT proposing to make this operational so that concept relations, or even the full concept publication could be stored. If you want to be explicit about concepts, TNC is a necessity. However, if you have legacy data containing such concept-annotation, it worries me more to ignore this and not even have a flag that this is what was really expressed.
+
+
+---
+
+One interesting proposal (see http://www.toyen.uio.no/botanisk/bot-mus/lav/db_form.htm) is to treat s. lat. s. str. as indications of identification uncertainty like cf. or aff. I think for many uses this may be a good alternative. However, in checklists this seems to rather refer to a loosely defined concept than identification uncertainty.
+
+---
+
+Rich comments: I think all "sensu" stuff should be outside LC, using the TNC wrapper.  So me, "sensu" anything is not a nomenclatural extension -- it is specifically a concept extension -- not part of the name itself.  I am willing to change my opinion on this, but I think it requires extensive Wiki discussion.
+
+Gregor: I strictly agree on the nomenclatural use case, but not in the checklist-data use case. Also, "Sensu" in some uses is not really any different from formae speciales, race, breed. All these are not covered by the codes, but the data sources happen to include them. Any way that allows checklist data (a simple list of names believed to occur in a region) to be expressed in LC rather than having to go through TNC full makes me happy. I rather prefer to tell people to put this part somewhere than not giving them a place for it at all.
+
+Gregor: Also, in current TNC 0.8 I see *no place to put it*. TNC provides for an ideal world, where concept is expressed through unique and resolvable concept citations. This is not the reality in my data. I never have the situation TNC assumes (sensu author and year, something that can be expressed in "TNC.AccordingTo"), and I have tons of "fuzzy concept suffixes" -- or what whatever we call them. I may overlook something, please correct me.
+
+---
+
+Richard: I see race and breed (not sure what a formae specialis is) as meerly increased resolution "ranks" (i.e., finer and finer subdivisions of taxonomic entities).  Therefore, I am comfortable thinking of them as "name units beyond the scope of Code regulation, but otherwise handled in a similar way" -- very much the same way I think of names at the rank of Order, Class, Kingdom, etc.  The terms "breed" and "race" are unambiguously intended to represent smaller subsets of the species or infraspecific "base
+name" upon which they are appended. However, "sensu [anything]" does not strike me as a just another "rank" analog -- rather, it is an explicit statement about circumscription.  It could mean a broader set of organisms, or it could mean a narrower set of organisms.  So to me, the "sensu" designators represent an entirely different class of information than the "non-Code-governed ranks" do.
+
+Gregor: I think a "sensu stricto" concept is explicitly meant to refer to a smaller subset than the s. lato definition.
+
+---
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099569757" format="1.0" version="1.1"}%
+d41 1
+a41 1
+Clarification: This is *not* intended to make concept relations or expressions operational - that is reserved for TCS. It is *only* a place where these string-parts of a name can go in an atomized form - something like a named garbage can. It does serve as a simple mechanism to express the names as they exist in single-table checklist etc. It also highlights the fact, that some special concept knowledge should rather be applied, and that a simple type-based comparison is already known to be misleading. This is really the purpose I see in the extremely ambiguous and context dependent use of "s. str." etc.
+d43 1
+a43 1
+I am NOT proposing to make this operational so that concept relations, or even the full concept publication could be stored. If you want to be explicit about concepts, TCS is a necessity. However, if you have legacy data containing such concept-annotation, it worries me more to ignore this and not even have a flag that this is what was really expressed.
+d52 1
+a52 1
+Rich comments: I think all "sensu" stuff should be outside LC, using the TCS wrapper.  So me, "sensu" anything is not a nomenclatural extension -- it is specifically a concept extension -- not part of the name itself.  I am willing to change my opinion on this, but I think it requires extensive Wiki discussion.
+d54 1
+a54 1
+Gregor: I strictly agree on the nomenclatural use case, but not in the checklist-data use case. Also, "Sensu" in some uses is not really any different from formae speciales, race, breed. All these are not covered by the codes, but the data sources happen to include them. Any way that allows checklist data (a simple list of names believed to occur in a region) to be expressed in LC rather than having to go through TCS full makes me happy. I rather prefer to tell people to put this part somewhere than not giving them a place for it at all.
+d56 1
+a56 1
+Gregor: Also, in current TCS 0.8 I see *no place to put it*. TCS provides for an ideal world, where concept is expressed through unique and resolvable concept citations. This is not the reality in my data. I never have the situation TCS assumes (sensu author and year, something that can be expressed in "TCS.AccordingTo"), and I have tons of "fuzzy concept suffixes" -- or what whatever we call them. I may overlook something, please correct me.
+a65 1
+
+@

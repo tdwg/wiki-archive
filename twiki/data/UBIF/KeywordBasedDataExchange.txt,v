@@ -1,0 +1,109 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.03.15.15.08.18;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1110899298" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="ObjectOntology"}%
+(Gregor Hagedorn: I moved this out from ObjectOntology (to which it is related, but I believe this has a different approach). Please rename the topic name any time if you think it is not appropriate!)
+---
+
+Donald Hobern writes: Let me first try another approach which may be more confusing, but may ultimately help us to build what we need in a more gradual and modular fashion. First consider the ABCD !UnitFact element:
+
+<verbatim>
+  <UnitFact>
+		<FactType language="en">Synecology</FactType>
+		<FactText language="en">Grows the fungus Leucocoprinus gongylophorus (Hoyt 1996).</FactText>
+		<DateEntered>2005-03-09</DateEntered>
+		<AddedBy>Donald Hobern</AddedBy>
+		<Reference>
+			<ReferenceCitation>Helldöbler, B. and Wilson, E.O. (1990) The ants. Springer-Verlag, Berlin.</ReferenceCitation>
+			<ReferenceDetail>p. 599</ReferenceDetail>
+		</Reference>
+	</UnitFact>
+</verbatim>
+
+Assume that we change this slightly so that the content of the <FactType> element becomes an attribute that belongs to a controlled vocabulary of key information categories.  Any item of biodiversity information can be presented this way, and we can subsequently refine the controlled vocabulary to represent an entire hierarchical tree (or more general graph) of categories.
+
+Secondly consider the fact that information within our immediate remit falls into two classes, data which relates to an individual organism (or some proxy for an individual in groups where it is hard to define an "individual"), and data which relates to a taxon (often a species, but potentially any rank), these latter data being in some way synthetic.
+		
+I think that we can start with the <Fact> model as the most general structured representation of biodiversity data, for either individual- or taxon-based data.
+
+Donald Hobern
+
+---
+
+What I was trying to say is that we should know the minimum requirements that all data providers should meet. Basically this means sharing the same "ObjectID". This "ObjectID" was referred to as the scientific name of the taxon, which is not sufficient to differentiate between concepts, circumscriptions and homonyms. We need to address this for it will play an important role in assembling the correct data for a specific taxon. Once we know what the "ObjectID" will look like, we can concentrate on the protocols. There are two steps to take:
+
+1) Resolve the "ObjectID"<br/>
+Examples:<br/>
+objectID = !GetObjectID(scientificName)<br/>
+objectID = !GetObjectID(criteria) //e.g. "all Muridae in Germany"<br/>
+objectID = !GetObjectID(identification key)<br/>
+objectID = !GetObjectID(image) //using pattern matching<br/>
+The result may be xml with one ore more "ObjectID"s
+
+2) Get the data:<br/>
+data = !GetData(objectID, parameters)
+
+A parameter could be "FishBase.Description" (atomic; text), "IUCN.Status" (atomic; item) or "EcoBase.Ecology" (class; different types). Note that a parameter should have a name AND a datasource.
+
+What I was trying to tell at the last session in regard to your comments is that the different types of parameters are more important than their names regarding the protocols. You should be able to have a mixture of unstructered, semi-structured and fully structured data, as you pointed out. You are right that we need standardized names for parameters, but this will take time and in the meantime we could start with data provider specific keywords and then make a list of preferred terms along the way. Standardization takes time and needs to be done carefully.
+
+Type of parameters:<br/>
+Text (= unstructured data), e.g. Description<br/>
+Number, e.g. Number of legs<br/>
+!NumberRange, e.g. pH range<br/>
+Item (= a predefined value), e.g. Geographic region<br/>
+!ItemRange, e.g. Geologic period<br/>
+Taxon, e.g. Parasite<br/>
+Image<br/>
+etc.
+
+-- Sheila Brands, Universal Taxonomic Services, The Taxonomicon & Systema Naturae 2000 - 10 Mar 2005 
+---
+
+I do see advantages in atomizing data exchange even further. I do wonder how to manage the complexity of data structures, however. I think the conventional "objects" in object-oriented programming such as JAVA (but also as used in w3c xml schema) are purposely one level more complex, to reduce the complexity on the next higher level. These class definitions defining entities with multiple properties and then continue to express knowledge using compositions of such classes.
+
+I understand your (especially Donald's proposal) as reducing data exchange to simple types (string, date, number, etc.; perhaps also minimally complex types like number range), and expressing the knowledge of relationships through a keyword system -- but I may misunderstand this. The keyword system could be managed through ontology languages, but I do not fully see how multiplicity relations between entities could be expressed at all.
+
+In Sheila's example it seem that some implicit assumptions about the properties of the objects are being made. For example, "scientific name" is not applicable at all to many object types, such as descriptive terms/characters, glossary entries, fixed identification keys (e.g. dichotomous) etc. Similarly, I would consider "area" an object type that has an idea. Many collection databases are capable of recording if multiple specimens are collected in the same place (which is different than identity of place description).
+
+-- Main.GregorHagedorn - 15 Mar 2005
+---
+
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+@

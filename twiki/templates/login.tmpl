@@ -1,0 +1,45 @@
+%TMPL:INCLUDE{"twiki"}%
+
+%TMPL:DEF{"webaction"}% TWiki User Authentication %TMPL:END%
+%TMPL:DEF{"topicaction"}% %TMPL:END%
+%TMPL:DEF{"LOG_IN_BANNER"}%Please enter your username and password%TMPL:END%
+%TMPL:DEF{"LOGGED_IN_BANNER"}% %MAINWEB%.%WIKINAME% is currently logged in%TMPL:END%
+%TMPL:DEF{"NEW_USER_NOTE"}%Enter a new username and password to change identity%TMPL:END%
+%TMPL:DEF{"UNRECOGNISED_USER"}%Unrecognised user and/or password.%TMPL:END%
+
+
+%TMPL:DEF{"content"}%
+---+ %BANNER%
+%NOTE%
+%AUTHREALM%
+<form action='%SCRIPTURLPATH{"login"}%/%WEB%/%TOPIC%' method='post'>
+<table border='0'>
+<tr><th>Username</th><td>
+<input type='text' size='30' name='username' value='%URLPARAM{"username"}%' />
+</td></tr><tr><th>Password</th><td>
+<input type='password' size='30' name='password' value='' />
+</td></tr></table>
+<literal>
+%QUERYPARAMS{format="<input type='hidden' name='$name' value='$percntENCODE{$quot()$value$quot type=$quot()html$quot}$percnt' />"}%
+</literal>
+<input type="hidden" name="origurl" value="%ORIGURL%" />
+<input type='submit' value='Logon' />
+</form>
+<p />
+%TMPL:P{"topicinfo"}%
+%TMPL:END%
+
+
+%TMPL:DEF{"head"}%
+<head>
+ <title><nop>%WIKITOOLNAME% User Authentication</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=%CHARSET%" />
+ <meta name="robots" content="noindex" />
+ %HTTP_EQUIV_ON_VIEW%
+ <base href="%SCRIPTURL%/%SCRIPTNAME%/%WEB%/%TOPIC%"></base>
+ %TMPL:P{"twikistyle"}%
+ %TMPL:P{"templatecustomstyle"}%
+ <!-- add JS script here -->
+</head>
+%TMPL:END%
+

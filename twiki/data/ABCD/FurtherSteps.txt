@@ -1,0 +1,49 @@
+%META:TOPICINFO{author="WalterBerendsohn" date="1181393386" format="1.1" reprev="1.9" version="1.9"}%
+The following changes will only be implemented if a new major version of ABCD under a new namespace will be published. Ideally this will involve a far more modular approach towards TDWG standards (XML or otherwise), so the changes proposed below should be understood as notes rather than concrete steps to be taken. In any case, a major version change for ABCD is not expected before 2009. 
+---++ General issues
+Elements containing personal contact information such as e-mail addresses or phone-numbers should have a flag indicating whether the provider allows display of these elements in human readable interfaces such as web pages.
+
+---++ Dataset level
+<verbatim>/Datasets/Dataset/ContentContact</verbatim>
+   Move to <verbatim>/Datasets/Dataset/Metadata</verbatim>
+
+<verbatim>/Datasets/Dataset/TechnicalContact</verbatim>
+   Remove (Is not needed in future under TAPIR (part of service metadata section in protocol schema)
+
+<verbatim>/Datasets/Dataset/Metadata/RevisionData/DateModified</verbatim>
+   Make optional. (problematic because experience shows that providers don't update this field).
+
+<verbatim>/DataSets/DataSet/Metadata/Scope/GeoecologicalTerms/GeoEcologicalTerm</verbatim>
+   Rename <verbatim>/DataSets/DataSet/Metadata/Scope/GeoecologicalTerms/GeoecologicalTerm</verbatim> (for consistency)
+
+---++ Unit level
+
+<verbatim>/DataSets/DataSet/Units/Unit/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLon/LongitudeDecimal</verbatim>
+   Change type to <verbatim>decimalLongitude</verbatim> (new type, restricted to +180 to -180)
+
+<verbatim>/DataSets/DataSet/Units/Unit/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLon/LatitudeDecimal</verbatim>
+   Change type to <verbatim>decimalLatitude</verbatim> (new type, restricted to +90 to -90)
+
+
+---++ Changes in types
+
+<verbatim>IPRStatements [type]</verbatim> <verbatim>TermsOfUseStatements/TermsOfUse</verbatim>
+   Rename to <verbatim>TermsOfUseStatements/TermsOfUseStatement</verbatim> for consistency.
+
+<verbatim>LookupL [type]</verbatim> attribute <verbatim>Language</verbatim>
+   Delete. 
+
+<verbatim>Contact [type]</verbatim> <verbatim>URIs/URL</verbatim>
+   Delete.
+
+<verbatim>/Datasets/Dataset/Unit/HerbariumUnit/DuplicatesDistributedTo</verbatim>
+   Delete (superfluous duplicate of <verbatim>/Datasets/Dataset/Unit/SpecimenUnit/DuplicatesDistributedTo</verbatim>)
+
+<verbatim>/DataSets/DataSet/Units/Unit/Gathering/Biotope/MeasurementsOrFacts</verbatim>
+   Delete type (container element should be untyped).
+
+<verbatim>/DataSets/DataSet/Units/Unit/CultureCollectionUnit/ FurtherStepsGrowthConditionAtomised/Temperature@TemperatureTypes</verbatim>
+   Delete.
+
+<verbatim>/Datasets/Dataset/Unit/SpecimenUnit/Accessions/Accession/ </verbatim>
+   Insert as container element for repeatable triple. Move the respective three elements.

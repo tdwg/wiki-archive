@@ -1,0 +1,409 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="kupu">
+<!--
+ Created by Crawford Currie http://c-dot.co.uk
+ Copyright (C) ILOG
+ Portions Copyright (C) 2004 Damien Mandrioli and Romain Raugi
+ Portions Copyright (c) 2003-2004, Kupu Contributors.
+ All rights reserved.
+
+ This is the template used for the kupu editor. It is heavily
+ based on the Kupu "kupu.html" script, with extensive modifications
+ to support TWiki-specific features (wikiwords, attachments,
+ variables). As much as possible is the Kupu original.
+
+-->
+ <head>
+  <title>Kupu Edit %WEB%.%TOPIC%</title>
+  <meta http-equiv="Expires" content="0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Content-Type" content="text/html; charset=%CHARSET%"/>
+  <style type="text/css">
+	%IF{ "$ TWIKILAYOUTURL" then="@import url('%TWIKILAYOUTURL%');"}%
+	%IF{ "$ TWIKISTYLEURL"  then="@import url('%TWIKISTYLEURL%');"}%
+	%IF{ "$ USERLAYOUTURL" then="@import url('%USERLAYOUTURL%');"}%
+	%IF{ "$ USERSTYLEURL"  then="@import url('%USERSTYLEURL%');"}%
+	body {
+		text-align:left;
+	}
+  </style>
+  <link href="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupustyles.css" rel="stylesheet" type="text/css"/>
+  <link href="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupudrawerstyles.css" rel="stylesheet" type="text/css"/>
+  <link href="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/kuputwiki.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/sarissa.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/sarissa_ieemu_xpath.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupuhelpers.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupueditor.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupubasetools.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupuloggers.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupunoi18n.js">
+  </script>
+<!-- Not wanted on voyage
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/i18n.js/i18n.js">
+  </script>
+-->
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupucleanupexpressions.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupucontentfilters.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kuputoolcollapser.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupucontextmenu.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupusourceedit.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupudrawers.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/twikitools.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/kupuinit.js">
+  </script>
+  <script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/kupustart.js">
+  </script>
+ </head>
+ <body onload="kupu = startKupu()">
+  <h1>%WEB%.%TOPIC%</h1>
+  <div style="display: none;">
+   <xml id="kupuconfig">
+    <kupuconfig>
+     <cancel>%SCRIPTURLPATH%/save%SCRIPTSUFFIX%/%WEB%/%TOPIC%?action=cancel</cancel>
+     <attachment_url_path>%ATTACHURL%</attachment_url_path>
+     <upload_url>%SCRIPTURLPATH%/attach%SCRIPTSUFFIX%/%WEB%/%TOPIC%</upload_url>
+     <view_url>%SCRIPTURL%/view%SCRIPTSUFFIX%/</view_url>
+     <current_web>%WEB%</current_web>
+     <current_topic>%TOPIC%</current_topic>
+     <use_css>1</use_css>
+     <reload_after_save>0</reload_after_save>
+     <strict_output>1</strict_output>
+     <content_type>application/xhtml+xml</content_type>
+     <compatible_singletons>1</compatible_singletons>
+     <search_images_uri> </search_images_uri>
+     <search_links_uri> </search_links_uri>
+    </kupuconfig>
+   </xml>
+  </div>
+  <div class="kupu-fulleditor">
+   <div class="kupu-tb" id="toolbar">
+    <span id="kupu-tb-buttons">
+     <span class="kupu-tb-buttongroup kupu-source-span" style="float: right" id="kupu-source">
+      <button class="kupu-source" id="kupu-source-button" title="edit HTML code" i18n:attributes="title">&#160;</button>
+      <button class="kupu-zoom" id="kupu-zoom-button" i18n:attributes="title" title="zoom: alt-x" accesskey="x">&#160;</button>
+      <button class="twiki-help" title="Help" accesskey="k" onclick="window.open('%SCRIPTURLPATH%/view%SCRIPTSUFFIX%/%WYSIWYGPLUGIN_HELPPAGE%', '_blank');">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup">
+      <button class="kupu-save" id="kupu-save-button" title="save: alt-s" i18n:attributes="title" accesskey="s">&#160;</button>
+      <button class="twiki-cancel-button" id="twiki-cancel-button" title="cancel: alt-q" i18n:attributes="title" accesskey="q">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup" id="kupu-bg-undo">
+      <button type="button" class="kupu-undo" id="kupu-undo-button" title="undo: alt-z" i18n:attributes="title" accesskey="z">&#160;</button>
+      <button type="button" class="kupu-redo" id="kupu-redo-button" title="redo: alt-y" i18n:attributes="title" accesskey="y">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup" id="kupu-bg-basicmarkup">
+      <select id="kupu-tb-styles" title="Set the style of the selected block">
+       <option value="P" i18n:translate="paragraph-normal">
+        Normal
+       </option>
+       <option value="H1">
+        <span i18n:translate="heading">Heading</span> 1
+       </option>
+       <option value="H2">
+        <span i18n:translate="heading">Heading</span> 2
+       </option>
+       <option value="H3">
+        <span i18n:translate="heading">Heading</span> 3
+       </option>
+       <option value="H4">
+        <span i18n:translate="heading">Heading</span> 4
+       </option>
+       <option value="H5">
+        <span i18n:translate="heading">Heading</span> 5
+       </option>
+       <option value="H6">
+        <span i18n:translate="heading">Heading</span> 6
+       </option>
+       <option value="PRE">
+        <span i18n:translate="formatted">Formatted</span>
+       </option>
+      </select>
+      <button type="button" class="twiki-bold-button0" id="twiki-bold-button" title="bold: alt-b" i18n:attributes="title" accesskey="b">&#160;</button>
+      <button type="button" class="twiki-italic-button0" id="twiki-italic-button" title="italic: alt-i" i18n:attributes="title" accesskey="i">&#160;</button>
+      <button type="button" class="kupu-forecolor" id="kupu-forecolor-button" title="text color: alt-f" i18n:attributes="title" accesskey="f">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup" id="kupu-bg-list">
+      <button type="button" class="kupu-insertorderedlist" title="numbered list: alt-#" id="kupu-list-ol-addbutton" i18n:attributes="title" accesskey="#">&#160;</button>
+      <button type="button" class="kupu-insertunorderedlist" title="unordered list: alt-*" id="kupu-list-ul-addbutton" i18n:attributes="title" accesskey="*">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup" id="kupu-bg-indent">
+      <button type="button" class="kupu-outdent" id="kupu-outdent-button" title="outdent: alt-&lt;" i18n:attributes="title" accesskey="&lt;">&#160;</button>
+      <button type="button" class="kupu-indent" id="kupu-indent-button" title="indent: alt-&gt;" i18n:attributes="title" accesskey="&gt;">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup">
+      <button type="button" class="kupu-table" id="kupu-tabledrawer-button" title="Insert a table" i18n:attributes="title">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup">
+      <button type="button" class="kupu-inthyperlink" id="twiki-wikiworddrawer-button" title="Insert a link to a wiki topic" i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-exthyperlink" id="kupu-linkdrawer-button" title="Insert a link to the internet" i18n:attributes="title">&#160;</button>
+     <button type="button" class="kupu-removelink" style="display:none" id="kupu-removelink-button" title="Remove link" i18n:attributes="title">&#160;</button>
+     </span>
+     <span class="kupu-tb-buttongroup">
+      <button id="twiki-icons-button" class="twiki-insert-icon" title="Insert a TWiki Icon" i18n:attributes="title">&#160;</button>
+      <button type="button" class="twiki-new-image" id="twiki-image-button" title="Add a new image" i18n:attributes="title">&#160;</button> 
+    </span>
+    <span class="kupu-tb-buttongroup">
+      <button id="twiki-strings-button" class="twiki-insert-string" title="Insert a standard string" i18n:attributes="title">&#160;</button>
+     <button id="twiki-nop-button" class="twiki-nop-button0" title="Define No-Op Region" i18n:attributes="title">&#160;</button>
+    </span>
+    <!-- these have to be kept because Kupu core code refers to them -->
+    <select id="kupu-ulstyles" style="display:none" class="invisible">
+     <option value="disc" i18n:translate="list-disc">&bull;</option>
+    </select>
+    <select id="kupu-olstyles" style="display:none" class="invisible">
+     <option value="decimal" i18n:translate="list-decimal">1</option>
+     <option value="upper-roman" i18n:translate="list-upperroman">I</option>
+     <option value="lower-roman" i18n:translate="list-lowerroman">i</option>
+     <option value="upper-alpha" i18n:translate="list-upperalpha">A</option>
+     <option value="lower-alpha" i18n:translate="list-loweralpha">a</option>
+    </select>
+   </div>
+<!-- END OF TOOLBAR -->
+   <div style="display:block;">
+    <div id="kupu-librarydrawer" class="kupu-drawer">
+    </div>
+   </div>
+<!-- EXTERNAL LINK DRAWER -->
+   <div id="kupu-linkdrawer" class="kupu-drawer">
+    <h1 i18n:translate="">External Link</h1>
+    <div id="kupu-linkdrawer-addlink" class="kupu-panels">
+     <table>
+      <tr>
+       <td>
+        <div class="kupu-toolbox-label">
+         <span i18n:translate="items-matching-keyword">
+          Link the highlighted text to this URL
+         </span>:
+        </div>
+        <input class="kupu-toolbox-st kupu-linkdrawer-input" type="text"/>
+       </td>
+       <td class="kupu-preview-button">
+        <button type="button" onclick="drawertool.current_drawer.preview()">Preview</button>
+       </td>
+      </tr>
+      <tr>
+       <td colspan="2" align="center">
+        <iframe frameborder="1" scrolling="auto" width="440" height="198" class="kupu-linkdrawer-preview" src="%PUBURLPATH%/%TWIKIWEB%/KupuContrib/_kupu/common/kupublank.html">
+        </iframe>
+       </td>
+      </tr>
+     </table>
+     <div class="kupu-dialogbuttons">
+      <button type="button" onclick="drawertool.current_drawer.save()">Ok</button>
+      <button type="button" onclick="drawertool.closeDrawer()">Cancel</button>
+     </div>
+    </div>
+   </div>
+<!-- INTERNAL LINK DRAWER -->
+   <div id="twiki-wikiworddrawer" class="kupu-drawer">
+    <h1 i18n:translate="">WikiWord Link</h1>
+    Link highlighted text to topic<br />
+    Web <select id='twiki-wikiweb-select' class="kupu-toolbox-action"">
+     <option value='%WEB%'>%WEB%</option>
+     %WEBLIST{"<option value='$name'>$name</option>"}%
+    </select>
+    Topic <select id='twiki-wikiword-select' class="kupu-toolbox-action"">
+     %TOPICLIST{"<option value='$name'>$name</option>"}%
+    </select>
+    <div class="kupu-dialogbuttons">
+     <button type="button" onclick="drawertool.current_drawer.save()">Ok</button>
+     <button type="button" onclick="drawertool.closeDrawer()">Cancel</button>
+    </div>
+   </div>
+<!-- INSERT IMAGE DRAWER -->
+   <div id="twiki-new-attachment-drawer" class="kupu-drawer">
+    <h1>Insert file</h1>
+    <div class="kupu-panels">
+     <form name="upload" id="twiki-upload-form" enctype="multipart/form-data" action="%SCRIPTURLPATH%/upload%SCRIPTSUFFIX%/%WEB%/%TOPIC%" method="post" target="status_line">
+      <input type="hidden" id="createlink" name="createlink" />
+      <input type="hidden" name="skin" value="%WYSIWYGPLUGIN_WYSIWYGSKIN%" />
+      <input type="hidden" id="hidefile" name="hidefile" value="0" value="0" />
+      <input type="hidden" name="noredirect" value="1" />
+      <input type="hidden" name="filename" value="" />
+      <table width="100%"> 
+       <tr>
+        <td class="kupu-toolbox-label">Local file</td>
+        <td>
+         <input type="file" name="filepath" value="" size="30" class="kupu-toolbox-st" /> 
+        </td>
+       </tr>
+       <tr>
+        <td class="kupu-toolbox-label">Comment</td>
+        <td>
+         <input class="comment" type="text" name="filecomment" value="" maxlength="256" size="30" class="kupu-toolbox-st" /> 
+        </td>
+       </tr>
+      </table>
+      <div class="kupu-dialogbuttons">
+       <button type="submit">Ok</button>
+       <button type="button" onclick="drawertool.closeDrawer()">Cancel</button>
+      </div>
+     </form>
+    </div>
+   </div>
+<!-- TABLE DRAWER -->
+   <div id="kupu-tabledrawer" class="kupu-drawer">
+    <div style="display:none" class="kupu-tabledrawer-edittable">
+     <select style="display:none" class="kupu-tabledrawer-editclasschooser">
+      <option value="plain"></option>
+     </select>
+    </div>
+    <div style="display:none" class="kupu-tabledrawer-addtable">
+     <select style="display:none" class="kupu-tabledrawer-addclasschooser">
+      <option value="plain"></option>
+     </select>
+    </div>
+    <div class="kupu-panels">
+     <table width="99%">
+      <tr class="kupu-panelsrow">
+       <td class="kupu-panel">
+        <table width="100%">
+         <tr>
+          <td colspan="2" class="">
+           <div id="kupu-tabledrawer-addtable">
+            <h1>Insert Table</h1>
+            <table width="100%">
+             <tr>
+              <td class="kupu-toolbox-label" width="50%">Rows</td>
+              <td><input type="text" class="kupu-tabledrawer-newrows"/></td>
+             </tr>
+             <tr>
+              <td class="kupu-toolbox-label">Columns</td>
+              <td><input type="text" class="kupu-tabledrawer-newcols"/></td>
+             </tr>
+             <tr>
+              <td class="kupu-toolbox-label">Header row</td>
+              <td class="kupu-toolbox-label">
+               <input name="kupu-tabledrawer-makeheader" class="kupu-tabledrawer-makeheader" type="checkbox"/>
+               <label for="kupu-tabledrawer-makeheader">Create</label>
+              </td>
+             </tr>
+             <tr>
+              <td colspan="2" style="text-align: center">
+               <button type="button" onclick="drawertool.current_drawer.createTable()" title="Add new table at the cursor">Add Table</button>
+              </td>
+             </tr>
+             <tr style="display:none">
+              <td colspan="2" style="text-align: center">
+               <button type="button" onclick="drawertool.current_drawer.tool.fixAllTables()" title="Restructure all tables so they can be edited in Kupu">Fix All Tables</button>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="kupu-tabledrawer-edittable">
+            <h1>Edit Table</h1>
+            <table width="100%">
+             <tr>
+              <td width="50%">Current column alignment</td>
+              <td>
+               <select class="kupu-tabledrawer-alignchooser" onchange="drawertool.current_drawer.tool.setColumnAlign(this.options[this.selectedIndex].value)">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+               </select>
+              </td>
+             </tr>
+             <tr>
+              <td>Column</td>
+              <td>
+                <button type="button" id="kupu-tabledrawer-addcolumn-button" onclick="drawertool.current_drawer.tool.addTableColumn()">Add</button>
+               <button type="button" id="kupu-tabledrawer-delcolumn-button" onclick="drawertool.current_drawer.tool.delTableColumn()">Remove</button>
+              </td>
+             </tr>
+             <tr>
+              <td>Row</td>
+              <td>
+                <button type="button" id="kupu-tabledrawer-addrow-button" onclick="drawertool.current_drawer.tool.addTableRow()">Add</button>
+               <button type="button" id="kupu-tabledrawer-delrow-button" onclick="drawertool.current_drawer.tool.delTableRow()">Remove</button>
+              </td>
+             </tr>
+<!--
+             <tr>
+              <td>Fix Table</td>
+              <td>
+               <button type="button" id="kupu-tabledrawer-addrow-button" onclick="drawertool.current_drawer.tool.fixTable()">Fix</button> 
+              </td>
+             </tr>
+-->
+            </table>
+           </div>
+          </td>
+         </tr>
+        </table>
+       </td>
+      </tr>
+     </table>
+     <div class="kupu-dialogbuttons">
+      <button type="button" onclick="drawertool.closeDrawer()">Cancel</button>
+     </div>
+    </div>
+   </div>
+<!-- ICONS POPUP -->
+   <div id="twiki-icons">
+    %INCLUDE{"%TWIKIWEB%.WysiwygPluginIcons" warn="off"}%
+   </div>
+<!-- COLORS POPUP -->
+   <table id="kupu-colorchooser" cellpadding="0" cellspacing="0" style="position: fixed; border-style: solid; border-color: black; border-width: 1px;">
+   </table>
+<!-- STRINGS popup -->
+   <div id="twiki-strings" class="kupu-drawer" style="display:none">
+     Select string to insert:
+     <select id="twiki-strings-select" title="Insert standard text">
+      <option value=''>none</option>
+      %INCLUDE{"%TWIKIWEB%.WysiwygPluginStrings" warn="off"}%
+     </select>
+   </div>
+<!-- EDITOR IFRAME -->
+   <div class="kupu-editorframe">
+    <iframe id="kupu-editor" class="kupu-editor-iframe" frameborder="1" src="%SCRIPTURLPATH%/view%SCRIPTSUFFIX%/%OWEB%/%OTOPIC%?skin=kupu;wysiwyg_edit=1;t=%GMTIME{"$ye$mo$day$hou$min$sec"}%" scrolling="auto">
+    </iframe>
+<!-- HTML EDITOR -->
+    <textarea class="kupu-editor-textarea" id="kupu-editor-textarea">
+    </textarea>
+<!-- FORM FIELDS -->
+<noautolink>
+    <form id="twiki-main-form" name="main" action="%SCRIPTURL%/save%SCRIPTSUFFIX%/%WEB%/%TOPIC%" onsubmit="return TWikiVetoIfChanged(null,false)" method="post">
+</noautolink>
+     <input type="hidden" name="formtemplate" value="%FORMTEMPLATE%" />
+     <input type="hidden" name="unlock" value="on" />
+     <input type="hidden" name="topicparent" value="%TOPICPARENT%" />
+     <input type="hidden" name="cover" value="%WYSIWYGPLUGIN_WYSIWYGSKIN%" />
+     <input type="hidden" name="wysiwyg_edit" value="1" />
+     <input type="hidden" name="cmd" value="%CMD%" /><div></div>
+     %FORMFIELDS%
+    </form>
+   </div>
+<!-- KUPU TOOLBOXES (disabled) -->
+   <div xmlns="" class="kupu-toolboxes" style="display: none">
+    <div class="kupu-toolbox" id="kupu-toolbox-debug invisible">
+     <h1 i18n:translate="debug-log">Debug Log</h1>
+     <div id="kupu-toolbox-debuglog" class="kupu-toolbox-label">
+     </div>
+    </div>
+   </div>
+  </div>
+<!-- HELP (better done as twisty? -->
+  <div>
+%INCLUDE{"%TWIKIWEB%.WysiwygPluginLocalHelp" warn="off"}%
+  </div>
+<!-- STATUS LINE -->
+  <iframe name="status_line" style="display: block" width="70%" height="25px" onload="uploadComplete()">
+   <!-- frame used as target for output generated by uploads -->
+  </iframe>
+  %INCLUDE{"%TWIKIWEB%.WyswiygPluginLocalHelp" warn="off"}%
+ </body>
+</html>

@@ -1,0 +1,471 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+
+
+1.12
+date	2009.11.20.02.02.02;	author LeeBelbin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.07.25.02.24.55;	author DonovanSharp;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.07.18.07.10.16;	author DonovanSharp;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.07.18.04.48.36;	author DonovanSharp;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.07.07.02.39.07;	author DonovanSharp;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.07.06.05.50.03;	author DonovanSharp;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.07.06.03.10.41;	author DonovanSharp;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.07.05.05.31.01;	author DonovanSharp;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.06.23.02.25.06;	author DonovanSharp;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.06.22.02.48.57;	author DonovanSharp;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.06.22.01.08.59;	author DonovanSharp;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.06.21.06.59.54;	author DonovanSharp;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.12
+log
+@none
+@
+text
+@%META:TOPICINFO{author="LeeBelbin" date="1258682522" format="1.1" version="1.12"}%
+%META:TOPICPARENT{name="CodedDescription"}%
+---++Main.BDI Part 0: Introduction and Primer to the Main.BDI Standard 
+
+---+++4.5 Elements within &lt;SamplingEvent&gt;
+
+The element &lt;SamplingUnit&gt; contains raw sample data for a specimen. &lt;SamplingEvent&gt; contains information about where and when that sampling occurred.
+
+A simple Main.BDI instance document representing a sampling event has the basic structure shown below and in example 4.5.1.1.
+
+%ATTACHURL%/sampledata4.gif
+
+Example 4.5.1.1 - A simple sampling event 
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+<SampleData>
+	<SamplingEvent id="TJM45337">
+	<DateTime minute="17" hour="7" day="17" month="7" year="2006"/>
+	<DateTimeSpanEnd minute="27" hour="7" day="17" month="7" year="2006"/>
+	<GeographicArea ref="g2"/>
+	<Coordinates latitude="20.44" longitude="139.29"/>
+		<SamplingUnit>
+			<Quantitative ref="ch1" value="12"/>
+		</SamplingUnit>
+                     ...etc
+</SampleData>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+
+&lt;DateTime&gt; records the date and time when the sampling event occurred, either as a single time point or as the start of a time period.
+
+&lt;DateTimeSpanEnd&gt; records the end of a time span if event timing is recorded as such.
+Both date/times may be incomplete in ways not expressible in xs:datetime, e.g. the day and year may be known, but month unknown.
+
+&lt;GeographicArea&gt; is a reference to a geographic area at which the event occurred. This is defined in the element &lt;GeographicAreas&gt; with the basic structure shown below and in example 4.5.1.2.
+
+%ATTACHURL%/geographicarea.gif
+
+
+
+Example 4.5.1.2 Defining geographic areas
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+<GeographicAreas>
+  <GeographicArea id="g1">
+    <Representation>
+      <Label>Worldwide</Label>
+    </Representation>
+  </GeographicArea>
+  <GeographicArea id="g2">
+    <Representation>
+      <Label>Europe</Label>
+    </Representation>
+  </GeographicArea>
+</GeographicAreas>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+&lt;Coordinates&gt; records a point on earth at which the event occurred. Elements available are &lt;Latitude&gt;, &lt;Longitude&gt;, &lt;GeodeticDatum&gt;; &lt;Verbatim&gt; (a textual representation of the original location data) and &lt;Literal&gt; (a free-form string in addition to or instead of numeric coordinates (i.e. Charley's Creek, near Chinchilla).
+
+Example 4.5.1.3 Use of the &lt;Coordinate&gt; element
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+<SampleData>
+ <SamplingEvent id="AQ578462">
+  <DateTime></DateTime>
+   <Coordinates latitude="26.5" longitude="150.5" 
+           geodeticdatum="GDA94" verbatim="5km NW of Roma"/>
+    <SamplingUnit>
+     <Categorical ref="c1">
+      <State ref="s1"/>
+     </Categorical>
+    </SamplingUnit>
+ </SamplingEvent>
+</SampleData>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+---++++4.5.2. <noautolink>SamplingUnit</noautolink>
+
+A sampling unit may be an individual organism, a leaf of a tree, a piece of tissue, etc. In each sampling unit multiple characters may have been observed together ('paired observations'). Example: 'leaf shape, length, and width' of a single leaf). Value frequencies (e. g., '2.3': observed 4 x) are not supported; they are useful when only a single character variable is supported, but complicate paired observations unnecessarily. Char. values with a frequency should be entered in repeated <noautolink>SamplingUnits</noautolink>.
+
+A simple Main.BDI code snippet representing part of the sample data above has the basic structure shown below and in Example 4.5.2.1.
+
+%ATTACHURL%/samplingunit2.gif
+
+Example 4.5.2.1. Recording sampling data in Main.BDI
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+  <SampleData>
+    <SamplingEvent id="sev1000">
+    <DateTime></DateTime>
+      <SamplingUnit>
+        <Categorical ref="c1">
+          <State ref="s2"/>
+        </Categorical>
+        <Quantitative ref="c2" value="110"/>
+      </SamplingUnit>
+      <SamplingUnit>
+        <Categorical ref="c1">
+          <State ref="s1"/>
+        </Categorical>
+        <Quantitative ref="c2" value="112"/>
+      </SamplingUnit>
+      <SamplingUnit>
+        <Categorical ref="c1">
+          <State ref="s1"/>
+        </Categorical>
+        <Quantitative ref="c2" value="110"/>
+      </SamplingUnit>
+      <SamplingUnit>
+        <Categorical ref="c1">
+          <State ref="s1"/>
+        </Categorical>
+        <Quantitative ref="c2" value="118"/>
+      </SamplingUnit>
+    </SamplingEvent>
+  </SampleData>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+-- Main.DonovanSharp - 21 Jun 2006
+
+%META:FILEATTACHMENT{name="geographicarea.gif" attr="" autoattached="1" comment="" date="1153205684" path="geographicarea.gif" size="2794" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="samplingunit2.gif" attr="" autoattached="1" comment="" date="1153206390" path="samplingunit2.gif" size="30913" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="sampledata4.gif" attr="" autoattached="1" comment="" date="1153197893" path="sampledata4.gif" size="28691" user="Main.DonovanSharp" version="1"}%
+%META:TOPICMOVED{by="DonovanSharp" date="1153196197" from="SDD.SamplingUnit" to="SDD.SamplingEvent"}%
+@
+
+
+1.11
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153794295" format="1.1" version="1.11"}%
+d3 1
+a3 1
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+d9 1
+a9 1
+A simple SDD instance document representing a sampling event has the basic structure shown below and in example 4.5.1.1.
+d111 1
+a111 1
+A simple SDD code snippet representing part of the sample data above has the basic structure shown below and in Example 4.5.2.1.
+d115 1
+a115 1
+Example 4.5.2.1. Recording sampling data in SDD
+@
+
+
+1.10
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153206616" format="1.1" reprev="1.10" version="1.10"}%
+d107 1
+a107 1
+---++++4.5.2. SamplingUnit
+d109 1
+a109 1
+A sampling unit may be an individual organism, a leaf of a tree, a piece of tissue, etc. In each sampling unit multiple characters may have been observed together ('paired observations'). Example: 'leaf shape, length, and width' of a single leaf). Value frequencies (e. g., '2.3': observed 4 x) are not supported; they are useful when only a single character variable is supported, but complicate paired observations unnecessarily. Char. values with a frequency should be entered in repeated SamplingUnits.
+@
+
+
+1.9
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153198116" format="1.1" reprev="1.9" version="1.9"}%
+d9 1
+a9 1
+A simple SDD instance document representing a sampling event has the basic structure shown below.
+d13 1
+a13 1
+---++++4.5.1 Sample data elements
+d15 1
+a15 1
+---++++4.5.1.1 DateTime
+d17 2
+a18 1
+Date and time when event occurred; single point, or start of span.
+d20 13
+a32 1
+---++++4.5.1.2 DateTimeSpanEnd
+d34 9
+a42 1
+The end of a time span if event timing is recorded as such.
+d45 1
+a45 1
+---++++4.5.1.3 GeographicArea
+d47 1
+a47 1
+A reference to a geographic area at which the event occurred.
+d49 4
+d78 1
+a78 1
+---++++4.5.1.4 Coordinates
+d80 1
+a80 1
+A point on earth at which the event occurred. Elements available are &lt;Latitude&gt;, &lt;Longitude&gt;, &lt;GeodeticDatum&gt;; &lt;Verbatim&gt; (a textual representation of the original location data) and &lt;Literal&gt; (a free-form string in addition to or instead of numeric coordinates (i.e. Charley's Creek, near Chinchilla).
+d107 1
+a107 1
+---++++4.5.1.5 SamplingEvent
+d111 1
+a111 1
+%ATTACHURL%/samplingunit2.jpg
+d113 4
+d161 2
+a162 3
+%META:FILEATTACHMENT{name="sampledata2.jpg" attr="" autoattached="1" comment="" date="1150873076" path="sampledata2.jpg" size="19199" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="sampledata3.jpg" attr="" autoattached="1" comment="" date="1152154542" path="sampledata3.jpg" size="36147" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="samplingunit.jpg" attr="" autoattached="1" comment="" date="1150944537" path="samplingunit.jpg" size="10520" user="Main.DonovanSharp" version="1"}%
+a163 1
+%META:FILEATTACHMENT{name="samplingunit2.jpg" attr="" autoattached="1" comment="" date="1152154388" path="samplingunit2.jpg" size="38179" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.8
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152239947" format="1.1" reprev="1.8" version="1.8"}%
+d5 1
+a5 1
+---+++4.5 Sample data
+d7 1
+a7 1
+Raw sample data are recorded here. The analysed and generalized (e. g. using statistical measures) results are normally also reflected under [[SummaryData][&lt;SummaryData&gt;]] (with origin = 'calculated' and &lt;BasedOnSample&gt; referring to a sample ID).
+d9 1
+a9 1
+%ATTACHURL%/sampledata4.jpg
+d11 2
+d82 1
+a82 1
+---++++4.5.1.5 SamplingUnit
+d135 1
+a135 1
+%META:FILEATTACHMENT{name="sampledata4.jpg" attr="" autoattached="1" comment="" date="1152155391" path="sampledata4.jpg" size="30321" user="Main.DonovanSharp" version="1"}%
+d137 1
+@
+
+
+1.7
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152165003" format="1.1" version="1.7"}%
+a7 2
+
+%ATTACHURL%/sampledata3.jpg
+@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152155441" format="1.1" reprev="1.6" version="1.6"}%
+d28 5
+d48 5
+d57 5
+d77 5
+d88 5
+d124 5
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152077461" format="1.1" version="1.5"}%
+d9 1
+a9 1
+%ATTACHURL%/sampledata2.jpg
+d11 2
+d66 1
+a66 1
+%ATTACHURL%/samplingunit.jpg
+d103 1
+d105 2
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151029506" format="1.1" reprev="1.4" version="1.4"}%
+d7 1
+a7 1
+Raw sample data are recorded here. The analysed and generalized (e. g. using statistical measures) results are normally also reflected under SummaryData (with origin = 'calculated' and BasedOnSample referring to a sample ID).
+@
+
+
+1.3
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150944537" format="1.1" reprev="1.3" version="1.3"}%
+d26 15
+d43 1
+a43 1
+A point on earth at which the event occurred.
+d45 15
+d100 2
+a101 2
+%META:FILEATTACHMENT{name="sampledata2.jpg" attachment="sampledata2.jpg" attr="" comment="" date="1150873076" path="sampledata2.jpg" size="19199" stream="sampledata2.jpg" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="samplingunit.jpg" attachment="samplingunit.jpg" attr="" comment="" date="1150944537" path="samplingunit.jpg" size="10520" stream="samplingunit.jpg" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150938539" format="1.1" version="1.2"}%
+d5 1
+a5 1
+---+++4.5 Sample Data
+d11 1
+d13 1
+d15 53
+d71 1
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150873194" format="1.1" reprev="1.1" version="1.1"}%
+d7 1
+d10 1
+@
+

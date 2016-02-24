@@ -1,0 +1,155 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1092141530" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+<strong>Introduction:</strong> SDD needs to be extensible to additional character (= variable) types. The base types currently supported are Categorical (incl. nominal and ordinal) and Numerical (incl. ratio/interval, integer and real). These character types generally exist in 4 flavors:
+	* definition of character
+	* character data in coded description data
+	* character data in sample data
+	* character data in natural language markup data
+
+The list of character (and similarly, the list of modifier types) should be extensible, so that new types (e. g., color polygons, parametric shape definitions, molecular sequence data) can be supported in future releases. In general the version that I am currently preparing is based on an implicit object-oriented design that supports abstract polymorphic base types (for each of the 4 character usages shown above) and non-abstract derived types for categorical, numerical etc. data. This basic design is not under discussion. The question is which design shall be used in xml instance documents?
+
+Please add your voice to the end of page, both if you prefer xsi:type or the alternative using choice. Positive information is as important and warnings against xsi:type.
+
+---
+
+<h3>Using xsi:type</h3>
+
+Xml schema supports a mechanism to use extended types in the place of a base type if the final/block schema attributes are appropriately set. If SDD defines <nop>AbstractCharacter and two non-abstract derived <nop>CategoricalCharacter and <nop>NumericalCharacter, the list of character definitions could be:
+
+<verbatim>
+xs:element name="Characters"
+  xs:complexType xs:sequence
+	  xs:element name="Character" type="AbstractCharacter" maxOccurs="unbounded"
+		  xs:annotation xs:documentation
+Abstract character type. To
+fully understand the schema,
+the non-abstract derived types
+CategoricalCharacter, NumericalCharacter, etc. must be 
+studied. In instance documents,
+these will be used using xsi:type.
+[ATTR: key]/xs:documentation /xs:annotation
+		/xs:element
+	/xs:sequence /xs:complexType
+/xs:element
+</verbatim>
+
+and instance documents may then look like:
+
+<verbatim>
+<Characters>
+  <Character xsi:type="CategoricalCharacter">
+	  ...
+  </Character>
+  <Character xsi:type="NumericalCharacter">
+	  ...
+  </Character>
+  <Character xsi:type="CategoricalCharacter">
+	  ...
+  </Character>
+</Characters>
+</verbatim>
+
+<table>
+<tr><td>but not:</td><td>&nbsp;&nbsp;</td><td>or:</td></tr>
+<tr><td>
+<verbatim>
+<Characters>
+  <Character xsi:type="AbstractCharacter">
+	  ...
+  </Character>
+</Characters>
+</verbatim>
+</td><td></td><td>
+<verbatim>
+<Characters>
+  <Character>
+	  ...
+  </Character>
+</Characters>
+</verbatim>
+</td></tr></table>
+
+
+---
+
+I find the xsi:type mechanism personally unproblematic, but so I would find correct namespace programming (which seems to be a stumbling block already, that some tools do not properly support yet). However, on the internet the xsi:type mechanism seems to be a large issue, often advising to avoid it, sometimes even arguing that XML schema is fundamentally broken because it uses types at all. A moderate opionion is, e.g. http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnxml/html/comptypder.asp: "Care must however be taken to consider the ramifications of the various type substitutability features of W3C XML Schema (xsi:type and substitution groups) when using derivation by extension in scenarios revolving around document validation"
+
+---
+
+<h3>Using choice based on element names</h3>
+
+Instead of using the abstract base type a choice could be used:
+
+<verbatim>
+xs:element name="Characters"
+  xs:complexType 
+	 xs:choice maxOccurs="unbounded"
+		xs:element name="CategoricalCharacter" type="CategoricalCharacter"/
+		xs:element name="NumericalCharacter" type="NumericalCharacter"/
+	 /xs:choice
+  /xs:complexType
+/xs:element
+</verbatim>
+
+and instance documents may then look like:
+
+<verbatim>
+<Characters>
+  <CategoricalCharacter>
+	  ...
+  </CategoricalCharacter>
+  <NumericalCharacter>
+	  ...
+  </NumericalCharacter>
+  ...
+</Characters>
+</verbatim>
+
+Separating the different derived types occurs now on the basis of element names, not the additional type information in an xsi:attribute. This requires explicitly listing the option, which on the one hand makes the schema a bit more complex, on the other hand an advantage is that one can click through to all options in a schema browser like xml spy.
+
+A major advantage is that this does not require the programmer or the tool to correctly handle the type information. Naive xslt programming based on element names works well (But note that xslt can easily handle type specific actions even in version 1.0 by using xpath like "//Character[xsi:type="NumericalCharacter"]" -- XSLT version 2.0 is to my knowledge even supposed to become even type-aware!)
+
+Another disadvantage is, that additional separate documentation is needed to inform that this is really a type polymorphism and a certain inflation of element names. The element names could be choosen so they correspond to the type names. In any case, code that treats all character the same would have to know about all possible names (including future ones), which if xslt is based on it could break. If the intended polymorphism is understood, xpath expressions based on position (Character/*/Label) could be used to keep code independent of the actual types.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 05 Aug 2004
+
+---
+
+<h3>Comments</h3>
+
+Personally I consider this mechanism (xsi-type) to be quite an elegant way to express different incarnations of a certain element in a XML schema and at some point we considered to use it in the TDWG schema. However it seems to be non-intuitive and difficult to understand for prospective users and so we have abandonded the idea. 
+
+-- Main.RobertKukla - 05 Aug 2004  
+
+Unfortunately i didnt have time to really get into it, but as far as I understand it you want to use xsi:type to allow a single element to have different types. I fail to understand all consequences, but I rather tend to the choice approach, where all elements
+have a single fixed type.
+
+-- Markus Döring - 05 Aug 2004  
+
+As always: If there is no major advantage / simplification, I favour readability above elegance.
+
+-- Main.WalterBerendsohn - 06 Aug 2004
+
+The schema is already complex to follow. Anything that makes it more readable would be good.
+
+-- Main.BryanHeidorn - 06 Aug 2004 
+
+
+I am strongly in favor of this. It corresponds rather closely to what happens in most OOP languages, making explicit that which is implicit by introspection in Java (for example). 
+
+-- Main.BobMorris - 06 Aug 2004
+
+I think I can add that Guillaume Rousse would vote for polymorphism, if I remember an discussion earlier at a meeting correctly.
+
+In the instance document, the readability of xsi:type and choice I would estimate to be similar, here it is really the tools supporting it or not. In the schema, the xsi:type approach is considerably more difficult to follow, although then it is easier to map the schema to a OOP or UML model... So what... I think except for Bob the vote was for the choice model. I will try to keep the schema basically in a polymorphic type system, but actually use the choice... I am uncertain still...
+
+-- Gregor Hagedorn -- 9. August 2004
+
+---
+I am badly outvoted here, but I am convinced that going with "choice" instead of "type" will lead to an explosion of application complexity with switches littered around the code. Favoring switches over polymorphism is going to lead to more brittle, more difficult to extend  more complex code. Indeed, in OOP polymorphism has as one of its major advantages that it is a substitute for switches whose code survives the introduction of new "choices", i.e. new derived types. The biggest source of programming errors consequent on the use of switches littered about one's code is the absence of a default, and discipline (or good IDEs) can help this. [I don't think castor or .NET can deduce what to do about this from a schema though). A lucky progammer is one whose program crashes close to this error instead of way later, and avoidance of global variables or other things subject to side effects usually makes this happen. 
+
+I also believe that simplicity of programming vs. simplicity of schema reading is preferable because very few people have to read the schema in detail----especially application programmers. Frameworks such as Castor and .NET do most of the dealing with the schema and the main place you are digging in the schema is when those go wrong due to one or another immaturity (or poor documentation). I think the arguments about readability of the schema correspond to someone claiming that it is really important for application programmers to be able to read the formal description of the programming languages they write with. But it never is. That's important mainly for compiler writers (here for Castor authors and .NET authors). [In fact, the brand new rather nice book "Building Web Services with Java 2nd ed" by Steve Graham et al. ---which I have adopted for a course---refers to Castor as a "schema compiler"].
+
+All that said, we have known all along that social acceptance of the schema is more critical than anything else, so I support Gregor's decision to go with "choice".

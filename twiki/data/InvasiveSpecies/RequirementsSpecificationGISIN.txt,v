@@ -1,0 +1,530 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.1
+date	2007.08.04.03.57.51;	author AnnieSimpson;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="AnnieSimpson" date="1186199871" format="1.1" version="1.1"}%
+%META:TOPICPARENT{name="DevelopmentDocsGISIN"}%
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>GISIN: Requirements</title>
+<link rel='stylesheet' href='W3C-REC.css' type='text/css'>
+</head>
+
+<body>
+<h1>GISIN: Requirements Specification</h1>
+
+<h4>Version: 2.2 -- RequirementsSpecificationGISIN</h4>
+<h4>Last  Update: 20th of May, 2007</h4>
+
+<h2><a name="Introduction" id="Introduction">Contents</a></h2>
+
+<p>
+
+<a href="#Introduction">1. Introduction</a><br>
+    <a href="#WebSite">2. GIS Web Site </a><br>
+<a href="#Registry">3. Registry</a><br>
+<a href="#ProviderToolkit">4. Provider Toolkit</a><br>
+<a href="#ConsumerToolkit">5. Consumer Toolkit</a><br>
+<a href="#Protocol">6. Protocol</a><br>
+<a href="#AppendixA">Appendix A - Issues</a><br>
+
+<h2><a name="Introduction" id="Introduction">1. Introduction</a></h2>
+
+<p>This document describes the requirements of the Global Invasive  Species System (GISIN).&nbsp; The goals of this system  are to allow users of the world-wide-web to access the large amount of data  that is available on invasive species in a manner that is much easier than  today.&nbsp; Currently, accessing data on  invasive species consists primarily of searching through Google, searching scientific  literature to discover individuals who have data, or simple word-of-mouth.&nbsp; After finding the data it can be a time-consuming  task to filter through the data to find exactly what one is looking for and  then convert it into a desired format.&nbsp; </p>
+<p>The requirements are being set based on feedback from the user community. Features are musts unless followed by 'Need' or 'Want. Needs and wants indicate features that will not be implemented unless time allows. Please see the associated definitions and introduction documents  for background information.</p>
+
+<h3>1.1 Overall System Requirements</h3>
+<p>In general, the system must:</p>
+<ul type="disc">
+  <li>Use common terminology and resolve terminology conflicts</li>
+  <li>Be as simple to install and understand as is possible while still meeting the other requirements</li>
+  <li>Be able to be translated to other languages where needed</li>
+  <li>Fast for requesting and receiving data</li>
+  <li>Support large data sets</li>
+  <li>Support all taxa </li>
+  <li>Operate in a client/server, request/response manner</li>
+  <li>Provide toolkits as required by complexity and user sophistication</li>
+  <li>Be platform independent</li>
+  <li>Be software independent</li>
+  <li>Be easy to implement by the user base</li>
+  <li>Compatible with 90% of the providers environments.</li>
+  <li>Be as compatible with GIBF as possible within the other requirements.</li>
+  <li>Be as compatible with TDWG architecture efforts as possible within the other requirements</li>
+  <li>Not have any  recursive type definitions in the schemas</li>
+  <li>Elements with complex content except puralization containers must be explicitly typed
+    <br />
+  </li>
+</ul>
+<h3>1.2 Scope</h3>
+<p>GISIN will support providers that have data in a relational  or flat-file database as long as the database contains filtering capability  (e.g. a &ldquo;WHERE&rdquo; clause in SQL or the equivalent).&nbsp; </p>
+<p>GISIN will not support providers with data in text files,  HTML files, or non-digital media.&nbsp; These  providers should examine the GISIN web registry for a  Data Common they can add their data to.</p>
+<p>The system must allow the creation of:</p>
+<ul>
+  <li> A Registry with lists of available web sites and providers</li>
+  <li>Providers of data on invasive species</li>
+  <li>Commons that provide data from various sources</li>
+  <li>Consumers that obtain data from providers to provide  summaries, higher-performance searching, maps, etc.</li>
+  <li>Portals that allow users to search across providers</li>
+  <li>Administration sites that search across providers and  synthesize results to provide statistics</li>
+</ul>
+<h3>1.3 Components</h3>
+<p>To provide the described herein, the system will include:</p>
+<ul>
+  <li>Web site with all documentation, toolkits, and links to  the registry</li>
+  <li>Registry that is machine and human searchable</li>
+  <li>Protocol specification for data exchange (including  appropriate schemas)</li>
+  <li>Provider toolkit</li>
+  <li>Portal toolkit if needed</li>
+</ul>
+<p>These components are detailed out in following sections.</p>
+<h3>1.4 Description of operation</h3>
+<p>The system operates in a client-server, request-response  model.&nbsp; A client (a consumer) makes a  request for information to a server (a provider).&nbsp; The server then returns a response based on  the parameters within the request.&nbsp; The  server may also return an error if appropriate.&nbsp;  The type of data in the response may vary based on the type of  request.&nbsp; Responses will typically be in  Extensible Markup Language (XML) but may also include images in the future.</p>
+
+<h3>1.5 Use Cases</h3>
+<p>The following is a summary set of use cases that while they  must be supported by the system and its communication protocol.&nbsp; These use cases represent only a small subset  of the systems functionality.&nbsp; The  remainder of the requirements document defines the additional features.</p>
+<h4>1.5.1 Obtain a taxon list of species that have a particular  bio-status in a location</h4>
+<p>Example: Which species are invasive to New    Zealand?</p>
+<h4>1.5.2 Obtain a list of locations where a specified species  has a particular bio-status</h4>
+<p>Example: In which countries is <i>Tamarix</i> considered invasive?</p>
+<h4>1.5.3 Obtain a list of checklists for a location and/or  species</h4>
+<p>Example: Get the checklists for the genus <i>Tamarix</i> worldwide</p>
+<h4>1.5.4 Obtain a list of profile URLs for a location and/or  species</h4>
+<p>Examples: Get the list of URLs that contain profile  information on <i>Tamarix</i></p>
+<h4>1.5.5 Obtain a list of occurrences for a species in a  particular location</h4>
+<p>Examples: Get the occurrence locations for <i>Tamarix</i> in the United    States</p>
+<h3>1.6 Types of data to be shared</h3>
+<h4>1.6.1 First version</h4>
+<p>The following types of data will be shared in the first  version of the system.&nbsp; Please see the  definitions document for more details on these types.</p>
+<ul>
+  <li>Checklists: lists of taxa and their BioStatus in a  selected location<br />
+  </li>
+  <li>Profile URLs: lists of URLs of available profiles<br />
+  </li>
+  <li>Occurrences: lists of known locations for a individual or  population of a particular taxon identified on a specific date (observation,  survey), selected by date, location, taxon, and/or BioStatus</li>
+</ul>
+<p>Checklists are the highest priority for sharing followed by  profile URLs, occurrences and then profiles.</p>
+
+<h3>1.6.2 Near future</h3>
+
+<p>The following data types are expected to be added in the  near future:</p>
+<ul>
+  <li>Profiles: lists of profile information (fact sheets) on  species<br />
+  </li>
+  <li>Project/Case Study information
+    
+  </li>
+</ul>
+<h4>1.6.3 Future expansion</h4>
+<p>The following data types are of interest but are not  critical:</p>
+<ul>
+  <li>Experts </li>
+  <li>Images</li>
+</ul>
+<h3>1.7 Performance</h3>
+<p>Able to complete the following search within 1 second:</p>
+<ul>
+  <li>Obtain a taxon checklist from a local provider</li>
+</ul>
+<p>Able to complete the following search within 1 minute:</p>
+<ul>
+  <li>Obtain a list of 1,000 occurrences including; scientific name,  date, coordinates</li>
+</ul>
+<h3>1.8 Users</h3>
+<p>The users of GISIN fall into two large categories, end-users and  implementers.&nbsp; The end-users are  individuals using a web browser to find information on invasive species.&nbsp; Implementers are the people who are building  or associated with the builders of the system including the members of GISIN.</p>
+<p>The end-users of GISIN will be as varied a group of computer  users as can be imagined.&nbsp; Anyone  interested in invasive species from young school children to experienced  scientists and resource managers to politicians may be assessing the  system.&nbsp; This broad a user base will not  have the technical expertise to understand the limitations of the available  technology and will expect it to perform as other available web sites do.&nbsp; Examples of these web sites include Google,  Yahoo, Wikipedia, and a large number of commercial web sites.&nbsp; This implies that the system must be very  easy to use, flexible, and have high-performance  with very large data sets.</p>
+<p>The implementers have been surveyed and were found to have a  wide variety of needs and limited time to spend on technical issues (add link  to survey results).&nbsp; This means the  system must be as easy to implement as possible, well documented, and easy to  monitor for quality and performance problems.</p>
+<p>The different types of implementers (providers, consumers,  data commons, and portals) will also have a variety of needs.&nbsp; Providers will have a variety of technical  abilities and existing systems.&nbsp; The  quantity and variety of data will vary from small data sets on one species to  data sets with millions of entries for a large number of species.&nbsp; Consumers will include implementers caching  data, producing maps, and summarizing data.&nbsp;  This will require the system to perform as fast as possible and have  flexibility in obtaining data.&nbsp; Data  commons are a special data provider that will contain large quantities of data  from a variety of end-users.&nbsp;&nbsp; Portals  integrate multiple providers to aid users in searching across multiple  providers.&nbsp; Requirements from various  types of implementers are reflected in the remainder of this document.</p>
+<p>For all providers and especially data commons, it is a must  that the system maintains metadata on the source of the original data.&nbsp; Below are some examples of different types of  users that the system is required to support.</p>
+<h4>1.8.1 End-users</h4>
+<p>Examples:</p>
+<ul>
+  <li>Annie: Find the list of current providers and email them  with info on the next meeting!</li>
+  <li>Pest risk assessor: Find the list  of locations where <i>Tamarix</i> is invasive in the US</li>
+  <li>High school class: Find the list of invasive species for their  area<br />
+  </li>
+  <li>Resource manager: Add recent survey data on invasive  species for a park<br />
+  </li>
+  <li>Pesticide company: Find a web site to add information on a  new pesticide</li>
+</ul>
+<h4>1.8.2 Consumers</h4>
+<p>Examples:</p>
+<ul>
+  <li>National Institute of Invasive Species Science : Get occurrences of <i>Tamarix</i> for mapping</li>
+  <li>NISbase: Show multiple providers in the NISBase web site</li>
+</ul>
+<h4>1.8.3 Providers</h4>
+<p>The following are just a few examples of invasive species databases that desire to be online. See GISIN for the complete list. </p>
+<ul>
+  <li>Southwest Exotic Plant Mapping Program (SWEMP)</li>
+  <li> Invasive Plant Atlas of New England&rsquo;s (IPANE) </li>
+  <li>Non indigenous Aquatic Species (NAS) </li>
+</ul>
+<h3>1.9 Schedule</h3>
+<p>Below are the target dates for development of the system:</p>
+<ul>
+  <li>February 2007, Survey completed<br />
+  </li>
+  <li>March 2007, Requirement specification completed (1st  draft)<br />
+  </li>
+  <li>April 2007, Protocol specification completed<br />
+  </li>
+  <li>May 2007, Test implementation of protocol available</li>
+</ul>
+<h3>1.10 Resources</h3>
+<p>GISIN is largely a grass-roots organization coordinated by  GISIN and reliant upon the participation of a large number of individuals from  a diverse group of organizations from across the world.&nbsp; The creation of the individual components is  largely the responsibility of the organizations hosting the web servers.&nbsp; </p>
+<h4>1.<span class="title2">10</span>.1 Funding</h4>
+<p>Organizations have gracefully provided support for individuals  to attend meeting and review documents.&nbsp;  Below is the only funding available specifically for GISIN  development.&nbsp; The most significant  problem is that there is no funding available for support and updates.</p>
+<ul>
+  <li>GBIF, 15K for development of the protocol, registry, and  toolkit in 2007</li>
+</ul>
+<h4>1.<span class="title2">10</span>.2 People</h4>
+<p>The following roles need to be identified to complete and  support the system:</p>
+<ul>
+  <li>Web Site manager: ?<br />
+  </li>
+  <li>GISIN Coordination: Annie</li>
+  <li>Task group convener: Jim<br />
+  </li>
+  <li>Testers: Volunteers<br />
+  </li>
+  <li>Documentation: Jim (potentially with subcontractors)<br />
+  </li>
+  <li>Outreach: ?</li>
+</ul>
+<h3>1.11 Quality</h3>
+<p>End-users will need to have a quality experience for GISIN to  be successful.&nbsp; This means the web sites  must be accessible, response times quick, results understandable, and data  accurate.&nbsp; </p>
+<h4>1.<span class="title2">11</span>.1 Transmission stability</h4>
+<p>Transmission stability is effected by the Internet and the providers hardware, software, and database. Complexity and size of the transfers will also effect stability. While the system should be as standard as any other web service based system, we are setting the following criteria. </p>
+<ul>
+  <li>Able to make 1000 transfers with less than 10% failure. No more than 10 retry's to obtain all data. </li>
+</ul>
+<h4>1.<span class="title2">11</span>.2 Documentation readability</h4>
+<p>Documentation must be available on the world-wide-web and  readable by individuals with appropriate background in web services.&nbsp; The documentation will initially only be available  in English.&nbsp; </p>
+<h4>1.<span class="title2">11</span>.3 Data Quality</h4>
+<p>Below are the target tolerances for data within the system:</p>
+<ul>
+  <li>Over 90% occurrence locations correct<br />
+  </li>
+  <li>Over 90% taxonomic identification correct</li>
+</ul>
+<h4>1.<span class="title2">11</span>.4 Data Quantity</h4>
+<p>At introduction:</p>
+<ul>
+  <li>Check lists for 100 species </li>
+  <li>Profile URLs for 100 species</li>
+  <li>Over 1000 occurrences </li>
+</ul>
+<p>Within 5 years of release:</p>
+<ul>
+  <li>Checklists for ? species<br />
+  </li>
+  <li>Profile URLs?<br />
+  </li>
+  <li>Occurrences ?</li>
+  <li>Profiles for 90% of the top 500 invaders world-wide</li>
+</ul>
+<h4>1.<span class="title2">11</span>.5 Data Relevance (fit for purpose)</h4>
+<ul>
+  <li>Over 80% applies to invasive species</li>
+</ul>
+<h2><a name="WebSite" id="WebSite">2. GISIN Web Site</a></h2>
+
+<p>A web site will be available with end-user and technical  documentation and access to the registry.&nbsp;  The web site will also contain a showcase for products created using the  GISIN and tools for managing the system.</p>
+<h3>2.1 Documentation</h3>
+<p>End-user documentation will include; an introduction to the  GISIN,  how to use the registry, and how to use the portal to find information on invasive  species.</p>
+<p>Technical documentation will include how to obtain and  install the toolkits and specifications for the protocol.&nbsp; The documentation for the protocol and schema  must be freely available and be very easy to create providers from.&nbsp; It should also be easy to create consumers  and portals.</p>
+<h3>2.2 Registry</h3>
+<p>The web site will contain a registry with requirements in section 3. </p>
+<h3>2.3 Product Showcase</h3>
+<p>TBD</p>
+<h3>2.4 Management Tools</h3>
+<p>The manage tools will be available through password  protected section of the web site and will include:</p>
+<ul>
+  <li>Access to provider contact info<u></u><br />
+  </li>
+  <li>Development WiKi is available on the TDWG web site </li>
+</ul>
+<h2><a name="Registry" id="Registry">3. Registry</a></h2>
+
+<p>The registry will contain a list of providers, consumers,  and portals with URLs for their web sites.&nbsp;  For providers it will also include which types of data they contain and  statistics on the number of species and areas of interest. The registry will follow an approach similar to DiGIR where were are organizations and then within each organization there can be multiple data sets. </p>
+<p>The registry must have a data sharing agreement and track who has agreed to it. </p>
+<h3>3.1 Data Maintained </h3>
+<p>The registry will include the following fields for each organization:</p>
+<ul>
+  <li>Short Name</li>
+  <li>Long Name</li>
+  <li>Logo</li>
+  <li>URL for more information</li>
+  <li>Contact Name</li>
+  <li>Contact Phone</li>
+  <li>Contact Email</li>
+</ul>
+<p>For each web service within each organization we will have:</p>
+<ul>
+  <li>Type: Whether it is a CheckList, ProfileURL, Occurrence, or other web service </li>
+  <li>URL for the web service </li>
+  <li>Contact  info (email and phone for when there are problems) </li>
+  <li>Hosting  organization</li>
+</ul>
+<h3>3.2 Web Site </h3>
+<p>Below is a list of the features that are required for each  of the database tables mentioned above.&nbsp;</p>
+<p> Search/Browse for web services by: </p>
+<ul>
+  <li>Area of  interest<br />
+  </li>
+  <li>Taxons of  Integer<br />
+  </li>
+  <li>Types of  data contained (CheckLists, Profile URLs, Occurrences, etc.)</li>
+  <li>Languages  (later for profile information)<br />
+  </li>
+</ul>
+<h2>4. Provider Toolkit<a name="ProviderToolkit" id="ProviderToolkit"></a></h2>
+
+
+<p>The provider toolkit will be available on a set of mirrored  servers on the web and will make it easy for most providers to add their data  to the system.&nbsp; The toolkit will contain:</p>
+<ul>
+  <li>An easy, web-based setup for  providers (similar to  DiGIR)</li>
+  <li>Examples for most providers </li>
+  <li>Documentation on:
+    <ul>
+      <li>Installation</li>
+      <li>How to  modify the toolkit for specific database schemas</li>
+      <li>How to  register as a provider</li>
+      <li>Best  practices (don&rsquo;t request lots of data repeatedly, harvest at night, etc.)</li>
+      <li>Protocol</li>
+      <li>How to  adapt the examples for other languages</li>
+    </ul>
+  </li>
+</ul>
+<p>The documentation will only be available in English  initially.</p>
+<p>The toolkit has the following general requirements:</p>
+<ul>
+  <li>Easy to install with minimal technical ability for the  most common system configurations</li>
+  <li>Flexible to be adapted to less common systems</li>
+  <li>Maps existing provider terminology to standard as needed</li>
+  <li>Can be queried for version</li>
+</ul>
+<p>The bulk of the remainder of this section documents the characteristics of the systems that must be supported to allow our providers to implement the protocol. </p>
+<h3>4.1 Operating Systems</h3>
+<p>The toolkit will support the following operating systems:</p>
+<ul>
+  <li>MS-Windows Server: Must</li>
+  <li>MS-Windows XP: Want</li>
+  <li>Linux: Need</li>
+  <li>Mac X: Want</li>
+  <li>Unix: Need</li>
+</ul>
+<h3>4.2 Web Servers</h3>
+<p>The toolkit will support the following web servers:</p>
+<ul>
+  <li>MS Internet Information Server: Must</li>
+  <li>Apache/Tomcat: Must</li>
+</ul>
+<h3>4.3 Web Development Frameworks</h3>
+<p>The toolkit will be supported on the following web development frameworks: </p>
+<ul>
+  <li>PHP: Must</li>
+  <li>Application Server Pages (ASP): Must</li>
+  <li>Java Server Pages (JSP): Must</li>
+  <li>Cold Fusion (CFM): Want</li>
+  <li> Common Gateway Interface (cgi): Want</li>
+</ul>
+<h3>4.4 Supported programming languages</h3>
+<p>The toolkit will be supported on the following programming languages: </p>
+<ul>
+  <li>PHP: Must</li>
+  <li>Java: Must</li>
+  <li>VBScript: Must</li>
+  <li>JScript: Must? </li>
+  <li>ColdFusion: Want</li>
+  <li>Perl: Want</li>
+  <li>C++: Want</li>
+</ul>
+<h3>4.5 Supported Databases</h3>
+<ul>
+  <li>MySQL: Must</li>
+  <li>PostGRES: Need</li>
+  <li>MS SQL Server: Must?</li>
+  <li>MS Access: Must?</li>
+  <li>Excel: Want</li>
+</ul>
+<h3>4.6 DiGIR Learnings</h3>
+<p>DiGIR is the most pervasive of the biological data exchange  standards.&nbsp; The GISIN toolkit could be  thought of as standing on the shoulders of the DiGIR toolkit and taking the  next step in ease of use for implementers.&nbsp;  This includes:</p>
+<ul>
+  <li>No  complex (i.e. hierarchical) queries</li>
+  <li>No extra features (i.e. WMS)</li>
+  <li>Minimal code to adapt to non-supported databases  </li>
+  <li>Easier to modify SQL query creation to adapt to more databases and schemas </li>
+  <li>More flexible row access (i.e. RowStart, RowCount without requiring partial scientific name)</li>
+  <li>Quality help for providers</li>
+  <li>No name spaces to prevent multiple version branches of the  protocol</li>
+  <li>Easier to install</li>
+  <li>Easier to adapt to relational database schemas</li>
+  <li>Easier to understand</li>
+  <li>Does not require an additional framework to be added to  the server</li>
+</ul>
+<h3>4.7 Scope</h3>
+<p>The provider toolkit will need to allow providers the following scope:</p>
+<ul>
+  <li>Any Taxa</li>
+  <li>Checklists, Profile URLs and/or Occurrences</li>
+  <li>All BioStatuses</li>
+</ul>
+<p>Can have the following limitations:</p>
+<ul>
+  <li>One country per installation </li>
+  <li>One language per installation </li>
+</ul>
+<h2><a name="ConsumerToolkit" id="ConsumerToolkit">5. Consumer Toolkit</a></h2>
+
+<p>A consumer Toolkit may be needed to make it easy to access  information in the system, make requests, and parse responses.&nbsp; It is yet to be determined whether it is  required.</p>
+
+<h2><a name="Protocol" id="Protocol">6. Protocol</a></h2>
+
+<p>This section provides the requirements for the protocol to  communicate data on invasive species between computers.&nbsp; The protocol must provide the requirements  appropriate from the material above and the additional requirements in this  section. </p>
+<p>Protocol will have the following general requirements:</p>
+<ul>
+  <li>Independent of programming language</li>
+  <li>Allow for fast transfer of large quantities of data</li>
+  <li>Simple as possible to implement given the other  requirements</li>
+  <li>Can be implemented with just the documentation</li>
+  <li>There will be a minimal amount of nesting, in other words  hierarchical structures will be as flat as possible</li>
+  <li>The requests and responses should be human readable (i.e.  XML is ok, binary is not)</li>
+  <li>Have a set of standard terminologies</li>
+  <li>The protocol will use non-extended ASCII unless  transferring textural information</li>
+  <li>Compatible with common firewall settings</li>
+  <li>Compatible with TCP/IP protocol (Internet)</li>
+</ul>
+<p>The last two items pretty much force the protocol to operate  using HTTP through port 80.&nbsp; This is the  only method of communication that is typically available for web serves as most  other ports are dedicated or blocked by firewalls.</p>
+<h3>6.1 General</h3>
+<h4>6.1.1 Language Support</h4>
+<p>As a global system, GISIN must allow users to provide and  obtain textural information in various languages.&nbsp; However, most providers will not have  information available in multiple forms.&nbsp;  To allow providers to operate in their own language and to allow  consumers to ingest and then provide translated versions of text, the following  strategy will be used.</p>
+<ul>
+  <li>Text in the language native to the providers will be  returned by default</li>
+  <li>Consumers can query for which languages are supported</li>
+  <li>Consumers can then query for text in a specific language</li>
+</ul>
+<p>This issue only applies to language specific transfers which  are discouraged in favor of &ldquo;coded&rdquo; transfers.</p>
+<h4>6.1.2 Taxa Identification</h4>
+<p>Taxa will be identified by standard Scientific Name (i.e.  Kingdom, Genus, Species, Subspecies, Variety).&nbsp;  Date and author may be added for specific taxa concepts.</p>
+<p>The protocol will not support requesting taxa by common  name.</p>
+<h4>6.2.3 Location names</h4>
+<p>Locations can be provided either by coordinates (points,  polygons, and bounding boxes) or by textural &ldquo;names&rdquo;.&nbsp; Coordinates will be in geographic coordinates  in the WGS84 or HARN datums.&nbsp; Names will  be ISO where available, other standards when available.&nbsp; If a language-specific name is used it will  be transferred with its language.&nbsp; If a  name is specified to a location, it&rsquo;s location must accompany it.</p>
+<h3>6.2 Requests</h3>
+<p>All parameters in requests that filter the data will be  ANDed together.&nbsp; In the future an OR may  be provided for certain parameters by concatenating them with commas.&nbsp; Data searches requiring Boolean OR operators  can be executed with multiple requests or by requesting a more general set of  data and then filtering the data to obtain just the desired data.</p>
+<p>For each of the supported data types, the protocol must  allow request to be made for:</p>
+<ul>
+  <li>If the provider contains data for a given taxa and/or  location</li>
+  <li>How many records the provider has for a given taxa and/or  location</li>
+  <li>A block of records for a given taxa and/or location</li>
+</ul>
+<p>Blocks of records can be requested given a start number and  a number of rows or an entire set of available records.&nbsp; </p>
+<p>For consumers to minimize updates to their databases the  records can be filtered based on CreationDate and LastModifiedDate.&nbsp; Each record must contain a unique identifier  to determine when a record has been updated and to prevent duplication.</p>
+<p>Below are requirements within each data type.</p>
+<h4>6.2.1 Checklists</h4>
+<p>Filter by:</p>
+<ul>
+  <li>Location</li>
+  <li>Taxa</li>
+  <li>Date range for when the biostatus is valid</li>
+</ul>
+<p>Please reference the BioStatus spreadsheet (or the current protocol specification) for the latest information on the BioStatus fields. </p>
+<h4>6.2.2 Profile URLs</h4>
+<p>Filter by:</p>
+<ul>
+  <li>Taxa</li>
+</ul>
+<h4>6.2.3 Occurrences</h4>
+<p>Filter by:</p>
+<ul>
+  <li>Location (code, name, or bounding box)</li>
+  <li>Taxa</li>
+  <li>Date range</li>
+</ul>
+<h3>6.3 Responses</h3>
+<p>Responses will be returned as XML unless images are requested. For images, the client will specify an image format for the response. </p>
+<p>To show information within a portal each request should  return metadata including a URL for additional information, a URL for a logo, and a human readable  title.</p>
+<p>The following sections document the tags that can be returned in a response for a given data type. This section documents which tags the protocol must allow for, which tags are required to be returned will be defined in the protocol specification. </p>
+<p>Each element needs to contain a globally unique identifier (GUID). </p>
+<h4>6.3.1 Checklists</h4>
+All fields from filters plus: 
+<ul>
+  <li>Date Range: Date when BioStatus is valid </li>
+  <li>Data Source (citation) </li>
+</ul>
+<p>These are from the TWDG meeting, are they still required? </p>
+<ul>
+  <li>ArrivalDate</li>
+  <li>Notes </li>
+</ul>
+<h4>6.3.2 Profile URL</h4>
+<p>All fields from filters plus:</p>
+<ul>
+  <li>URL for the profile</li>
+  <li>URL for an appropriate image for portals to display near  the profile listing</li>
+</ul>
+<h4>6.3.3 Occurrences</h4>
+<p>All fields from filters plus:</p>
+<ul>
+  <li>Date</li>
+  <li>Ancillary information:  </li>
+</ul>
+<ul>
+  <ul>
+    <li>Percent  Cover</li>
+    <li>Weight</li>
+    <li>Height</li>
+    <li>Sex </li>
+    <li>LifeStage</li>
+  </ul>
+</ul>
+<h2><a name="AppendixA" id="AppendixA">Appendix A - Issues</a></h2>
+
+<p>A.1 How do we represent spatial accuracy</p>
+<p>- Added accuracy to coordinates</p>
+<p>A.2 How to represent taxonomic identification accuracy?</p>
+<p>- ? </p>
+<p>A.3 Should we provide a portal interface that gives lists of  profiles by species?</p>
+<p>- Requires a search mechanism that returns list of URLs<br />
+  - Search  by: Taxon, Fields available, Keywords<br />
+  -  Google-like search engine for profiles</p>
+<p>A.4 Is GISIN providing a portal or just a list of available  portals?
+<p>- A portal </p>
+<p>A.5 How to get folks to add data when it effects trade?</p>
+<p>A.6 Will we include taxon concept IDs?</p>
+<p>A.7 Will we use UDDI for the registry?</p>
+<p>A.8 We do not have the resources to provide a DiGIR like installation for all 3 major languages. </p>
+<p>- My proposal is to provide examples in all 3 languages and, since PHP is the most common and most portable language, provide an easy install in PHP.</p>
+<p>A.9 How do we obtain globally unique identifiers?</p>
+<p>A.10 How do we monitor quality and resolve problems with  data?</p>
+<p><br />
+</p>
+</body>
+</html>
+
+
+
+
+-- Main.AnnieSimpson - 04 Aug 2007@

@@ -1,0 +1,164 @@
+%META:TOPICINFO{author="DonovanSharp" date="1156821109" format="1.1" reprev="1.19" version="1.19"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.4 Defining taxon names
+
+---+++3.4.1 Defining taxon names
+
+Datasets in SDD documents will generally contain descriptions or other data for a defined set of organisms. The names of these are specified in the &lt;TaxonNames&gt; element. 
+
+Taxon names in SDD may be provided directly within the document, or they may be linked to or derived from external taxonomic databases. Each taxon is assigned a human readable name.
+
+A simple SDD code instance representing taxon name definition has the basic structure shown below and in Example 3.4.1.1.
+
+%ATTACHURL%/taxonnames.gif
+
+---++++Example 3.4.1.1 - A simple list of taxon names
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+
+<verbatim>
+    <TaxonNames>
+     <TaxonName id='Taxon95'>
+        <Label>
+          <Text>Collembola</Text>
+        </Label>
+      </TaxonName>
+      <TaxonName id='Taxon96'>
+        <Label>
+          <Text>Protura</Text>
+        </Label>
+      </TaxonName>
+      <TaxonName id='Taxon97'>
+        <Label>
+          <Text>Diplura</Text>
+        </Label>
+      </TaxonName>
+    </TaxonNames>
+</verbatim>	
+
+
+</td>
+</tr>
+
+</table>
+
+
+Taxa may be assigned multiple alernative names, which can then be utilised for varying purposes by a consuming application. For example, full names, abbreviated names and common names can be supplied for any taxon.
+
+---++++Example 3.4.1.2 - Multiple names for a single taxon
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+ 
+<verbatim>   
+  <TaxonName id="taxon1">
+   <Representation>
+    <Label role="Full">Aristida latifolia</Label>
+    <Label role="Abbrev">A. latifolia</Label>
+    <Label role="Token">Feathertop Wiregrass</Label>
+   </Representation>
+  </TaxonName>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+---+++3.4.2 Elements within &lt;TaxonNames&gt;
+
+Taxonomic names may be simple (Pandanus tectorius) or quite complicated due to the additions supported by various taxonomic naming conventions (_Pandanus_ L.f. _tectorius_ Parkinson sens. lat. meaning of the genus _Pandanus_ as described by Linnaeus and the species _tectorius_ in the broad sense as described by Parkinson). There are a number of elements within &lt;TaxonNames&gt; to facilitate the management of the various additions to simple taxonomic names.The basic structure of the SDD code to support this is shown below and in Example 3.4.2.1.
+
+%ATTACHURL%/taxonnameelements.gif
+
+---++++Example 3.4.2.1 Basic structure within taxon names
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+ 
+<verbatim>   
+		<TaxonNames>
+			<TaxonName id="t1">
+				<Representation>
+					<Label>Gleditsia triacanthos</Label>
+				</Representation>
+				<NomenclaturalCode>Botanical</NomenclaturalCode>
+				<Rank literal="Species"/>
+				<CanonicalName>
+					<Simple>Pandanus tectorius</Simple>
+				</CanonicalName>
+				<CanonicalAuthorship>
+					<Simple>Parkinson</Simple>
+				</CanonicalAuthorship>
+				<ConceptSuffix literal="sens lat."/>
+				<TaxonPlacement>
+					<TaxonName ref="t3"/>
+				</TaxonPlacement>
+			</TaxonName>
+		</TaxonNames>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+---+++++3.4.2.1 <noautolink>NomenclaturalCode</noautolink>
+
+The relevent nomenclatural code governing the entity. This may be used to validate entity names.
+
+The following sets of rules (nomenclature codes) are currently accepted:
+
+   * Plants (including fungi and algae): International code of the Botanical nomenclature (ICBN)
+   * Animals: International code OF Zoological Nomenclature (ICZN)
+   * Bacteria: Bacteriological code (BC)
+   * Cultivated plants: Internationally code OF Nomenclature for Cultivated Plants (ICNCP)
+   * Viruses: Internationally code OF virus Classification and Nomenclature (ICVCN)
+
+Other codes are currently in development but not yet accepted, including the are Phylocode and bio code, aiming to unify the various currently accepted codes.
+
+
+---+++++3.4.2.2 Rank
+
+For biological taxonomic names: order, family, species, etc. 
+
+---+++++3.4.2.3 <noautolink>CanonicalName</noautolink>
+
+Canonical name enforcing strict inclusion of only nomenclatural information, i.e. not taxonomic hierarchy information with the exception of the necessary placements within Genus or Species. Canonical name may be a simple text representation or an atomised representation in the following format
+
+%ATTACHURL%/canonicalname.gif
+
+---+++++3.4.2.4 <noautolink>CanonicalAuthorship</noautolink>
+
+Canonical authorship of the name, optionally atomized
+
+---+++++3.4.2.5 <noautolink>ConceptSuffix</noautolink>
+
+A part of the taxon name indicating either imprecise concept hints ('s. str.', 'p.p.', 's. l.', 'auct.'), an informal or fomal according-to citation ('sec. Muell.', 'sensu Hagedorn, Sydowia 1998'). In the later case this may be made more precise by using the available attributes to add a local or uri reference to a publication.
+
+---+++++3.4.2.6 Race
+
+Race numbers, names, possibly other ranks not governed by a code (patho/bio/serovar).
+
+---+++++3.4.2.7 <noautolink>TaxonPlacement</noautolink>
+
+Additional hierarchical information which may be designed to be part of the name. Example: a name may be cited as "Cortinarius (subg. Phlegmacium) glaucopus s. l. (Cortinariaceae)". Here 'Cortinarius glaucopus' is canonical name, 's. l.' Concept suffix, and 'Phlegmacium' and 'Cortinariaceae' is additional hierarchical placement information.
+
+
+
+-- Main.DonovanSharp - 01 Jun 2006
+
+%META:FILEATTACHMENT{name="taxonnames.gif" attr="" autoattached="1" comment="" date="1153280718" path="taxonnames.gif" size="11475" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="taxonnameelements.gif" attr="" autoattached="1" comment="" date="1153280467" path="taxonnameelements.gif" size="19446" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="canonicalname.gif" attr="" autoattached="1" comment="" date="1153287190" path="canonicalname.gif" size="4457" user="Main.DonovanSharp" version="1"}%

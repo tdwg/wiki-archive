@@ -1,0 +1,696 @@
+head	1.14;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.14
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.11.10.20.46.22;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.11.09.23.17.55;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.11.05.13.35.51;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.11.05.13.08.09;	author DonaldHobern;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.10.27.14.08.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.10.27.13.17.36;	author MarkusDoering;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.10.27.13.03.24;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.10.27.12.06.58;	author JavierTorre;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.10.27.09.33.26;	author JavierTorre;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.10.27.08.50.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.10.26.15.52.02;	author JacobAsiedu;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.10.26.14.38.44;	author TrevorPaterson;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.10.26.13.33.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.14
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1100119582" format="1.0" version="1.13"}%
+%META:TOPICPARENT{name="WebHome"}%
+Please do read this and advise on your preferred pattern. Every vote counts! :-)
+---
+<h2>Introduction</h2>
+
+The general schema design guidelines used by UBIF, ABCD and SDD state that collections of repeated elements should in general be enclosed in a container. 
+<table><tr valign="top"><td>
+<verbatim>
+Thus, instead of having (example from ABCD):
+<Unit>
+  ...
+  <RecordBasis />
+  <NamedCollection>...</NamedCollection>
+  <NamedCollection>...</NamedCollection>
+  <NamedCollection>...</NamedCollection>
+  <Identification>...</Identification>
+  <Identification>...</Identification>
+  <Identification>...</Identification>
+  ...
+</Unit>
+</verbatim>
+</td><td>&nbsp;&nbsp;&nbsp;</td><td>
+<verbatim>
+The schema requires extra collection classes:
+<Unit>
+  ...
+  <RecordBasis />
+  <NamedCollections>
+	 <NamedCollection>...</NamedCollection>
+	 <NamedCollection>...</NamedCollection>
+	 <NamedCollection>...</NamedCollection>
+  </NamedCollections>
+  <Identifications>
+	 <Identification>...</Identification>
+	 <Identification>...</Identification>
+	 <Identification>...</Identification>
+  </Identifications>
+  ...
+</Unit>
+</verbatim>
+</td></tr></table>
+
+The advantage of this pattern is, that it maps more closely to object oriented programming and it may occasionally simplify the xml tree traversal. 
+
+<h2>Multilingual Representations</h2>
+
+A similar pattern is followed in the case of text elements or containers provided in multiple languages. Since the entire collection of all language-representations is usually considered a single thing (in RDF terms, the collection type is "alt" rather than "set" or "seq") one difference is that the collection names are used in the singular, and the alternative representations for each language always use the element name "Representation". Examples from UBIF (*Pattern 1*):
+
+<verbatim>
+<Locality id="2">
+  <Label>
+	 <Representation language="en">
+		<Text>Europe</Text><Abbreviation>EU</Abbreviation>
+	 </Representation>
+	 <Representation language="de">
+		<Text>Europa</Text><Abbreviation>EU</Abbreviation>
+	 </Representation>
+  </Label>
+</Locality>
+
+<IPRStatements>
+  <Representation language="en">
+	 <Copyright><Text>(c) 2003 Centre for Occasional Botany</Text></Copyright>
+	 <License><Text>Creative Commons License 1.0</Text><Abbreviation>(cc) 1.0</Abbreviation></License>
+	 <Acknowledgement><Text>The authors wish to thank ...</Text><URI>http://xyz.org/1234.html</URI></Acknowledgement>
+  </Representation>
+  <Representation language="de">
+	 <Copyright><Text>(c) 2003 Zentrum für Gelegenheitsbotanik</Text></Copyright>
+	 <Acknowledgement><Text>Wir danken ...</Text><URI>http://xyz.org/1234-de.html</URI></Acknowledgement>
+  </Representation>
+</IPRStatements>
+</verbatim>
+
+This pattern is repeatedly criticized as being too complicated. I fully understand that many developments at the moment are focussing their limited resources on monolingual English systems and that the requirement at the core of UBIF to deal with data in a way that supports multiple languages is challenging. However, I also believe that it is better to have multilingual foundation right now, rather than to add it in awkward ways in the coming years. And I think that enabling GBIF for multilingual content will have benefits some native English speakers may not realize - not the least increased willingness of non-English-speaking countries to participate.
+
+However, part of the criticism seems to be social and relates to "it looks complicated". So I am thinking over and over again whether to simplify the examples above structurally to (*Pattern 2*):
+
+<verbatim>
+<Locality id="2">
+  <Label language="en">
+	 <Text>Europe</Text><Abbreviation>EU</Abbreviation>
+  </Label>
+  <Label language="de">
+	 <Text>Europa</Text><Abbreviation>EU</Abbreviation>
+  </Label>
+</Locality>
+
+<IPRStatements language="en">
+  <Copyright><Text>(c) 2003 Centre for Occasional Botany</Text></Copyright>
+  <License><Text>Creative Commons License 1.0</Text><Abbreviation>(cc) 1.0</Abbreviation></License>
+  <Acknowledgement><Text>The authors wish to thank ...</Text><URI>http://xyz.org/1234.html</URI></Acknowledgement>
+</IPRStatements>
+<IPRStatements language="de">
+  <Copyright><Text>(c) 2003 Zentrum für Gelegenheitsbotanik</Text></Copyright>
+  <Acknowledgement><Text>Wir danken ...</Text><URI>http://xyz.org/1234-de.html</URI></Acknowledgement>
+</IPRStatements>
+</verbatim>
+
+This pattern omitts the container element (and using the name of the previously singular container to replace the previously repeated "Representation" element). The result is primarily that fewer tags appear in xml files - something we all agree on not making our priorities. However, since we do expect much of GBIF content to be essentially monolingual, it has the social advantage to be less surprising to those designing monolingual systems. Instead of adding an explicit extra structural layer, the ability is somewhat hidden in the invisible repeatedness of an element, and the additional requirement is only to add a language attribute.
+
+The major disadvantage that I see is that one would have to explain that in contrast to most collections, in the case of alternate collections of content in multiple languages, no container element is used. What is your feeling on balance?
+
+-- Main.GregorHagedorn - 26 Oct 2004
+---
+
+Main.TrevorPaterson - 26 Oct 2004  says: Whilst Pattern 2 is much simpler to read - especially in a monolingual environment (which is the reality for current data sources), it does lead to the conceptual ambiguity that it creates multiple nodes for the same 'object' - i. e. there are now two IPRStatements and two Label nodes in the above example. This would seem to be counterintuitive and confusing for programmatic parsing etc., so I dont think that I would support pattern 2 although it 'looks' better. Just to throw a spanner in the works, and realising that I can't remember the details of SDD, why can the language representation not be on the Text nodes, so that it is these that are replicated? i.e.
+
+*Pattern 3* (proposed by Trevor, modified by Gregor to clarify that Label/IPR have more than single child)
+
+<verbatim>
+<Locality id="2">
+  <Label>
+	 <Text language="en">Europe</Text>
+	 <Text language="de">Europa</Text>
+	 <Abbreviation language="de">EU</Abbreviation>
+	 <Abbreviation language="en">EU</Abbreviation>
+  </Label>
+</Locality>
+
+<IPRStatements> 
+  <Copyright>
+	  <Text language="en">(c) 2003 Centre for Occasional Botany</Text>
+	  <Text language="de">(c) 2003 Zentrum für Gelegenheitsbotanik</Text>
+	  <Details language="en">The Centre for Occasional Botany is a non-profit organisation aiming to preserve the natural...</Details>
+	  <Details language="fr">Le Centre de Botanique ...</Details>
+  </Copyright>
+  <License>
+	  <Text language="en">Creative Commons License 1.0</Text>
+	  <Abbreviation language="en">(cc) 1.0</Abbreviation>
+	  <Abbreviation language="de">(cc) 1.0</Abbreviation>
+	  <URI language="en">http://creativecommons.org/</URI>
+	  <URI language="de">http://creativecommons.org/worldwide/de/translated-license</URI>
+	  <URI language="ja">http://www.creativecommons.jp/</URI>
+  </License>
+  <Acknowledgement>
+	  <Text language="en">The authors wish to thank ...</Text>
+	  <Text language="de">Wir danken ...</Text>
+	  <URI language="en">http://xyz.org/1234.html</URI>
+	  <URI language="de">http://xyz.org/1234-de.html</URI>
+  </Acknowledgement>
+</IPRStatements>
+</verbatim>
+
+Gregor: Thanks for adding this pattern. I think it is closely related to Pattern 2 and may make the processing use cases which I envisage more complicated. I generally consider it helpful to keep related language dependent content together, i. e. the label text with label abbreviation and details or URI pointing to further information. Also, it occurs to me that regardless of whether the language attribute is on Text/Abbreviation/Details/URI/etc., the "collectionless" pattern of "Pattern 2" is used, although at a different level in Pattern 3 as well, something I thought Trevor argued against ("conceptual ambiguity").
+
+---
+
+Javier de la Torre: The more complicate structure of the Pattern 1 including the Representation element is useful when you have more things to say about the upper element not regarding to representation. For example:
+
+<verbatim>
+<IPRStatements>
+	 <Representation language="en">
+		  <Copyright><Text>(c) 2003 Centre for Occasional Botany</Text></Copyright>
+	 </Representation>
+	 <Representation language="de">
+		  <Copyright><Text>(c) 2003 Zentrum für Gelegenheitsbotanik</Text></Copyright>
+	 </Representation>
+	 <CopyrightInfo>
+		  <LicenseType>Mozilla Public License</License>
+		  <....>
+	 </CopyrightInfo>
+</IPRStatements>
+</verbatim>
+
+In this case it makes sense to have the Representation element, but if all the elements inside IPRStatements are regarding to the Representation (therefore they must be multilingual), then I would prefer not to include the Representation tag (Pattern 2). So, my vote goes for Pattern 1 and 2 depending on the situation.
+
+---
+
+Markus Doering: In general I strongly aim to simplify our xml structures where possible. As this representation base type is used throughout all of our schemas, it is a major source for creating blown up documents. I do favor Trevor's pattern, as I also don't like the idea of creating several "instances" of the same object. I can see Gregor's reasons for disliking pattern 3, but personally I think they are weaker than the arguments against pattern 2.
+
+In case there are several parts to a representation in several languages not all of these would need to exist in all languages like Gregor's example shows:
+
+<verbatim>
+Pattern 3:
+  <Copyright>
+	  <Text language="en">(c) 2003 Centre for Occasional Botany</Text>
+	  <Text language="de">(c) 2003 Zentrum für Gelegenheitsbotanik</Text>
+	  <Details language="en">The Centre for Occasional Botany is a non-profit organisation aiming to preserve the natural...</Details>
+	  <Details language="fr">Le Centre de Botanique ...</Details>
+  </Copyright>
+
+So the Pattern 1 incarnation of this would be:
+  <Copyright>
+	<Representation language="en">
+		  <Text>(c) 2003 Centre for Occasional Botany</Text>
+		  <Details>The Centre for Occasional Botany is a non-profit organisation aiming to preserve the natural...</Details>
+	</Representation>
+	<Representation language="de">
+		  <Text>(c) 2003 Zentrum für Gelegenheitsbotanik</Text>
+	</Representation>
+	<Representation language="fr">
+		  <Details>Le Centre de Botanique ...</Details>
+	</Representation>
+  </Copyright>
+
+and a pattern 2 type would be (added by Gregor, ignoring the outer IPRStatements container):
+  <Copyright language="en">
+	  <Text>(c) 2003 Centre for Occasional Botany</Text>
+	  <Details>The Centre for Occasional Botany is a non-profit organisation aiming to preserve the natural...</Details>
+  </Copyright>
+  <Copyright language="de">
+	  <Text>(c) 2003 Zentrum für Gelegenheitsbotanik</Text>
+  </Copyright>
+  <Copyright language="fr">
+	  <Details>Le Centre de Botanique ...</Details>
+  </Copyright>
+</verbatim>
+
+Pattern 1 focusses on the language as the main distinction of a representation, whereas pattern 3 treats languages and "formats" of representation equally. I see the simplification a greater value as the disadvantages of pattern 3 (especially for schemas where there is only a text representation), so I would be in favour of pattern 3! -- Gregor: Both SDD and ABCD have language-dependent URIs and image resources in addition to text representations. But that is secondary to Markus's argument. --
+
+---
+
+<h2>Voting:</h2>
+
+*Pattern 1*
+	* Gregor (most consistent)
+	* Javier (pro parte)
+*Pattern 2*
+	* Gregor (acceptable on social grounds)
+	* Javier (pro parte)
+
+*Pattern 3*
+	* Main.TrevorPaterson: see proposal "Pattern 3" above.
+	* Main.JacobAsiedu: I agree with Trevor's 'Pattern 3'. Makes it a lot easier to read and process.
+	* Main.MarkusDoering: see above.
+	* Main.DonaldHobern: Agree that simplest and clearest approach is to have multilingual alternatives as immediate siblings with language attributes attached directly.
+
+---
+
+<h2>"Mid-term summary"</h2>
+
+Many thanks to Trevor, Jacob, Markus, Javier and Donald for investing considerable time in discussing this with me! I do feel awkward that I cannot simply follow such an overwhelming vote. I thought about it for a while and came to the following conclusions:
+
+	1. I agree that the IPR statement example for pattern 1 was never very appropriate and poor choice of example. Perhaps good, because now we fix it. Copyright, Acknowledgement, etc. can and should be handled separately and should not be tied into a language-bound entity.
+	2. The original question was: should the design pattern of requiring container elements (providing xml equivalent for the collection classes in Java to simplify serialization/deserialization) be given up for language or not? The answer to this is that everybody wants to get rid of container elements (which is common to pattern 2 and 3). From this a second question springs:
+		* Why do we use collection container elements in general, but not for language collections (see the ABCD example at the start!)? I tend not to do this for sake of social acceptance myself in the language case, but I ask myself whether there are any good arguments when to use a collection container and when not?
+		* My concern is less to get a pseudo-religious consistency, but that mixing container-patterns with non-container-patterns may make it more difficult to use default serialization behavior of xml programming frameworks like Axis or .NET. I personally hate having to write code to create and read xml by hand, when the framework normally is able to do it automagically. I really don't know whether the mixing is problematic - has anybody insight? 
+	3. With regard to the general preference for Pattern 3 over Pattern 2, I need more discussion. I think this is not desirable for the following reasons. Please try to convince me otherwise...
+		1 I fully agree with Donald's statement "to have multilingual alternatives as immediate siblings with language attributes attached directly".
+		2 The question to me is what is an "alternative". For me this is to take one label or another. Pattern 3 assumes that the individual string and media attributes of the Label class as defined in pattern 2 have no relationship other than language. 
+		3 I believe we need Pattern 2 (or 1) which preserve the relationship between things that should only be used together, and thus tell consuming applications when it is reasonable to use language-fall-back mechanisms to mix languages. The fall-back algorithm is ultimately application dependent, but a recommendation is: preferred language (default or selected by user), then English, then first other available language. Example: If not all geographical labels are available in German, using other labels is reasonable. However, combining the German concise label Text with a french detailed explanation is not desirable - the intended behavior of modeling the label components as a class/entity is that no detailed explanation is available.
+		4 This may be more relevant in some aspects of SDD than elsewhere. In SDD it may be informative that it is intended not to show an icon for some characters, and for many characters it is vital to be able to create natural language output to know which wording-components are empty. 
+		5 So, to follow the advice of using Pattern 3, I would need more advice how to implement these negative statements. I can imagine to require always to output ALL potential label attributes. In a character concept this would be  (in addition to Text): Abbreviation, Details, <nop>ExportToken, language-dependent Icon, <nop>MediaResources with a selector function (like in an image-key), and Wordings (before, after, delimiter) for natural language generation. Requiring output all of these, even though in many simple data sets only the Text is truly used, seems odd to me. Also, new version may add additional attributes to the label class. -- <strong>Is my analysis wrong, or are there better, alternative methods to achieve the information of what belongs together?</strong>
+	4. I also have some technical design concerns. When viewing the design as a OOP (e.&nbsp;g. JAVA) programm, an explosion of collection-classes and usage specific text/media-classes goes along with Pattern 3. Instead of having a label with simple type string attributes, the Label-class would have for each of Text, Abbreviation, Icon, etc. collection classes by composition, which then collect strings or complex objects like the media resource references. Also, in xml schema, it is no longer possible to use the type inheritance system, because doing so would require multiple inheritance e.&nbsp;g. both of a <nop>LanguageRef and a <nop>MediaResource type. These concerns are however, to me more a question of balancing one complexity against another, and not as compelling as the problem of entity cohesion above - for which I see no acceptable solution.
+
+Many thanks if you can mull over this yet another time!
+
+-- Gregor Hagedorn, 10. Nov. 2004
+---
+
+<h2>"Mid-term" discussion:</h2>
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1100042275" format="1.0" version="1.12"}%
+d8 1
+d22 3
+a24 1
+
+d42 1
+d100 1
+a100 1
+i. e. omitting a container element (and using the name of the previously singular container to replace the previously repeated "Representation" element). The result is largely that fewer tags appear in xml files - something we all agree on not making our priorities. However, since we do expect much of GBIF content to be essentially monolingual, it has the social advantage to be less surprising to those designing monolingual systems. Instead of adding an explicit extra structural layer, the ability is somewhat hidden in the invisible repeatedness of an element, and the additional requirement is only to add a language attribute.
+d102 1
+a102 1
+The major disadvantage that I see is that one would have to explain that in contrast to most collections, in the case of alternate collections of content in multiple languages, no container element is used. Are there more disadvantages? What is your feeling on balance?
+a135 3
+  <Disclaimer>
+	  <Text language="en">The work should not be considered and opinion of the federal bla bla ...</Text>
+  </Disclaimer>
+d145 1
+a145 5
+Gregor Hagedorn: Thanks for adding this pattern. I did not omit it consciously (perhaps subconsciously indeed!), but I think it is closely related to Pattern 2 and may make the processing use cases which I envisage more complicated. I may well be wrong in that - so here I only try to give my reasoning: In almost any language-specific context, the Label or other container really contains a sequence of elements rather than Text alone (and I have now added this to all examples above to clarify the issue). The base type has just Text, it is then extended with Abbreviation and Details, and in SDD further with <nop>ExportToken, language-dependent Icon and <nop>MediaResources, and Wordings for natural language generation. So a more complete <nop>IPRStatements example in *Pattern 3* style would look like:
+
+I generally consider it helpful to keep related language dependent content together, i. e. the label text with label abbreviation and details or URI pointing to further information. However, essentially this is convertible. Also, putting the language attribute on the innermost element somewhat complicates the type system, in that not only string types, but also URIs, collections of URIs, single <nop>MediaResource and collection of <nop>MediaResource types have to be created with an additional language attribute. In fact this can not be done in a type system, since it requires multiple inheritance (a "<nop>MediaResourceRefRepresentation" type would have to inherit from <nop>MediaResourceRef and <nop>LanguageRef base types). However, there is no absolute importance in having a clean type inheritance model for UBIF or SDD, so I do not consider this a "deadly argument".
+
+Nevertheless, it occurs to me that regardless of whether the language attribute is on Text/Abbreviation/Details/URI/etc., or on Copyright/License/Disclaimer/etc., the "collectionless" pattern of "Pattern 2" is used at some level, something Trevor argued against ("conceptual ambiguity").
+d149 1
+a149 1
+Javier de la Torre: For me it looks like the argument dicussed by Gregor for not going for the Pattern 3 applies to Pattern 2. The more complicate structure of the Pattern 1 including the Representation element is useful when you have more things to say about the upper element not regarding to representation. For example:
+d166 1
+a166 1
+In this case it has sense to have the Representation element, but if all the elements inside IPRStatements are regarding to the Representation (therefore they must be multilingual), then I would prefer not to include the Representation tag (Pattern 2). So, my vote goes for Pattern 1 and 2 depending on the situation.
+d210 1
+a210 1
+Pattern 1 focus on the language as the main distinction of a representation, whereas pattern 3 treats languages and "formats" of representation equally. I see the simplification a greater value as the disadvantages of pattern 3 (especially for schemas where there is only a text representation), so I would be in favour of pattern 3! -- Gregor: just to clarify: No current TDWG schema limits language to text representations. Both SDD and ABCD have language-dependent URIs and image resources. But that is clearly secondary to Markus's argument. --
+d217 2
+a218 1
+
+d220 2
+d231 1
+a231 1
+Gregor: I am confused: To me Pattern 3 and Pattern 2 are really very closely related. In contrast to Pattern 1, both omit the collection container in favor of directly repeating some element, differentiated by a language attribute. Pattern 2 does this for several intimately related parts of the representation together (like icon plus text together), pattern 3 has the language on each part. I am very happy for all the responses, but at the moment I do not see the argument that really favors pattern 3 over pattern 2. What favors Pattern 3?
+d233 1
+a233 1
+I guess my own "gut-preference" for Pattern 2 over 3 comes partly from the fact that I still mainly use relational and object-relational databases. Having a language-driven collection relation on so many more elements in the schema would be much more difficult to manage in a relational database. My guess for SDD is that Pattern 3 would need 4-5 times as many tables as Pattern 2 if implemented in a way directly following the schema. A similar number of extra collections would occur in an OOP Java class model closely following the schema. Essentially, Pattern 3 replaces the simple type with a complex type, or in OOP like Java it replaces a class attribute with a class composition of a collection class typed to contain a collection of specific text strings.
+d235 11
+a245 1
+However, I concede that the implemented model could deviate and rather follow Pattern 2! So this may be less relevant. However, it does create greater problems when reading or writing using the xml database layer, or when serializing/deserializing OOP object models.
+d247 4
+a250 1
+Also, so far everybody voted NOT to use a container element for collections at all (= Pattern 2 or 3). Then why do we do it in general, but not for language collections (see the ABCD example at the start!)? Really, I tend not to do this for sake of social acceptance myself, but I do ask myself whether there are any good arguments when to use a collection container and when not.
+d252 1
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099661751" format="1.0" version="1.11"}%
+d98 1
+a98 1
+The major disadvantage that I see is that one would have to explain that in contrast to most collections, in the case of alternate collections of content in multiple languages, no container element is used. Are there more disadvantages? What is your feeling on balance? -- (PS: perhaps see also ExtendLanguageWithNeutralAndUnknown - feedback there is most welcome as well!)
+d213 1
+a213 13
+Pattern 1 focus on the language as the main distinction of a representation, whereas pattern 3 treats languages and "formats" of representation equally.
+
+I see the simplification a greater value as the disadvantages of pattern 3 (especially for schemas where there is only a text representation), so I would be in favour of pattern 3!
+	* Gregor: just to clarify (I think it is secondary to Markus's argument): There is currently no schema where language is limited to text representations. Both SDD and ABCD have language-dependent URIs and image resources.
+---
+
+Gregor: I am confused: To me Pattern 3 and Pattern 2 are really very closely related. In contrast to Pattern 1, both omit the collection container in favor of directly repeating some element, differentiated by a language attribute. Pattern 2 does this for several intimately related parts of the representation together (like icon plus text together), pattern 3 has the language on each part. I am very happy for all the responses, but at the moment I do not see the argument that really favors pattern 3 over pattern 2. What favors Pattern 3?
+
+I guess my own "gut-preference" for Pattern 2 over 3 comes partly from the fact that I still mainly use relational and object-relational databases. Having a language-driven collection relation on so many more elements in the schema would be much more difficult to manage in a relational database. My guess for SDD is that Pattern 3 would need 4-5 times as many tables as Pattern 2 if implemented in a way directly following the schema. A similar number of extra collections would occur in an OOP Java class model closely following the schema. Essentially, Pattern 3 replaces the simple type with a complex type, or in OOP like Java it replaces a class attribute with a class composition of a collection class typed to contain a collection of specific text strings.
+
+However, I concede that the implemented model could deviate and rather follow Pattern 2! So this may be less relevant. However, it does create greater problems when reading or writing using the xml database layer, or when serializing/deserializing OOP object models.
+
+Also, so far everybody voted NOT to use a container element for collections at all (= Pattern 2 or 3). Then why do we do it in general, but not for language collections (see the ABCD example at the start!)? Really, I tend not to do this for sake of social acceptance myself, but I do ask myself whether there are any good arguments when to use a collection container and when not.
+d228 11
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonaldHobern" date="1099660089" format="1.0" version="1.10"}%
+d40 1
+a40 1
+The advantage of this pattern is, that is maps more closely to object oriented programming and it may occasionally simplify the xml tree traversal. 
+d105 1
+a105 2
+*Pattern 3*<br />
+(proposed by Trevor, modified by Gregor to clarify that Label/IPR have more than single child)
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1098886080" format="1.0" version="1.9"}%
+d240 1
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="MarkusDoering" date="1098883056" format="1.0" version="1.8"}%
+d105 2
+a106 1
+*Pattern 3*
+d113 2
+a121 11
+  </Copyright>
+</IPRStatements>
+</verbatim>
+
+Gregor Hagedorn: Thanks for adding this pattern. I did not omit it consciously (perhaps subconsciously indeed!), but I think it is closely related to Pattern 2 and may make the processing use cases which I envisage more complicated. I may well be wrong in that - so here I only try to give my reasoning: In almost any language-specific context, the Label or other container really contains a sequence of elements rather than Text alone (and I have now added this to the examples above to clarify the issue). The base type has just Text, it is then extended with Abbreviation and Details, and in SDD further with <nop>ExportToken, language-dependent Icon and <nop>MediaResources, and Wordings for natural language generation. So a more complete <nop>IPRStatements example in *Pattern 3* style would look like:
+
+<verbatim>
+<IPRStatements> 
+  <Copyright>
+	  <Text language="en">(c) 2003 Centre for Occasional Botany</Text>
+	  <Text language="de">(c) 2003 Zentrum für Gelegenheitsbotanik</Text>
+d131 1
+a131 1
+	  <URI language="jp">http://www.creativecommons.jp/</URI>
+d145 2
+d174 1
+a174 4
+Markus Doering: In general I strongly aim to simplify our xml structures where possible. 
+As this representation base type is used through out all of our schemas, it is a major source for creating blown up documents.
+I do favor Trevors pattern, as I also dont like the idea of creating several "instances" of the same object.
+I can see Gregors reasons for disliking pattern 3, but personally I think they are weaker than the arguments against pattern 2.
+d176 1
+a176 1
+In case there are several details of a representation in several languages not all of these would need to exist in all languages like gregors example shows:
+d179 1
+a185 3
+</verbatim>
+
+So the pattern 1 incarnation of this would be:
+d187 1
+a187 1
+<verbatim>
+d200 12
+d214 11
+a224 2
+Pattern 1 focus on the language as the main distinction of a representation, 
+whereas pattern 3 treats languages and "formats" of representation equally.
+d226 1
+a226 2
+I see the simplification a greater value as the disadvantages of pattern 3 (especially for schemas where there is only a text representation), 
+so I would be in favour of pattern 3!
+d237 1
+a237 1
+	* Main.TrevorPaterson: see proposal above.
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1098882204" format="1.0" version="1.7"}%
+d180 41
+d230 1
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JavierTorre" date="1098878818" format="1.0" version="1.6"}%
+d50 1
+a50 1
+		<Text>Europe</Text>
+d53 1
+a53 1
+		<Text>Europa</Text>
+d61 2
+d66 1
+d78 1
+a78 1
+	 <Text>Europe</Text>
+d81 1
+a81 1
+	 <Text>Europa</Text>
+d87 2
+d92 1
+d96 1
+a96 1
+i. e. omit the container element. The result is largely that fewer tags appear in xml files - something we all agree on not making our priorities. However, since we do expect much of GBIF content to be essentially monolingual, it has the social advantage to be less surprising to those designing monolingual systems. Instead of adding an explicit extra structural layer, the ability is somewhat hidden in the invisible repeatedness of an element, and the additional requirement is only to add a language attribute.
+d123 1
+a123 1
+Gregor Hagedorn: Thanks for adding this pattern. I did not omit it consciously (perhaps subconsciously indeed!), but I think it is closely related to Pattern 2 and may make the processing use cases which I envisage more complicated. I may well be wrong in that - so here I only try to give my reasoning: In almost any language-specific context, the Label or other container really contains a sequence of elements rather than Text alone. The base type has just Text, it is then extended with Abbreviation and Details, and in SDD further with <nop>ExportToken, language-dependent Icon and <nop>MediaResources, and Wordings for natural language generation. So a more complete <nop>IPRStatements example in *Pattern 3* style would look like:
+d146 3
+a177 1
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JavierTorre" date="1098869606" format="1.0" version="1.5"}%
+d154 10
+a163 10
+  <Representation language="en">
+	 <Copyright><Text>(c) 2003 Centre for Occasional Botany</Text></Copyright>
+  </Representation>
+  <Representation language="de">
+	 <Copyright><Text>(c) 2003 Zentrum für Gelegenheitsbotanik</Text></Copyright>
+  </Representation>
+  <CopyrightInfo>
+	  <LicenseType>Mozilla Public License</License>
+	  <....>
+  </CopyrightInfo>
+d167 1
+a167 1
+In this case it has sense to have the Representation element, but if all the information about IPRStatements is reagring to the Representation (like it is now in ABCD for example), then I would prefer Pattern 2. So, my vote goes for Pattern 1 and 2 depending on the situation.
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1098867000" format="1.0" version="1.4"}%
+d150 22
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1098805922" format="1.0" version="1.3"}%
+d44 1
+a44 1
+A similar pattern is followed in the case of text elements or containers provided in multiple languages. Since the entire collection of all language-representations is usually considered a single thing (the collection type is alt rather than set or seq!) one difference is that the collection names are used in the singular, and the alternative representations for each language always use the element name "Representation". Examples from UBIF (*Pattern 1*):
+d68 1
+a68 1
+This pattern is repeatedly criticized as being too complicated. I fully understand that many developments at the moment are focussing their limited resources on monolingual English systems and that the requirements at the core of UBIF to deal with data in a way that supports multiple languages is challenging. I also believe that it is better to have multilingual foundation right now, rather than to add it in awkward ways in the coming years. I also think that enabling GBIF for multilingual content will have benefits some native English speakers may not realize. 
+d90 1
+a90 1
+i. e. omit the container element. This is largely less text the xml files - something we all agree on not making our priorities. However, since we do expect much of the GBIF content to be essentially monolingual, it has the social advantage to be less surprising to those thinking and designing monolingual systems. Instead of adding an extra structural layer, this layer is hidden and the additional requirement is to add a language attribute.
+d92 1
+a92 1
+The major disadvantage that I see is that one would have to explain that in contrast to most collections, in the case of alternate collections of content in multiple languages, no container element is used. Are there more disadvantages? What is your feeling on balance?
+d97 1
+a97 17
+<h2>Voting:</h2>
+
+*Pattern 1*
+
+
+
+*Pattern 2*
+
+
+
+
+---
+
+PS perhaps see also ExtendLanguageWithNeutralAndUnknown
+
+---
+-- Main.TrevorPaterson - 26 Oct 2004  says.....Whilst Pattern 2 is much simpler to read - especially in a monolingual environment (which is the reality for current data sources), it does lead to the conceptual ambiguity that it creates multiple nodes for the same 'object' - i.e. there are now two IPRStatements and two Label nodes in the above example. This would seem to be counterintuitive and confusing for programmatic parsing etc., so I dont think that I would support pattern 2 although it 'looks' better. Just to throw a spanner in the works, and realising that I can't remember the details of SDD, why can the language representation not be on the Text nodes, so that it is these that are replicated? i.e.
+d117 1
+d119 40
+a158 4
+-- Main.JacobAsiedu<br/>
+I agree with Trevor's 'Pattern'.
+Makes it a lot easier to read and process.
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1098801524" format="1.0" version="1.2"}%
+d134 4
+a137 1
+ 
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1098797580" format="1.0" version="1.1"}%
+d110 25
+a134 2
+PS perhaps see also ExtendLanguageWithNeutralAndUnknown
+
+@

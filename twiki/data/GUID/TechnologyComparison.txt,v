@@ -1,0 +1,517 @@
+head	1.13;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.13
+date	2009.11.08.08.48.47;	author BenRichardson;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.05.23.20.56.15;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.19.00.00.00;	author RicardoScachettiPereira;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.19.00.00.00;	author RobertHuber;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.19.00.00.00;	author MattJones;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2005.12.21.13.43.03;	author RicardoPereira;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2005.12.21.13.40.59;	author RicardoPereira;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2005.12.21.04.28.19;	author RicardoPereira;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2005.12.21.04.26.58;	author RicardoPereira;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.12.21.04.13.59;	author RicardoPereira;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.12.21.03.58.25;	author RicardoPereira;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2005.10.13.16.32.46;	author DonaldHobern;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.10.13.15.31.07;	author DonaldHobern;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.13
+log
+@none
+@
+text
+@%META:TOPICINFO{author="BenRichardson" date="1257670127" format="1.1" version="1.13"}%
+---++ Technology Comparison: Handle,DOI,LSID 
+
+Here we try to summarize the main aspects of various GUID technologies to point out its strengths and weaknesses.
+
+The GUID technologies evaluated are:
+
+   * Handle System: [[http://www.handle.net/]]
+   * Digital Object Identifiers (DOI): [[http://www.doi.org/]]
+   * Life Science Identifiers (LSID): [[http://lsids.sf.net/]]
+   * http-based Persistent URLs, supported by http content negotiation, see [[http://www.w3.org/TR/swbp-vocab-pub/#negotiation][w3c recommendations for serving rdf/owl vocabularies]]
+
+----
+
+---+++ Id Assignment
+
+*Handle:* Local authority is responsible for id issuing, but it has to use administration interface and Handle System protocol to add, delete, and modify handles.
+
+*DOI:* Same as Handle System
+
+*LSID:* Assigning and management of ids is completely up to the assigning authority
+
+*PURL:* Assigning and management of ids is completely up to the assigning authority
+
+----
+
+---+++ Data Model
+
+*Handle:* Handle data value has the following fields: index, type, data, permissions, timestamp, and reference. Actual handle data goes into the data field. Format of data field is defined by type. New data types can be created. Sample types are: URL and HS_ADMIN.
+
+*DOI:* Same as Handle System for handle data values. DOI have a number of custom types.
+
+*LSID:* Up to the resolving authority. Syntax defined by MIME type.
+
+*PURL:* Up to the resolving authority. Syntax defined by MIME type. 
+
+----
+
+---+++ Metadata Framework
+
+*Handle:* Non-existent. Applications can implement metadata framework.
+
+*DOI:* Extensible metadata framework based on XML Schema. Mandatory core metadata profile is geared towards publications and media objects. Metadata format is enforced by DOI policy.
+
+*LSID:* Implements simple and very flexible metadata framework, not tied to XML Schema like DOI, i.e., can use RDF as metadata framework, for example. Metadata format and syntax defined by its MIME type.
+
+*PURL:* Based on standard http content negotiation, various metadata format can be requested. Fallback cascade can be achieved (if not deliverable, either error or alternative format can be returned).
+
+----
+
+---+++ Discovery
+
+*Handle:* Single distributed global handle system, called Global Handle Registry (GHR), provides information about local handle systems responsible for resolving a particular handle.  
+
+*DOI:* Same as Handle System
+
+*LSID:* Distributed using DNS/DDDS. Can be centralized if using NAPTR authority (I don't know whether this centralized discovery mode is operational and in use by any authority or not).
+
+*PURL:* Distributed using DNS
+
+----
+
+---+++ Resolution
+
+*Handle:* 
+   1.  Client wants to resolve a handle, say, 10.1000/182
+   1.  Client queries GHR to find out which LHS is responsible for handle
+   1.  GHR returns LHS information to client
+   1.  Client queries LHS to get handle data
+   1.  LHS returns handle data
+
+*DOI:* Same as Handle System
+
+*LSID:* 
+   1.  Client wants to resolve a LSID
+   1.  Client extracts authority from LSID and queries DNS for a _lsid SRV record
+   1.  Client gets <host> responsible for resolving LSID from DNS query
+   1.  Client queries http://<host>/authority/ to get data or metadata service description (WSDL)
+   1.  Client uses WSDL binding information to get data or metadata using HTTP or SOAP
+
+*PURL:* 
+   1.  Client wants to resolve a PURL
+   1.  Client obtains DNS resolution
+   1.  Client queries http content negotiation for available data and metadata format
+   1.  Client resolves using standard http resolution
+
+----
+
+---+++ Multiple Resolution
+
+Does the technology accepts many data/metadata values per identifier?
+
+*Handle:* Yes. Multiple values based on index ([[http://hdl.handle.net/10.1000/182?noredirect][here is one example]]). Resolution service can filter values by type.
+
+*DOI:* Yes - Same as Handle System
+
+*LSID:* Yes
+
+*PURL:* Yes, through content negotiation, multiple formats or types.
+
+----
+
+---+++ Protocol
+
+*Handle:* [[http://www.ietf.org/rfc/rfc3652.txt][Proprietary protocol]] based on TCP/UDP/IP protocols.
+
+*DOI:* Same as Handle System
+
+*LSID:* Based on Web standards. DNS for discovery, WSDL for resolution service description, MIME types for defining format and syntax of data and metadata, SOAP, HTTP POST and GET bindings.
+
+*PURL:* Standard http.
+
+----
+
+---+++ Search Capabilities
+
+*Handle:* Handle resolution
+
+*DOI:* Handle resolution and also based on DOI metadata profiles
+
+*LSID:* Limited to GUID resolution and metadata MIME types
+
+*PURL:* Limited to GUID resolution and metadata MIME types
+
+----
+
+---+++ HTTP based
+
+*Handle:* Yes - Through its HTTP Proxy Service (http://hdl.handle.net/)
+
+*DOI:* Yes - Through its HTTP Proxy Service (http://dx.doi.org/)
+
+*LSID:* Not as part of the standard or infrastructure, but one can easily be built.
+
+*PURL:* Yes - directly!
+
+----
+
+---+++ URN compliant
+
+*Handle:* Not applicable. Application built on top of it can be registered as a URN namespace.
+
+*DOI:* No. There is no need for additional level of indirection provided by URN. DOI meet all functional requirements of URN and can be registered as one if needed in the future.
+
+*LSID:* Yes
+
+*PURL:* No. URL and URI compliant.
+
+----
+
+---+++ Security, Authentication, Authorization
+
+*Handle:* Yes. Fine grained permission system for resolution and administration of handles
+
+*DOI:* Yes - Same as Handle System
+
+*LSID:* Yes - Uses security features of underlying protocols (SOAP, HTTP - username/password).
+
+*PURL:* Yes - Uses security features of underlying protocols (SOAP, HTTP - username/password).
+
+
+---+++++ Categories
+CategoryARK, CategoryDOI, CategoryLSID
+
+
+---++ Comments
+Use the space below to make comments about this page.
+
+------
+
+%ICON{bubble}% Posted by Main.MattJones - 2005-10-18 23:16:50
+
+Minor note: LSID resolution can be completely centralized by using the NAPTR authority rewriting features in the LSID spec, which are currently not utilized as far as I can tell.
+
+------
+
+%ICON{bubble}% Posted by Main.RobertHuber - 2005-12-14 13:32:31
+
+DOI does not have its own resolver, but uses the handle.net (http://www.handle.net) technology. <br />
+It would be interesting to know what exactly is meant by 'Resolution based only on standard Internet technologies'. To my knowledge handle.net is based on those standards.
+
+------
+
+%ICON{bubble}% Posted by Main.RicardoScachettiPereira - 2005-12-20 20:40:03
+
+I think the original author meant that the Handle System uses its own proprietary protocol to resolve and manage handles. This protocol is defined in the following document: http://www.ietf.org/rfc/rfc3652.txt<br />
+On the other hand, LSID relies on standard Internet protocols for this as much as possible. For example, a LSID resolver will return a WSDL web service description to the client, which in turn can use SOAP or HTTP POST/GET to retrieve data or metadata. Also, LSID uses MIME types to define metadata format and syntax, while the Handle System has its own proprietary handling of handle data types.
+
+------
+
+%ICON{bubble}% 
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1179953775" format="1.1" version="1.12"}%
+d10 1
+a10 1
+   * Life Science Identifiers (LSID): [[http://lsid.sf.net/]]
+@
+
+
+1.11
+log
+@Comment added
+.
+@
+text
+@d1 1
+d4 1
+a4 1
+Here we tried to summarize the main aspects of each GUID technology being evaluated and point out its strengths and weaknesses.
+d6 1
+a6 1
+The GUID technologies evaluated were:
+d11 1
+a11 1
+
+d23 1
+d35 2
+d47 1
+d59 1
+d81 6
+d99 1
+d111 1
+d121 1
+a121 1
+*LSID:* Limited to LSID resolution and metadata MIME types
+d123 1
+d135 1
+d147 1
+d159 1
+a159 1
+
+d179 1
+a179 1
+DOI does not have its own resolver, but uses the handle.net (http://www.handle.net) technology. <br />
+d186 1
+a186 2
+I think the original author meant that the Handle System uses its own proprietary protocol to resolve and manage handles. This protocol is defined in the following document: http://www.ietf.org/rfc/rfc3652.txt<br />
+<br />
+d191 1
+a191 1
+%ICON{bubble}% @
+
+
+1.10
+log
+@Comment added
+.
+@
+text
+@d167 8
+@
+
+
+1.9
+log
+@Comment added
+.
+@
+text
+@d160 7
+@
+
+
+1.8
+log
+@
+.
+@
+text
+@d146 15
+a160 1
+CategoryARK, CategoryDOI, CategoryLSID@
+
+
+1.7
+log
+@
+.
+@
+text
+@d140 1
+a140 1
+*LSID:* Yes - Uses security features of underlying protocols (SOAP, HTTP - username/password) 
+@
+
+
+1.6
+log
+@
+.
+@
+text
+@d118 1
+a118 1
+*LSID:* No
+d140 1
+a140 1
+*LSID:* No
+@
+
+
+1.5
+log
+@
+.
+@
+text
+@d92 1
+a92 1
+*Handle:* Proprietary protocol based on TCP/UDP/IP protocols.
+@
+
+
+1.4
+log
+@
+.
+@
+text
+@a13 11
+---+++ Architecture
+
+*Handle:*
+
+*DOI:* Same as Handle System
+
+*LSID:*
+
+
+----
+
+d48 1
+a48 1
+*Handle:*
+d52 1
+a52 1
+*LSID:*
+d59 6
+a64 1
+*Handle:*
+d68 6
+a73 2
+*LSID:*
+
+@
+
+
+1.3
+log
+@
+.
+@
+text
+@d12 2
+d23 2
+d27 1
+a27 1
+*Handle:*
+d31 16
+a46 1
+*LSID:*
+d48 1
+d50 1
+a50 1
+---+++ Data/Metadata Management
+d52 1
+a52 1
+*Handle:*
+a53 1
+*DOI:*
+d55 1
+a55 1
+*LSID:*
+d66 2
+d77 2
+d87 2
+a88 1
+*LSID:*
+d90 1
+d101 1
+a101 8
+---+++ Data Model
+
+*Handle:*
+
+*DOI:* 
+
+*LSID:*
+
+d112 2
+d123 2
+d134 2
+@
+
+
+1.2
+log
+@
+.
+@
+text
+@d1 121
+a121 1
+---++ Technology Comparison: ARK, DOI and LSID 
+a122 9
+""
+<table width="100%" border="1">
+<tr><th>Property</th><th>ARK</th><th>DOI</th><th>LSID</th></tr>
+<tr><td>Identifiers are "actionable"</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Identifier assigning agencies centrally registered</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><td>Resolution can be handled by an agency other than that which assigned the identifier</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Resolution based only on standard Internet technologies</td><td>No</td><td>No</td><td>Yes</td></tr>
+</table>
+""
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 2
+@

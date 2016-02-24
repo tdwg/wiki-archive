@@ -1,0 +1,283 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1086941220" format="1.0" version="1.16"}%
+%META:TOPICPARENT{name="ImplementationsOfSDD"}%
+David Remsen (dremsen-at-mbl.edu) from uBio (Universal Biological Indexer and Organizer) is leading the development of a new xml-based internet identification key. In this topic, he and his principal programmer Patrick will discuss questions about or problems with SDD. See http://uio.mbl.edu/services/key.html in general, and http://uio.mbl.edu/SDD/player.php for ongoing development of making it SDD compatible. -- Main.GregorHagedorn - 07 Jun 2004
+
+Note Gregor: We are currently rewriting the generalities of the Lucid LIF to SDD conversion in a new topic: ConvertingLIF2SDD!
+
+---
+
+A version of the X:ID Player is available online using XML in the structure of the XML Schema as defined by SDD. Gregor Hagedorn supplied us with a current version of the SDD schema, and we have X:ID running off of this structure. This can be found at http://uio.mbl.edu/SDD/player.php . This version of the X:ID Player only runs the key to Atlantic Tunas transformed by our default stylesheet. By clicking the "XML" option in the functions bar will allow you to view the SDD compliant XML and the source code of the default stylesheet used to transform the XML. 
+
+I have attached a example of the XML ([[%ATTACHURL%/XIDwithSDD.xml][XIDwithSDD.xml]]) that is now created by the X:ID Player. It is meant to comply with the latest version of SDD as supplied to us by Gregor. I was still unclear as to the structure and content of the "<nop>CodedDescriptions" section of SDD. It seems that this is where the matrix information of the Lucid-style .LIF file should go. For example, here is the matrix section of our .LIF to atlantic tunas: 
+
+[..Main Data (txs)..]%BR%
+6100000100001100100010000011111%BR%
+6010000010001010010010000101110%BR%
+6001000100001001010010000131110%BR%
+6001000100010100001001000101100%BR%
+6001000001001010100000101000000%BR%
+6000100100001010000100100101000%BR%
+6000010100001010001000310101100%BR%
+6000001000101010000100100101000%BR%
+
+This matrix scores taxa by rows and states by columns. So, it seems you would like, for each taxon, the values of each state in their respective character. If this is not how you intended the <nop>CodedDescriptions sections to look, could you post a longer example of this section, possibly 15 or more lines, so that I can change it to your standards. 
+
+---
+
+I just attempted to load a rather large LIF (1070 states X 540 taxa) into the SDD version of X:ID with the above declaration of the matrix information. The XML file that it created was 4.5 megabytes and over 185,000 lines long, and this was only after 30 seconds when the process timed out. Only the scores of 54 of 540 taxa were displayed in this manner, meaning the XML file, if complete, would be more than 9 megabytes and would take more than 60 seconds to create. 
+
+This is something important for each of us to keep in mind when using a verbose language such as SDD to describe sets of data that are big. Perhaps the X:ID data can be presented without the behind-the-scenes information, such as the matrix information itself. Consider the key above (1070 X 540) where there are 577,800 values in the matrix to be considered. This means that, to represent the data in a detailed language such as XML, where every value gets its own line, the <nop>CodedDescriptions section that lists all the matrix data will have to be at least 577,800 lines long, not to mention extra space for tags. But, this same information is represented in a matrix that is only 540 lines long, each line 1070 character wide. Something to consider when using SDD to verbosely describe huge amounts of information.
+
+-- Main.PatrickLeary - 07 Jun 2004
+
+---
+
+SDD is certainly verbose, but not that much. In a way xml is meant to be verbose so that it is extensible and self-documenting. There is even some unneccessary redundancy between state and character refs: the character refs are redundant, but this was explicitly requested to simplify life for character-based processors). -- However: In SDD only positive statements are made, the absence of a state is implicit, provided that the character has been scored at all. The value you are using in your example:<br />
+ State ref="2"<br />
+ &nbsp; Value 1 /Value<br />
+ /State<br />
+is not SDD. You can provide values only for numeric measurement data, not categorical states. If I understand LIF correctly, the 0 indicates absence, 1 presence, and other values are used to code frequency, uncertainty. So step 1 would be to provide a translation of values other than 1 to SDD (these facts about states would be expressed as frequency and certainty modifiers).
+
+So in the conversion, drop all 0 valued states, drop the value from those with 1, and add the SDD modifiers equivalent for those greater 1. I will try to help with the modifier question. Also, you can mimize the space needed for the state refs within each character, by not indenting them.
+
+By the way: Your work provides a very valuable LIF to SDD converter that has its own utility - separately from X:ID!
+
+-- Main.GregorHagedorn - 07 Jun 2004
+
+---
+
+Separately: any reason why you use xidisopen="F" xidlast="F" xidimage="F" xidmetric="F" instead of defining your extensions in a namespace like xid:isopen="F" xid:last="F" xid:image="F" xid:metric="F" as I proposed in the example file? ´Did the namespace extension not work for you? I am asking this because the question whether attributes extension from other namespaces should be allowed in SDD needs to be answered. I tried to add that in the special XID-modified SDD version experimentally. Did I make it wrong? -- Main.GregorHagedorn - 07 Jun 2004
+
+-- Main.GregorHagedorn - 07 Jun 2004
+
+---
+
+It would be helpful if the Schema to which this complies were provided here also. In general, possibly SDD should require that a schema be named in the XML PI (including enough to guarantee that the correct schema version is deducible for validity checking). -- Main.BobMorris - 07 Jun 2004
+
+---
+
+I have attached the SDD Schema and example XML that was given to me by Gregor. It has been cut down in size for use specifically with X:ID: [[%ATTACHURL%/SDD_for_XID.zip][SDD_for_XID.zip]].
+
+I tried to enter attributes with an xid namespace, for example - xid:isopen, but our XML parser crashed at this point and said it did not recognize the namespace. I have never used different namespaces in XML files, so I'm not sure if there is some way to explicitly define a new namespace somewhere in the file. So, I temporarily renamed the attributes by removing the colon, for example - xidisopen.
+
+As far as the <nop>CodedDescriptions section goes, I think I now understand you correctly, but let me verify. So, instead of listing the Lucid value for the state under a taxon, it is implied that a state is scored as present/pass for a taxon if there is a reference tag under the corresponding taxon? And absence of a reference tag under a taxon is understood to mean that the state is scored as absent/fail for that taxon? [Yes, Gregor]
+
+You were correct in your assumption about Lucid scoring. Lucid scores taxon under the following scheme:%BR%
+0-absent%BR%
+1-present%BR%
+2-unknown%BR%
+3-rare%BR%
+4-present but may be misinterpreted as absent%BR%
+5-absent but may be misinterpreted as present%BR%
+6-metric data
+
+So, values are to be used only for metric data? [Yes] In a Lucid-style key, metric data is not entered as a single value, but instead there are parameters. There are extreme upper, normal upper, normal lower, and extreme lower values. So, for one metric state/taxon pair, there are four metric values to be entered. 
+	* [In SDD you define any number of statistical measures, including these. The Lucids ones are equivalent to "Maximum value", "Undefined upper limit (legacy data)", "Undefined lower limit (legacy data)" and "Minimum value". The general stuff is defined in GeneralDeclarations, see example file, and then in a character measures are defined in <nop>Character/Numerical/StatisticalMeasures. There a key is defined that is to be coded descriptions, and a keyref that points to the general semantics in <nop>GeneralDeclarations/UnivariateStatisticalMeasures. You can copy the definition you need from the example file (the general, not the simplified XID). However, Two problems here: a) I have removed numerics support in the XID schema to simplify getting into SDD for you. So when you want to use numerics, you have to use the full version. b) The current SDD version is undecided about how exactly this should be supported, so expect limited changes here.] -- Main.GregorHagedorn - 07 Jun 2004
+
+Finally, if I am correct in my current understanding of the <nop>CodedDescriptions section of SDD, in that a state is listed if present and not listed if it is absent, then there are still size issues to be considered with large sets of data. In my above example of the 1070 X 540 matrix, lets say a quarter of all scores are 1-present, and the rest are 0-absent, there is still more than 120,000 lines of data in the <nop>CodedDescriptions section alone. This will result in an XML file of at least 5 megabytes. Just something to consider down the road.
+
+-- Main.PatrickLeary - 07 Jun 2004	
+
+---
+
+So to map LIF to SDD, we need: 
+	* Express that a state is unknown. Note that in SDD a feature <nop>CodingStatus exists, which defines whether a property of an object is unknown (see e.g. <nop>GeneralDeclarations in the SDD example files: <nop>CodingStatus key="2" debugkey="Unknown"). However, this differs from the fact that a specific state is unknown. The way to express this in SDD is to say it is "perhaps" this state. Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier key="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+<verbatim>
+	<CodedDescription key="101"><Header><ClassName ref="1"/></Header>
+	  <CodedData>
+		 <Character ref="1">
+			<State ref="1"><Certainty ref="41"/></State>
+		 </Character>
+</verbatim>
+
+	* A frequency modifier rare to be defined in Terminology/Modifiers which would be added for states scored as 3 (see SDD example file Modifier key="22"). Example for the application of this in a description:
+<verbatim>
+	<CodedDescription key="101"><Header><ClassName ref="1"/></Header>
+	  <CodedData>
+		 <Character ref="1">
+			<State ref="1"><Frequency ref="22"/></State>
+		 </Character>
+</verbatim>
+	* A certainty modifier with the special flag Specification/IsTrueByMisinterpretation set to true (see Modifier key="42"). This is to be used for Lucid value 5. Example:
+<verbatim>
+	<CodedDescription key="101"><Header><ClassName ref="1"/></Header>
+	  <CodedData>
+		 <Character ref="1">
+			<State ref="1"><Certainty ref="42"/></State>
+		 </Character>
+</verbatim>
+	* There is no equivalent to Lucid value 4 in SDD. The fact that something is present, but can be erroneously overlooked is considered so general that is is not part of data coding, but instead should be part of the reasoning of the query or identification method. -- <em>(If anybody disagrees on this, and can provide examples or scenarios, it would be an urgent issue to fix!)</em>
+	* Appropriate statistical measures for the metric data. (See the discussion above!)
+
+The size issue is known. It is common to most xml data. SDD does not make any assumptions that processors will work natively on SDD. An identification tool may easily read the SDD data, process it throwing aways those parts it is not interested in, and storing it in a matrix view. I believe it will be very valuable when you have created a large file and it would be good if this file could be shared for testing purposes. However, to me the issue seems to be to either define an extensible format based on xml or a non-extensible one optimized for a specific purpose like LIF. Any suggestions about options for SDD are appreciated!
+
+Regarding extensibility: Note that descriptions may be associated with images or documents. The "file" element you add in the <nop>ClassName for the first taxon should in SDD rather be a <nop>MediaResource ref in the description (we consider illustrations of the entire taxon part of description, not part of the taxon name). <nop>MediaResource can occur in the <nop>CodedDescription itself (after the Header) or in a specific character (if the image only applies to this). After defining a <nop>MediaResource in <nop>ExternalDataInterface:
+<verbatim>
+<MediaResource key="125">
+  <Label><Representation language="en"><Text>Melampsora evonymi-caprearum</Text></Representation></Label>
+  <!-- Label is required, but if the source provides no separate title or description of a resource, the url may be used here as well -->
+  <ObjectLink><URL>www.xxx.org/img/Melampsora_evonymi-caprearum.png</URL></ObjectLink>
+  <Type>Image</Type>
+  <Caption><!-- Caption is optional -->
+	 <Representation language="fr"><Text><i>Melampsora evonymi-caprearum</i> Kleb., stade II sur <i>Salix caprea</i>L.</Text></Representation>
+	 <Representation language="de"><Text><i>Melampsora evonymi-caprearum</i> Kleb., Sporenstadium II auf <i>Salix caprea</i> L.</Text></Representation>
+	 <Representation language="en"><Text><i>Melampsora evonymi-caprearum</i> Kleb., spore stage II on <i>Salix caprea</i> L.</Text></Representation>
+  </Caption>
+</MediaResource>
+</verbatim>
+you can refer to such resources for the entire description like:
+<verbatim>
+<CodedDescription key="101">
+  <Header><ClassName ref="1"/></Header>
+  <MediaResources><MediaResource ref="123"/><MediaResource ref="124"/></MediaResources>
+  ...
+</verbatim>
+
+
+-- Main.GregorHagedorn - 7/8. Jun 2004
+---
+
+I updated our code to better match SDD as I am starting to understand it. The file [[%ATTACHURL%/XIDwithSDD.xml][XIDwithSDD.xml]] was also updated to represent the current working version of the X:ID Player running over SDD. The link to this version of the X:ID Player can be found above. 
+
+It seems odd to me that the different scoring options all have different tags (<nop>CodingStatus, Frequency, Certainty). Perhaps there should just be one (<nop>CodingStatus), and seperate references to the different types of scoring modes.
+	* (See comments below -- Main.GregorHagedorn)
+
+Also, for the time being, I changed all Lucid-style scores of "4-present but may be misinterpreted as absent" as just being presentl, since the feature itself is present seems to me the most relevant point. The fact that it can be misinterpreted could perhaps be another type of <nop>CodingStatus.
+	(* I agree with treating 4 as 1 in Lucid. -- Main.GregorHagedorn)
+
+I have left the metric data untouched. Could you provide a code sample of how I should report this? I downloaded xmlSpy, but I couldn't find anything about metric data in the simplified version of SDD that you made for me, and I think you mentioned earlier that you had left it out.
+	(* ... danger of trying to simplify for what I thought X:ID was going to handle. I did not notice numerics in the keys I looked at. -- Main.GregorHagedorn)
+
+I also moved the description of the taxon media down to the <nop>CodedDescriptions section. Is this now SDD compliant? Let me know if I have made any progress.  And could you possibly provide some code samples from where I am still incorrect?
+
+-- Main.PatrickLeary - 08 Jun 2004
+---
+
+This is certainly progress! Some points, however: In <nop>CodedDescription key="3" you try to use a media resource. However, similar to agents media resources are managed in the central <nop>ExternalDataInterface. Move your definition of the link there before the end, then at the current position have <nop>MediaResources/MediaResource ref="1" (compare example above).
+
+I could not see a coding status or certainty statement. Perhaps you can introduce them into a dummy taxon at the start of the data set if they are not present. State ref="23"/Frequency ref="22" is ok. However, you have not added the terminology definitions yet. Similar to characters, audiences, etc. you first have to define any term you want to use in the terminology. Please take a look at the normal example file (not the XID one) in beta 16 or later. The X:ID hierarchy version differs slightly, but you can copy the modifiers and coding status examples directly into your file. If you want you can only insert those I gave in the examples above. -- I will try to put out a generally updated SDD that is closer than beta 16 to what you have.
+
+Very minor point: the  audience should always correspond to an audiencekey. Currently you define en, and use en or en5. It would be good if the code gets these values from a single variable, so to allow conversion of non-english Lucid data as well.
+
+I have a couple of questions on X:ID to check whether we have equivalent things in SDD that could be used directly:
+	* you have <nop>ClassName xidimage="F" key="3" xidremain="Y"<br />
+	  Label/Representation language="en" xidsource="local"
+	* I think I understand xidremain and it belongs to the class of user-interface attributes that are truly specific X:ID
+	* However, can you get rid of xidimage and xidsource? What are their semantics or use cases?
+	* simlarly xidisopen in char is clear, I assume it refers to open states in display tree. But why does this exist on state? Does that mean it has been scored / selected by user? Then perhaps the name could be changed.
+	* xidlast xidimage xidmetric in state are unclear to me.
+
+-- Main.GregorHagedorn - 9. Jun 2004
+---
+
+Patrick wrote: "It seems odd to me that the different scoring options all have different tags (<nop>CodingStatus, Frequency, Certainty). Perhaps there should just be one (<nop>CodingStatus), and seperate references to the different types of scoring modes."
+	* <nop>CodingStatus is a scoring option on the level of state or numerical measure. It indicates something about the lack of other data.
+	* Frequency, Certainty (and Modifier, but not in Lucid) are statements about a statement. It applies not to the character, but to the state (in which xml element it is embedded). I think this is equivalent to reification: make a property statement a thing and then say something about it.
+	* Frequency, Certainty, Modifier could use the same element name, but I am not sure why this would be more intuitive-can you elaborate/try to explain why?
+	* Lucid is an excellent attempt at reducing descriptions to the absolute minimum needed for identification, using fairly uncritical data sets. It does limit the range of expression strongly, however. SDD supports other Coding status values, e. g. not applicable, many frequency modifiers (very rarely, frequently, and any other the designer would like to define), and other certainty modifiers (probably, perhaps, ...). Frequency and Certainty can be combined, Certainty but not frequency applies to numerical statements (mean, etc.). -- Main.GregorHagedorn - 9. Jun 2004
+
+(Question for numeric example is still open, I know. We need real SDD discussion there, since we currently have alternative models in SDD.)
+
+-- Main.GregorHagedorn - 9. Jun 2004
+
+---
+
+Once again I have made some changes. Now, the X:ID with SDD Development version plays a key to automobiles. This key is extremely simplified and meant for development only. I once again updated the file [[%ATTACHURL%/XIDwithSDD.xml][XIDwithSDD.xml]] to match the recent changes. 
+
+I have added definitions to the coding types and I believe they are in the appropriate places. I was wondering what information is necessary in these definitions. In <nop>CodingStatus there are tags for <nop>BasicCodingStatus and <nop>PresenceOfInformation. Are these necessary? And what exactly do they mean? I just want to make sure that the XML is as detailed as we can make it.
+
+Also, the Certainty Modifier has Text and <nop>TextAfter tags. Is this a redundancy? The tag for <nop>IsTrueByMisinterpretation seems quite unnecessary since this is the only place I could find this tag in your technical definition of SDD. It seems that the misinterpretation is implied by the type of Certainty Modifier itself. 
+
+With the Frequency Modifier for rare, could you tell me more about the <nop>FrequenceRange? Since Lucid key only tell when a taxon is scored as rare, I don't want these values to under or overestimate the frequency of attribute. And who can define limits on such an imprecise word as rare?
+
+I also changed the position of the <nop>MediaResource tag. I hope this is now correct. All language codes are now set to "en", as I have defined earlier in the XML document.
+
+As far as the atributes that we use that are specific to xid:
+	* xidimage says whether a character contains states with image, an state has an image, or a taxon has an image
+		* For states you can use <nop>MediaResources which is present inside Label/Representation/, in sequence after Text. There is also an Icon (type is mediaresourceref) between Text and <nop>MediaResources. For characters we don't have that at the moment directly, you would have to provide it in the Labels of a <nop>ConceptTree (a tree or list that defines an arrangement of characters). -- Main.GregorHagedorn - 9. Jun 2004
+	* xidsource defines where the Taxon name comes from. We have previously, and will again when we get it all working with SDD, mapped names to the larger project, the Taxonomic Name Server (http://uio.mbl.edu/index.php), that Dave Remsen is working on. This allows us to grab many synonyms, vernacular names, and foriegn name alternatives for the taxon name given in the LIF. source="local" simply defines that the name came from the LIF file itself. An alternate source will be source="tns", meaning the name came from the taxonomic name server. 
+		* This should go into the <nop>ObjectLinks inside the <nop>ClassName proxy. These are explicitly designed to define relations to outside datasource. Yours would be a good test, whether you can find a way to express these relations in a generalized way (LSIDs?) -- Main.GregorHagedorn - 9. Jun 2004
+	* xidlast is true for the last state in a character. It is hard to figure this out using XSLT functions, so I created this flag so I know for sure the state is the last one. This is only important for the XSLT transformations, becuase certain layout issues, such as images, change when the state is the last one in a character.
+		* Why does xpath Character/State[last()] not work? Too slow as you mention below? It should not be. -- Main.GregorHagedorn - 9. Jun 2004
+	* xidmetric is another helpful flag for XSLT transformations. When a state is a metric data state, we must present the user with a text field to enter in metric data as opposed to the usual checkbox. This flag helps us determine that when it comes time to transfrom the XML document with XSLT
+		* What do you mean by metric? Meter/Liter As opposed to foot/gallon? This would be measurement unit -- Main.GregorHagedorn - 9. Jun 2004
+	* xidisopen does determine if a character is open, and it also determines whether a state has been selected. I agree that a different attribute could be used for state selection, and I'll talk with Dave about that issue.
+	* xidremain is indeed useful agin for XSLT reasons. It lets us know if the taxon has been, as Lucid says, "discarded" or not. This is quite useful as we need to display "discarded" taxa differently.
+		* The last two are clearly UI extensions of SDD, no problem with them -- Main.GregorHagedorn - 9. Jun 2004
+
+I can understand the need to clean up the XML to match SDD, but is it not SDD compliant if there are extra attributes? Some of these attributes are basically shortcuts that cut down on programming and save processing time, which is necessary for extremely large keys. Some of the tricks are the reason we can process such large amounts of information in such a small amount of time. That is why some tags that don't necessarily have anything to do with names are listed in the name tag. It is for the sole reason that when we print the name, we need to know other things. 
+
+Let me know of I am being unclear, as these attributes are X:ID-specific and I am familiar with them and I understand no one else is. Hopefully we can come up with a common ground, as we are trying to make our XML backbone compliant with SDD standards.
+
+-- Main.PatrickLeary - 09 Jun 2004	
+---
+
+Just very quick: State ref="4"/CodingStatus ref="2"/State is not SDD, <nop>CodingStatus replaces a state and does not modify it. However the error is mine, I described the translation wrongly. I corrected the first point above, which now points to a certainty modifier "perhaps".
+
+Regarding the last question: I have no problem with processing tricks and extensions. You explained them very clearly. Yes, currently it will break validity of SDD to put such things anywhere else but the <nop>CustomExtensions. But I am very willing to discuss and test whether a general attribute extension should be allowed. The problem is that you seem to be constrained to put them in the same namespace, which does break validity. The problems With element extensions (xs:any) are huge, see e.g. http://www.xml.com/pub/a/2003/12/03/versioning.html.
+
+My interest is however, to see which is a processing shortcut and which is something general that either is already or should be in SDD (the latter is especially interesting, SDD is not necessarily finished). The point about image and xidsource seems to be such a point for me. So if you can, try to use SDD directly here, and then see whether you need shortcuts indeed. If they don't I have no problem. If you think SDD should change, I appreciate the comments!
+
+-- Main.GregorHagedorn - 9. Jun 2004
+---
+
+I changed the <nop>CodingStatus tag to the Certainty reference, so I think that section is now ok. I also changed our code so that we no longer need the xidlast and xidmetric attributes. Thank you for the last() hint, and I can't believe that I overlooked that in the first place. I changed xidopen in the State declaration to xidchosen, which I think is a bit clearer and avoids the problem of having two identical attributes serving different functions (though I realize it does not eliminate the problem that the attribute is there to begin with). For the time being, since we have no link between X:ID and other name sources, so I also eliminated the xidsource attribute. 
+
+For State images, I left a short, empty &lt;Icon/&gt; tag in the Representation section for the states. Is this incorrect according to SDD? The reason for this, and for the xidimage tag in the Class definitions is that we initially were trying to avoid listing out all the image titles and URLs. On our server-side, we do not need this information for the functioning of X:ID, so we left out this information to save time and space. 
+
+I had another idea, but it is also a little unusual. I thought about making a <nop>MediaResource element that was just a placeholder, like <.MediaResource key="999"> that I referenced whenever I needed to convey that a certain state or taxa had a image related to it. Is this idea better or worse than my <Icon/> idea?
+
+-- Main.PatrickLeary - 09 Jun 2004	
+---
+
+Very good! As I said, I have absolutely no problems with the UI-extensions like isopen or ischosen. The xidsource attribute intention of linking to a name source is actually something very close to the heart of SDD and its <nop>ObjectLinks proposal. So as soon as you have time getting into it, we are very interested to learn whether you can state the fact that the class name proxy is indeed only a proxy for an external data source as defined by the linking mechanisms.
+
+The icon/empty Media resources issue I don't fully understand. Yes, empty &lt;Icon/&gt; is not SDD, SDD will validate that the claim there is an image also provides the information. Viewed from an information exchange point that makes sense. But I think/hope I am beginning to get the idea. You say, the server will look it up that there are images somewhere, and in the UI you only need the information whether that lookup will fail or not, is that correct?
+
+Basically I see no problem with omitting data (although it would be nice to send them if the xml-source is requested). This seems to be also the case in the <nop>CodedDescriptions, which you don't need for the user interface, but are part of the data. So you kind of can serve the X:ID xml as enriched SDD with all information embedded, or with everything not relevant for UI (like exact image definitions or coded description data) suppressed. That would make sense to speed things up. 
+
+So first, suppressing information to reduce traffic for UI issues is certainly legal. The hint to the UI that in the full data there are media resources defined could then be validly UI-specific. I would recommend something like "mediaavailable" "or resourcepresent" etc. rather than image (you yourself use both image and a full html page!). The proposal to use a dummy media definition is possible and generates legal SDD, but since you redefine semantics, I am not sure it is valuable.
+
+One minor point: I would recommend changing the boolean xid-attribute from values T and F to 1 and 0. This allows to type them as xs:boolean, which only accepts true, false, 1, 0 as values. That seems to me closer to programming and semantics.
+
+Separately: Earlier question: "In <nop>CodingStatus there are tags for <nop>BasicCodingStatus and <nop>PresenceOfInformation. Are these necessary? And what exactly do they mean?" Answer: Since designers of terminology may create their own <nop>CodingStatus values, these provided fixed enumerations that help processors to make sense of it. Different data will use different key/ref values, and different Labels in different languages, but if you want to know what kind of coding status value something is, look at these enumerations. Values are listed in the schema, together with annotations. -- Earlier question: "Certainty Modifier has Text and <nop>TextAfter tags. Is this a redundancy?" Answer: Text is Label for display purposes. <nop>TextBefore + <nop>TextAfter are inside Wording and for natural language output. If you have a better idea that Wording to distinguish these two purpose, I am very eager to hear about it... Since the modifier in natural language output would surround a state, it may be rendered with text before and after the state: you could render it as "probably red" or as "red?".  -- Earlier question: "The tag for <nop>IsTrueByMisinterpretation seems quite unnecessary since this is the only place I could find this tag in your technical definition of SDD. It seems that the misinterpretation is implied by the type of Certainty Modifier itself." Answer: the "Perhaps" certainty modifier you should not have <nop>IsTrueByMisinterpretation. -- Earlier question: "With the Frequency Modifier for rare, could you tell me more about the <nop>FrequenceRange? Since Lucid key only tell when a taxon is scored as rare, I don't want these values to under or overestimate the frequency of attribute. And who can define limits on such an imprecise word as rare?" The question of value ranges is quite valid and others have raised it as well. If you feel completely uncomfortable, you are free to enter 0 to 1, or you can raise the upper to something more conservative that 15%. The point is not that these values are exact, the point is that without them you cannot integrate data that have frequency values with those that have frequency categories. You think this is impossible? I sort of feel that given that you can escape setting it to 0 to 1 thus saying nothing useful, I would rather not make it entirely optional, but others have voiced similar sentiments as you have... 
+
+Should probability and frequency specifications be made optional in SDD, preventing processor from relying on them? I could make them optional with default 0 and 1 respectively?
+
+-- Main.GregorHagedorn - 9. Jun 2004
+---
+
+I made a few more changes. I no longer have to rely on that messy <Icon/> trick I was going to use, as I figured out the complex XSLT commands that I need to use. The XML file now declares all media for states and taxa. I also made those atribute changes that you suggested. All xid:attributes are now boolean (0 or 1), so they can be defined as boolean elements. 
+
+As far as the name sources go, we do plan on combining the two project eventually, but we are really trying to get X:ID fully functioning and comprehensive by itself. Perhaps a future version of X:ID will be integrated, and we will be sure to let you know when that happens.
+	* [Please look at the discussion under UBioXidNameLinking! -- Main.GregorHagedorn]
+
+The frequency issue is not a problem for us, but it may be something you want to consider. Since "rare" is a loose term, it will be varying levels of discriminatory to different users. I would say, as long as the creator of the SDD file can set the levels, and perhaps create multiple Frequency Modifiers for varying levels of "rarity", then I would say SDD is fine and does not need to be changed. But, again, this is not relevant to us, and we are not taxonomists, but that is my opinion from a programmer's point of view. Thank you for your explanations, and I can now feel that I understand all that goes in to our XML files.
+	* [Multiple "rare" frequencies are possible; this is fully under designer control. They have to have differnt labels but can have the same output wording. However, I think making the attributes optional with the all-encompassing defaults may be the best choice, because that "solution" in the case that you have no semantics for rare seems not obvious enough otherwise. -- Main.GregorHagedorn]
+
+One small thing: "Answer: the "Perhaps" certainty modifier you should not have <nop>IsTrueByMisinterpretation", I was refering to the "(by misunderstanding)" Modifier key="42". The <nop>IsTrueByMisinterpretation tag seems quite redundant there.
+	* [Why do you think so? How would the consuming application recognize this special semantics of a certainty modifier? Are you assuming that the key value is fixed? It is not, both the label (which may be German or Chinese) and the key values are fully under provider control and not defined by SDD. -- Main.GregorHagedorn]
+
+I also performed a small test on the file sizes of our old XML format and the new SDD-compliant format with the "Key to Marine Fishes". Our old XML format with the XID-specific DTD created a file 213 lines long and about 8KB in size. The SDD-compliant version creates an XML file 2339 lines long and 60KB in size. This is troubling to me from a programmer's standpoint, because we want everything to be small and run quickly. So, I was thinking of using SDD in an export function, or even create a new program that was a LIF->SDD converter.
+	* [The X:ID xml files I have seen so far never contained image or actual data information, only the character definition part, equivalent to Terminology section in SDD. Can you attach a zip with a comparison that contains the equivalent data? I am not opposed to shortening some tag names, e.g. Char instead of Character would be just as good. SDD will always be longer than LIF, no question, SDD is designed to cover a greater scope and provide more extensibility, but it would be good to do what we can to keep it compact. The non-xml matrix is no option, but if you have any ideas please tell us. -- Main.GregorHagedorn -- 11. June 2004]
+
+I will work on making the LIF->SDD converter, as I think it will be useful to all interested in SDD. It will serve as a good example of a real-time application of SDD, and hopefully helps to futher its development. I was wondering if you, or an of your colleagues had and Lucid Keys (preferably in .LIF format) that we could use to test this application. All of our keys are small and not of any real taxonomic significance, so I would like to test my conversion with a real example of a large and detailed key. 
+
+I also posted the newest version of our [[%ATTACHURL%/XIDwithSDD.xml][XIDwithSDD.xml]] file so you can take a look. Thanks for all the help.
+
+-- Main.PatrickLeary - 10 Jun 2004
+---
+
+I just finished my LIF-&gt;SDD converter. It can be found at http://uio.mbl.edu/SDD/converter.php . I also attached the PHP code to this forum, so that people may check out how the conversion actually happens. I included some sample .LIF files that we have here at the MBL, but they are demonstration file as opposed to actual comprehensive taxonomic keys. LIFs can also be uploaded from the user's computer, or a URL to a LIF file somewhere in the web can be typed in (this URL must start with http://). I hope this is a useful application, and I would certainly like any feedback regarding how it can be improved.
+
+-- Main.PatrickLeary - 10 Jun 2004
+
+No doubt that the LIF-&gt;SDD converter is a great idea!!!
+
+-- Main.GregorHagedorn - 11 Jun 2004
+%META:FILEATTACHMENT{name="XIDwithSDD.xml" attr="" comment="" date="1086877859" path="C:\Documents and Settings\medinfo12\Desktop\XIDwithSDD.xml" size="62307" user="PatrickLeary" version="1.6"}%
+%META:FILEATTACHMENT{name="SDD_for_XID.zip" attr="" comment="SDD/CDI schema + example, reduced/modified for XID" date="1086622227" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\SDD_for_XID.zip" size="41063" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="converter.php.txt" attr="" comment="PHP Code for LIF->SDD Converter" date="1086880027" path="C:\Documents and Settings\medinfo12\Desktop\converter.php" size="43910" user="PatrickLeary" version="1.2"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1086606749" from="SDD.XidDevelopment" to="SDD.UBioXidDevelopment"}%

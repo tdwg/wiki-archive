@@ -1,0 +1,95 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="MarkusDoering" date="1100621621" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="ComplexTypes"}%
+The date/time types defined in xml schema control completeness of a date. Although incomplete types like gMonthDay exist, no type in xml schema that directly allows arbitrary combination of date elements.
+
+UBIF proposes two complex types with elements that model partial or complete gregorian calendar date/time (= points in time where parts may be missing). These follow the seven property model described, e.&nbsp;g., in xml Schema 1.1 (http://www.w3.org/TR/2004/WD-xmlschema11-2-20040716/#theSevenPropertyModel). The date attributes are:<br/>
+ - year = four digit year;<br/>
+ - month = two digit month of year;<br/>
+ - day = two digit day of month<br/>
+ - verbatim = unparsed textual date representation<br/>
+ - supplement = text in addition to or modifying the exact dates, e. g., 'end of summer', 'first half or year', 'first decade of month', '1888-1892'.<br/>
+ - timezone = expressed as integer according to the xml schema seven parameter model
+
+This is very similar to the atomized date/time model used in <nop>DarwinCore, with separate <nop>YearCollected, <nop>MonthCollected, <nop>DayCollected, <nop>TimeCollected values based on double. UBIF differs by combining the separate elements into attributes of a complex type. Also <nop>DarwinCore has no timezone or verbatim text support.
+
+A different model is proposed by ABCD (versions up to 1.49) which propose a new type based on xs:string on which a specific regular expression pattern is imposed. This allows to express complete or incomplete date/time in a way "conforming to a subset of ISO 8601". We see some problems with this:
+	1 The type is not defined in xml schema and requires custom serialization/deserialization code to written. Given the complexity of the regular expression pattern ("\d\d\d\d(\-(0[1-9]|1[012])(\-((0[1-9])|1\d|2\d|3[01])(T(0\d|1\d|2[0-3])(:[0-5]\d){0,2})?)?)?|\-\-(0[1-9]|1[012])(\-(0[1-9]|1\d|2\d|3[01]))?|\-\-\-(0[1-9]|1\d|2\d|3[01])") this is not a trivial task. In contrast, serialization/deserialization of objects to/from xml using xs:datetime, or the composite objects proposed by UBIF is automatically handled by the programming frameworks like Java or .NET. 
+	2 ABCD gives the following examples for this: "1966-12-05T23:55:46", "1925-02-21", "1925-02", "1925", "12-05T23:55:46", "---05T23:55". Timezone information is not mentioned.
+	3 Any client must first parse the string, then determine whether the parts desired to be used in filtering, sorting, or displaying is present. This especially hard on xslt routines. We failed to be able to write any xslt against the ABCD time proposal. If we should agree on the ABCD model, it would help if someone could provide xslt/xpath expression for sorting by month, or "filter all records from December 15-31".
+	4 ISO 8601 is almost unavailable, that is very expensive. Neither Bob Morris nor I (Gregor Hagedorn) were able to obtain further information about the semantics of the ABCD type without paying for ISO 8601.
+
+Note on the types used in the UBIF <nop>CompositeDate attributes: Integer types with constraining facets are used instead of gYear, gMonth, gDay for two reasons: a) gYear etc. may each have a timezone, which may lead to inconsistent data with multiple timezones; b) the lexical representation seems to be occasionally poorly implemented (e. g. both '31', or '---5' are accepted in XML spy, whereas valid examples would have to look like '---31', '---05', and  '---05+02:00'). 
+
+In addition to the seven property model additional text attributes for either unsharp additions or complete verbatim dates are added. Note that incomplete dates in most cases are calendar specific and incomplete non-gregorian dates can not be expressed. Furthermore, for complete dates it may be unclear whether a reformed or unreformed date has been used (e.g. in Russia in the 19th century).
+
+Please comment and argue for either the UBIF or the ABCD model.
+
+-- Main.GregorHagedorn - 13 Aug 2004
+
+-----
+---+++ ISO8601 subset used in ABCD
+
+The datetime format in ABCD is only a subset of ISO8601. ISO8601 defines many alternative ways of coding dates, times etc. See the following links for details about ISO8601 or good summaries:
+	* the final draft of ISO8601 http://www.pvv.ntnu.no/~nsaa/8601v2000.pdf
+	* simple overview with examples: http://www.mcs.vuw.ac.nz/technical/software/SGML/doc/iso8601/ISO8601.html
+	* link collection about ISO8601: http://dmoz.org/Science/Reference/Standards/Individual_Standards/ISO_8601/
+The complete subset ABCD 1.2 uses is as follows, with the final +-hh being the timezone in hours:
+	* YYYY-MM-DDThh:mm:ss+-hh
+
+
+Unprecise data can always just omit parts from the right (this applies also for the incomplete data below):
+	* YYYY-MM-DDThh:mm:ss (no timezone defaults to UTC)
+	* YYYY-MM-DDThh:mm
+	* YYYY-MM-DDThh
+	* YYYY-MM-DD
+	* YYYY-MM
+	* YYYY
+	* YY
+
+Incomplete data can truncate the date part of the string from the left, but not within the middle (only leaving month):
+	* YYYY-MM-DDThh:mm:ss
+	* --MM-DDThh:mm:ss
+	* ---DDThh:mm:ss
+
+Something which is IMPOSSIBLE to do with this format is giving just a year and a day:
+	* YYYY--DD
+
+
+The advantages of this format are:
+	* you can represent everythin in 1 string
+	* chronological sorting is a simple alphanumeric sorting order
+	* searches can be simply expressed by comparing date "objects":	Birthdate < 1973-01-31
+
+The disadvantages:
+	* you cannot search on the month, day or time alone. For seasonal searches ABCD therefore provides the DayNumber element, which gives a days number within a year. For time based searches the timeOfDay. This is redundant and not elegant.
+	* the format for incomplete data is usually not supported in most programming languages. we will have to write our own parsing classes.
+
+
+
+---+++The Seven Property Model 
+The other suitable format would be based on the Seven Property Model pointed out by Gregor. We would end up with an atomized version (probably as xml attributes of a datetime element) of a datetime like this:
+	* Y year, an integer
+	* M month, an integer between 1 and 12 
+	* D day, an integer between 1 and 28, 29, 30, or 31, depending on ·month· and ·year·
+	* h hour, an integer between 0 and 23, or 24 if both ·minute· and ·second· are zero
+	* m minute, an integer between 0 and 59
+	* s second, a decimal number greater than or equal 0, less than 60 except as prescribed in the table of leap-seconds in Seconds, Minutes, and Days (§D.2.1.1); must be less than 60 if ·timezone· is absent.
+	* t timezone, an optional integer between –840 and 840
+
+Advantages:
+	* Any incomplete date can be represented easily
+	* Searching on all things is possible
+
+Disadvantages:
+	* simple searches get very complex. E.g:
+	* is earlier than: Birthdate < 1973-03-30 
+		* Y<1973 OR ( Y=1973 AND M<03) OR ( Y=1973 AND M=03 AND D<30 )
+	* is within a range: 1961-07-21 < Birthdate < 1973-03-30
+		* ( Y<1973 OR ( Y=1973 AND M<03) OR ( Y=1973 AND M=03 AND D<30 ) )  AND  ( Y>1961 OR ( Y=1961 AND M>07) OR ( Y=1961 AND M=07 AND D>21 ) )
+		* so instead of 2 comparisons there are now 12. If you include the time this will be a lot more.
+
+
+
+-- Main.MarkusDoering - 16 Nov 2004

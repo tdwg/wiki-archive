@@ -1,0 +1,111 @@
+#!/usr/bin/perl -wT
+#
+# TWiki Enterprise Collaboration Platform, http://TWiki.org/
+#
+# Copyright (C) 2005-2007 TWiki Contributors
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version. For
+# more details read LICENSE in the root of this distribution.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# As per the GPL, removal of this notice is prohibited.
+
+BEGIN {
+    # Set default current working directory (needed for mod_perl)
+    if( $ENV{"SCRIPT_FILENAME"} && $ENV{"SCRIPT_FILENAME"} =~ /^(.+)\/[^\/]+$/ ) {
+        chdir $1;
+    }
+    # Set library paths in @INC, at compile time
+    unshift @INC, '.';
+    require 'setlib.cfg';
+}
+
+use strict;
+use TWiki;
+
+# Use unbuffered IO
+$| = 1;
+
+my $initialContext = { rest => 1 };
+
+# Rest scripts are *always* CGI scripts.
+my $query;
+if ($ENV{GATEWAY_INTERFACE}) {
+    $query = new CGI;
+} else {
+
+    # script is called by cron job or user
+    $initialContext->{command_line} = 1;
+
+    $query = new CGI();
+    while( scalar( @ARGV )) {
+        my $arg = shift( @ARGV );
+        if ( $arg =~ /^-?([A-Za-z0-9_]+)$/o ) {
+            my $name = $1;
+            my $arg = TWiki::Sandbox::untaintUnchecked( shift( @ARGV ));
+            $query->param( -name => $name, -value => $arg );
+        } else {
+            $query->path_info( TWiki::Sandbox::untaintUnchecked( $arg ));
+        }
+    }
+}
+
+my $login = $query->param('username');
+my $pass = $query->param('password');
+
+# Must define topic param in the query to avoid plugins being
+# passed the path_info when the are initialised. We can't affect
+# the path_info, but we *can* persuade TWiki to ignore it.
+my $topic = $query->param('topic');
+if ($topic) {
+    unless ($topic =~ /((?:.*[\.\/])+)(.*)/) {
+        die "Invalid topic - no web specified";
+    }
+} else {
+    # Point it somewhere innocent
+    $topic = $TWiki::cfg{UsersWebName}.'.'.$TWiki::cfg{HomeTopicName};
+    $query->param( -name => 'topic', -value => $topic );
+}
+
+my $twiki = new TWiki( undef, $query, $initialContext );
+
+local $SIG{__DIE__} = \&Carp::confess;
+
+if ($login) {
+    my $passwordHandler = $twiki->{users}->{passwords};
+    my $validation = $passwordHandler->checkPassword($login, $pass);
+    unless ($validation) {
+        die "Can't login as $login";
+    }
+
+    $twiki->{user} = $twiki->{users}->findUser($login);
+}
+
+my $pathInfo = $query->path_info();
+my $cgiScriptName = $ENV{'SCRIPT_NAME'} || '';
+$pathInfo =~ s!$cgiScriptName/!/!i;
+
+die "Invalid REST invocation" unless ($pathInfo =~ /\/(.*)[\.\/](.*?)$/);
+my ($subject, $verb) = ($1, $2);
+
+die 'Invalid Command '.$subject unless TWiki::isValidWikiWord($subject);
+my $function = TWiki::restDispatch($subject,$verb);
+die 'Unknown Action '.$subject.'/'.$verb unless ($function);
+no strict 'refs';
+my $result = &$function($twiki, $subject, $verb);
+use strict 'refs';
+my $endPoint = $query->param('endPoint');
+if (defined($endPoint)) {
+    $twiki->redirect($twiki->getScriptUrl( 1, 'view', '', $endPoint ));
+} else {
+    $twiki->writeCompletePage( $result ) if $result;
+}
+$twiki->finish();
+
+1;

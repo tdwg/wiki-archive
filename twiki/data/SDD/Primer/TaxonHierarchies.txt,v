@@ -1,0 +1,459 @@
+head	1.14;
+access	;
+symbols;
+locks; strict;
+comment	@@;
+
+1.14
+date	2006.08.30.01.44.47;	author DonovanSharp;	state Exp;
+branches;	
+next	1.13;
+1.13
+date	2006.07.25.02.33.33;	author DonovanSharp;	state Exp;
+branches;	
+next	1.12;
+1.12
+date	2006.07.12.04.07.07;	author DonovanSharp;	state Exp;
+branches;	
+next	1.11;
+1.11
+date	2006.07.12.02.08.43;	author DonovanSharp;	state Exp;
+branches;	
+next	1.10;
+1.10
+date	2006.07.11.07.29.04;	author DonovanSharp;	state Exp;
+branches;	
+next	1.9;
+1.9
+date	2006.07.11.02.36.34;	author DonovanSharp;	state Exp;
+branches;	
+next	1.8;
+1.8
+date	2006.07.06.06.04.31;	author DonovanSharp;	state Exp;
+branches;	
+next	1.7;
+1.7
+date	2006.07.05.04.40.14;	author DonovanSharp;	state Exp;
+branches;	
+next	1.6;
+1.6
+date	2006.07.05.01.16.20;	author DonovanSharp;	state Exp;
+branches;	
+next	1.5;
+1.5
+date	2006.06.21.06.44.11;	author DonovanSharp;	state Exp;
+branches;	
+next	1.4;
+1.4
+date	2006.06.21.02.19.06;	author DonovanSharp;	state Exp;
+branches;	
+next	1.3;
+1.3
+date	2006.06.07.04.10.46;	author DonovanSharp;	state Exp;
+branches;	
+next	1.2;
+1.2
+date	2006.06.02.07.32.32;	author DonovanSharp;	state Exp;
+branches;	
+next	1.1;
+1.1
+date	2006.06.01.06.07.03;	author DonovanSharp;	state Exp;
+branches;	
+next	;
+
+
+desc
+@@
+
+
+1.14
+log
+@@
+text
+@%META:TOPICINFO{author="DonovanSharp" date="1156902287" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.7 Taxon heirarchies
+
+Taxon hierarchies allow one or more hierarchical structures to be set for the coded entities. Hierarchies may tbe taxonomic (order/family/genus etc.) or non-taxonomic (weed/species/diseases, herb/shrub/tree).
+
+---++++Example 3.7.1 - A simple taxon hierarchy
+
+
+%ATTACHURL%/taxon_hierarchy_example.gif
+
+A taxon hierarchy requires two essential items within SDD: the names of the taxa being described, and the hierarchy itself.
+
+A simple SDD instance document for a taxon hierarchy has the basic structure shown below and in Example 3.7.2.
+
+%ATTACHURL%/taxonhierarchy.gif
+
+---++++Example 3.7.2 - A simple taxon hierarchy, SDD representation
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+    <TaxonHierarchies>
+      <TaxonHierarchy id="th1">
+        <Representation>
+          <Label>Default Entity Tree</Label>
+        </Representation>
+        <TaxonHierarchyType>UnspecifiedTaxonomy</TaxonHierarchyType>
+        <Nodes>
+          <Node id="tn1">
+            <TaxonName ref="t1"/>
+          </Node>
+          <Node id="tn2">
+            <Parent ref="tn1"/>
+            <TaxonName ref="t2"/>
+          </Node>
+          <Node id="tn3">
+            <Parent ref="tn2"/>
+            <TaxonName ref="t3"/>
+          </Node>
+          <Node id="tn4">
+            <Parent ref="tn2"/>
+            <TaxonName ref="t4"/>
+          </Node>
+          <Node id="tn5">
+            <Parent ref="tn1"/>
+            <TaxonName ref="t5"/>
+          </Node>
+          <Node id="tn6">
+            <Parent ref="tn5"/>
+            <TaxonName ref="t6"/>
+          </Node>
+          <Node id="tn7">
+            <Parent ref="tn5"/>
+            <TaxonName ref="t7"/>
+          </Node>
+        </Nodes>
+      </TaxonHierarchy>
+    </TaxonHierarchies>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+The &lt;Representation&gt; element provides a label for the description. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic [[SddLanguage][Language support in SDD]].
+
+[[SddScope][&lt;Scope&gt;]] defines the group of taxa for which this <noautolink>TaxonHierarchy</noautolink> is relevant, currently only taxonomic scope is supported. Records taxon names and citation for the source of the information.
+
+The taxon hierarchy supports taxonomic (order/family/genus etc.) and non-taxonomic (weed species, diseases, herb/shrub/tree) hierarchies. For many analytical purposes it is relevant whether a hierarchy is based on phylogenetic (= evolutionary) relatedness or whether it is an operational categorization. This is defined in the &lt;TaxonHierarchyType&gt; element. Currently content is restricted to "NonphylogeneticTaxonomy", "PhylogeneticTaxonomy", "SubsetFilter" or "UnspecifiedTaxonomy".
+
+---++++3.7.2 The structure of &lt;Nodes&gt; in &lt;TaxonHierarchy&gt;
+
+The tree structure of the taxon hierarchy is presented as an ordered list of nodes together with edges pointing to parent nodes. Inner nodes may have taxon name references or may be anonymous (esp. for phylogenetic analyses). The &lt;Node&gt; element has the basic structure shown below.
+
+%ATTACHURL%/taxonhierarchynodes.gif
+
+&lt;Parent&gt; Refers to an inner node of the current tree. Omitting this is interpreted as a reference to the root of the tree.
+
+&lt;TaxonName&gt; is a reference to a taxon name. Inner nodes may be anonymous or identified as a higher taxon; terminal nodes should always point to a taxon name (requires external validation).
+
+&lt;Synonyms&gt; The expression of synonyms may be essential for reports and to convey the concept of a taxon to information consumers. Synonyms must refer to an entity previously defined in teh element &lt;TaxonNames&gt;, for more information refer to the topic [[TaxonNames][Defining taxon names]].
+
+-- Main.DonovanSharp - 01 Jun 2006
+
+%META:FILEATTACHMENT{name="taxonhierarchynodes.gif" attr="" autoattached="1" comment="" date="1152670093" path="taxonhierarchynodes.gif" size="7963" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="taxon_hierarchy_example.gif" attr="" autoattached="1" comment="" date="1152602944" path="taxon_hierarchy_example.gif" size="2098" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="taxonhierarchy.gif" attr="" autoattached="1" comment="" date="1152600721" path="taxonhierarchy.gif" size="6012" user="Main.DonovanSharp" version="2"}%
+@
+
+
+1.13
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153794813" format="1.1" version="1.13"}%
+d5 1
+a5 1
+---+++3.8 Taxon heirarchies
+d9 1
+a9 1
+---++++Example 3.8.1 - A simple taxon hierarchy
+d16 1
+a16 1
+A simple SDD instance document for a taxon hierarchy has the basic structure shown below and in Example 3.8.2.
+d20 1
+a20 1
+---++++Example 3.8.2 - A simple taxon hierarchy, SDD representation
+d78 1
+a78 1
+---++++3.8.2 The structure of &lt;Nodes&gt; in &lt;TaxonHierarchy&gt;
+@
+
+
+1.12
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152677227" format="1.1" reprev="1.12" version="1.12"}%
+d74 1
+a74 1
+[[SddScope][&lt;Scope&gt;]] defines the group of taxa for which this TaxonHierarchy is relevant, currently only taxonomic scope is supported. Records taxon names and citation for the source of the information.
+@
+
+
+1.11
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152670123" format="1.1" reprev="1.11" version="1.11"}%
+d80 1
+a80 1
+The tree structure of the taxon hierarchy is presented as an ordered list of nodes together with edges pointing to parent nodes. Inner nodes may have taxon name references or may be anonymous (esp. for phylogenetic analyses). The &lt;Node&gt; element has the basic structure shown below and in Example 3.8.2.1.
+d88 1
+a88 1
+&lt;Synonyms&gt; (The expression of synonyms may be essential for reports and to convey the concept of a taxon to information consumers.)
+@
+
+
+1.10
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152602944" format="1.1" reprev="1.10" version="1.10"}%
+d72 1
+d74 1
+d76 1
+a76 1
+---++++3.8.1 TaxonHeirarchy Elements
+d78 1
+a78 1
+Elements within &lt;TaxonHierarchy&gt; include [[SddScope][&lt;Scope&gt;]]. &lt;TaxonHierarchyType&gt; and &lt;Nodes&gt;.
+d80 1
+a80 1
+---++++3.8.1.1 [[SddScope][&lt;Scope&gt;]]
+a81 10
+Scope of character tree, currently only taxonomic scope is supported. Defines the group of taxa for which this TaxonHierarchy is relevant. Taxon names and citation for the source of the information.
+
+---++++3.8.1.2 &lt;TaxonHierarchyType&gt;
+
+The taxon hierarchy supports taxonomic (order/family/genus etc.) and non-taxonomic (weed species, diseases, herb/shrub/tree) hierarchies. For many analytical purposes it is relevant whether a hierarchy is based on phylogenetic (= evolutionary) relatedness or whether it is an operational categorization.
+d93 1
+---++++3.8.1.3 [[SddNodes][&lt;Nodes&gt;]]
+
+The tree structure of the taxon hierarchy is presented as an ordered list of nodes together with edges pointing to parent nodes. Inner nodes may have taxon name references or may be anonymous (esp. for phylogenetic analyses).
+a93 1
+d92 1
+a92 1
+%META:FILEATTACHMENT{name="taxonhierarchynodes.gif" attr="" autoattached="1" comment="" date="1152585380" path="taxonhierarchynodes.gif" size="9028" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.9
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152585394" format="1.1" reprev="1.9" version="1.9"}%
+d7 1
+a7 1
+Taxon hierarchies allows one or more hierarchical structures to be set for the coded entities. Hierarchies may tbe taxonomic (order/family/genus etc.) or non-taxonomic (weed/species/diseases, herb/shrub/tree).
+a8 2
+%ATTACHURL%/taxonhierarchy.gif
+d31 1
+a10 1
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+d12 1
+a12 12
+<tr>
+<td>
+    
+<verbatim>
+	Viscaceae
+		Korthalsella
+			Korthalsella japonica
+			Korthalsella papuana
+		Notothixos
+			Notothixos cornifolius
+			Notothixos incanus
+</verbatim>
+d14 1
+a14 2
+</td>
+</tr>
+d16 1
+a16 1
+</table>
+a19 2
+
+d101 1
+d101 1
+a102 1
+%META:FILEATTACHMENT{name="taxonhierarchy.gif" attr="" autoattached="1" comment="" date="1152585311" path="taxonhierarchy.gif" size="22740" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.8
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152165871" format="1.1" version="1.8"}%
+d9 1
+a9 1
+%ATTACHURL%/taxonhierarchy.jpg
+d106 1
+a106 1
+%ATTACHURL%/taxonhierarchynodes.jpg
+d116 2
+a117 2
+%META:FILEATTACHMENT{name="taxonhierarchynodes.jpg" attr="" autoattached="1" comment="" date="1150871954" path="taxonhierarchynodes.jpg" size="8028" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="taxonhierarchy.jpg" attr="" autoattached="1" comment="" date="1150855132" path="taxonhierarchy.jpg" size="19385" user="Main.DonovanSharp" version="2"}%
+@
+
+
+1.7
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152074414" format="1.1" reprev="1.7" version="1.7"}%
+d13 4
+d28 2
+a29 1
+	
+d31 5
+d38 4
+d82 7
+@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152062180" format="1.1" reprev="1.6" version="1.6"}%
+d71 1
+a71 1
+Elements within TaxonHierarchy include [[SddScope][Scope]]. TaxonHierarchyType and Nodes.
+d73 1
+a73 1
+---++++3.8.1.1 [[SddScope][Scope]]
+d77 1
+a77 1
+---++++3.8.1.2 TaxonHierarchyType
+d81 1
+a81 1
+---++++3.8.1.3 [[SddNodes][Nodes]]
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150872251" format="1.1" reprev="1.5" version="1.5"}%
+d87 1
+a87 1
+&lt:Parent&gt; Refers to an inner node of the current tree. Omitting this is interpreted as a reference to the root of the tree.
+d89 1
+a89 1
+&lt:TaxonName&gt; is a reference to a taxon name. Inner nodes may be anonymous or identified as a higher taxon; terminal nodes should always point to a taxon name (requires external validation).
+d91 1
+a91 1
+&lt:Synonyms&gt; (The expression of synonyms may be essential for reports and to convey the concept of a taxon to information consumers.)
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150856346" format="1.1" reprev="1.4" version="1.4"}%
+d85 8
+d95 2
+a96 1
+%META:FILEATTACHMENT{name="taxonhierarchy.jpg" attachment="taxonhierarchy.jpg" attr="" comment="" date="1150855132" path="taxonhierarchy.jpg" size="19385" stream="taxonhierarchy.jpg" user="Main.DonovanSharp" version="2"}%
+@
+
+
+1.3
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149653446" format="1.1" reprev="1.3" version="1.3"}%
+d33 1
+a33 1
+          <Label xml:lang="en-us">Default Entity Tree</Label>
+d69 1
+a69 1
+	
+d71 1
+d73 12
+d87 1
+a87 1
+%META:FILEATTACHMENT{name="taxonhierarchy.jpg" attachment="taxonhierarchy.jpg" attr="" comment="" date="1149653445" path="taxonhierarchy.jpg" size="9742" stream="taxonhierarchy.jpg" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149233552" format="1.1" version="1.2"}%
+a2 1
+d8 2
+d73 3
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149142022" format="1.1" version="1.1"}%
+d4 1
+d6 1
+a6 1
+SDD Part 0: Introduction and Primer to the SDD Standard 
+a7 1
+3.8 Taxon heirarchies
+d10 1
+a10 1
+Example 3.8.1 - A simple taxon hierarchy
+d13 1
+a13 1
+d21 1
+a22 1
+d25 1
+a25 1
+Example 3.8.2 - A simple taxon hierarchy, SDD representation
+d28 1
+a28 1
+d66 1
+a66 1
+
+@
+

@@ -1,0 +1,264 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="DamianBarnier" date="1150036954" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="WebHome"}%
+[[%PUBURLPATH%/%WEB%/DiscussionFor1dot1beta12andRC1/SDD1.1-RC1.zip][SDD1.1-RC1]] was released under the SubversionReleaseProcedures by Bob. Gregor refactored the discussion to remove material referring to now obsolete differences between Wiki and Subversion releases.
+
+---
+
+Changes between beta 11 and RC-1are mostly discussed in previous topic DiscussionFor1dot1beta11
+
+All previous concerns, including the preliminary testing of Lucid exports seem to be covered by this update and agreed. To save time, and without previous agreement I propose to also fix the point about the inconsistent sequence requirement in the Representation element (raised through an xslt implementation attempt of SDD, see DiscussionFor1dot1beta11) in the following manner: I argue that the sequence requirement of Label and Detail inside Representation is artificial, given that no sequence of text of a given language, role, etc. is imposed within each of Label and Detail. Label and Detail only differ in the validation of the allowable length of text, Label having metadata roles of short text, Detail roles potentially requiring long text. SDD 1.1 Release candidate 1 thus removes the sequence constraint from Label/Detail. All documents remain valid after this change. I propose to accept SDD1.1-RC1 as full release candidate.
+
+I have tested the RC1 both with Spy and with Xerces. Everything is ok in Spy, and in Xerces the simpler test files validate. However, two issues remain open, see "Open issues in RC1" below.
+
+-- Main.GregorHagedorn - 12 May 2006
+
+---
+
+---++++++ Validation failures in test documents.
+
+Main.GregorHagedorn: I have tested the RC1 both with Spy and with Xerces. Everything is ok in Spy, and in Xerces the simpler test files validate. However, the complex "SDD-Test-AutoIncludeFragments.xml" generates a long list of rather strange looking errors in Xerces. To me this looks more like a problem of Xerces with the XML-entity inclusion used in this file - Jacob, we need your help in checking this!
+
+Main.JacobAsiedu in email of May 13: Firstly, the root element of the Doctype declaration should match the root element of the schema. You had 'SDD' as the root element of the Doctype but Datasets as the root element of the document. I believe that is not correct?
+
+From the errors generated, it looks like xerces is complaining of namespace issues. It cannot see the namespaces on the elements. I have not had the chance to research into this yet, but from my experience when it comes to issues like this, xerces is almost always right and XMLSPY is wrong. BTW, XMLBeans also cannot validate the document (well one can say that it uses xerces behind the scenes). When i get the chance i will try with other parsers.. 
+
+Gregor: Many thanks, I have updated the Document type in the example files. Xerces still fails to validate, but this seems to be entirely due to the entity-inclusion. I have created a version where instead of using the xml-entity mechanism, all fragments are manually included into a single file (SDD-Test-TEMP-FragmentsManuallyIncluded.xml). This file validates with Xerces. Any hints what may still be wrong with the system entities are appreciated.
+
+----
+
+---++++++ Namespace
+
+Main.GregorHagedorn: <i>Note: a remaining open issue is the correct namespace. This depends on decisions of TDWG. Ricardo and Roger propose to use res.tdwg.org as the base of the namespace. I dislike the completely unintuitive "res" for the basis of all vocabulary terms that TDWG will publish. I think there is an important social dimension to this name. Rejected are "ns.tdwg", "www.tdwg", "standard.tdwg" - if anyone of you has a good other idea, I will feed that into the discussion. Although annyoing because affecting all instance documents as well as the schema, global search-and-replace should work.</i>
+
+----
+
+Discussion of issues in SDD1.1 which are not errors, but may be debilitating.
+Damian.Barnier and Bob.Morris agree that such issues may be treated with a Subversion branch for consideration of remerging when there are no errors in the Release Candidate stream in the main trunk in Subversion.
+
+---++++++ Multiple Quantitative Values
+
+A minor issue has cropped up in implementing SDD for Lucid.
+
+In Lucid, we allow one or more sets of quantitative values for any taxon. For example, leaf length for a genus may be (2-)5-10(-25) mm OR 75-100 mm. We can handle this (rather than requiring the user to enter 2-100. That is - any taxon may have zero-many instances of (a-)b-c(-d) (or variants thereof). Under the current schema, to encode (for one taxon for one quantitative character)<br/>
+(1-)2-3(-5)<br/>
+(10-)15-20(-25)<br/>
+requires:
+
+&lt;Quantitative&gt;<br/>
+  &lt;...&gt;<br/>
+  &lt;Measure type="Min" value="1"/&gt;<br/>
+  &lt;Measure type="UMethLower" value="2"/&gt;<br/>
+  &lt;Measure type="UMethUpper" value="3"/&gt;<br/>
+  &lt;Measure type="Max" value="5"/&gt;<br/>
+  &lt;Measure type="Min" value="10"/&gt; <br/>
+  &lt;Measure type="UMethLower" value="15"/&gt;<br/>
+  &lt;Measure type="UMethUpper" value="20"/&gt;<br/>
+  &lt;Measure type="Max" value="25"/&gt;<br/>
+  &lt;...&gt;<br/>
+&lt;/Quantitative&gt;
+
+But a consumer would not be able to make sense of this, as the order is not meaningful. We would like the Measure/PMeasure values be placed into a sequence allowing the measures to be grouped, for e. g.
+
+&lt;Quantitative&gt;<br/>
+  &lt;...&gt;<br/>
+  &lt;ValueSet&gt;<br/>
+    &lt;Measure type="Min" value="1"/&gt;<br/>
+    &lt;Measure type="UMethLower" value="2"/&gt;<br/>
+    &lt;Measure type="UMethUpper" value="3"/&gt;<br/>
+    &lt;Measure type="Max" value="5"/&gt;<br/>
+  &lt;/ValueSet&gt;<br/>
+  &lt;ValueSet&gt;<br/>
+    &lt;Measure type="Min" value="10"/&gt; <br/>
+    &lt;Measure type="UMethLower" value="15"/&gt;<br/>
+    &lt;Measure type="UMethUpper" value="20"/&gt;<br/>
+    &lt;Measure type="Max" value="25"/&gt;<br/>
+  &lt;/ValueSet&gt;<br/>
+  &lt;...&gt;<br/>
+&lt;/Quantitative&gt;<br/>
+
+It would also be desirable to have the Modifiers within the ValueSet as rows may have different modifiers applied to them, ie, a common row, and a rare or misinterpreted row (that is, 2-5 may be the normal (common) value, and 100-200 may be rare, or a misinterpretation).
+
+-- Main.KevinThiele - 15 May 2006 moved here by -- Main.BobMorris - 15 May 2006
+
+Gregor: I believe this is already covered. The expression in SDD uses twice the Quantitative character data container, both referring to the same character:
+
+&lt;Quantitative ref="1"&gt;<br/>
+  &lt;...&gt;<br/>
+  &lt;Measure type="Min" value="1"/&gt;<br/>
+  &lt;Measure type="UMethLower" value="2"/&gt;<br/>
+  &lt;Measure type="UMethUpper" value="3"/&gt;<br/>
+  &lt;Measure type="Max" value="5"/&gt;<br/>
+  &lt;...&gt;<br/>
+&lt;/Quantitative&gt;<br/>
+&lt;Quantitative ref="1"&gt;<br/>
+  &lt;...&gt;<br/>
+  &lt;Measure type="Min" value="10"/&gt; <br/>
+  &lt;Measure type="UMethLower" value="15"/&gt;<br/>
+  &lt;Measure type="UMethUpper" value="20"/&gt;<br/>
+  &lt;Measure type="Max" value="25"/&gt;<br/>
+  &lt;...&gt;<br/>
+&lt;/Quantitative&gt;<br/>
+
+Also note that by the same method you may place different modifiers on sets of statistical measures. 
+
+However, your example shows that probably an identity constraint should be added, requiring that measure type be unique within a character data container. Note that this design is general. You may just as well encounter a Text character twice - although external validation may require that this is meaningful only if the two text characters are distinguished by modifiers (e.g. "at the bottom", "at the tip"). Also you may encounter multiple Categorical character data containers. I assume this might be difficult for Lucid, but at least unless there are character-notes or media resources on them, you would be allowed to merge them into a single set of states. Otherwise you may have to issue a warning.
+
+PS: Note that in SDD 1.1 !UnknownMethLower/UnknownMethUpper have been shortened to !UMethLower/UMethUpper for convenience.
+
+-- Main.GregorHagedorn - 15 May 2006
+
+----
+
+---++++++ Problems with character tree and character dependency:
+
+Damian discussed in email whether to always introduce an empty character tree node (not pointing to a concept) to have a place to hang those character dependencies that apply to single characters. The following is the shortened reply by Gregor, documenting the reasoning to change the behavior of SDD RC1 in this aspect:
+
+... I think Damian pointed out something quite important, it shows that the structure is not yet satisfying. In addition to your comments about the problems with dependency definitions, your example:
+
+<verbatim>
+> <Nodes>
+>   <Char ref="c1" debuglabel="2:Wing Number"/>
+>   <Char ref="c2" debuglabel="7:Wing Shape"/>
+>   <...>
+> </Nodes>
+</verbatim>
+
+pointed to something else. This would not be valid current SDD, because for Character nodes the Parent is required - but then that seems to be unnecessary, one may indeed simply want to place characters in the root of the tree. So we should not have that constraint.
+
+That leaves the distinction between Node (potentially with Concept) and character leaf-node at the following points:
+
+   * Node has an id attribute, so it can become an inner node referenced by parent, and an optional Concept reference
+   *Character has NO id attribute, a required Character reference, and an optional simple Label for context specific labels.
+
+----
+
+The character tree is difficult to all of us, because it tries to square both the operational "display" requirements with the need to have fundamental structures organizing characters (the concepts). I propose to modify SDD the following way: I leave the RC1 structure you critize unchanged for the purpose of comparison with double underscores. I add below it new types which are rather similar to what you suggested, with the following differences:
+
+I would like to hang on to the constraint that characters may only be terminal nodes. Characters as internal nodes in the character tree would mean that the characters below would be on the same level as states and I find it logically confusing to have values and variables treated as equivalent objects. I have no objections against displaying it to users on the screen, as long as the way it is displayed keeps the distinction...
+
+I have further removed the simple Label completely, leaving all labeling to concepts or characters themselves. We can only have *also* labels in the tree, which will introduce additional complex rules about whether to show the label in the tree or the concept/character label.
+
+One rule recommended for display would be that if a single character is below a node labeled through a concept, the character label may be suppressed, else it will be shown in the tree. Note that this rule would not go away if we had additional label *in* the tree...
+
+Generating software may create concepts based on label identity, i.e. if two tree nodes have the same label, they should refer to the same concept object. I believe it is rather important to force people to start having a handle to reorganize their characters by more than arbitrary node labels - I believe this is the key to introduce some ontology into our software. I believe it is no problem if the exporting software initially creates two concepts if the same concept is accidentially labeled slightly differently.
+
+Note that this may require Concept-node - Character-node sequences, but NOT empty nodes around a character node.
+
+Finally and rather unimportantly, I have also removed the <InheritableDefinitions> container, flattening the contained structure to become immediate children of Node. I would like to hear your opinion on this.
+
+Much is best shown in examples:
+
+-----
+
+Examples:
+
+First without Dep.rules:
+
+<verbatim>
+<Nodes>
+  <Node id="ct1">
+    <Concept ref="co1"/>
+  </Node >
+  <CharNode>
+    <Parent ref="ct1"/>
+    <Character ref="c1" debuglabel="2:Wing Number"/>
+  </CharNode >
+  <CharNode>
+    <Character ref="c2" debuglabel="7:Wing Shape"/>
+  </CharNode >
+  <...>
+</Nodes>
+</verbatim>
+
+Note that !CharNodes have no id, character c1 is within ct1, c2 directly in the root. In principle I would much rather call the CharNode simply Node, but this would in fact make the schema much more difficult - or remove all constraints (schema in such cases can only use element names to identify the type).
+
+The example with dependency rules becomes:
+
+<verbatim>
+<Nodes>
+  <CharNode>
+    <DependencyRules>
+      <InapplicableIf><State ref="s13" debuglabel="18:Wing Development:Absent"/></InapplicableIf>
+    </DependencyRules>    
+    <Character ref="c1" debuglabel="2:Wing Number"/>
+  </CharNode >
+  <CharNode>
+    <DependencyRules>
+      <InapplicableIf>
+        <State ref="s4" debuglabel="6:Wing Number:Absent"/>
+        <State ref="s13" debuglabel="18:Wing Development:Absent"/>
+      </InapplicableIf>
+    </DependencyRules>
+    <Character ref="c2" debuglabel="7:Wing Shape"/>
+  </CharNode >
+  <...>
+</Nodes>
+</verbatim>
+
+-- Main.GregorHagedorn - 28 May 2006
+
+----
+
+The changes were an improvement however I believe there should still be an optional Label element on both the CharTree_Node and CharTree_Character elements. I can think of cases in which it would be preferrable to be able to specify alternate labels for characters included in trees, one example of this is shown below.
+
+Consider three characters, Leaf Phyllotaxy, Leaf Complexity and Type of leaf complexity, located in a tree below a node labelled Leaves (the concept Leaves)
+
+<verbatim>
+Leaves
+  Leaf Phyllotaxy
+    ..states
+  Leaf Complexity
+    ..states
+  Type of leaf complexity
+    ..states
+</verbatim>
+
+It would be good to be able to remove the duplicate Leaf labels, without changing the labels on the character (and losing the meaning of the character)
+
+<verbatim>
+Leaves
+  Phyllotaxy
+    ..states
+  Complexity
+    ..states
+  Type of complexity
+    ..states
+</verbatim>
+
+instance fragment below showing the above tree with optional labels
+
+<verbatim>
+<CharacterTrees>
+  <CharacterTree id="ct1">
+    <Representation>
+      <Label role="Full">Normative Character Tree</Label>
+    </Representation>
+    <Nodes>
+      <Node id="cn1" debuglabel="Leaves">
+        <DescriptiveConcept ref="dc1" debuglabel="Leaves"/>
+      </Node>
+      <CharNode>
+        <Parent ref="cn1" debuglabel="Leaves"/>
+        <Label>Phyllotaxy</Label>
+        <Character ref="c1" debuglabel="Leaf Phyllotaxy"/>
+      </CharNode>
+      <CharNode>
+        <Parent ref="cn1" debuglabel="Leaves"/>
+        <Label>Complexity</Label>
+        <Character ref="c2" debuglabel="Leaf Complexity"/>
+      </CharNode>
+      <CharNode>
+        <Parent ref="cn1" debuglabel="Leaves"/>
+        <Label>Type of complexity</Label>
+        <Character ref="c3" debuglabel="Type of leaf complexity"/>
+      </CharNode>
+    </Nodes>
+  </CharacterTree>
+</CharacterTrees>
+</verbatim>
+
+-- Main.DamianBarnier - 11 Jun 2006
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1147679388" from="SDD.DiscussionFor1dotRC1" to="SDD.DiscussionFor1dot1RC1"}%

@@ -1,0 +1,170 @@
+head	1.6;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.6
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.07.23.13.53.49;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.07.23.10.54.48;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.07.21.15.02.17;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.07.21.13.51.25;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.07.21.10.24.42;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.6
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1090590829" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+I just spent the better part of the day with a student in Magedburg who will be working on some attempts to build XQuery-based applications against SDD coded documents and I have some observations. Jacob's experience with the debug tool may have some similar aspects to what I write here.
+
+First, it is interesting to look at queries that can be decomposed into primitives of the form "Give me all taxa X with Character C having state S" With XQuery it seems that you often can choose between using XQuery expressions on simple XPaths or XPath expressions with simple XQuery operations, or some combination thereof, so what I really mean here is that that queries paramaterized mostly by characters and states are certainly a large set of interesting queries, and XQuery should in principle handle them gracefully. That said, some things like Geography are importantly missing. ("Are there red ants in Switzerland?")
+
+Consider a query like "What are the names of all ant taxa whose thorax has a dorsal depression?". This requires chasing a few references and for the class of queries I mentioned above that could be done by incorporating knowledge that in the present schema, keys on Characters can be found in exactly one place, on Terminology/Characters/Character elements, and hence those are the only places to look for a Label with some suitable text (determined by the application) like "thorax". Only twice as hard, there are presently only two places where Label searches would turn up anything like "with a dorsal depression": in the (presumably now found) Character itself as a <nop>StateDefinition, or by chasing all the State References into the <nop>ConceptTrees and looking for labels like "with a dorsal depression". This is a cheap approach, but it doesn't generalize.
+
+The likely most general thing is to use some external ontology to help you map your query parts into SDD key types. Then the query application can use the xpath  constraints in the Schema to determine a path to the objects which are the only ones whose Label can provide matches to your query part. XQuery supports joins over multiple documents, this approach probably really needs XQuery and not just XPath.
+
+-- Main.BobMorris - 21 Jul 2004
+
+---
+
+First two quick questions back:
+
+a) I do not understand what is missing regarding Geography. You have the same options, either naively look at labels and hope Switzerland is not named Schweiz or Helvetia, or you go out of SDD to an agreed thesaurus and get real mapping of your geography item to those used in the SDD dataset. Clearly this is music of the future, but we hope to have it fully enabled.
+
+	* Main.BobMorris - 23 Jul 2004: I stated it badly. I meant only that Geography is not covered by something which only addresses Characters and States and that, as you say, the mechanism is the same, i.e. use separate knowledge that Geography is the name of the relevant section and build this knowledge into your application. -- 
+
+b) Can you elaborate on "does not generalize"?
+
+	* Main.BobMorris - 23 Jul 2004: I mean that you must "wire" element names from the schema, like Character, State, Geography into your application. If instead you are prepared to make XQuery joins on searches in the instance with searches in the schema, this will often not be necessary for chasing references. As your search proceeds you can extract the path from the instance and use it with the path spec'd in identity constraints in the schema to find the right key among all those that might be equal to a ref your code found because some Label text matched its query arguments. This will make an application that not only doesn't have to treat Geography with any different code (or at worst with parameterized code) but also will survive schema evolution. -- 
+	* Gregor Hagedorn - 23 Jul 2004: If I understand you correctly, this is not an argument to redesign the schema, but to write an application that reads the schema in addition to the instance documents, finds the xs:keyref for the ref attributes, finds the named key quoted there, and then can process the xpath expression available at the xs:key identity constraint. At least that is how I would to it. This is not absolutely trivial, partly because SDD is type-based architecture, and xml schema has some notion of not allowing identity constraints defined on types. The way I would do it is to "detype" the schema, i.e. making everything a direct anyonymous type (I have already much of the necessary xslt to do that), then supplement the relative xpath in identity constraints with a complete xpath, then transfer that knowledge to the instance document.
+
+Gregor Hagedorn - 21 Jul 2004
+---
+
+I do wonder about the validity of the assumption that it is a useful thing to go into datasets and look for those containing some word-set matching of "What are the names of all ant taxa whose thorax has a dorsal depression?". This will certainly be useful to mine data on the internet, i.e. find places where there are descriptions, but I consider it unlikely to be useful when you are really looking for an answer. The way to express the same information in biological terms is almost infinite, which is why SDD is burdened with defining terminology.
+
+If you want datamining, you may also look for <nop>GlossaryEntry objects containing your words, they are most likely useful (where present, much more than the labels, which may contain all kinds of abbreviations to be concise).
+
+The usual queries that I expect (and which are used in all identification packages I know of) first go into the terminology and ask the user in steps: Would you like to ask a question for this concept/character, then present either the applicable states as options to choose or ask for numerics.
+
+	* Main.BobMorris - 23 Jul 2004: Integrated apps may be in a position to forward such kinds of questions to information sources dynamically discovered at the time their query is made. In a butterfly id app, I might have made a good id "locally" and want descriptive data from remote resources in a way that corresponds to the characters/states my own application has already selected. The application is not about to go hand off a URL of some human centric SDD query application to my user. My user wants answers, not to spend the rest of his life chasing "hot links" from one kind of application to another each with an irrelevantly different UI. Which is the way present "integrated" applications work today. And don't deserve to wear the label "integrated".
+	* Gregor Hagedorn - 23 Jul 2004: I think your focus on user interface interaction is misleading here. The question I pose is rather whether the agent (which may be software) asking the question is willing to be while asking contrained to a defined terminology, or whether unlimited narrative terminology in any language and register forms the basis. I believe for precise answers only the first option works so far and in the near future. -- One thing information scientists seem to underestimate is that not only they don't understand some taxonomists statements, but that biologists themselves, although they will rarely understand nothing, often only have a vague idea about how a collegue seems to use terminology. So the task is not only of teaching computers to have the terminological knowledge of a biologist (some progress towards which could on a simple level be made in OWL), but to become much better than the biologist...
+
+Gregor Hagedorn - 21 Jul 2004
+---
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1090580088" format="1.0" version="1.4"}%
+d19 1
+a19 1
+Main.BobMorris - 23 Jul 2004: I stated it badly. I meant only that Geography is not covered by something which only addresses Characters and States and that, as you say, the mechanism is the same, i.e. use separate knowledge that Geography is the name of the relevant section and build this knowledge into your application. -- 
+d23 2
+a24 1
+Main.BobMorris - 23 Jul 2004: I mean that you must "wire" element names from the schema, like Character, State, Geography into your application. If instead you are prepared to make XQuery joins on searches in the instance with searches in the schema, this will often not be necessary for chasing references. As your search proceeds you can extract the path from the instance and use it with the path spec'd in identity constraints in the schema to find the right key among all those that might be equal to a ref your code found because some Label text matched its query arguments. This will make an application that not only doesn't have to treat Geography with any different code (or at worst with parameterized code) but also will survive schema evolution. -- 
+d26 2
+d35 2
+a36 1
+Main.BobMorris - 23 Jul 2004: Integrated apps may be in a position to forward such kinds of questions to information sources dynamically discovered at the time their query is made. In a butterfly id app, I might have made a good id "locally" and want descriptive data from remote resources in a way that corresponds to the characters/states my own application has already selected. The application is not about to go hand off a URL of some human centric SDD query application to my user. My user wants answers, not to spend the rest of his life chasing "hot links" from one kind of application to another each with an irrelevantly different UI. Which is the way present "integrated" applications work today. And don't deserve to wear the label "integrated". -- 
+a38 1
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1090422137" format="1.0" version="1.3"}%
+d19 2
+d23 3
+d32 2
+d36 1
+a36 2
+---
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1090417885" format="1.0" version="1.2"}%
+d7 1
+a7 1
+Consider a query like "What are the names of all ant taxa whose thorax has a dorsal depression?". This requires chasing a few references and for the class of queries I mentioned above that could be done by incorporating knowledge that in the present schema, keys on Characters can be found in exactly one place, on Terminology/Characters/Character elements, and hence those are the only places to look for a Label with some suitable text (determined by the application) like "thorax". Only twice as hard, there are presently only two places where Label searches would turn up anything like "with a dorsal depression": in the (presumably now found) Character itself as a StateDefinition, or by chasing all the State References into the ConceptTrees and looking for labels like "with a dorsal depression". This is a cheap approach, but it doesn't generalize.
+d11 9
+d21 10
+a30 1
+-- Main.BobMorris - 21 Jul 2004
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1090405482" format="1.0" version="1.1"}%
+d3 7
+@

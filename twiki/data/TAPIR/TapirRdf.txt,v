@@ -1,0 +1,316 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2007.03.29.13.02.38;	author RogerHyam;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.03.29.11.25.26;	author RogerHyam;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.03.29.08.55.21;	author RogerHyam;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.03.28.15.59.20;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.03.28.13.28.44;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.03.27.09.28.33;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.6
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1175173358" format="1.1" reprev="1.6" version="1.6"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ TAPIR and RDF
+
+If you are interested in serving RDF from a TAPIR provider this page contains or links to relevant resources. It assumes you know something about both TAPIR and the W3C semantic web technologies.
+
+---++ TAPIR Concepts vs Semantic Web Concepts
+
+TAPIR v1.* concepts represent properties i.e. literal values in some context. They have identifiers that are
+   * Treated as simple strings within providers
+   * Globally unique
+   * Permanently resolvable by means of standard Internet protocols
+   * Free from characters that are not allowed in the query term of URLs.
+
+When the concepts are derived from an XML Schema  the identifiers are composed of the target namespace for the schema plus the path to the element in an instance document based on the schema. ([[http://www.tdwg.org/dav/subgroups/tapir/1.0/docs/TAPIRSpecification_2007-02-24.html#toc20][See the spec for details]])
+
+In RDF concepts equated to resources where a resource is anything that can be identified by a URI.
+
+In RDFS and OWL concepts equated to classes, properties of classes or instances of classes (all of which are RDF resources).
+
+In the case of TAPIR concepts derived from XML Schema based documents that consist only of a series of properties belonging to a single containing element (similar to DarwinCore) then the semantic web concepts and TAPIR concepts are equivalent.
+
+XML Schemas may define documents that aren't simple representations of a single class of object though. They may represent an object such as ABCD Unit which contains multiple container elements some of which could be interpreted as embedded classes.
+
+When a data provider is wrapping a data source it is actually preferable to map the data into a more complex structure. As an example the provider may have information about a TaxonName that includes a break down of the title and authorship of the publication in which the name first appeared. Perhaps in a table that looks like this:
+
+|*id*|*Genus*|*Species*|*PublicationTitle*|*PublicationAuthor*|
+|123|Aus|bus|Yet Another Species of Aus from Scotland|Roger Hyam|
+
+If the data provider can only use semantic web style concepts to map data then they need to map the following concept in two separate objects and a client has to make two calls to retrieve the full data.  The objects mapped would look like this:
+
+<verbatim>
+<tn:TaxonName rdf:about="urn:lsid:example.org:names:123">
+   <tn:genusPart>Aus</tn:genusPart>
+   <tn:specificEpithet>bus</tn:specificEpithet>
+   <tcom:publishedInCitation rdf:resource="http://some.uri.example.org/123" />
+</tn:TaxonName>
+
+<tp:PublicationCitation rdf:about="http://some.uri.example.org/123">
+   <tp:authorship>Roger Hyam</tp:authorship>
+   <tp:title>Yet Another Species of Aus from Scotland</tp:title>
+</tp:PublicationCitation>
+</verbatim>
+
+The client would have to call http://some.uri.example.org/123 to discover the paper and the server would have to provide URIs (possibly an LSID) just to provide these two literals. The literal concepts involved would be simple though:
+
+<verbatim>
+http://rs.tdwg.org/ontology/voc/TaxonName#genusPart
+http://rs.tdwg.org/ontology/voc/TaxonName#specificEpithet
+http://rs.tdwg.org/ontology/voc/PublicationCitation#authorship
+http://rs.tdwg.org/ontology/voc/PublicationCitation#title
+</verbatim>
+
+It would be more desirable to have the PublicationCitation embedded as a blank node thus:
+
+<verbatim>
+<tn:TaxonName rdf:about="urn:lsid:example.org:names:123">
+   <tn:genusPart>Aus</tn:genusPart>
+   <tn:specificEpithet>bus</tn:specificEpithet>
+   <tcom:publishedInCitation>
+      <tp:PublicationCitation>
+         <tp:authorship>Roger Hyam</tp:authorship>
+         <tp:title>Yet Another Species of Aus from Scotland</tp:title>
+      </tp:PublicationCitation>
+   <tcom:publishedInCitation>
+</tn:TaxonName>
+</verbatim>
+
+From the point of view of semantic web technologies the same concepts are involved ('Roger Hyam is still the value of the authorship of a PublicationCitation) but from the point of view of TAPIR this is different - partially because the publishedInCitation may repeat but also because what is expressed in this *document* is that Roger Hyam is the author of the paper that is the publishedInCitation for the TaxonName urn:lsid:example.org:names:123. The placement implies greater semantics. It is a different concept that can be described with a path in the document of the same style that would be used in ABCD.
+
+http://??/tn:TaxonName/tcom:publishedInCitation/tp:PublicationCitation/tp:authorship
+
+The problem with building TAPIR concept based on this path is that there are multiple namespaces involved and this can lead to confusion and over complexity of output models (see below). Also there is a problem over what the root of the path should be. In a real document it is the RDF namespace which would mean that all concepts would resolve to somewhere on the W3C website!
+
+Other than these issues the relationship between semantic web type concepts and TAPIR concepts that relate to the TDWG ontology is very simple. *TAPIR concepts are paths through documents that are made up in accordance with semantic web principles.* They are paths through the ontology.
+
+What is needed is a convention for stating these paths in a way that they can resolve to some meaningful documentation. The documentation for PublicationCitation:authorship here is not entirely right because the concept signified by the path is actually more than that. 
+
+---++ Output Models
+
+Both current wrapper implementations (and the only implementation suggested by the spec) is to define the output structure as and XML Schema. 
+
+There are two possible approaches to defining RDF output structures in XML Schema. The first is to use multiple XML Schemas (one for each namespace) the second is to use a simplified structure followed by a XSLT transformation to create fully compliant RDF.
+
+---+++ Multiple XML Schema Strategy
+
+An XML Schema can only have a single target namespace. To validate a document with multiple namespaces requires a root XML Schema that imports multiple other schemas.
+
+The simplified example given above contains three namespaces from the TDWG LSID ontology. For this to be a working example it would need to be wrapped in an rdf:RDF element (another namespace) and for it to be practical it would make use of DublinCore element and DublinCore Terms namespaces. This gives us six XML schemas for even a simple example. Real life output structures are likely to include as many as 10 or 20.
+
+It has been demonstrated that, with some limitations, PyWrapper can serve data based on multiple XML Schemas. The limitation (which is not just restricted to producing RDF) that causes most problems is the lack of support for recursive structures (if a complexType includes an instance of itself at some level of nesting). This problem is unlikely to be resolved. The parser has to parse all the possible paths in an instance document to discover the locations concepts could be mapped to. With recursive structures present there are an infinite number of paths. (This is possible borne of the fact that XML Schema is primarily designed to validate document structure rather than specify document structure?).
+
+There are many cases in the TDWG Ontology where there will be nested structures. TaxonName->hasBasionym for example as well as the many set-type relationships in TaxonConcept. 
+
+A script to generate TAPIR friendly XML Schema from the ontology can detect recursion and insert an rdf:resource link instead of embedding the object structure - effectively solving the problem.
+
+<verbatim>
+A --includes--> B --includes--> C --includes--> A
+</verbatim>
+Can be detected and C can contain a link instead of the include.
+<verbatim>
+A --includes--> B --includes--> C --linksTo--> A
+</verbatim>
+
+Unfortunately this means that potentially useful document structures are not possible. It would be desirable, for instance, to have a TaxonConcept that embeds a series of parent TaxonConcepts to indicate its place in a hierarchy. This would not be possible as the first TaxonConcept->parent property would be rendered as an rdf:resource link and the client would have to make repeated calls to navigate the tree structure.
+
+There is a related problem that arises from the recursion issue. If we have to consider multiple paths and possible loops then we end in situations where we can't make choices automatically. If B can include C and C can include B for example.
+
+<verbatim>
+A --includes--> B --includes--> C --linksTo-->B
+A --includes--> C --includes--> B --linksTo -->C
+</verbatim>
+
+There are two definitions of B here, one with a link to C and one which includes C. We can't do this in XML Schema because we have to have two definitions of the same thing (an element structure representing the class B) in the same namespace. When you reference the element from within schema A it can't be known which version of B you mean and so validation of the combined schema fails. 
+
+This results in two conflicting problems:
+   * The number and complexity of XML Schemas that need to be maintained dictates that some level of automation is required.
+   * The problems with recursive structures mean that some level of human interaction is required but the level of the complexity makes this very hard.
+
+---+++ Namespace Thunking Strategy
+
+The actual structure of the TaxonName example given above is quite trivial. It is only the namespace problems that make it complex. Consider the same example instance document with the namespace prefixes replaces with a prefix + underscore.
+
+<verbatim>
+<tn_TaxonName rdf_about="urn:lsid:example.org:names:123">
+   <tn_genusPart>Aus</tn_genusPart>
+   <tn_specificEpithet>bus</tn_specificEpithet>
+   <tcom_publishedInCitation>
+      <tp_PublicationCitation>
+         <tp_authorship>Roger Hyam</tp_authorship>
+         <tp_title>Yet Another Species of Aus from Scotland</tp_title>
+      </tp_PublicationCitation>
+   <tcom_publishedInCitation>
+</tn_TaxonName>
+</verbatim>
+
+This document contains the same information but all the elements are in the default namespace.
+
+If instance documents like this are transformed using  a simple XSLT stylesheet that contains just two template rules:
+
+<verbatim>
+    <xsl:template match="*">
+        <xsl:element name="{substring-before(local-name(), '_')}:{substring-after(local-name(), '_')}">
+            <xsl:apply-templates select="@@*"/>
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="@@*">
+        <xsl:attribute name="{substring-before(local-name(), '_')}:{substring-after(local-name(), '_')}">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
+    </xsl:template>
+</verbatim>
+
+Then they produce valid RDF.
+
+The most practical approach is therefore to define TAPIR output models using a 'thunked' data structure that does not contain multiple namespaces and convert them to RDF as required.
+
+This has the following advantages.
+
+   * *Structures are simple to generate automatically or edit by hand* because they occur in a single file.
+   * *Structures use a small subset of XML Schema* There is no need for complexTypes as the schema is only defining a one off structure. This means parsers can be simpler and...
+   * *Some recursion of data RDF classes is possible.* Because there are no complexTypes it is possible for a structure to have a degree of apparent recursion in it.
+   * *Clients that don't understand namespaces can digest the pre-converted form of the instance document*.
+
+The disadvantages of this approach are:
+   * *Namespace prefixes are given scope outside a single document.* This is bad practice in terms of using XML but as the TAPIR support in the TDWG onotology is something of a closed world it should not cause problems. Namespace prefixes can be defined in the ontology OWL documents and then carried all the way through the process automatically.
+   * *A transformation stage is required for wrappers to deliver RDF* Not all wrappers will support XSLT transformation and so some transformations may have to be carried out client side. Mitigating this is that the transformation is very light weight and would not provide a burden to those who did carry it out.
+   * *Ideally ontology terms should not contain underscores* as this may cause confusion for some scripts. 
+
+Working examples of this approach are being prepared now (2007-03-29).
+
+-- Main.RogerHyam - 27 Mar 2007
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1175167526" format="1.1" reprev="1.5" version="1.5"}%
+d114 1
+a114 1
+There are two definitions of B here, one with a link to C and one which includes C. We can't do this in XML Schema because we have to have two definitions of the same thing (an element structure representing the class B) in the same namespace. When you reference the element in the schema from A it couldn't know which version of B you mean and so validation of the schema fails. 
+d116 3
+d120 20
+d141 25
+a165 1
+---+++ Namespace Thunking Strategy
+d167 4
+d172 1
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1175158521" format="1.1" reprev="1.4" version="1.4"}%
+d95 20
+a114 1
+A script to generate TAPIR friendly XML Schema from the ontology can detect recursion and insert an rdf:resource link instead of embedding the object structure - effectively solving the problem. Unfortunately this means that potentially useful document structures are not possible. It would be desirable, for instance, to have a TaxonConcept that embeds a series of parent TaxonConcepts to indicate its place in a hierarchy. This would not be possible as the first TaxonConcept->parent property would be rendered as an rdf:resource link and the client would have to make repeated calls to navigate the tree structure.
+a115 1
+There is another problem that arises from this... MORE SOON...
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1175097560" format="1.1" reprev="1.3" version="1.3"}%
+d87 1
+a87 1
+An XML Schema can only have a single target namespace. To validate a document with multiple namespaces require a root XML Schema that imports multiple other schemas.
+d91 1
+a91 1
+It has been demonstrated that, with some limitations, PyWrapper can serve data based on multiple XML Schemas.
+d93 1
+a93 1
+There are two problems that make this approach very difficult.
+d95 3
+a97 1
+   * TO BE COMPLETED (2007-03-27)
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1175088524" format="1.1" reprev="1.2" version="1.2"}%
+d73 3
+a75 1
+The problem with building TAPIR concept based on this path is that there are multiple namespaces involved and this can lead to confusion and over complexity of output models (see below) but other than this the relationship between semantic web type concepts and TAPIR concepts is very simple. *TAPIR concepts are paths through documents that are made up in accordance with semantic web principles.* They are paths through the ontology.
+d81 16
+a96 1
+---+++ Multiple Namespace Strategy
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1174987713" format="1.1" reprev="1.1" version="1.1"}%
+d9 67
+a75 3
+TAPIR v1.* concepts are:
+   * Simple strings
+   * Represent properties 
+@

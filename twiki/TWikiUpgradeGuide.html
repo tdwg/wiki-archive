@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+ <head>
+	<title> TWikiUpgradeGuide &lt; TWiki &lt; TWiki</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" /> <meta name="robots" content="noindex" /> <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://twiki.org/cgi-bin/view/TWiki/WebRss" />
+	<link rel="icon" href="http://twiki.org/p/pub/TWiki/WebPreferences/favicon.ico" type="image/x-icon" /> <link rel="shortcut icon" href="http://twiki.org/p/pub/TWiki/WebPreferences/favicon.ico" type="image/x-icon" />
+	<meta name="description" content="TWikiUpgradeGuide" />
+		  
+	
+<script type="text/javascript" src="http://twiki.org/p/pub/TWiki/TWikiJavascripts/twiki.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	function launchWindow(inWeb, inTopic) {
+		return launchTheWindow("http://twiki.org/cgi-bin/view/", inWeb, inTopic, "plain");
+	}
+//]]>
+</script>
+
+
+	
+<style type="text/css" media="all">
+	.twikiNewLink {
+		color:%NEWTOPICFONTCOLOR%;
+		background-color:%NEWTOPICBGCOLOR%;
+	}
+	/* to hide Twisty elements: */
+	.twistyHidden { display:none; }
+	.twistyMakeVisible { display:none; }
+</style>
+
+</head>
+ <body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<p /><div class="twikiToc"> <ul>
+<li> <a href="#TWiki_Upgrade_Guide"> TWiki Upgrade Guide</a> <ul>
+<li> <a href="#Overview"> Overview</a>
+</li> <li> <a href="#Upgrade_Requirements"> Upgrade Requirements</a>
+</li> <li> <a href="#Major_Changes_Compared_to_TWiki"> Major Changes Compared to TWiki Release 01-Sep-2004 and TWiki Release 4.0.0</a>
+</li> <li> <a href="#Upgrade_Procedure"> Upgrade Procedure</a> <ul>
+<li> <a href="#Installation"> Installation</a>
+</li> <li> <a href="#Install_Extensions"> Install Extensions</a>
+</li> <li> <a href="#Copy_your_old_webs_to_new_TWiki"> Copy your old webs to new TWiki</a>
+</li> <li> <a href="#Copy_Users_And_Their_Topics_From"> Copy Users And Their Topics From Main Web</a>
+</li> <li> <a href="#Apply_Customizations_To_The_Skin"> Apply Customizations To The Skin</a>
+</li> <li> <a href="#Apply_Preferences_From_Old_Insta"> Apply Preferences From Old Installation</a>
+</li></ul> 
+</li> <li> <a href="#Upgrading_from_Cairo_to_TWiki4_a"> Upgrading from Cairo to TWiki4 (additional advice)</a> <ul>
+<li> <a href="#Favicon"> Favicon</a>
+</li> <li> <a href="#TWikiUsers_topic_in_Main_web"> TWikiUsers topic in Main web</a>
+</li></ul> 
+</li></ul> 
+</li></ul> 
+</div>
+<p />
+<h1><a name="TWiki_Upgrade_Guide"></a> TWiki Upgrade Guide </h1>
+<p />
+<em>Upgrade from the previous TWiki 01-Sep-2004 Production Release to TWiki-4.X</em>
+<p />
+<h2><a name="Overview"></a> Overview </h2>
+<p />
+TWiki-4.0.0 was a major new release. TWiki-4.1.0 is a minor release without dramatic changes since 4.0.0
+<p />
+<h2><a name="Upgrade_Requirements"></a> Upgrade Requirements </h2>
+<p /> <ul>
+<li> Please review the <a href="http://twiki.org/cgi-bin/view/TWiki/AdminSkillsAssumptions" class="twikiLink">AdminSkillsAssumptions</a> before you upgrade TWiki
+</li> <li> Review <a href="http://twiki.org/cgi-bin/view/TWiki.TWikiUpgradeTo04x00x00" title="'TWiki.TWikiUpgradeTo04x00x00' on TWiki.org" class="interwikiLink">TWiki:TWiki.TWikiUpgradeTo04x00x00</a> for latest information and experience notes.
+</li> <li> To upgrade from a release prior to TWiki Release 01-Sep-2004, start with <a href="http://twiki.org/cgi-bin/view/TWiki.UpgradingTWiki" title="'TWiki.UpgradingTWiki' on TWiki.org" class="interwikiLink">TWiki:TWiki.UpgradingTWiki</a> on TWiki.org
+</li> <li> To upgrade from a standard TWiki Release 01-Sep-2004 to the latest TWiki-4.X Production Release, follow the instructions below
+</li> <li> Once the upgrade has been applied, an existing earlier installation will still be able to read all the topics, but should not be used to write. Make sure you take a backup!
+</li> <li> Not all Plugins written for TWiki Release 01-Sep-2004 are fully supported with 4.X. Make sure the Plugins you use can be upgraded as well!
+</li></ul> 
+<p />
+<h2><a name="Major_Changes_Compared_to_TWiki"></a><a name="Major_Changes_Compared_to_TWiki_"></a> Major Changes Compared to TWiki Release 01-Sep-2004 and TWiki Release 4.0.0 </h2>
+<p />
+See <a href="http://twiki.org/cgi-bin/view/TWiki/TWikiReleaseNotes04x00" class="twikiLink">TWikiReleaseNotes04x00</a> and <a href="http://twiki.org/cgi-bin/view/TWiki/TWikiReleaseNotes04x01" class="twikiLink">TWikiReleaseNotes04x01</a>
+<p />
+<p />
+<a name="ManualUpgradeProcedure"></a>
+<h2><a name="Upgrade_Procedure"></a> Upgrade Procedure </h2>
+<p />
+The following steps are a rough guide to upgrading only. It is impossible to give detailed instructions, as what you have to do may depend on whether you can configure the webserver or not, and how much you have changed distributed files in your current TWiki release.
+<p />
+The main steps are:
+<p /> <ol>
+<li> Install the new TWiki version, configure it, and get it to work similar to the old version
+</li> <li> Install additional extensions (Plugins). Make sure to use the latest versions
+</li> <li> Copy all the non-default webs from the old installation to the new
+</li> <li> Copy the users from old installation to the new incl all their topics from Main
+</li> <li> Apply tailorings to your Skin (logos, menu bars etc)
+</li> <li> Apply preferences from old installation
+</li></ol> 
+<p />
+<h3><a name="Installation"></a> Installation </h3>
+<p /> <ul>
+<li> Follow the installation instructions in INSTALL.html which you find in the root of the new installation. Install the new release in a new directory. Do not install on top of the old release.
+</li> <li> Use the <a href="http://twiki.org/cgi-bin/configure" target="_top">configure</a> script to configure TWiki. <ul>
+<li> If you are upgrading from a 4.0.x release, carry over the configure settings from the old release.
+</li></ul> 
+</li> <li> Additional resources <ul>
+<li> <a href="http://twiki.org/cgi-bin/view/TWiki.UpgradingTWiki04x00PatchReleases" title="'TWiki.UpgradingTWiki04x00PatchReleases' on TWiki.org" class="interwikiLink">TWiki:TWiki.UpgradingTWiki04x00PatchReleases</a>
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki.InstallingTWiki#OtherPlatforms" title="'TWiki.InstallingTWiki#OtherPlatforms' on TWiki.org" class="interwikiLink">TWiki:TWiki.InstallingTWiki#OtherPlatforms</a>
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki.ApacheConfigGenerator" title="'TWiki.ApacheConfigGenerator' on TWiki.org" class="interwikiLink">TWiki:TWiki.ApacheConfigGenerator</a>
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki.SettingFileAccessRightsLinuxUnix" title="'TWiki.SettingFileAccessRightsLinuxUnix' on TWiki.org" class="interwikiLink">TWiki:TWiki.SettingFileAccessRightsLinuxUnix</a>
+</li> <li> Your <code>lib/TWiki.cfg</code> from the old TWiki installation is a good resource for some of the settings you will need but you cannot reuse the old TWiki.cfg.
+</li></ul> 
+</li> <li> Make sure you have a working basic TWiki before you continue
+</li></ul> 
+<p />
+<h3><a name="Install_Extensions"></a> Install Extensions </h3>
+<p /> <ul>
+<li> Note that not all extensions that worked in Cairo have been updated to work with TWiki4.X. Many Cairo plugins work fine. Some do not. Many plugins have been upgraded to work with TWiki4.0 and later.
+</li> <li> From TWiki-4.1.0 the <a href="http://twiki.org/cgi-bin/configure" target="_top">configure</a> script which you ran during installation supports installation of additional plugins.
+</li> <li> Manual installation is possible. Follow the instruction on the Plugin page at twiki.org.
+</li> <li> Check the plugin topics from your old TWiki installation. There may be plugin settings that you want to transfer to the new TWiki installation.     <br /> <strong><em><img src="http://twiki.org/p/pub/TWiki/TWikiDocGraphics/help.gif" alt="HELP" title="HELP" width="16" height="16" border="0" /> Hint:</em></strong> For an easier upgrade later on, set the plugin preferences settings in the <a href="http://twiki.org/cgi-bin/view/Main/TWikiPreferences" class="twikiLink">Main.TWikiPreferences</a> topic, not in the plugin topic. To identify the plugin, prefix the name of the setting with the capitalized name of the plugin. For example, to change the <code>DEFAULT_TYPE</code> setting of the <a href="http://twiki.org/cgi-bin/view/TWiki/CommentPlugin" class="twikiLink">CommentPlugin</a>, create a <code>COMMENTPLUGIN_DEFAULT_TYPE</code> setting in Main.TWikiPreferences.
+</li> <li> Typical plugin settings you may have altered. <ul>
+<li>  <a href="http://twiki.org/cgi-bin/view/TWiki/CommentPlugin" class="twikiLink">CommentPlugin</a> - Set DEFAULT_TYPE
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/EditTablePlugin" class="twikiLink">EditTablePlugin</a> - Set CHANGEROWS, Set QUIETSAVE, and Set EDITBUTTON
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/InterwikiPlugin" class="twikiLink">InterwikiPlugin</a> - Set RULESTOPIC
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/InterWikis" class="twikiLink">InterWikis</a> - If you added your own rules you should save this topic and not overwrite it.
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/SlideShowPlugin" class="twikiLink">SlideShowPlugin</a> - Make sure you did not change the embedded 'Default Slide Template' If you did you should save it. It is a bad idea to do. It is better to define your own slide show templates as separate topics that do not get overwritten when you upgrade.
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/SmiliesPlugin" class="twikiLink">SmiliesPlugin</a> - Did you add your own smileys? No smileys were added 4.0.0 and 4.0.2 so you can just leave this topic as it is.
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/TablePlugin" class="twikiLink">TablePlugin</a> - Set TABLEATTRIBUTES   
+</li></ul> 
+</li> <li> Remember that a plugin must be activated in <a href="http://twiki.org/cgi-bin/configure" target="_top">configure</a>.
+</li></ul> 
+<p />
+<h3><a name="Copy_your_old_webs_to_new_TWiki"></a> Copy your old webs to new TWiki </h3>
+<p /> <ul>
+<li> When upgrading from Cairo or earlier it may be necessary to unlock the rcs files in data and pub directories from the old installation using the following shell commands: <ul>
+<li> <code>find data -name '*,v' -exec rcs -u -M '{}' \;</code>
+</li> <li> <code>find pub -name '*,v' -exec rcs -u -M '{}' \;</code>
+</li></ul> 
+</li> <li> Copy your local webs over to the data and pub directories of the new install. Do not copy the default webs: TWiki, Main, Trash, Sandbox, _default, and _empty.
+</li></ul> 
+<p />
+<h3><a name="Copy_Users_And_Their_Topics_From"></a> Copy Users And Their Topics From Main Web </h3>
+<p /> <ul>
+<li> Copy all the topics from the Main web and corresponding pub/Main directories from the old TWiki to the new TWiki but do not overwrite any of the new topics already inside the new Main directory!
+</li> <li> Manually merge all the users from the old <code>TWiki.TWikiUsers</code> topic to the new TWiki. If you upgrade from Cairo you can simply use the old file and add the missing new system users to the list of users. If you upgrade from TWiki-4.0.X simply use the old topic.
+</li> <li> If you use <code>data/.htpasswd</code> for authentication copy this file from the old TWiki to the new. <ul>
+<li> If you upgrade from Cairo and you are using the Htpasswd login manager, then note that email addresses for users have moved out of user topics and into the password database. There is a script that performs this extra upgrade step for you - see <code>tools/upgrade_emails.pl</code>.
+</li></ul> 
+</li> <li> The old sandbox web may have a lot of useful topic and users may use it actively for drafts. Manually select the topics (remember the corresponding pub directories) from the old Sandbox web and copy them to the new TWiki. Decide if you want to overwrite the sandbox homepage and left menu bar or keep the new.
+</li></ul> 
+<p />
+<h3><a name="Apply_Customizations_To_The_Skin"></a> Apply Customizations To The Skin </h3>
+<p /> <ul>
+<li> Not many of the old Cairo skins work well with TWiki4.X.
+</li> <li> Add Logos, update top bar and left bar as required.
+</li> <li> Apply any desired changes to style sheets and templates. The default <a href="http://twiki.org/cgi-bin/view/TWiki/PatternSkin" class="twikiLink">PatternSkin</a> has been totally rewritten since Cairo and once more in 4.0.2. Since then changes to <a href="http://twiki.org/cgi-bin/view/TWiki/PatternSkin" class="twikiLink">PatternSkin</a> have been minor and you may be able to carry over most simpler tailorings directly from 4.0.2-4.0.5.
+</li> <li> Additional resources: <ul>
+<li> <a href="http://twiki.org/cgi-bin/view/TWiki.UpgradingTWiki04x00PatchReleases" title="'TWiki.UpgradingTWiki04x00PatchReleases' on TWiki.org" class="interwikiLink">TWiki:TWiki.UpgradingTWiki04x00PatchReleases</a>
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/PatternSkinCustomization" class="twikiLink">PatternSkinCustomization</a>
+</li> <li> <a href="http://twiki.org/cgi-bin/view/TWiki/PatternSkinCssCookbook" class="twikiLink">PatternSkinCssCookbook</a>      
+</li></ul> 
+</li></ul> 
+<p />
+<h3><a name="Apply_Preferences_From_Old_Insta"></a> Apply Preferences From Old Installation </h3>
+<p /> <ul>
+<li> Transfer any customized and local settings from <a href="http://twiki.org/cgi-bin/view/TWiki/TWikiPreferences" class="twikiLink">TWiki.TWikiPreferences</a> to the topic pointed at by {LocalSitePreferences} (<a href="http://twiki.org/cgi-bin/view/Main/TWikiPreferences" class="twikiLink">Main.TWikiPreferences</a>). Per default this is <code>Main.TWikiPreferences</code>. This avoids having to write over files in the distribution on a later upgrade.
+</li> <li> If you changed any of the topics in the original TWiki distribution, you will have to transfer your changes to the new install manually. There is no simple way to do this, though a suggestion is to use 'diff' to find changed files in the <code>data/TWiki</code> of the old and new TWiki installation, and transfer the changes into the new TWiki install.
+</li> <li> Compare the <code>WebPreferences</code> topics in the old TWiki Installation with the default from the new TWiki installation and add any new Preferences that may be relevant.
+</li> <li> Compare the <code>WebLeftBar</code> topics in the old TWiki Installation with the default from the new TWiki installation and add any new feature that you desire.
+</li></ul> 
+<p />
+<h2><a name="Upgrading_from_Cairo_to_TWiki4_a"></a> Upgrading from Cairo to TWiki4 (additional advice) </h2>
+<p />
+<h3><a name="Favicon"></a> Favicon </h3>
+<p />
+TWiki4's <a href="http://twiki.org/cgi-bin/view/TWiki/PatternSkin" class="twikiLink">PatternSkin</a> introduces the use of the favicon feature which most browsers use to show a small icon in front of the URL and for bookmarks.
+<p />
+In TWiki4 it is assumed that each web has a favicon.ico file attached to the WebPreferences topic. When you upgrade from Cairo to TWiki4 you do not have this file and you will get flooded with errors the error log of your web server. There are two solutions to this.
+<p /> <ul>
+<li> Attach a favicon.ico file to WebPreferences in each web.
+</li> <li> Preferred: Change the setting of the location of favicon.ico in TWikiPreferences so all webs use the favicon.ico from the TWiki web. This is the fastest and easiest solution.
+</li></ul> 
+<p />
+To change the location of favicon.ico in TWikiPreferences to the TWiki web add this line to <a href="http://twiki.org/cgi-bin/view/Main/TWikiPreferences" class="twikiLink">TWikiPreferences</a>
+<p />
+<pre>
+   &#42; Set FAVICON &#61; &#37;PUBURLPATH&#37;/&#37;TWIKIWEB&#37;/&#37;WEBPREFSTOPIC&#37;/favicon.ico
+</pre>
+<p />
+<h3><a name="TWikiUsers_topic_in_Main_web"></a><a name="_TWikiUsers_topic_in_Main_web"></a> TWikiUsers topic in Main web </h3>
+<p />
+Your Cairo <a href="http://twiki.org/cgi-bin/view/Main/TWikiUsers" class="twikiLink">Main.TWikiUsers</a> topic will work in TWiki4 but you will need to ensure that these 4 users from the default TWiki4 version of TWikiUsers are copied to the existing TWikiUsers topic. TWikiGuest is probably already there but the others are new <ul>
+<li> <strong>TWikiContributor</strong> - placeholder for a TWiki developer, and is used in TWiki documentation
+</li> <li> <strong>TWikiGuest</strong> - guest user, used as a fallback if the user can't be identified
+</li> <li> <strong>TWikiRegistrationAgent</strong> - special user used during the new user registration process
+</li> <li> <strong>UnknownUser</strong> - used where the author of a previously stored piece of data can't be determined
+</li></ul> 
+<p />
+<p />
+You additionally need to ensure that TWikiUsers has the <code>Set ALLOWTOPICCHANGE = TWikiAdminGroup, TWikiRegistrationAgent</code>. Otherwise people will not be able to register.
+<p />
+<p />
+<p />
+<strong><em>Related Topics:</em></strong> <a href="http://twiki.org/cgi-bin/view/TWiki/AdminDocumentationCategory" class="twikiLink">AdminDocumentationCategory</a>, <a href="http://twiki.org/cgi-bin/view/TWiki.UpgradingTWiki" title="'TWiki.UpgradingTWiki' on TWiki.org" class="interwikiLink">TWiki:TWiki.UpgradingTWiki</a>, <a href="http://twiki.org/cgi-bin/view/TWiki.UpgradingTWiki04x00PatchReleases" title="'TWiki.UpgradingTWiki04x00PatchReleases' on TWiki.org" class="interwikiLink">TWiki:TWiki.UpgradingTWiki04x00PatchReleases</a>, <a href="http://twiki.org/cgi-bin/view/TWiki.InstallingTWiki#OtherPlatforms" title="'TWiki.InstallingTWiki#OtherPlatforms' on TWiki.org" class="interwikiLink">TWiki:TWiki.InstallingTWiki#OtherPlatforms</a>, <a href="http://twiki.org/cgi-bin/view/TWiki.ApacheConfigGenerator" title="'TWiki.ApacheConfigGenerator' on TWiki.org" class="interwikiLink">TWiki:TWiki.ApacheConfigGenerator</a>, <a href="http://twiki.org/cgi-bin/view/TWiki.SettingFileAccessRightsLinuxUnix" title="'TWiki.SettingFileAccessRightsLinuxUnix' on TWiki.org" class="interwikiLink">TWiki:TWiki.SettingFileAccessRightsLinuxUnix</a><a name="TopicEnd"></a>
+<p />
+<p />
+<p />
+<p />
+<p />
+</body></html>
+<p />

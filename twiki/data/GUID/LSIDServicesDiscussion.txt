@@ -1,0 +1,330 @@
+%META:TOPICINFO{author="KevinRichards" date="1229658970" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="CurrentGuidWork"}%
+The following is some email snippets of discussions we have had around the LSID Services tools.
+Some of this may be hard to follow (being just copied and pasted from emails), but the general ideas should be obvious.  The emails flow from latest at the top, to oldest at the bottom.
+
+---
+
+
+From email, 16 December 2008
+
+instead of OAI and custom code couldnt we use db replication? that assumes we are using databases.
+Master - master replication is not possible in mysql (for example, but I guess is with other RDBMS) but is necessary since Roger proposes having multi-point writing
+how about separate tables for each node and a joined view? would that work?
+
+technically it could, but is getting messy
+
+maybe we should use hbase from the start? 
+   * Code is not stable and under very heavy development.  
+   * Removing nodes is very problematic - requires manual balancing of file shards. 
+   * Is not really what HBase is designed for (millions of columns, rows that are very different in content).  HBase keeps logical column groupings together on the FS, which is it's main strength. 
+   * This problem partitions really nicely  and hence scales well with traditional RDBMS which have considerable advantages over HBase (schemas, query languages, tools, good knowledge etc).
+   * If you plan on analysing cached content then HBase could be a candidate
+
+i thoughts its a bit like the appengine backend and works with few columns and many rows nicely. just an idea anyway.
+
+it does work... but for this solution, is far better with a traditional partition.  Like Roger said, we can easily have a partitioning hashing strategy that means for the "select... where id=XXX" is very quick. 
+After spending hours on HBase and Hadoop I don't underestimate the power of DB schemas and tools.  HBase for example you really are writing custom inspectors for elements (column in a row) when queying things that a function in SQL handles very easily.
+
+
+do people create hadoop nodes via the internet efficiently?
+   * Not really - is a small and specialised community so far.  
+   * One real big problem is documentation is sparse
+   * user group is small so mailing lists questions go often unanswered
+   * is changing so fast it is not something I would recommend for this situation
+
+probably not, so they would need to be local nodes.
+   * It does work but is slow when used remotely... it is just HTTP comms between nodes
+   * remember hadoop HDFS has chunks of files at 32M (or bigger) so is always transferring 32M chunks around
+
+
+anyone for amazon ec2? we can buy more nodes as we need them and little institutional support could pay the bill.
+Is not the most cost effective long term hosting, but I guess you were thinking for a HBase solution - in which case it would be a good candidate.   
+
+just thinking aloud trying to avoid custom synchronisation code.
+There are other options:
+   * single master DB and multiple slaves, as soon as Master dies, writes stop until new master is established.  This is standard RDBMS scaling practice (Flickr, Facebook etc).
+   * look to open source produces like DBReplicator.
+dbreplicator looked damn complicated and quite a bit of overhead. Id prefer the single master solution in that case.
+
+
+
+pulling LSIDs from a central service would definitely slow down IPT population.
+   * why would something capable of managing IDs use a central service to generate LSIDs?  
+   * surely IPT and similar products would either be full blown LSID, or sub-domain?
+just in case the subdomain/service 2 approach would not be on our list.
+i was trying to see what it needs to make use of just the central issuing service.
+And its not so bad. I think I could live with this if you can request large numbers of LSIDs in a single batch.
+
+Thinking aloud:   Agree - but why use batch for assignment - better to have a central cache and then batch submit after assigning?
+
+At least there would need to be a batch solution that allows to assign thousands of LSIDs in one go.
+   * is this really the use case you are looking to cover with central ID assignment?  
+   * If I can write code to sync with "LSID-OI" and put up stable URLs, I could just as easily assign my own IDs and use a sub domain services, which can scale much better as they can be rolled out in numerous places.
+
+
+I am not at all for central ID assignment for all use cases, but for some I think is possibly a good solution (when I say assignment I really mean assignment - an LSID cache I can see benefit of but this is a different scenario).
+Am I alone in this thinking?
+no. I am with you.
+the option I like least is actually the independent LSID authority. I am much more in favor of asking everyone to go through a central domain that we all try to keep alive than having resolvers that are either down or even worse that dont own their original LSID domain anymore.
+
+You might keep a cache alive causing problems in itself (I went and reindexed my URLs, you can't hold copy of my data) but the endpoint is probably more likely to go down if it is easier to put up.  I wonder - the sheer fact of getting an LSID authority up successfully might mean you are invested in the infrastructure rather than a WIKI page of Fauna with an LSID-OI.  Just a thought, but not sure LSID-OI assignment will help endpoints staying up.  Anthropological study anyone?
+
+
+
+Cheers,
+
+Tim
+
+
+Keeping any GUID aside internal primary keys is what is implemented, so no problems here apart from performance.
+
+Markus
+
+---
+
+From email, 13 December 2008
+ 
+I made myself a cup of coffee and then answered my own question on a scrap of paper. See attached.  *see image attachement, LSIDServices.jpg*
+ 
+It works like this:
+   * Resolution is via round robin DNS (the single point of failure but we could outsource it to some one like DynDNS that has major redundancy and 0% downtime for decades)
+   * We have multiple nodes but not hundreds of them - just enough for security.
+   * Each node can issue LSIDs. We could use the namespaces to separate the nodes.
+   * Clients either go directly to a node (using the nodes domain name) or they could go via round robin DNS and not know which node they will get. 
+   * Every node knows about every other node.
+   * Each node periodically asks every other node for an update of the LSIDs it has issued or modified.
+      * The update is a very simple compressed file with three columns LSID, URL, URL in it.
+      * Another update contains the current list of all known nodes
+   * LSIDs may take a few hours to become active - having to propagate round the nodes
+   * Any one node can be pulled off the system and provided this is done after the other nodes have copies of its most recent LSID updates the LSIDs continue to resolve.
+   * It would obviously be slightly more complex than this but not necessarily that much more complex. 
+   * A mess would occur if not all nodes knew about all LSIDs from a node before it died but there would have to be an occasional re-sync to check this and to pre-populate new nodes.
+ 
+This would be good political approach because projects and institutions could commit to running nodes for a set period and provided these different periods overlapped the network would stay up.
+ 
+Maybe this is just fantasy and I need a break...
+ 
+Roger
+ 
+  
+ 
+On 12 Dec 2008, at 09:33, Roger Hyam wrote:
+
+
+
+ 
+I think you both hit it on the head. We have a sliding scale of implementation depending on technical ability.
+ 
+I know that 2 is easier to implement for database based providers but 3 is actually more "pure" from a computing sense. The temptation with 2 is just to bung the primary key on the end of the LSID and be done with it (That is what I did in BCI) but this is bad. GUID generation really should be abstracted out and GUIDs stored in its own column as data about a row rather than something to do with the internal database schema logic - but reality says it is far easier to just use the primary key.
+ 
+This does make for a more complex decision tree for adopters which is a barrier. Services would have to be very clearly explained and I'd like to see tools that helped people use option 3 if possible. Would it be possible to make an Access tool for example?
+ 
+Which option would be best for integration with the IPT?
+ 
+Deletion is simpler with option 3 and can be dealt with 'correctly' from an LSID point of view. A client can simply set the LSID to containing no data or metadata URL. The authority then returns the standard "we have no data associated with this LSID" response. This could even be done automagically. The service could occasionally ping URLs to check that clients are still up. If they really have gone away for good and a human can't be found to fix them then the authority can just be set to returning appropriate error messages.
+ 
+The really painful part of this is that to have a central authority we need to get a load of organisations to put their weight behind supporting it. We can't ask people to trust a system that may/may not continue into the future. This is the main question I was asked about BCI which is a tiny system in comparison.
+ 
+Could we dream up a technical fix to needing to have multiple people sign up right at the start. Could we do a peer to peer replication thing so that the system worked provided some one was running a node? I'm just dreaming now but it may be easier to build software to overcome the robustness problem than reach agreements.
+ 
+What do you think?
+ 
+Roger
+ 
+ 
+On 12 Dec 2008, at 08:50, Tim Robertson wrote:
+
+
+
+Thanks Roger for clarifying the LSID WSDL sequence.
+ 
+I wonder if the use cases for all 3 would exist...
+ 
+1) Do your own LSID Authority
+Use cases here are clear (IPNI, IndexFungorum, Cat. Life etc)
+People with technical capacity etc etc.
+ 
+2) Do a sub domain based authority
+People can write web services pretty easily.  The API is really simple (http GET with an ?id=XXX or /XXX at the end).
+You can add LSID on top of an existing service without need for changing databases or synchronising codes etc.
+For the likes of an occurrence store application, this is the simplest option for them - the just register something they already have.
+ 
+3) Central LSID-OI issuing service
+Use cases:
+   * tatic pages, e.g.
+      * LSID for citation text
+      * LSID for the WIKI Fauna example etc
+   * dynamic pages... hmmmm
+ 
+The thing with 3) that tingles my spider senses is that if I have a "database" driven application, I need to contact an external source to provide my LSID, which I then need to store somewhere in my database.  Like Nicky said at Nomina3 - there is just no way they would modify the IPNI database (ok IPNI are scenario 1. but it is this scenario I am thinking of).  This makes me think that non opaque LSID, which just wraps existing stable local identifier is also useful... 
+ 
+But for citation text on a URL for example, I think 3) is a very good idea - less so for dynamically driven sites though... e.g. occurrence stores.
+ 
+Before first coffee, so maybe not making too much sense yet.
+ 
+Roger - how did the nut thing go?
+ 
+Tim
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+On 12 Dec 2008, at 01:17, Markus Döring (GBIF) wrote:
+
+
+
+Roger,
+the way you describe the LSID registry does sound appealing. I am just wondering how easy it would be for database owners with simple REST services to register their resources and keep the registry up to date (they would need to delete LSIDs, wouldnt they? well, not sure how deletion works in scenario 2 either). That would require triggers in the database to send http requests or having a proper business layer on top of their database that can do this. Sounds a bit more complicated in those scenarios than for wiki editors who can manually do this job. But maybe we can create yet another central service that scans REST service patterns for modified, new or deleted identifiers and keeps the registry up to date. Just thinking aloud here and its time for me to catch some sleep.
+ 
+Markus
+ 
+ 
+ 
+ 
+On Dec 10, 2008, at 10:47 PM, Roger Hyam wrote:
+
+
+
+ 
+So do we have three levels of choice for the consumer?
+ 
+1.     Do your own LSID Authority - nothing to do with us other than following best practice.
+2.     Do a subdomain based authority (you need to be able to implement a restful web service only) but we provide the LSID resolution part as per Tim's suggestion and similar to my BCI thing.
+3.     Just use a central LSID based DOI like service where LSIDs are issued per request and look anonymous.
+ 
+My feeling is that three choices is too much for our target audience  :)  We should drop 2 or 3! I am open minded about which though I'll argue here for keeping 3.
+ 
+The thing missing from Tim's diagrams is that the authority needs some knowledge of whether the object exists or not and the WSDL file is per LSID so has to be generated dynamically. The way I proposed doing  this with BCI (based on the namespace rather than the subdomain) was like this:
+ 
+   * When presented with an LSID with another namespace that it knows about, BCI looks up an associated URL to the institutions server, appends the ID part of the LSID to that URL and does an HTTP HEAD call on it.
+   * If it gets back a HTTP 200 response then it returns a data services wsdl, with that URL embedded in it, to the client.
+   * If it gets a 404 Not Found it returns an LSID 201 Unknown.
+   * If it gets anything else it returns LSID 500 INTERNAL_PROCESSING_ERROR and a note to say it can't determine if the LSID exists or not.
+   * Non recognized namespaces get a LSID Unknown of course. 
+ 
+If the object id is wrong the error is thrown before the WSDL file is returned. It is not quite a simple redirect.
+ 
+If you don't do this on the service providers side then the client side needs to be able to generate the WSDL file dynamically and insert the URL to the resource  - which is trivial if you are a web developer but can't be done with static pages. There are minor things like setting the content-type to xml in the header that would trip people up. 
+ 
+Suppose the biologist is using a wiki to write a fauna of an area? I think this will be a common scenario. 
+ 
+My vision for the way option 3 would work would be:
+   * Users would register and get an API key (just an access key). This would be done manually at first as there would be fewer than a few hundred data suppliers and it would allow for some human checks.
+   * The key would have one or two domains associated with it.
+   * In its simplest form users would go to a web page with four boxes on it into which they would enter
+      * Their identification Key
+      * LSID (leave this blank to generate a new LSID)
+      * metadata URL
+      * data URL
+   * This would generate an LSID for those URLs or modify the existing LSID if one was provided (the URLs are within the domains associated with the key to prevent registration of LSIDs for other peoples resources. Allowing multiple domains per key allows users to move resources between domains).
+   * There would be a restful web service equivalent of this web page that would allow the submission of large numbers of URLs via POST to generate or change large numbers of LSIDs.
+   * There would be a simple search service to find LSIDs by URL.
+   * All resolution and proxy stuff would be handled by the service. The clients would know nothing about it.
+   * Quality of service stuff could also be carried out by occasionally calling the URLs to check that services exist and emailing administrators if they don't etc
+ 
+This approach appeals to me because their is no discussion about "What should I use for a namespace? Can we have a best practice guide?" or "What is a subdomain?" or "Institution X has stolen our acronym for their subdomain/namespace!" "Can we use UUIDs for namespace/object_id?" "Why can't I put the species name as the objectId?" etc etc.
+ 
+I think either approach is appealing technically but this is as much about social engineering as software engineering. 
+ 
+Maybe their should be three levels or at least a level where we help people over the SVR record hump by providing DNS services if they can do the rest. 
+ 
+Ah I see Kevin is awake - it must be my bed time.
+ 
+All the best,
+ 
+Roger
+ 
+
+
+On 10 Dec 2008, at 18:44, Markus Döring (GBIF) wrote:
+
+
+
+- Is there room for both solutions?
+ 
+ 
+Yes. 
+ 
+If some one wanted to tag their data with LSIDs they would have the following choices.
+ 
+1.	Create their own LSID authority in the regular way but hopefully following TDWG recommendations in providing a proxy as well - as per applicability statement.
+2.	Use the central TDWG LSID Authority that issues entirely anonymous looking LSIDs and is supported with relevant web services (just like DOI type things) and replicated etc.
+ 
+instead of 1 I would support Tims idea heavily where you register your simple http service, but dont have to deal with the LSID overhead.
+Looks like a very attractive community service to me and I still believe central redirection is the best to avoid 404s in the longrun with changing domains and moving services.
+ 
+ 
+-- Main.KevinRichards - 19 Dec 2008
+
+---
+
+From email, 11 December 2008
+
+Hi Markus/Tim/Kevin,
+
+I haven't signed the contract yet but I just got a two year post to taxonomic and guid standards for the PESI project at the NHM in London - but working remotely from Edinburgh. I'll start in January.
+
+Lee has been nagging me about the LSID applicability statement as I am the review manager - don't know why because I am an author on it as well but ...
+
+These two things have focused  my mind on LSIDs and GUIDs and the fact that we really need something useful out of them pretty quick.
+
+I'd like to have a conversation with you guys rather than a wider audience so we can try and come up with something without going round in circles and because we all have vested interests in this.
+
+There are some facts that we have to deal with - correct me if I am wrong.
+
+We can't just drop LSIDs
+We (BCI, IPNI, IF, ZooBank) are already issuing them and have said they would live forever. "We" (the community) would loose credibility if we just turned round and suggested something completely different. It is unlikely people would take seriously what we suggested next anyway.
+
+LSIDs do have a useful social aspect.
+One good point is that they "look better" in print than regular http URIs but unfortunately this one useful strength has been blown out of the water by Rich using UUIDs as the object identifiers in ZooBank. Anything more complex than a DOI or ISBN to write down is probably bad news for acceptance in printed media and therefore not a runner for social acceptance. You have to be able to type these things in at some level.
+
+Most people can't do LSID or even HTTP URIs technically.
+Even if we drop LSIDs because of the technical hurdles of installing an authority and the DNS changes we still run into technical problems suggesting the use of HTTP URIs. To create a URI the author needs access to a server and control over the technology on it to control the path to a resource. Most real world authors are likely to be using CMS/Blog/Wiki style tools and are not going to have mod-rewrite access or knowledge. They may be using a shared instance of the IPT and so not own a domain at all. etc etc
+
+The DOI/Handle model isn't bad
+Selling users a service that does the resolution and takes GUID issuing out of their hands is a good and attractive idea when the users can't do it themselves.
+
+I don't trust the DOI folks
+The DOI people may be nice but I don't trust the business model. The fact that contracts are negotiated individually is worrying. The upfront costs quoted vary and I believe they will be back for more money in the future. etc etc 
+
+My feeling at the moment is that we need to take GUIDs out of the hands of users and offer a central issuing and resolution services - the equivalent of DOI - but not drop LSIDs.
+
+One logical choice would be to set up our own Handle system but this has two problems:
+   * It would be seen as a U-turn on LSIDs and erode confidence
+   * They still aren't semantic web friendly so we would need to proxy them anyhow.
+
+What I would like to see happen is that TDWG sets up a full LSID service that basically acts like DOI. Here is how it would go:
+   * urn:lsid:tdwg.org:12:andhfn718
+   * conventional LSID but opaque other than the TDWG domain.
+   * namespace is just an integer used to partition the object identifiers. It could be used to partition the ability to issue the LSIDs
+   * object identifier is a string designed to be human readable/writable - use a similar algorithm as for tinyurl. Behind the scenes there can be a incremental integer or something to maintain uniqueness. 
+   * http://tdwg.org/urn:lsid:tdwg.org:12:andhfn718 is guaranteed to work and is the standard way of citing the id whenever it may be used as in semantic web. 
+   * urn:lsid:tdwg.org:12:andhfn718  is the standard way to cite it in print.
+   * We have a web service and web interface for people to create these things and submit a metadata URL and optionally a data URL.
+   * The metadata URL could point to a web page. If this was the case the proxy would extract RDF from the page where possible.
+   * Some one with data that consists of just a set of web pages could register them to have permanent LSIDs. Almost zero technical barrier!
+
+My questions are:
+   * Does this seem like a reasonable way forward? It is a step or two beyond what we talked about in Fremantle with having TDWG run the DNS.
+   * Would you like to try and make it happen?
+   * Any other suggestions - (please not throwing away LSIDs and something that is human readable/writable).
+   * Could we get GBIF or Land Care to put any resources behind this. I wonder if their will be funding in PESI...
+
+What I would like to do is put together a more well formed proposal to a wider audience.
+
+I'd be grateful for your thoughts because I am going to have to start recommending something soon and I need a solution.
+
+Many thanks for your time,
+
+Roger
+
+
+-- Main.KevinRichards - 19 Dec 2008
+
+%META:FILEATTACHMENT{name="LSIDServices.JPG" attachment="LSIDServices.JPG" attr="" comment="" date="1229657310" path="C:\Work Documents\TDWG\LSID Services\LSIDServices.JPG" size="49745" stream="C:\Work Documents\TDWG\LSID Services\LSIDServices.JPG" user="Main.KevinRichards" version="1"}%

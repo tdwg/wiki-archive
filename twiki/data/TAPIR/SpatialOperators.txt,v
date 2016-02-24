@@ -1,0 +1,165 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@---+ Spatial Operators
+
+See the OpenGIS document on filters at http://www.opengis.org/docs/02-059.pdf for an introduction. 
+
+OpenGIS implements the following kind of spatial operators (SOPs):
+
+   * Equals (ogc:BinarySpatialOpType)
+   * Disjoint (ogc:BinarySpatialOpType)
+   * Touches (ogc:BinarySpatialOpType)
+   * Within (ogc:BinarySpatialOpType)
+   * Overlaps (ogc:BinarySpatialOpType)
+   * Crosses (ogc:BinarySpatialOpType)
+   * Intersects (ogc:BinarySpatialOpType)
+   * Contains (ogc:BinarySpatialOpType)
+   * DWithin (ogc:DistanceBufferType)
+   * Beyond (ogc:DistanceBufferType)
+   * BBOX (ogc:BBOXType)
+
+with the following type definitions:
+<verbatim>
+<xsd:complexTypename="BinarySpatialOpType">
+  <xsd:complexContent>
+    <xsd:extensionbase="ogc:SpatialOpsType">
+      <xsd:sequence>
+        <xsd:elementref="ogc:PropertyName"/>
+        <xsd:choice>
+          <xsd:elementref="gml:_Geometry"/>
+          <xsd:elementref="gml:Box"/>
+      </xsd:sequence>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexTypename="BBOXType">
+  <xsd:complexContent>
+    <xsd:extensionbase="ogc:SpatialOpsType">
+      <xsd:sequence>
+        <xsd:elementref="ogc:PropertyName"/>
+        <xsd:elementref="gml:Box"/>
+      </xsd:sequence>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexTypename="DistanceBufferType">
+  <xsd:complexContent>
+    <xsd:extensionbase="ogc:SpatialOpsType">
+      <xsd:sequence>
+        <xsd:elementref="ogc:PropertyName"/>
+        <xsd:elementref="gml:_Geometry"/>
+        <xsd:elementname="Distance" type="ogc:DistanceType"/>
+      </xsd:sequence>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexTypename="DistanceType" mixed="true">
+  <xsd:attributename="units" type="xsd:anyURI" use="required"/>
+</xsd:complexType>
+</verbatim>
+
+The Bounding Box (BBOX) is a set of four comma-separated decimal, scientific notation, or integer values (if integers are provided where floating point is needed, the decimal point is assumed at the end of the number). These values specify the minimum X, minimum Y, maximum X, and maximum Y ranges, in that order, expressed in units of the SRS of the feature type(s) begin queried. The four bounding box values indicate the outside edges of a rectangle, as in Figure 5; minimum X is the left edge, maximum X the right, minimum Y the bottom, and maximum Y the top.
+
+To implement all of the SOPs given by the OpenGIS would be a lot of work to implement software for.
+But it might be worthwile to implement some of it in the protocol and to give a provider the chance to indicate whether he supports SOPs in the CapabilitiesRequest.
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d51 1
+a51 1
+        <xsd:elementname="Distance"type="ogc:DistanceType"/>
+d57 2
+a58 2
+<xsd:complexTypename="DistanceType"mixed="true">
+  <xsd:attributename="units"type="xsd:anyURI"use="required"/>
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d62 2
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d19 45
+a63 1
+Simple operators like "within bounding box" or "within circle" could be implemented.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 17
+a19 11
+Equals (ogc:BinarySpatialOpType)
+Disjoint (ogc:BinarySpatialOpType)
+Touches (ogc:BinarySpatialOpType)
+Within (ogc:BinarySpatialOpType)
+Overlaps (ogc:BinarySpatialOpType)
+Crosses (ogc:BinarySpatialOpType)
+Intersects (ogc:BinarySpatialOpType)
+Contains (ogc:BinarySpatialOpType)
+DWithin (ogc:DistanceBufferType)
+Beyond (ogc:DistanceBufferType)
+BBOX (ogc:BBOXType)
+@

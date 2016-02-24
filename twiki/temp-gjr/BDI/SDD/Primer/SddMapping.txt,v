@@ -1,0 +1,429 @@
+head	1.14;
+access	;
+symbols;
+locks; strict;
+comment	@@;
+
+1.14
+date	2006.08.30.01.49.28;	author DonovanSharp;	state Exp;
+branches;	
+next	1.13;
+1.13
+date	2006.07.18.04.06.25;	author DonovanSharp;	state Exp;
+branches;	
+next	1.12;
+1.12
+date	2006.07.18.02.35.48;	author DonovanSharp;	state Exp;
+branches;	
+next	1.11;
+1.11
+date	2006.07.06.05.59.41;	author DonovanSharp;	state Exp;
+branches;	
+next	1.10;
+1.10
+date	2006.07.05.04.52.28;	author DonovanSharp;	state Exp;
+branches;	
+next	1.9;
+1.9
+date	2006.07.04.02.03.46;	author DonovanSharp;	state Exp;
+branches;	
+next	1.8;
+1.8
+date	2006.06.28.05.54.08;	author DonovanSharp;	state Exp;
+branches;	
+next	1.7;
+1.7
+date	2006.06.28.02.54.48;	author DonovanSharp;	state Exp;
+branches;	
+next	1.6;
+1.6
+date	2006.06.26.02.22.52;	author DonovanSharp;	state Exp;
+branches;	
+next	1.5;
+1.5
+date	2006.06.23.07.26.46;	author DonovanSharp;	state Exp;
+branches;	
+next	1.4;
+1.4
+date	2006.06.15.01.20.45;	author DonovanSharp;	state Exp;
+branches;	
+next	1.3;
+1.3
+date	2006.06.09.01.36.22;	author DonovanSharp;	state Exp;
+branches;	
+next	1.2;
+1.2
+date	2006.06.08.04.36.50;	author DonovanSharp;	state Exp;
+branches;	
+next	1.1;
+1.1
+date	2006.06.06.06.30.45;	author DonovanSharp;	state Exp;
+branches;	
+next	;
+
+
+desc
+@@
+
+
+1.14
+log
+@@
+text
+@%META:TOPICINFO{author="DonovanSharp" date="1156902568" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="SddCharacters"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.13 Mapping one character onto another
+
+Mapping allows the definition of measurement units and the mapping of one character to another. Categorical states can be mapped onto other categorical states (i.e sub-ovate may be mapped onto ovate for identification purposes) and quantitative characters can be mapped onto categorical characters (i.e. 'length in mm' can be mapped onto the states 'small', 'medium' and 'large'.
+
+---++++3.13.1 Mapping a categorical character state onto another
+
+Character states which are designed for a particular role (i.e. natural language descriptions) may be ambiguous in another role (i.e. identification keys) or for a different audience. For example Mapping allows the categorical state "sub-ovate" (useful for [[NaturalLanguageDescriptions][natural language descriptions]] to be mapped to the state "ovate" for the generation of [[DichotomousKeys][dichotomous keys]]. In essence the state "ovate" becomes a parent state of a sub-state "sub-ovate". Multiple states can be mapped to a single state in this way, for example the states "yellowish" and "translucent" could be mapped to the state "white".
+
+%ATTACHURL%/categoricalmapping.gif
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+			<CategoricalCharacter id="c4">
+				<Representation>
+					<Label> Leaf shape</Label>
+				</Representation>
+				<States>
+					<StateDefinition id="s3">
+						<Representation>
+							<Label>Round</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s4">
+						<Representation>
+							<Label>Ovate</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s5">
+						<Representation>
+							<Label>Sub-ovate</Label>
+						</Representation>
+					</StateDefinition>
+				</States>
+				<Mappings>
+					<Mapping>
+						<From ref="s5"/>
+						<To ref="s4"/>
+					</Mapping>
+				</Mappings>
+			</CategoricalCharacter>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+---++++3.13.2 Mapping a quantitative character onto a categorical character
+
+%ATTACHURL%/quantitativemapping.gif
+
+Specific ranges of a quantitative character data can be mapped onto states of categorical characters, for example, to simplify the data for interactive key purposes. For example the data to populate the character "Leaf Area (Webb and Tracy Units)" with the four states "nanophyll", "microphyll", "mesophyll" and "macrophyll" would be automatically generated from the data in the quantitative character "Leaf Area".
+
+---+++++Example 3.13.2.1 - Units and mapping within quantitative characters.
+    
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+<QuantitativeCharacter id="c2">
+  <Representation>
+    <Label>Leaf length</Label>
+  </Representation>
+  <Assumptions>
+    <MeasurementScale>Ratio</MeasurementScale>
+  </Assumptions>
+  <Mappings>
+    <Mapping>
+      <From lower="0" upper="3"/>
+      <ToState ref="s1"/>
+    </Mapping>
+    <Mapping>
+      <From lower="3" upper="10"/>
+      <ToState ref="s2"/>
+    </Mapping>
+    <Mapping>
+      <From lower="4" upper="10000000"/>
+      <ToState ref="s3"/>
+    </Mapping>
+  </Mappings>
+  <MeasurementUnit>
+    <Label role="Abbrev">m</Label>
+  </MeasurementUnit>
+  <Default>
+    <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
+  </Default>
+</QuantitativeCharacter>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+&lt;From&gt; gives an inclusive range defined through the two attributes "lower" and "upper".
+
+&lt;ToState&gt; specifies the categorical state corresponding to the range defined in &lt;From&gt;. If &lt;ToState&gt; is missing then &lt;From&gt; governs partitioning into range classes automatically generated from the "upper" and "lower" values.
+
+
+-- Main.DonovanSharp - 06 Jun 2006
+
+%META:FILEATTACHMENT{name="categoricalmapping.gif" attr="" autoattached="1" comment="" date="1153190116" path="categoricalmapping.gif" size="7819" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="quantitativemapping.gif" attr="" autoattached="1" comment="" date="1153194839" path="quantitativemapping.gif" size="7099" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.13
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153195585" format="1.1" reprev="1.13" version="1.13"}%
+d5 1
+a5 1
+---+++4.3 Mapping one character onto another
+d9 1
+a9 1
+---++++4.3.1 Mapping a categorical character state onto another
+d56 1
+a56 1
+---++++4.3.2 Mapping a quantitative character onto a categorical character
+d62 1
+a62 1
+---+++++Example 4.3.2.1 - Units and mapping within quantitative characters.
+@
+
+
+1.12
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1153190148" format="1.1" reprev="1.12" version="1.12"}%
+d11 1
+a11 1
+Character states which are designed for a particular role (i.e. natural language descriptions) may be ambiguous in another role (i.e. identification keys) or for a different audience. For example [[SddMapping][&lt;Mapping&gt;]] allows the categorical state sub-ovate (useful for [[NaturalLanguageDescriptions][natural language descriptions]] to be mapped to the state ovate for the generation of [[DichotomousKeys][dichotomous keys]]. In essence the state ovate becomes a parent state of a sub-state sub-ovate. Multiple states can be mapped to a single state in this way, for example yellowish and translucent  could be mapped to the state white.
+d58 1
+a58 1
+%ATTACHURL%/quantitativemapping.jpg
+d105 5
+d113 1
+a113 1
+%META:FILEATTACHMENT{name="quantitativemapping.jpg" attr="" autoattached="1" comment="" date="1151463215" path="quantitativemapping.jpg" size="11597" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.11
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152165581" format="1.1" version="1.11"}%
+d5 1
+a5 1
+---+++4.3 Mapping
+d7 1
+a7 1
+%ATTACHURL%/mapping.jpg
+a8 2
+Mapping allows the definition of measurement units and the mapping of one character to another. Mapping a categorical character onto another is handled within &lt;CategoricalCharacter&gt;, while mapping quantitative data onto quantitative characters is handled within &lt;QuantitativeCharacter&gt;.
+a107 1
+d13 1
+a13 1
+%ATTACHURL%/categoricalmapping.jpg
+d107 1
+a108 1
+%META:FILEATTACHMENT{name="categoricalmapping.jpg" attr="" autoattached="1" comment="" date="1151457327" path="categoricalmapping.jpg" size="10837" user="Main.DonovanSharp" version="2"}%
+@
+
+
+1.10
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152075148" format="1.1" reprev="1.10" version="1.10"}%
+d17 5
+d53 2
+d56 2
+d66 5
+d102 2
+d105 1
+@
+
+
+1.9
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151978626" format="1.1" version="1.9"}%
+d9 1
+a9 1
+Mapping allows the definition of measurement units and the mapping of one character to another. Mapping a categorical character onto another is handled within CategoricalCharacter, while mapping quantitative data onto quantitative characters is handled within QuantitativeCharacter.
+d13 1
+a13 1
+Character states which are designed for a particular role (i.e. NaturalLanguageDescriptions) may be ambiguous in another role (i.e. IdentificationKeys) or for a different audience. For example [[SddMapping][Mapping]] allows the catagorical state sub-ovate (useful for NaturalLanguageDescriptions to be mapped to the state ovate for the generation of IdentificationKeys. In essence the state ovate becomes a parent state of a sub-state sub-ovate. Multiple states can be mapped to a single state in this way, for example yellowish and translucent  could be mapped to the state white.
+@
+
+
+1.8
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151474048" format="1.1" reprev="1.8" version="1.8"}%
+d55 1
+a55 1
+---+++++Example 3.5.2.2 - Units and mapping within quantitative characters.
+@
+
+
+1.7
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151463288" format="1.1" reprev="1.7" version="1.7"}%
+d13 1
+a13 1
+Character states which are designed for a particular role (i.e. NaturalLanguageDescriptions) may be ambiguous in another role (i.e IdentificationKeys) or for a different audience. For example [[SddMapping][Mapping]] allows the catagorical state sub-ovate (useful for NaturalLanguageDescriptions to be mapped to the state ovate for the generation of IdentificationKeys. In essence the state ovate becomes a parent state of a sub-state sub-ovate. Multiple states can be mapped to a single state in this way, for example yellowish and translucent  could be mapped to the state white.
+d53 1
+a53 1
+This allows a categorical character, for example;
+a54 10
+<verbatim>
+ Leaf area
+     nanophyll
+     microphyll
+     mesophyll
+     macrophyll
+</verbatim>
+
+to be automatically generated using data from the quantitative character 'Leaf area'.
+a86 3
+
+Mapping is handled slightly differently for different elements within SDD.
+
+@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151288572" format="1.1" version="1.6"}%
+d11 1
+a11 1
+---++++4.3.1 Mapping a categorical character onto another
+d13 1
+d15 1
+d17 30
+d49 1
+d51 1
+a52 2
+
+d74 1
+d105 3
+a107 2
+%META:FILEATTACHMENT{name="mapping.jpg" attachment="mapping.jpg" attr="" comment="" date="1149816942" path="mapping.jpg" size="12062" stream="mapping.jpg" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="categoricalmapping.jpg" attachment="categoricalmapping.jpg" attr="" comment="" date="1151457098" path="categoricalmapping.jpg" size="7377" stream="categoricalmapping.jpg" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151047606" format="1.1" reprev="1.5" version="1.5"}%
+d11 1
+a11 1
+---++++4.3 Mapping a categorical character onto another
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150334445" format="1.1" version="1.4"}%
+d3 4
+d9 1
+d11 11
+a21 1
+allow definition of measurement units and the mapping of ranges to categorical characters. This allows a categorical character, for example;
+@
+
+
+1.3
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149816982" format="1.1" reprev="1.3" version="1.3"}%
+a2 1
+d50 5
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149741410" format="1.1" reprev="1.2" version="1.2"}%
+d3 4
+d53 2
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149575445" format="1.1" version="1.1"}%
+a2 2
+
+d6 1
+d11 1
+d14 2
+a15 1
+Example 3.5.2.2 - Units and mapping within quantitative characters.
+d17 1
+a17 1
+d46 1
+d48 1
+a49 1
+-- Main.DonovanSharp - 06 Jun 2006
+@
+

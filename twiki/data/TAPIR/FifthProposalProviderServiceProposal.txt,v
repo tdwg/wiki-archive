@@ -1,0 +1,77 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@---+ 5th Provider Service Proposal
+---++++ General strategy
+Treat a provider service as a local MessageBrokerService.
+
+---++++ Files
+   * *Shared Core Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolCore.xsd
+   * *Provider Service Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolProvider.xsd
+
+---++++ Details
+   * optionally listing addressed datasources in the header. If none is mentioned the request should by default be passed on to all available local datasources.
+   * All requests are passed on to the requested datasources. EXCEPT:
+   * A PingRequest is never relayed to other services and will always be answered directly by the ProviderService.
+   * A ProviderService should have its own metadata added to the individual metadata responses of a DatasourceService
+   * A ProviderService does not have any additional capabilities (just pooling datasource capabilities responses).
+   * Use the same way to call providers:
+   * Using a single POST or GET parameter called "request" which contains either the XML message or an URL pointing to the XML message. 
+   * Use the same error handling strategy:
+   * use common Error Codes and prefixes for classification of codes.
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d10 5
+a14 4
+   * Address only DatasourceServices (resources) in the protocol.
+   * Use the same approach regarding AccessPoints:
+   * Only resources will have an access point (provider software access point will not be covered by the protocol).
+   * Resources will accept all kind of requests.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 1
+a3 1
+Treat a provider service as a local BrokerService.
+@

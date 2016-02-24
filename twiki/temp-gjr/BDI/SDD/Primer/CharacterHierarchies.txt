@@ -1,0 +1,145 @@
+%META:TOPICINFO{author="HeleneFradin" date="1185533669" format="1.1" version="1.18"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.8 Character hierarchies
+
+The &lt;characters&gt; element in SDD is used to define a flat, unordered list of characters and states. However, some consuming applications may require characters to be ordered and/or to be arranged into hierarchies to, for example, enable easier navigation of characters in interactive keys, provide grouping mechanisms in listings and reports, and provide headers in natural language descriptions. 
+
+An example of a simple character tree is given below.
+
+%ATTACHURL%/character_trees_example.gif
+
+In this example there are eight characters (Petal number, Petal shape, Leaf length etc) arranged into four (nested) groups (Flowers, Petals, Sepals and Leaves).
+
+In SDD, a character tree is created using three elements:
+   * Characters are defined in &lt;Characters&gt;
+   * Grouping concepts (such as the grouping nodes above) are defined in [[DescriptiveConcepts][&lt;DescriptiveConcepts&gt;]]
+   * One or more character trees are defined, using the characters and concepts defined above, in &lt;CharacterTrees&gt;
+
+%ATTACHURL%/charactertrees.gif
+
+---++++Example 3.8.1 - A simple character hierarchy
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+    <Characters>
+      <QuantitativeCharacter id="c1">
+        <Representation>
+          <Label>Petal Number</Label>
+        </Representation>
+      </QuantitativeCharacter>
+      <CategoricalCharacter id="c2">
+        <Representation>
+          <Label>Petal Shape</Label>
+        </Representation>
+        <States>
+          <StateDefinition id="s1">
+            <Representation>
+              <Label>ovate</Label>
+            </Representation>
+          </StateDefinition>
+          <StateDefinition id="s2">
+            <Representation>
+              <Label>linear</Label>
+            </Representation>
+          </StateDefinition>
+        </States>
+            ... etc (for more detail see the topic <Characters>)            
+    </Characters>
+
+     <DescriptiveConcepts>
+      <DescriptiveConcept id="dc1">
+        <Representation>
+          <Label>Flowers</Label>
+        </Representation>
+      </DescriptiveConcept>
+      <DescriptiveConcept id="dc2">
+        <Representation>
+          <Label>Petals</Label>
+        </Representation>
+            ... etc (for more detail see the topic <DescriptiveConcepts>)
+    </DescriptiveConcepts>
+
+       <CharacterTrees>
+      <CharacterTree id="ct1">
+        <Representation>
+          <Label>Default Feature Tree</Label>
+        </Representation>
+        <DesignedFor>
+          <Role>InteractiveIdentification</Role>
+        </DesignedFor>
+        <Nodes>
+          <Node id="cn1">
+            <DescriptiveConcept ref="dc1"/>
+          </Node>
+          <Node id="cn2">
+            <Parent ref="cn1"/>
+            <DescriptiveConcept ref="dc2"/>
+          </Node>
+          <CharNode>
+            <Parent ref="cn2"/>
+            <Character ref="c1"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn2"/>
+            <Character ref="c2"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn2"/>
+            <Character ref="c3"/>
+          </CharNode>
+          <Node id="cn3">
+            <Parent ref="cn1"/>
+            <DescriptiveConcept ref="dc3"/>
+          </Node>
+          <CharNode>
+            <Parent ref="cn3"/>
+            <Character ref="c4"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn3"/>
+            <Character ref="c5"/>
+          </CharNode>
+          <Node id="cn4">
+            <DescriptiveConcept ref="dc4"/>
+          </Node>
+          <CharNode>
+            <Parent ref="cn4"/>
+            <Character ref="c6"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn4"/>
+            <Character ref="c7"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn4"/>
+            <Character ref="c8"/>
+          </CharNode>
+        </Nodes>
+      </CharacterTree>
+    </CharacterTrees>
+</verbatim>
+</td>
+</tr>
+</table>
+
+The first node in this tree, node "cn1" references the descriptive concept "dc1" (Flowers). The second node, "cn2",  references the descriptive concept "dc2" (Petals). The third node, "cn3", references the first true character in the hierarchy, "c1" (Petal number). Each node references it's parent (the node supporting the character "Petal number" references the descriptive concept "Petals" which is its immediate parent) and the character or concept which is tied to it. If a descriptive concept is tied to a node this is declared within the &lt;Node&gt; element, if a character is tied to a node this is declared in a &lt;CharNode&gt; element, which references its supporting node.
+
+
+The &lt;Representation&gt; element provides a label for the character tree. This may be useful if the instance document includes multiple trees for different purposes, or is intended for publication in multiple languages (see the topic Language support in SDD).
+
+&lt;DesignedFor&gt; specifies this character tree's purpose. Important roles are interactive identification, natural language reporting, or filtering.
+
+The &lt;Nodes&gt; element is used to define the structure of the character tree. It contains an unordered list of &lt;Node&gt; and &lt;Char&gt; elements, each of which specifies a parent &lt;Node&gt;. The list can be used by a consuming application to construct a character tree.
+
+The &lt;CharacterTrees&gt; element is also used to declare [[SddDependencies][dependencies]]
+
+-- Main.DonovanSharp - 01 Jun 2006
+
+%META:FILEATTACHMENT{name="character_trees_example.gif" attr="" autoattached="1" comment="" date="1152596762" path="character_trees_example.gif" size="3298" user="Main.DonovanSharp" version="5"}%
+%META:FILEATTACHMENT{name="charactertrees.gif" attr="" autoattached="1" comment="" date="1157592036" path="charactertrees.gif" size="8781" user="Main.DonovanSharp" version="6"}%

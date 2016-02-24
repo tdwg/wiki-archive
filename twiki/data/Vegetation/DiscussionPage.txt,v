@@ -1,0 +1,548 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2010.06.04.06.23.55;	author MiquelDeCaceres;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2010.05.22.10.06.30;	author NickSpencer;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2009.12.11.23.56.40;	author RobertPeet;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2009.03.04.21.10.30;	author NickSpencer;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2009.03.02.14.59.37;	author MartinKleikamp;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2009.03.02.13.34.19;	author MartinKleikamp;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.02.11.03.11.48;	author NickSpencer;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@none
+@
+text
+@%META:TOPICINFO{author="MiquelDeCaceres" date="1275632635" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="WebHome"}%
+---++Discussion
+
+Trying using the form when posting
+
+---++++++Name/Topic: Units
+
+Issue: Schema as written requires specific units, such as height in meters, whereas it is desireable to retain the original values and units reported by the original observer
+
+Proposal: Incorporate ability to specify units for attributes such as diameter and height, probably at the plot level but possibly at the project level.  Would be ok to have a set of default units. If this is accepted we should also include a list of acceptable units, perhaps taken from the SEEK units ontology.
+
+Comments: Based on a discussion among Peet, Wiser and Schildhauer.
+
+Status: Method for recording units for all measured values has been added to the new proposed version of schema Candidate 1.5.2. (Available 2010-05-21). We have yet to consider SEEK units ontology, but this has merit.
+
+
+---+++Usage of foreign namespaces
+
+
+---++++TCS
+
+---++++++Name/Topic: tcs:taxonname:name
+
+Issue: The TCS has redundant name element in entity taxonname
+
+Proposal: Changing the tcs:taxonname:name to optional if a ref is available, we only need this:
+<verbatim>
+<taxonName id=1>
+  <CanonicalName>
+    <Simple>Hypnum cupressiforme</Simple> 
+  </CanonicalName>
+</taxonName>
+<taxonConcept id="83028">
+  <Name scientific="true" ref="1"/> 
+    <AccordingTo>
+     <AccordingToDetailed>
+       <PublishedIn linkType="local" ref="4"/> 
+    </AccordingToDetailed>
+  </AccordingTo>
+</taxonConcept>
+</verbatim>
+Please see http://wiki.tdwg.org/twiki/bin/viewfile/TNC/WebHome?rev=2;filename=example_v101.xml to compare
+
+Comments: Nick Spencer -> I think you are correct Martin. I saw this as an issue with it being ambiguous as to what was the preferred method. However, we can't directly change the TCS standard so would need to be very careful in adopting changes that would see us departing from it. Perhaps we should raise this as an issue with the tcs working group? 
+
+Status:  Submitted
+
+
+---++++EML
+
+---++++++Name/Topic: eml:attribute
+
+Issue:  The VegX element attribute is very simar to EML, only one element is missing.
+
+Proposal: Rework of EML to fit generalized purpose
+
+Comments: 
+
+Status:  Submitted to Matt Jones
+
+
+
+---+++Change Proposals
+
+
+---++++Remodelling 
+
+---++++++Name/Topic: Geography 
+
+Issue: We have insufficient geospatial elements in the schema
+
+Proposal: We suggest we follow the Geospatial Extension of Darwin Core [these are currently being refined by the TDWG Geospatial interest Group - [[http://www.tdwg.org/activities/geospatial/][geospatial schema]]. We suggest we call our &#8216;base&#8217; element geospatial, just as we have &#8216;literature&#8217; and &#8216;party&#8217;.  We should use the name space &#8216;DwC&#8217; and include the namespace at the top of our schema as we do for eml, tcs, etc.  Although Darwin Core has not yet been adopted as a standard, it seems stable enough to be worth following and it fully meets our needs 
+
+Comments: 
+
+Brad Boyle: Agreed
+
+Status: Done. A new geospatial type has been created to accommodate all the coordinate based location information. The basis for this was the Darwin Core geospatial extension. To this base were added (or moved) elements for coordinates based on a projected grid coordinate system. For example a map series, map sheet name and easting and northing coordinate. Also added were depth and elevation elements.
+
+
+---++++++Name/Topic: Foreign Key type references 
+
+Issue: Rather than using strict XML nesting to structure repeated data, e.g., a specific plot with multiple different observations record on it the schema relies on 'pointers' to common 'container' elements.  
+
+Proposal: For elements with suffix &#8216;ID&#8217; should we remove the referenced element structure from the working/editing schema to reduce confusion.  If &#8216;&#8230;.ID&#8217; is well defined in the documentation, then users will know that this information is located elsewhere in the schema and this will be included in the definition of the &#8216;&#8230;.ID&#8217; element.  
+
+
+Comments: 
+
+Brad Boyle: Assuming I understand,  I agree to the above.
+
+Status: DONE
+
+
+---++++++Name/Topic: aggregateValue: upperValue and lowerValue
+
+Issue: We can&#8217;t understand the nature of the elements pertaining to aggregateOrganismObservation:aggregateValue.  What is the purpose for the elements upperValue and lowerValue? 
+
+Proposal: Are they meant to be used if the data are recorded as a range?  This seems unlikely for an aggregateValue, which by its definition implies a single value was recorded.  If they are meant to be used to record ranges, then the element &#8216;value&#8217; would not be used, so cannot be mandatory.
+
+Comments: 
+
+Brad Boyle: I&#8217;m not sure I understand either, but I will make a guess. aggregateOrganismObservations pertain to group of individuals of a particular species, rather than individual organisms. One example is percent cover (&#8230;of species X). Percent cover is frequently expressed as categories, each with an upper and lower bound, e.g., <1%, 1-5%, >5-10%, etc. I suspect this may be what upperValue and lowerValue refer to.
+
+Status: these definitions have been updated 
+
+
+
+---++++++Name/Topic: attributeID: data types e.g. ordinal etc
+
+Issue: We don&#8217;t understand how these elements successfully define the ordinal scale being used.  
+
+Proposal: .  For example, how can an ordinal scale have a precision associated with it?  Second, ordinal scales are by their nature unitless, so we don&#8217;t understand how there can be a unit associated with it either.  Could &#8216;precision&#8217; and &#8216;unit&#8217; be meant to apply to &#8216;upperLimit&#8217; and &#8216;lowerLimit&#8217;?  The element &#8216;coverPercent&#8217; is defined as the average cover of the index in percent.  Wouldn&#8217;t this be best calculated from &#8216;upperLimit&#8217; and &#8216;lowerLimit&#8221;, rather than stored independently.  What does the element &#8216;definition&#8217; mean?  What does the element &#8216;index description&#8217; mean?  Are these different?
+
+Comments: 
+
+Brad Boyle: Hmm&#8230;reading this it  looks like my comments above apply to upperLimit and lowerLimit rather than upperValue and lowerValue. I didn&#8217;t play any part in the design of the specific elements of this component, so best not to guess.  Bob, do you know anything about this? VegBank contains a lot of aggregate observations.
+
+Status:  all these changes have been made
+
+
+---++++++Name/Topic: Cardinality of taxonDeterminationType:TaxonConcept
+
+Issue: The parent element should be an unbounded container element, not bounded to be 1.  And the child element TaxonID should be bounded to 1, rather than unbounded?
+
+Proposal:
+
+Comments: 
+
+Status: Unresolved
+
+
+---++++++Name/Topic: simple user defined variables structure
+
+Issue: The structure for the simple user defined variables seems to be redundant, if MethodID is mandatory because the element &#8216;name&#8217; is included both under &#8216;method&#8217; and under simpleUserDefinedType. 
+
+Proposal: We suggest that MethodID should be optional. 
+
+Comments: 
+
+Brad Boyle: Agreed
+
+Nick Spencer: I think this is a miss understanding of how simple user defined element works and so believe it to be OK.
+
+
+Status: Unchanged
+
+
+---++++++Name/Topic: veg:taxonOccurrenceType:originalReference 
+
+Issue: the element &#8216;originalReference&#8217; is likely redundant with information being stored under the taxonConcept section.  
+
+Proposal: Can this element be deleted? 
+
+Comments: 
+
+Brad Boyle: Yes
+
+Status: Removed
+
+
+---++++++Name/Topic:  types &#8216;relatedItemType&#8217; and &#8216;relatedSpatialItemType&#8217; 
+
+Issue: duplication in the two types that is confusing 
+
+Proposal: We suggest that the types &#8216;relatedItemType&#8217; and &#8216;relatedSpatialItemType&#8217; be collapsed into one type with the spatial information being optional. this will allow mapped trees to be accommodated in the individualOrganismObservation element.  If this change is adopted, some definitions will need to be slightly modified.    
+
+Comments: 
+
+Status: These types have been updated. relatedSpatialItem now reuses relatedItem and no longer has the duplicated elements referred to above.
+
+
+---++++++Name/Topic: the EML Project module
+
+Issue: one of the drawbacks of using the EML Project module is that it only allows one-to-many project relationships. 
+
+Proposal: 
+
+Comments: 
+
+Brad Boyle: We should extend the EML module here; make our model fit the real world rather than trying to shoehorn it into as-is EML.
+
+Status: unresolved
+
+
+---++++++Name/Topic: Vouchers-Specimens
+
+Issue: Not clear to me how vouchering is supported. A voucher is a verifiable evidence of the taxonConcept applied to a particulat taxonObservation. It should allow for the transfer of a taxonName to a taxonObservation based on another taxonObservation, typically a specimen deposited in a herbarium. 
+
+Proposal: currently we are using a very simple approach to accommodate vouchers, i.e. only recording the herbarium accession code.  One option is to adopt the specimen part of the TCS schema.
+
+Comments: 
+
+Brad Boyle: OK, then we need to re-think this. Support of herbarium specimen vouchers, if possible as webservice, is critical to accomodating most tropical data. We need to be able to retrieve&#8212;and store&#8212;all the usual DwC elements pertaining to names and determiners of herbarium specimens, and map them to vegetation observations.
+
+Nick Spencer: so we might need both a simple accession number approach and also implement a structured way of describing a service. EML has one, but does it accommodate REST/WS/TAPIR(?) type requests?
+
+Status: unchanged
+
+
+
+
+
+---+++++Missing elements
+
+ 
+---++++++Name/Topic:  communityDetermination:Date 
+
+Issue: VegBank has a start date and end date
+
+Proposal: Add Date
+
+Comments: 
+
+Brad Boyle: Yes. We should allow for start and end of all dates, with StartDate being mandatory in cases where only one date given.
+
+Status: DONE
+
+
+---++++++Name/Topic: diameterAccuracy
+
+Issue: individualOrganismObservationType: Need elements &#8216;diameterAccuracy&#8217; and &#8216;heightAccuracy&#8217; to accommodate diameter classes and height classes
+
+Proposal: [See VegBank] 
+
+Comments: 
+
+Brad Boyle: Agreed
+
+Status: DONE
+
+---++++++Name/Topic: veg:plot:  &#8216;radius&#8217; 
+
+Issue: veg:plot: needa an element &#8216;radius&#8217; 
+
+Proposal: :  need an element &#8216;radius&#8217; (positioned below the elements length and width) to define the dimensions of circular plots
+
+Comments: 
+
+Brad Boyle: Agreed
+
+Status: DONE
+
+
+---++++++Name/Topic: veg:individualOrganismObservation:  &#8216;health&#8217; 
+
+Issue: veg:individualOrganismObservation:  needs an element &#8216;health&#8217; to indicate whether individuals are dead.  
+
+Proposal: See VegBank &#8216;stemhealth&#8217;: defined as &#8216;Health of the stem referenced in this stemLocation record. Usually used to describe "dead" stems.&#8217;  We believe health status, particularly of trees, is too critical in tree demography datasets to be handled by a user-defined variable.
+
+Comments: 
+
+Brad Boyle: Yes. This should be a fixed field.
+
+Status: DONE
+
+
+---++++Element/Attribute naming
+
+
+---++++++Name/Topic: veg:PlotType:	plotCode
+
+Issue: To avoid confusion with plotName and emphasise importance of uniqueness
+
+Proposal: rename to plotUniqueIdentifier
+
+Comments: 
+
+Status: DONE
+
+
+---++++++Name/Topic: veg:individualOrganismObservation	locationObservationID
+
+Issue: More explicitly describes the relationship
+
+Proposal: rename to plotObservationID
+
+Comments: 
+
+Status: DONE
+
+
+---++++++Name/Topic: Veg:taxonOccurrenceType	originalName
+
+Issue: More clearly defines the plant name as that used by the author of the plot.  Follows VegBank
+
+Proposal: rename to authorName
+
+Comments: 
+
+Status: DONE
+
+
+---++++++Name/Topic: Veg:taxonOccurrenceType	Code
+
+Issue: More clearly defines the species code as that used by the author of the plot.  
+
+Proposal: rename to authorCode
+
+Comments: 
+
+Status: DONE
+
+
+---++++++Name/Topic: Veg: AggregateOrganismObservation:aggregateValue:attributeID	ratio
+
+Issue: When we check dictionaries and Google:define ratio invariably refers to  the relative magnitudes of two quantities
+
+Proposal: rename to quantitative
+
+Comments: 
+
+Status: DONE
+
+
+---++++++Name/Topic: Veg:plotObservation	locationID
+
+Issue: More explicitly describes the relationship
+
+Proposal: rename to plotCodeID
+
+Comments: 
+
+Status: DONE
+
+
+---++++++Name/Topic:  Veg:plotObservation	ecoManagement
+
+
+
+Issue: 
+
+Proposal: rename to management
+
+Comments: 
+
+Status: DONE
+
+
+
+
+---++++Element Definition
+
+
+---++++++Name/Topic: . obsEndDate & obsStartDate 
+
+Issue: . obsEndDate & obsStartDate &#8211; these are defined backwards from VegBank and to Susan are counterintuitive
+
+Proposal: .  If one is going to be mandatory, to me it should be obsStartDate, not obsEndDate. 
+
+Comments: 
+
+Brad Boyle: Agreed
+
+Status: DONE
+
+
+
+---++++++Name/Topic: PlotObservation: WaterDepth 
+
+Issue: PlotObservation: The concept of WaterDepth seem completely different from the element with the same name in VegBank.  The Bfn definition: &#8220;Distance from surface to ground water in meters&#8221; sounds more suitable for an element named &#8220;WatertableDepth&#8221;.  
+
+Proposal: The VegBank definition is: &#8220;For aquatic or marine vegetation, what was the water depth in m.&#8221; 
+
+Comments: 
+
+Nick Spencer: element now mored to geospatial type
+
+Status: definition unchanged - needs resolution
+
+
+
+---++++++Name/Topic: concepts &#8216;order&#8217; and &#8216;sequence&#8217;.  
+
+Issue: a consistent term be used for the concepts &#8216;order&#8217; and &#8216;sequence&#8217;.  Currently the schema uses both e.g. &#8216;order&#8217; in misc:AttributeType vs. &#8216;stratumSequence&#8217; within &#8216;stratumType&#8217;.
+
+Proposal: 
+
+Comments: 
+
+Status: Unresolved
+
+
+
+---++++++Name/Topic: determination of &#8216;stratum&#8217;.  
+
+Issue: There is in Europe a phytosociological school that classify stratum communities (you, europeans we are crazy classifiers :-). These are called &#8216;sinusiae&#8217; (http://www.britannica.com/EBchecked/topic/578754/synusia). See also Dengler, J., M. Chytry, and J. Ewald. 2008. Phytosociology. Pages 2767-2779 in S. E. Jørgensen and B. D. Fath, editors. Encyclopedia of Ecology. Elsevier, Oxford.
+
+Proposal: One way to expand Veg-X to allow for this would be to add stratumDetermination and stratumConcept (or similar names) that would use a reference of a stratumObservation, much like we now do for community determinations that apply to the whole plotObservation. It may sound crazy but it does not compromise Veg-X in any way and we could gain some (few) users.
+
+Comments: 
+
+Status: Unresolved@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="NickSpencer" date="1274522790" format="1.1" version="1.6"}%
+d382 12
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RobertPeet" date="1260575800" format="1.1" version="1.5"}%
+d15 1
+a15 1
+Status: 
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="NickSpencer" date="1236201030" format="1.1" version="1.4"}%
+d7 1
+a7 1
+---++++++Name/Topic:
+d9 1
+a9 1
+Issue: 
+d11 1
+a11 1
+Proposal: 
+d13 1
+a13 1
+Comments: 
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="MartinKleikamp" date="1236005977" format="1.1" version="1.3"}%
+d45 1
+a45 1
+Comments: 
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="MartinKleikamp" date="1236000859" format="1.1" version="1.2"}%
+d25 1
+a25 1
+Issue: The TSC has redundant name element in entity taxonname
+d43 1
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="NickSpencer" date="1234321908" format="1.1" reprev="1.1" version="1.1"}%
+d9 17
+a25 1
+Issue:
+d27 29
+a55 1
+Proposal:
+d59 2
+a60 1
+Status:
+d381 1
+a381 1
+Status: Unresolved
+@

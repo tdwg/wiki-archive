@@ -1,0 +1,44 @@
+%META:TOPICINFO{author="RenatoDeGiovanni" date="1189382793" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="WebHome"}%
+TAPIR doesn't specify an official way to "map" equivalent concepts from different conceptual schemas. Ideally this should be provided by a ConceptNameServer implemented as a complete service, but such service doesn't exist yet. 
+
+This page suggests a simple XML format to store this kind of information. TapirLink and PyWrapper are planning to use the same format.
+
+First, a single file serves as an index of the existing translations between conceptual schemas:
+
+<verbatim>
+<mappingReferencesIndex>
+  <forSchema namespace="ns1">
+    <ref location="ns1_references.xml"/>
+  </forSchema>
+  <forSchema namespace="ns2">
+    <ref location="ns2_references.xml"/>
+  </forSchema>
+  ...
+</mappingReferencesIndex>
+</verbatim>
+
+And then each translation is defined in a separate file:
+
+<verbatim>
+<mappingReferences for="ns1">
+  <baseConcept id="id1">
+    <ref>
+      <concept id="id_of_equivalent_concept_1"/>
+    </ref>
+  </baseConcept>
+  <baseConcept id="id2">
+    <ref>
+      <concept id="id_of_equivalent_concept_2"/>
+    </ref>
+    <ref>
+      <concept id="id_of_equivalent_concept_3"/>
+    </ref>
+  </baseConcept>
+  ...
+</mappingReferences>
+</verbatim>
+
+Equivalent concepts inside "ref" can belong to different conceptual schemas.
+
+Note that a mapping ns1->ns2 may not be the exact opposite of ns2->ns1.

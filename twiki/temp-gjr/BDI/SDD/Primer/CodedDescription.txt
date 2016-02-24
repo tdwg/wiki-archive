@@ -1,0 +1,132 @@
+%META:TOPICINFO{author="DonovanSharp" date="1153195734" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++4.1 Coded Descriptions
+
+The &lt;CodedDescription&gt; element contains the actual data associated with each dataset.
+
+SDD deals with two distinct subtypes of coded data, summary data and raw observational data. Summary data is data representative of recognised taxonomic entities (family, genus, species), while raw observation data is that representative of a single specimen or occurence.
+
+The [[CodedDescription][&lt;CodedDescription&gt;]] element also contains a [[SddScope][&lt;Scope&gt;]] element, where the entities covered by the description may be defined.
+
+%ATTACHURL%/codeddescription.gif
+
+---++++4.1.1 SDD for summary data
+
+Summary data records occurence for a related group of individuals (i.e. species, genus). Data may be aggregated from sample data using statistical measures, state distributions, etc. The element is optional to support descriptions containing only sample data or media objects. Characters are NOT required to have unique ref attributes! Data for one character may be recorded with different modifications (in spring/autumn, at tip/base).
+
+%ATTACHURL%/summarydata.gif
+
+---+++++Example 4.1.1.1 - A simple summary data description
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+    <CodedDescriptions>
+      <CodedDescription id="cd1">
+        <Representation>
+          <Label>Korthalsella</Label>
+        </Representation>
+        <Scope>
+          <TaxonName ref="t2"/>
+        </Scope>
+        <SummaryData>
+          <Categorical ref="c3">
+            <State ref="s7"/>
+          </Categorical>
+          <Categorical ref="c1">
+            <State ref="s2"/>
+          </Categorical>
+          <Quantitative ref="c4">
+            <Measure type="Min" value="5.0"/>
+            <Measure type="UMethLower" value="10.0"/>
+            <Measure type="UMethUpper" value="20.0"/>
+            <Measure type="Max" value="25.0"/>
+          </Quantitative>
+        </SummaryData>
+      </CodedDescription>
+    </CodedDescriptions>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+In this example the taxon Korthalsella (taxon t2) is scored present for character c3 state s7, present for character c1 state s2 and (5-)10-20(-25) for the quantitative character c4. The names assigned to these character and state names can be found within the [[SddCharacters][&lt;Characters&gt;]] element.
+
+---++++4.1.2 SDD for [[SampleData][&lt;SampleData&gt;]]
+
+Raw sample data are recorded here. The analysed and generalized (e. g. using statistical measures) results are normally also reflected under [[SummaryData][&lt;SummaryData&gt;]] (with origin = 'calculated' and &lt;BasedOnSample&gt; referring to a sample ID.
+
+%ATTACHURL%/sampledata.gif
+
+---++++Example 4.1.2.1 - A simple raw data description
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+
+    
+<verbatim>
+<CodedDescriptions>
+  <CodedDescription id="cd1">
+   <Representation>
+    <Label>Korthalsella </Label>
+   </Representation>
+   <Scope>
+    <TaxonName ref="t2"/>
+   </Scope>
+   <SampleData>
+    <SamplingEvent id="sev1000">
+     <DateTime/>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s2"/>
+      </Categorical>
+      <Quantitative ref="c2" value="110"/>
+     </SamplingUnit>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s1"/>
+      </Categorical>
+      <Quantitative ref="c2" value="112"/>
+     </SamplingUnit>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s1"/>
+      </Categorical>
+      <Quantitative ref="c2" value="110"/>
+     </SamplingUnit>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s1"/>
+      </Categorical>
+      <Quantitative ref="c2" value="118"/>
+     </SamplingUnit>
+    </SamplingEvent>
+   </SampleData>
+  </CodedDescription>
+ </CodedDescriptions>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+	
+
+This example records the results of five sampling events for a categorical and a quantitative character. The names assigned to these character and state names can be found within the [[SddCharacters][&lt;Characters&gt;]] element.
+
+
+-- Main.DonovanSharp - 02 Jun 2006
+
+%META:FILEATTACHMENT{name="summarydata.gif" attr="" autoattached="1" comment="" date="1152233873" path="summarydata.gif" size="9204" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="codeddescription.gif" attr="" autoattached="1" comment="" date="1152233779" path="codeddescription.gif" size="16060" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="sampledata.gif" attr="" autoattached="1" comment="" date="1152233672" path="sampledata.gif" size="3342" user="Main.DonovanSharp" version="1"}%

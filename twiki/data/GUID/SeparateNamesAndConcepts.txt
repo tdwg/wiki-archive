@@ -1,0 +1,62 @@
+---++ Exploration of having separate GUIDs for TaxonNames and TaxonConcepts 
+RogerHyam - 2005-11-11
+
+(Diagrams are informal. Blobs represent instances. Arrows represent references to the object pointed at using their GUID)
+
+---+++ Scenario 1: GUIDs just for TaxonConcepts 
+
+http://www.tdwg.hyam.net/images/TC_reasoning1.jpg
+
+Some of the concepts refer to each other because they already know of each others existence (perhaps found by string matching) and the authors have declared how they are related. They are congruent or overlap etc. Some concepts are islands unto themselves. TC13 is not linked. An indexer might know of the existence of all of the concepts because they have been submitted by registered datasources but there is no absolute way to link them together so the indexer can't provide query expansion semantically only by string matching. i.e. The objects have an attribute (NameString or similar) that looks the same so we can guess they are trying to talk about the same thing. This is analogous to the situation prior to the invention of the nomenclatural codes. Anyone can publish anything anywhere and it is up to the consumer to work out if they are talking about the same thing.
+
+---+++ Scenario 2: Rule that every TaxonConcept must refer to another 
+
+http://www.tdwg.hyam.net/images/TC_reasoning4.jpg
+
+This appears to solve the problem we have in Scenario 1. All concepts must refer to at least one other so there is always a path to navigate. What if you are the first person to create a concept - a new species? There has to be a class of concepts to which the rule does NOT apply. You therefore have to have two classes of object. The solution to this problem is to have TaxonNames as in Senario 3. This issue was 'done to death' in the discussions around the Taxon Concept Schema six months ago. The nomenclatural codes nicely control the creation of names (which we model as TaxonNames) and TaxonConcepts are simply different people's interpretation of what those names mean.
+
+---+++ Scenario 3: GUIDs for TaxonConcepts and TaxonNames 
+
+http://www.tdwg.hyam.net/images/TC_reasoning2.jpg
+
+Here we have a service defining TaxonNames and the all the TaxonConcepts use this to indicate what they are describing. The indexer can now link together all the concepts semantically. If data is related to one TaxonConcept then some reasoning can be carried out to discover what other facts may be related to it. String matching is only needs to be done once - if at all.
+
+---+++ Scenario 4: Two Competing Nomenclators 
+
+http://www.tdwg.hyam.net/images/TC_reasoning3.jpg
+
+This is bad and we would hope it didn't happen but it is still better than not having a nomenclator at all. It increases the chance that everything will be linked semantically. An indexer could always build a synonomy of TaxonName GUIDs - but it is not nice. Under this situation there would be intense pressure to merge the nomenclators. Another problem with this sceario is that depending on how a "name object" is defined, if TN1234 is a new combination (but not a basionym), then some data users would interpret it as a Name instance, and some might view it as a concept instance -- so may be viewed either as a rectangle or an oval.
+
+---+++ Scenario 5: Standardized Taxon Usage Instances  
+
+http://www2.bishopmuseum.org/images/natsci/TC_reasoning5.jpg
+
+This scenario assumes only one "kind" of GUID -- representing "TaxonName Usage" (TU) instances. Some of these usages happen to represent protologues for the establishment of new basionyms (green dots).  Some of these usages happen to represent the establishment of ICBN-recognized new combinations (yellow dots). Some of these usages involve the establishment of defined concept circumscriptions (orange dots). Links among the instances are contextual: black solid arrows represent concept links (e.g., congruent or overlap etc.); grey dashed arrows represent nomenclatural links (e.g., is basionym); blue solid arrow represents identity equivalency (duplicate). TU13 represents a plain-vanilla usage (neither a concept definition, nor a nomenclatural act). TU15 is the basionym-creation usage instance referred to by the new combination established in TU1.  TU2 has both a concept relationship with TU1, and used the same name combination as TU1. TU15 and TU123 both refer to the exact same instance (usage instance that established the basionym), and are thus equivalent (duplicates). This scenario mitigates the problem of Scenario 4 because it ensures that objects are equivalent and therefore directly mappable -- whereas unregulated "Name" GUIDs could refer to non-comparable units (e.g., TN1234 might be the New Combination Name instance, and TN3399 might be a Basionym Name instance). Zoological nomenclators would focus on usage instances with green dots. Botanical nomenclators would focus on usage instances with green dots or with yellow dots.  ConceptBank services would focus on managing instances with orange dots. Indexers would be interested in all the instances (including TU13). But the important point is that everyone is dealing with taxonomic "apples", so establishing relationship links is much less ambiguous (and/or requires less metadata qualification).
+
+The main problem with this scenario is the need for contextual links.  But contextual links are already required to distinguish, e.g., "is congruent to" from "contains", etc. We simply need to additionally accomodate "is basionym", "is used name combination", etc.
+
+
+---++ Comments
+Use the space below to make comments about this page.
+
+------
+
+%ICON{bubble}% Posted by Main.JessieKennedy - 2005-12-21 12:50:36
+
+re Scenario 2: even if you are the first person to create a new species you should be able to refer your species concept to an existing genus concept or if in the process you're creating a new genus (name and concept) then refer to an existing family or higher taxon concept.
+
+------
+
+%ICON{bubble}% Posted by Main.RobertHuber - 2005-12-22 15:08:11
+
+Is scenario 4 really uncommon? We have a lot of observatory (measurement) data stored here which is based on the taxonomic knowledge of the researcher only or was taken from the literature. <br />
+<br />
+Or more generally: as soon as 'non real taxonomists' or 'name users' apply names while collecting scientific data this will happen, so it happens all the time.<br />
+<br />
+Especially for historical data scenario 4 is interesting. I have a little taxonomic db project at http://taxonconcept.stratigraphy.net which holds some literature demo data of so called open nomenclature synonymy lists and it is quite interesting to see the use of name over time..<br />
+<br />
+Such synonymy lists could be scenario 4a, they basically reflect an authors opinion on other taxonomic concepts.
+
+------
+
+%ICON{bubble}% 

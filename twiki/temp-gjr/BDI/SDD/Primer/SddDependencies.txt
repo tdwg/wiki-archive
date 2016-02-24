@@ -1,0 +1,164 @@
+%META:TOPICINFO{author="HeleneFradin" date="1185541732" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.11 Dependencies in SDD
+  
+Dependencies are logical relationships between characters such that a state of one character controls the presence (or absence) of another feature in interactive keys.
+
+Consider, for example, the following features:
+
+%ATTACHURL%/depend.jpg
+ 
+Wing colour and Wing shape only have meaning when wings are present &#8211; if wings are absent, they are logically inappropriate in the key. Relationships of this kind are generally accomodated within interactive identification applications by the use of dependencies. For the above example a negative dependency may be set such that if a user chooses the state Wings: absent, then the characters Wing Colour and Wing Shape will be removed from characters Available. Alternatively, some applications allow a positive dependency to be set so for example Wing Colour and Wing Shape are initially hidden and only appear if a user chooses the state Wings: present. Dependencies can help to keep the character list cleaner and less cluttered, and help make some features work better.
+
+In SDD dependencies are defined by &lt;DependencyRules&gt; within the &lt;CharacterTree&gt; element.
+
+A simple SDD code instance representing dependency definition has the basic structure shown below and in Example 3.11.1.
+
+%ATTACHURL%/chartreenodeseq.gif
+
+---++++Example 3.11.1 - Negative dependencies in SDD.
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+  
+<verbatim>
+        <Nodes>
+          <CharNode>
+            <DependencyRules>
+              <InapplicableIf>
+                <State ref="s13"/>
+              </InapplicableIf>
+            </DependencyRules>
+            <Character ref="c1"/>
+          </CharNode>
+          <CharNode>
+            <DependencyRules>
+              <InapplicableIf>
+                <State ref="s4"/>
+                <State ref="s13"/>
+              </InapplicableIf>
+            </DependencyRules>
+            <Character ref="c2"/>
+          </CharNode>
+
+		  ... etc.
+		  
+        </Nodes> 
+</verbatim>
+	
+</td>
+</tr>
+
+</table>
+
+Positive dependencies are expressed in the same fashion with the &lt;InapplicableIf&gt; tag. Applicable-If and Inapplicable-If statements are in principle convertible, but 
+
+---+++Discussion
+
+It is currently unknown how applications which enforce referential integrity between scored data and dependencies will manage data imported from applications which do not enforce referential integrity. -- Main.DonovanSharp - 01 Jun 2006
+
+Does Lucid have problems with this? <nop>DeltaAccess/DiversityDescriptions does maintain referential integrity between applicability rules and terminology, and between terminology and data, but not between applicability rules and data. The main reason for not doing this is that it would prevent creating a desirable applicability rule before all violating data (which may be hundreds) have been removed first. Instead, DiversityDescriptions allows violation of dependency rules, but warns the user, enabling him or her to fix the violations as time goes by. It is thus an application-level integrity, not a database-level one. -- Main.GregorHagedorn, 2007-05-07.
+
+As a use case example, the XPer2 software deals with character dependencies using an inapplicability rules and a set of exclusion modes. However, the displaying in the identification interface relates more to the positive approach: characters are displayed to the user only once a mode or several modes (distinct from the exclusion(s) mode(s)) has(have) been selected. -- Main.HeleneFradin - 27 Jul 2007
+
+As SDD dependencies are defined in a &lt;CharacterTree&gt; element, I think I would need an example that includes a character hierarchy to understand better if the character under the rule of applicability has to be hierarchically dependent from the character that displays the &lt;InapplicableIf&gt; state (my understanding is that it is not necessary) and to distinguish clearly the character that is attached to the &lt;CharNode&gt; element and the potential parent character. I tried to build an example from the schema above about Wings characters. Is it correct ?
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+  
+<verbatim>
+        <Characters>
+          <CategoricalCharacter id="c1">
+            <Representation>
+              <Label>Presence</Label>
+            </Representation>
+            <States>
+              <StateDefinition id="s1">
+                <Representation>
+                  <Label>present</Label>
+                </Representation>
+              </StateDefinition>
+              <StateDefinition id="s2">
+                <Representation>
+                  <Label>absent</Label>
+                </Representation>
+              </StateDefinition>
+            </States>
+          <CategoricalCharacter id="c2">
+            <Representation>
+              <Label>Colour</Label>
+            </Representation>
+            <States>
+              <StateDefinition id="s3">
+                <Representation>
+                  <Label>blue</Label>
+                </Representation>
+              </StateDefinition>
+              <StateDefinition id="s4">
+                <Representation>
+                  <Label>yellow</Label>
+                </Representation>
+              </StateDefinition>
+            </States>
+
+        ...
+
+        </Characters>
+
+        <DescriptiveConcepts>
+          <DescriptiveConcept id="dc1">
+            <Representation>
+              <Label>Wings</Label>
+            </Representation>
+      	  </DescriptiveConcept>
+        </DescriptiveConcepts>
+
+        ... etc (for more detail see the topic <DescriptiveConcepts>)
+
+        <CharacterTrees>
+	  <CharacterTree id="ct1">
+            <Representation>
+              <Label>Default Feature Tree</Label>
+            </Representation>
+            <DesignedFor>
+              <Role>InteractiveIdentification</Role>
+	    </DesignedFor>
+            <Nodes>
+              <Node id="cn1">
+                <DescriptiveConcept ref="dc1"/>
+              </Node>
+              <CharNode>
+	        <Parent ref="cn1"/>
+            	<Character ref="c1"/>
+	      </CharNode>
+              <CharNode>
+	        <DependencyRules>
+                  <InapplicableIf>
+                    <State ref="s2"/>
+    	          </InapplicableIf>
+         	</DependencyRules>
+                <Parent ref="cn1"/>
+            	<Character ref="c2"/>
+              </CharNode>
+
+        ...
+
+            </Nodes>
+          </CharacterTree>
+        </CharacterTrees>
+</verbatim>
+	
+</td>
+</tr>
+
+</table>
+-- Main.HeleneFradin - 27 Jul 2007
+
+%META:FILEATTACHMENT{name="chartreenodeseq.gif" attr="" autoattached="1" comment="" date="1157594120" path="chartreenodeseq.gif" size="9635" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="depend.jpg" attr="" autoattached="1" comment="" date="1149233772" path="depend.jpg" size="9363" user="Main.DonovanSharp" version="1"}%

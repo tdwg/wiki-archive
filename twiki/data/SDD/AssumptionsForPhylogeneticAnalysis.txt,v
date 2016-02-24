@@ -1,0 +1,490 @@
+head	1.8;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.8
+date	2009.11.25.03.14.30;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2009.11.20.02.45.21;	author LeeBelbin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.08.09.10.41.14;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.08.06.16.51.31;	author CyrilGallut;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.07.26.13.25.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.07.26.11.43.45;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.07.20.17.05.27;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118870" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+---+!! %TOPIC%
+
+Cyril Gallut noted at the Berlin 2004 meeting, that additional assumptions are needed when SDD categorical multistate characters are to be converted for (especially phylogenetic) analysis.
+
+<h3>Splitting States Into Independent Variables</h3>
+
+In email exchanges, Gregor wrote:
+
+We are talking about a flag on the character definition that declares that rather than treating all states as multistates (in the NEXUS sense) in analysis, each state should be analyzed as a separate column, the state being present or absent.
+
+Background: Some characters as developed in a description/identification centric terminology will be assemblages of states that are not truly phylogenetically homologous, i.e. they are not similar due to evolutionary history. Legs in Insects and vertebr
+ates, eyes in cephalopods, insects, and vertebrates, etc. These are structures. However, no truly good example comes to my mind with states. The only example I had in my work was related to chemical substances that can be detected. So, introducing a character "chemical spot tests" with substances a, b, and c as states should for analysis be converted into three independent variables ("characters").
+
+My proposal is to allow lumped characters, but marking them to be split for analysis purposes. Of course, it would be possible to think otherwise, split characters down to the maximum, and rely on features that summarize/combine them to make them more digestible in identification applications.
+
+
+Julian Humphries wrote:
+
+So the goal is to deal with the situation where somebody has "something" labeled as a character, but it really isn't, it is just an
+assemblage of features that the investigator wants to call all the same "something."  While the appropriateness of this seems pretty hard to grasp, I guess I would go for <nop>TreatStatesAsCharactersInAnalysis, assuming the absence of this flag is the default and normally wouldn't be there.
+
+Gregor:
+
+I believe having characters that are not ideally suited for phylogenetic analysis is not just "bad design". The problem is that when dealing with identification, you cannot not necessarily assume that all people will already know everything, so even when known phylogenetic background you may prefer to assume the understandable. We are thinking of a number of features in SDD to make this manageable, to bridge this gap, and the property telling that character states should be analyzedis is one where somebody has decided that an assemblage is needed.
+
+This is the point of SDD: rather than having data that can only be understood after talking to the person designing it, data should become interoperable and self-documenting. You probably know that neither NEXUS nor DELTA are anywhere close to it. And most people will use an Excel spreadsheet instead... So trying to bring things together, some users may want to give up some of the perfection in designing everything to suit phylogenetic analysis.
+
+
+Bob wrote:
+
+In support of identification software we often have characters that are probably of no direct phylogenitic interest. For example, indicators of location of organisms are often quite useful (e.g. "rare above 1000 m."). Furthermore, the states are often time dependent as a species moves due to environmental changes or invasions. Although I don't think think time-dependent "characters" are phylogentically meaningful, they are often simple diagnostic properties and occasionally the /only/ easy one to score without collecting the specimen. In Monteverde, CR there are two species of morning glory which in the field are only distinguishable by location. At high altitudes it is always one and not the other (at the moment). Arguably this is a proxy for some molecular 
+character about environmental success that /would/ be of phylogenetic interest, but until we finish implementing the <nop>StarTrek tricorder, scoring a geocoded location character from a topographic map or a GPS is cheap and effective whenever diagnostic.
+
+A vaguely related application is predictive species distribution modeling based on inferring environmental factors from GIS layers and extrapolating from geocoded locations in museum specimen data. As far as I know nobody uses any other observed character (which Gregor will remind me is the same as "no character" :-) ) other than specimen location. Doing so wouldn't necessarily be such a bad idea though, because some morphological characters (including the existance of certain structures per Gregor's example) are correlated to environmental success and at least in principle could help guide your choice of GIS layers. That said, I've heard claims advanced that certain popular algorithms don't depend on what layers you choose so much as whether they have low correlations with one another. That's hard for a bionaive like me to believe...
+
+Finally, in our own Electronic Field Guide we code as though they are characters, certain lists of ecologically related species, e.g. host organisms, food organisms, predators, pollinators, etc. etc. and also a list of "similar species"---those that may easily be confused with the current one. Indeed, in published specimen treatments I have often seen this kind of property. In some ant treatments we are digitizing at the moment, nesting habit is almost always in the treatment and "similar taxa" is occasionally.
+
+
+Julian Humphries wrote:
+
+Although most of your examples are ones that probably wouldn't be used in a phylogenetic analysis, all, at least in some sort of semantic way, describe homologous states of a single character.  A cladist would certainly want quotes around that use of homology but your examples, (location, coexisting species) all refer to the same property in each row of a column.  So "rare above 1000 m" as a binary character or "elevation where found" with states (rare above 1000 m, common 500-1000 m, rare below 500 m) *could* be used in 
+a phylogenetic analysis and satisfy some at least vague definition of homology (I should make clear, that it would be hard to defend using these in a phylogenetic analysis, it is easy to argue that such complex traits are simply the result of too many underlying genetic characteristics).
+
+Behavioral characters suffer from much of the same type of soft homology.  We frequently have little evidence of whether two types of 
+stereotyped breeding behaviors really have a shared phylogenetic history.
+
+One result of this conversation is that it seems clear the SDD model might need to be able to mark that some characters as "NotForAnalysis" or something to that effect.  I see this as different than yesterday's example, here we simply want to send along a whole dataset, but mark some columns as not for phylogenetic analysis.  Does that make senses?
+
+---
+
+I agree that we need an option to include/exclude entire characters in analysis. However, this is easily done using the concept trees which can filter arbitrary sets of characters. It would be more complicated, if we want to include some states, but not others. SDD provides no generic facility for this, because in general it is believed that scoring a state only makes sense when the neighboring states are known. This assumption may not always hold in phylogenetic analysis... I have no clear conclusion here...
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 20 Jul 2004
+---
+
+Cyril Gallut wrote in an email:
+
+I think a few things must be clarified: As Bob said descriptive data clearly deal with observations that
+   * are not homologous, specially for identification purposes,
+   * may be homologous
+
+Avoiding definitions, Homology is an hypothesis about the common origin of a set of observations for a specific taxonomic sampling.
+A hypothesis of homology can be rejected only within a specific matrix on a given tree (generally the most parsimonious).
+
+Whatever the use of data, observations can be coded in many different ways, ranging from true binary (e. g. present/absence of red) to
+complete multi-states (e.g. absent, red, blue, purple...). In phylogeny the different codings do not imply the same hypotheses of
+homology.
+
+In sdd observations are stored in an "identification" way, there by it needs transformations to code them into a "phylogenenetic" way. I think sdd should store how to recode each characters and for which taxonomic sampling in the data set.
+
+There are several problems to transform identification characters into phylogenetic characters.
+   * Dependent characters become independent characters with ? when inapplicable.
+   * Continuous characters may be coded as categorical if independent classes can be made. Which is a statistically interesting problem.
+   * Polymorphism can be treated in different ways.
+
+In nexus multiple states for a given taxon can be coded as {a/b}. In a sdd to phylogeny point of view the polymorphism treatment
+depends on homology (again): 
+   * if the character is considered an homology hypothesis then polymorphic states are coded as {a/b} or as ? (unknown) 
+   * if the character is not considered an homology hypothesis then it is divided into several characters to avoid completely the polymorphism.
+
+There should also be a way in sdd to mention if a character is considered an homology hypothesis or if it is an homology "confirmed"
+by a phylogenetic analysis (which should be named then).
+
+I would use a variable like "PhylogeneticAnalysis" no/yes/done_with_citation (to avoid homology terminology) and if yes the "PhylogeneticRecoding" true_binary/binary/multi-state/true_multi-state and a variable "PolymorphismTreatment" as_is/question_mark/divide.
+
+(Cyril Gallut)
+
+---
+
+(Aside:) "Continuous characters may be coded as categorical" -- SDD provides mapping facilities for such partioning of numeric data into categories. One problem may be, that this is currently not treated as an assumption. Is it an assumption?
+
+(Main:) "I think sdd should store how to recode each characters and for which taxonomic sampling in the data set." -- Do we need an entirely new facility for this? My feeling was that only few coding methods (multistate versus binary/multicolumn) are commonly used. That was what I was search a flag-name for. Cyril proposes:
+
+   * <nop>PhylogeneticRecoding
+      * true_binary
+      * binary
+      * multi-state
+      * true_multi-state
+   * <nop>PolymorphismTreatment
+      * as_is
+      * question_mark
+      * divide.
+
+I would need some more information between true and non-true. Also I currently do not understand why binary recoding and <nop>PolymorphismTreatment = divide are different things. When would one have <nop>PhylogeneticRecoding = multi-state and <nop>PolymorphismTreatment = divide? (I am not sure I understand the first variable in your proposal. <nop>PhylogeneticAnalysis seems to be not a property of character, but of character x taxonomic group.)
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 Jul 2004
+
+---
+
+Let's take an example: a feature X can be: square white, square black, round white and round black.
+
+   1 true_binary
+      * feature X: present(0)/absent(1)
+      * white feature X: present(0)/absent(1)
+      * black feature X: present(0)/absent(1)
+      * square feature X: present(0)/absent(1)
+      * round feature X: present(0)/absent(1)
+   2 binary
+      * feature X: present(0)/absent(1)
+      * shape of feature X: square(0)/round(1)
+      * color of feature X: black(0)/white(1)
+   3 multi-state
+      * feature X: absent(0), square(1), round(2)
+      * feature X: absent(0), black(1), white(2)
+   4 true_multi-state
+      * feature X: absent(0), square white(1), square black(2), round white(3), round black(4).
+   5 true_multi-state alternative:
+      * feature X: present(0)/absent(1)
+      * feature X: square white(0), square black(1), round white(2), round black(3). (? if absent)
+
+All this has been developed by Pleijel, Frederik (1995): On character coding for phylogeny reconstruction. Cladistics 11(3): 309-315.
+
+Gregor said: _Also I currently do not understand why binary recoding and <nop>PolymorphismTreatment = divide are different things. When would one have <nop>PhylogeneticRecoding = multi-state and <nop>PolymorphismTreatment = divide?_ <br>You might have enough states in your character to divide it into 2 or more multi-states characters that would allow to avoid polymorphism. Of course if <nop>PhylogeneticRecoding = true-binary, it is redundant with <nop>PolymorphismTreatment = divide but the reverse is not true.
+
+Gregor said: _(I am not sure I understand the first variable in your proposal. <nop>PhylogeneticAnalysis seems to be not a property of character, but of character x taxonomic group.)_ <br>yes it is a property of character x taxonomic group, since an homology hypothesis is a property of character x taxonomic group. Homology does not exists independently of the taxonomic group.
+
+-- Main.CyrilGallut - 06 Aug 2004
+---
+
+Many thanks for the reference. I do find it confusing to treat the rare special case that you ever only want to code two states as a special category of cases. Also the "binary" of above seems to imply that the states are exclusive a priori. Since this is impossible in class data, these could in principle never be recoded using the method 2 above. (Only in specimens/individual object logical reasons may prevent the co-occurrence of states, never in class descriptions of sets of indepedent objects...)
+
+Furthermore, I believe that "absent" seems to have two very different meanings here. It refers a) to the physical absence of an object or object part, which is a conventional meaning, and b) to the inability to observe a property, because of some dependency on circumstances (methodological or existence of the object itself. In my (probably DELTA-biased thinking) I would call the latter "not applicable".
+
+Given the assumption that the presence of a object/object-part could be treated as an observable property (are leaves present or absent?), the true binary recoding should be:
+
+   * presence of feature X: present(0)/absent(1)
+   * absence of feature X: present(0)/absent(1)
+   * white feature X: present(0)/absent(1)
+   * etc.
+
+In fact I fail to see, how else I could recode a genus where some species have, and some lack leaves.
+
+All the above may be due to the fact that I am locked into basically an object oriented object-property-observation method scheme of thinking. I have the vague idea that the Pleijel model seems to not think about the object in reality, but exclusively about numeric representations of it, where absence means not the absence of a property, but the absence of a value in a "column". I am not sure though.
+
+<strong>So, what are the conclusions for SDD?</strong>
+
+a) Character x taxonomic group is present in SDD only in the form of descriptions. I could imagine that individual characters in taxon are marked as proposed: "PhylogeneticAnalysis": not done/done/done_with_citation either using the extension mechanism, or using modifiers. A General character modifier set labeled "PhylogeneticAnalysis" with the three mentioned modifier values would do the job. This would leave us with the small problem, that these modifiers, in contrast to other modifiers, should perhaps not be reported under all circumstances, which is something we do not have a mechanism for. I would like to postpone introducing that until somebody else has thought it through whether modifiers are indeed appropriate, or whether we should introduce a separate mechanism. This other mechanism to me seems close to a special form of RevisionData (... at the Paris meeting there was strong opposition against any kind of RevisionData, and as a compromise we now have RevisionData at the entire description, but not per-character).
+
+b) Combinations of different properties are mostly a bad idea. They cannot be prevented, but they are disencouraged in any DELTA/Lucid/DeltaAccess/Nexus coding. However, although "black square" is unlikely, very similar things crop up in the form of "types" (e.g. inflorescence types), which can be broken down into more atomic characters. SDD offers a facility to relate categories in one character to categories in another character. This is called the mapping facility in SDD, and is basically a generalization of the DELTA KeyStates feature. This does allow recoding of complex combination categories to more atomic ones. So 3), 4), and 5) are already dealt with. Note that the proposed 4 <nop>PhylogeneticRecoding states do lack the information necessary to perform the transformation from, e. g.m 4) to 3)!
+
+c) As said above, the simple "binary" case (2) seems to be trivial and not generally-existent if class descriptions are considered. Of course it is quite possible that in a given taxonomic group all states are in fact exclusive, but on principal, chance structures in the data should not influence the kind of analysis approach one takes (unless it is equivalent and just saves time...). For this reason, I believe "PolymorphismTreatment" seems to be a strange approach. I doubt any recoding method, that treats data substantially different, depending on the chance effect of class polymorphism occurring in the study sample or not. -- Of course, I may be wrong here... Please do argue if you think this is a wrong conclusion! I then have no problem to introduce something like "PolymorphismTreatment" as proposed by Cyril.
+
+d) However, if so, the only case that remains an open task for SDD is the desire to recode<br/>
+3) multi-state
+   * feature X: not applicable(0), square(1), round(2), oval(3)
+   * feature X: not applicable(0), black(1), white(2)
+
+to<br/>
+1) true_binary
+   * white feature X: present(0)/absent(1)
+   * black feature X: present(0)/absent(1)
+   * square feature X: present(0)/absent(1)
+   * round feature X: present(0)/absent(1)
+   * oval feature X: present(0)/absent(1)
+
+Current comment text in the schema for this flag/boolean property in a character definition: "<em>Some characters may have complex states relations (trees) or the homology of multiple state may be unknown. A conservative phylogenetic analysis may want to treat each state as a separate column with a binary coding of presence/absence of a specific state value. <br/>
+What would be a good term for this? <br/>
+<nop>AnalyzeStatesSeparately <br/>
+<nop>AnalyzeStatesAsPresentAbsent <br/>
+<nop>TreatStatesAsIndependentVariablesInAnalysis</em>"
+
+Your choice or better?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9 Aug. 2004
+---@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685121" format="1.1" reprev="1.7" version="1.7"}%
+d5 1
+a5 1
+Cyril Gallut noted at the Berlin 2004 meeting, that additional assumptions are needed when BDI.SDD categorical multistate characters are to be converted for (especially phylogenetic) analysis.
+d26 1
+a26 1
+I believe having characters that are not ideally suited for phylogenetic analysis is not just "bad design". The problem is that when dealing with identification, you cannot not necessarily assume that all people will already know everything, so even when known phylogenetic background you may prefer to assume the understandable. We are thinking of a number of features in BDI.SDD to make this manageable, to bridge this gap, and the property telling that character states should be analyzedis is one where somebody has decided that an assemblage is needed.
+d28 1
+a28 1
+This is the point of BDI.SDD: rather than having data that can only be understood after talking to the person designing it, data should become interoperable and self-documenting. You probably know that neither NEXUS nor DELTA are anywhere close to it. And most people will use an Excel spreadsheet instead... So trying to bring things together, some users may want to give up some of the perfection in designing everything to suit phylogenetic analysis.
+d49 1
+a49 1
+One result of this conversation is that it seems clear the BDI.SDD model might need to be able to mark that some characters as "NotForAnalysis" or something to that effect.  I see this as different than yesterday's example, here we simply want to send along a whole dataset, but mark some columns as not for phylogenetic analysis.  Does that make senses?
+d53 1
+a53 1
+I agree that we need an option to include/exclude entire characters in analysis. However, this is easily done using the concept trees which can filter arbitrary sets of characters. It would be more complicated, if we want to include some states, but not others. BDI.SDD provides no generic facility for this, because in general it is believed that scoring a state only makes sense when the neighboring states are known. This assumption may not always hold in phylogenetic analysis... I have no clear conclusion here...
+d92 1
+a92 1
+(Aside:) "Continuous characters may be coded as categorical" -- BDI.SDD provides mapping facilities for such partioning of numeric data into categories. One problem may be, that this is currently not treated as an assumption. Is it an assumption?
+d157 1
+a157 1
+<strong>So, what are the conclusions for BDI.SDD?</strong>
+d159 1
+a159 1
+a) Character x taxonomic group is present in BDI.SDD only in the form of descriptions. I could imagine that individual characters in taxon are marked as proposed: "PhylogeneticAnalysis": not done/done/done_with_citation either using the extension mechanism, or using modifiers. A General character modifier set labeled "PhylogeneticAnalysis" with the three mentioned modifier values would do the job. This would leave us with the small problem, that these modifiers, in contrast to other modifiers, should perhaps not be reported under all circumstances, which is something we do not have a mechanism for. I would like to postpone introducing that until somebody else has thought it through whether modifiers are indeed appropriate, or whether we should introduce a separate mechanism. This other mechanism to me seems close to a special form of RevisionData (... at the Paris meeting there was strong opposition against any kind of RevisionData, and as a compromise we now have RevisionData at the entire description, but not per-character).
+d161 1
+a161 1
+b) Combinations of different properties are mostly a bad idea. They cannot be prevented, but they are disencouraged in any DELTA/Lucid/DeltaAccess/Nexus coding. However, although "black square" is unlikely, very similar things crop up in the form of "types" (e.g. inflorescence types), which can be broken down into more atomic characters. BDI.SDD offers a facility to relate categories in one character to categories in another character. This is called the mapping facility in BDI.SDD, and is basically a generalization of the DELTA KeyStates feature. This does allow recoding of complex combination categories to more atomic ones. So 3), 4), and 5) are already dealt with. Note that the proposed 4 <nop>PhylogeneticRecoding states do lack the information necessary to perform the transformation from, e. g.m 4) to 3)!
+d165 1
+a165 1
+d) However, if so, the only case that remains an open task for BDI.SDD is the desire to recode<br/>
+d187 1
+a187 1
+---
+@
+
+
+1.6
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1092048074" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+Cyril Gallut noted at the Berlin 2004 meeting, that additional assumptions are needed when SDD categorical multistate characters are to be converted for (especially phylogenetic) analysis.
+d26 1
+a26 1
+I believe having characters that are not ideally suited for phylogenetic analysis is not just "bad design". The problem is that when dealing with identification, you cannot not necessarily assume that all people will already know everything, so even when known phylogenetic background you may prefer to assume the understandable. We are thinking of a number of features in SDD to make this manageable, to bridge this gap, and the property telling that character states should be analyzedis is one where somebody has decided that an assemblage is needed.
+d28 1
+a28 1
+This is the point of SDD: rather than having data that can only be understood after talking to the person designing it, data should become interoperable and self-documenting. You probably know that neither NEXUS nor DELTA are anywhere close to it. And most people will use an Excel spreadsheet instead... So trying to bring things together, some users may want to give up some of the perfection in designing everything to suit phylogenetic analysis.
+d49 1
+a49 1
+One result of this conversation is that it seems clear the SDD model might need to be able to mark that some characters as "NotForAnalysis" or something to that effect.  I see this as different than yesterday's example, here we simply want to send along a whole dataset, but mark some columns as not for phylogenetic analysis.  Does that make senses?
+d53 1
+a53 1
+I agree that we need an option to include/exclude entire characters in analysis. However, this is easily done using the concept trees which can filter arbitrary sets of characters. It would be more complicated, if we want to include some states, but not others. SDD provides no generic facility for this, because in general it is believed that scoring a state only makes sense when the neighboring states are known. This assumption may not always hold in phylogenetic analysis... I have no clear conclusion here...
+d61 2
+a62 2
+	* are not homologous, specially for identification purposes,
+	* may be homologous
+d74 3
+a76 3
+	* Dependent characters become independent characters with ? when inapplicable.
+	* Continuous characters may be coded as categorical if independent classes can be made. Which is a statistically interesting problem.
+	* Polymorphism can be treated in different ways.
+d80 2
+a81 2
+	* if the character is considered an homology hypothesis then polymorphic states are coded as {a/b} or as ? (unknown) 
+	* if the character is not considered an homology hypothesis then it is divided into several characters to avoid completely the polymorphism.
+d92 1
+a92 1
+(Aside:) "Continuous characters may be coded as categorical" -- SDD provides mapping facilities for such partioning of numeric data into categories. One problem may be, that this is currently not treated as an assumption. Is it an assumption?
+d96 9
+a104 9
+	* <nop>PhylogeneticRecoding
+		* true_binary
+		* binary
+		* multi-state
+		* true_multi-state
+	* <nop>PolymorphismTreatment
+		* as_is
+		* question_mark
+		* divide.
+d114 18
+a131 18
+	1 true_binary
+		* feature X: present(0)/absent(1)
+		* white feature X: present(0)/absent(1)
+		* black feature X: present(0)/absent(1)
+		* square feature X: present(0)/absent(1)
+		* round feature X: present(0)/absent(1)
+	2 binary
+		* feature X: present(0)/absent(1)
+		* shape of feature X: square(0)/round(1)
+		* color of feature X: black(0)/white(1)
+	3 multi-state
+		* feature X: absent(0), square(1), round(2)
+		* feature X: absent(0), black(1), white(2)
+	4 true_multi-state
+		* feature X: absent(0), square white(1), square black(2), round white(3), round black(4).
+	5 true_multi-state alternative:
+		* feature X: present(0)/absent(1)
+		* feature X: square white(0), square black(1), round white(2), round black(3). (? if absent)
+d148 4
+a151 4
+	* presence of feature X: present(0)/absent(1)
+	* absence of feature X: present(0)/absent(1)
+	* white feature X: present(0)/absent(1)
+	* etc.
+d157 1
+a157 1
+<strong>So, what are the conclusions for SDD?</strong>
+d159 1
+a159 1
+a) Character x taxonomic group is present in SDD only in the form of descriptions. I could imagine that individual characters in taxon are marked as proposed: "PhylogeneticAnalysis": not done/done/done_with_citation either using the extension mechanism, or using modifiers. A General character modifier set labeled "PhylogeneticAnalysis" with the three mentioned modifier values would do the job. This would leave us with the small problem, that these modifiers, in contrast to other modifiers, should perhaps not be reported under all circumstances, which is something we do not have a mechanism for. I would like to postpone introducing that until somebody else has thought it through whether modifiers are indeed appropriate, or whether we should introduce a separate mechanism. This other mechanism to me seems close to a special form of RevisionData (... at the Paris meeting there was strong opposition against any kind of RevisionData, and as a compromise we now have RevisionData at the entire description, but not per-character).
+d161 1
+a161 1
+b) Combinations of different properties are mostly a bad idea. They cannot be prevented, but they are disencouraged in any DELTA/Lucid/DeltaAccess/Nexus coding. However, although "black square" is unlikely, very similar things crop up in the form of "types" (e.g. inflorescence types), which can be broken down into more atomic characters. SDD offers a facility to relate categories in one character to categories in another character. This is called the mapping facility in SDD, and is basically a generalization of the DELTA KeyStates feature. This does allow recoding of complex combination categories to more atomic ones. So 3), 4), and 5) are already dealt with. Note that the proposed 4 <nop>PhylogeneticRecoding states do lack the information necessary to perform the transformation from, e. g.m 4) to 3)!
+d165 1
+a165 1
+d) However, if so, the only case that remains an open task for SDD is the desire to recode<br/>
+d167 2
+a168 2
+	* feature X: not applicable(0), square(1), round(2), oval(3)
+	* feature X: not applicable(0), black(1), white(2)
+d172 5
+a176 5
+	* white feature X: present(0)/absent(1)
+	* black feature X: present(0)/absent(1)
+	* square feature X: present(0)/absent(1)
+	* round feature X: present(0)/absent(1)
+	* oval feature X: present(0)/absent(1)
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="CyrilGallut" date="1091811091" format="1.0" version="1.4"}%
+d53 1
+a53 2
+-- Main.GregorHagedorn - 20 Jul 2004
+
+d65 1
+a65 1
+Whatever the use of data, observations can be coded in many different ways, ranging from true binary (e.g. present/absence of red) to
+d106 1
+a106 1
+-- Main.GregorHagedorn - 26 Jul 2004
+d110 1
+a110 2
+Let's take a example:
+a feature X can be: square white, square black, round white and round black.
+d112 1
+a112 1
+	1) true_binary
+d118 1
+a118 1
+	2) binary
+d122 1
+a122 1
+	3) multi-state
+d125 1
+a125 1
+	4) true_multi-state
+d127 1
+a127 1
+	5) true_multi-state alternative:
+d131 1
+a131 2
+All this has been developed by Pleijel:
+Pleijel, Frederik (1995) On character coding for phylogeny reconstruction. Cladistics 11(3): 309-315.
+d133 1
+a133 1
+Gregor said: _Also I currently do not understand why binary recoding and <nop>PolymorphismTreatment = divide are different things. When would one have <nop>PhylogeneticRecoding = multi-state and <nop>PolymorphismTreatment = divide?_ <br>You might have enough states in your character to divide it into 2 or more multi-states characters that would allow to avoid polymorphism. Of course if <nop>PhylogeneticRecoding = true-binary, it is redondant with <nop>PolymorphismTreatment = divide but the reverse is not true.
+d138 48
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1090848300" format="1.0" version="1.3"}%
+d109 32
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1090842225" format="1.0" version="1.2"}%
+d51 1
+a51 1
+I agree that we may need two flags!
+d87 21
+a107 1
+-- Main.GregorHagedorn - 20 Jul 2004
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1090343127" format="1.0" version="1.1"}%
+d53 33
+d88 1
+@

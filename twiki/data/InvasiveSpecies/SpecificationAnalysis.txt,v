@@ -1,0 +1,174 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.2
+date	2008.03.01.22.19.06;	author AnnieSimpson;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.03.01.19.58.42;	author AnnieSimpson;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@none
+@
+text
+@%META:TOPICINFO{author="AnnieSimpson" date="1204409946" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="TechnicalDocuments"}%
+
+<h3>Suggestions for Changes and Additions to the GISIN technical document called</h3>
+<h4>[[http://www.niiss.org/cwis438/websites/GISINTech/Documentation/SpecificationAnalysis.html?WebSiteID=5][GISIN Protocol Specification Analysis]]</h4> Click on the title to open the document, then use your browser's back button to return to this page and insert your wiki input below.
+
+      * Suggested changes:
+
+
+&#8220;Issues List&#8221; with numbered issues, current recommendations, current status, and associated discussions. 
+The &#8220;Status&#8221; fields have the following values: 
+&#8226;	Investigation &#8211; we&#8217;re trying to come up with a proposal 
+&#8226;	Proposed &#8211; we have a proposal and are seeing if anyone objects 
+&#8226;	Resolved &#8211; the issue has been decided but is not yet in the protocol documentation 
+&#8226;	Existing &#8211; the issue is represented in the documentation 
+1. PROPOSAL: Add a new data model for EnvironmentalInfo?
+Status: Proposed
+This datamodel will help distinguish between species that occur in natural or human modified environments, and/or in freshwater, brackish, marine and terrestrial habitats. Multiple values are possible. These concepts are different from EcosystemImpacted? and HabitatImpacted? (a terrestrial species can impact aquatic environments). At the GISIN portal someone could filter by &#8216;terrestrial&#8216; to get all terrestrial species &#8211; whether or not the habitat impacted might be both terrestrial and aquatic.
+EnvironmentalInfo supports the following additional Concepts: Possible values for the additional Concepts are listed in the table.
+Concept	Required	Type	Values	Description
+SpeciesEnvironment	No	String	Natural, HumanModified?
+The environment in which the species occurs
+SpeciesHabitat	No	String	Freshwater, Brackish, Marine, Terrestrial	The habitat in which the species occurs
+2. PROPOSAL: Change Harmful back to Invasive in BioStatus?
+Status: Proposed
+Discussion: Many believe that &#8216;Harm&#8217; is subjective and that it is the culmination of the invasion process, which begins with establishment, then persistence and spread. If we provided the word &#8216;Invasive&#8217; instead of &#8216;Harmful&#8217; in the BioStatus? concept, most providers would be able to map to its possible values, but each provider might mean something different. The key differences are between;
+1. Scientific uses of the word &#8216;Invasive&#8217; meaning ability to spread (i.e. Distribution = Widespread or Moderate, and/or Abundance= Dominant or Common) and 
+2. Policy uses of the word &#8216;Invasive&#8217; meaning ability to cause harm.
+Different meanings or usages can be deduced from the additional concepts for which data is provided. Currently, the first group can select &#8216;Invasive&#8217; then map their data to Distribution = (Widespread or Moderate), and/or Abundance= (Dominant or Common) and/or Harmful= (Yes or Potentially). 
+The second group can select &#8216;Invasive&#8217; then map their data to ImpactStatus? concepts as well as those of group 1. 
+More Discussion: Folks had major issues with the term &#8220;Invasive&#8221;. We decided to use &#8220;Harmful=Yes&#8221;. However, invasiveness data would not be mapped to the &#8216;Harmful&#8217; concept if there is only evidence of establishment, persistence and spread (e.g. when harm has not been confirmed). A search at the GISIN portal on Harmful = yes would miss this invasiveness data. 
+BioStatuses support the following additional Concepts. Possible values for the Concepts are listed below this table. 
+Concept	Required	Type	Values	Description
+Source	No	String	 	Citation for the source of the data 
+Origin	Yes	String	Indigenous, Nonindigenous, Unknown 	Whether the species is considered to be native to a particular location or not. 
+Presence	Yes	String	Absent, Sometimes, Present, Unknown 	There is supporting evidence to show the species is present within the valid date 
+Persistence	No	String	Persistent, Temporary [let's delete this value. MB], Transient, DiedOut?, Unknown 
+How successful the organism is at surviving and reproducing 
+Distribution	No	String	Widespread, Moderate, Localized, Unknown 	Whether the species is limited to a local area or covers vast tracks of land or water 
+Abundance	No	String	Dominant, Common, Rare, Zero, Unknown 	How abundant the organism is 
+Trend	No	String	Expanding, Stable, Declining, Unknown 	Whether the range of the organism is increasing or decreasing 
+RateOfSpread	No	String	Rapid, Moderate, Slow, Unknown 	How quickly the range of the organism is expanding 
+Invasive	Yes	String	Yes, No, Potentially, Unknown	Whether the organism is considered invasive. 'Spread' information is dealt with here. 'Harm' information in the ImpactStatus? element
+
+RegulartoryListing	No	String	Prohibited, Restricted, NotConsidered, Unknown 
+The legal regulatory status of the organism 
+3. ImpactStatus? 
+3.1 PROPOSAL: Introduce an ImpactMechanism? concept
+Status: Proposed
+Introduce an ImpactMechanism? concept to handle information about competition, predation, etc. i.e. how IAS damage species habitats and ecosystems. This kind of information is widely available and ImpactMechanism? allows us to make assumptions about which kinds of native species may be threatened. 
+3.2 PROPOSAL: Change HarmType? values from HarmfulToEconomy? to HarmfulToLivelihoods?.
+Status: Proposed
+3.3 PROPOSAL: Make HabitatImpacted? non-mandatory
+Status: Proposed
+ImpactStatuses support the following additional Concepts: 
+Concept	Required	Type	Values	Description
+HabitatImpacted	No	String	Freshwater, Brackish, Marine, Terrestrial	The habitat being impacted 
+EcosystemImpacted	No	String	Natural, HumanModified?
+Type of ecosystem being impacted
+HarmType	No	String	HarmfulToEnvironment, HarmfulToHumanHealth?, HarmfulToLivelihoods?
+What values the species is impacting 
+ImpactMechanism	No	String	Allergenic, Competition, DiseaseTransmission?, Herbivory, Hybridisation, InteractionWithOtherInvasiveSpecies?, Pathogenic/Parasite, PhysicalDisturbance?, Predation, SoilTransformation?, Transpiration, Other, Unknown 
+Mechanism by which negative impacts occur 
+*ImpactStrength	No	String	Massive, Strong, Moderate, Weak, None, Unknown 	How strong the impact is
+*ImpactStrength values and descriptions are adapted from: Olenin S, Minchin D, Daunys D (2007) Assessment of biopollution in aquatic ecosystems. Marine Pollution Bulletin (Volume 55, Issues 7-9, 2007, Pages 379-394). 
+*Some ImpactMechanism? values come from the IUCN Red List&#8217;s Authority Files.
+4. DispersalStatus? 
+4.1 PROPOSAL: Introduce a DispersalStatus? Concept called MovementStatus?
+Status: Investigation
+Discussion: DispersalStatus? applies to species movements at all scales &#8211; introduction across international borders as well as dispersal from one watershed to the next. We could introduce a DispersalStatus? Concept called MovementStatus? with possible values = Pre-borderMovement and Post-borderMovement.
+4.2 PROPOSAL: Introduce Concepts for DispersalMechanisms? and DisperslPathways?
+Status: Proposed
+Discussion: The problem with the original Cause and Vector concepts is that it would have been difficult for providers to map to values as there are so many. Now they can map to 1 of 3 dispersal mechanisms and/or 1 of 6 dispersl pathways. This simplified approach lends itself to comparative analysis across a wide range of taxa and to policy applications (see the &#8216;responsibility&#8217; statement in the Descriptions for Pathway values). 
+4.3 PROPOSAL: Introduce a DateOfFirst? Report concept
+Status: Proposed
+Discussion: This date is sometimes available when date of introduction is unknown.
+4.4 PROPOSAL: Change Method concept to 'Mode' and make it not mandatory
+Status: Proposed
+4.5 PROPOSAL: What format should we use for dates?
+Proposal: Use the TAPIR standard date format
+Status: Existing
+Discussion: Michael: YYYY-MM-DD is usually unavailable for &#8216;Date of introduction&#8217;. Typically providers have a year or a decade. How do we handle the lack of MM-DD? Discussion: Michael: You often get pre- or post- a year or a decade. Could we implement something modelled on DAISIE, which uses 2 fields: If the date is precise, the same date appears in both fields. If the first field alone is populated, the meaning = &#8216;post the date&#8217;, if only the second field is populated, the meaning = &#8216;pre the date&#8217;.
+Discussion: Jim:We can setup the toolkit to map years (including a decade) to a date field. Mapping multiple columns into a date is more complicated. All databases have standard date fields that can be automatically mapped to the protocol. On this one I think I would suggest we recommend the providers use the SQL standard date fields if at all possible.
+DispersalStatuses support the following additional Concepts: 
+Concept	Required	Type	Values	Description
+DateOfIntroduction	No	String	(undefined)	A textual description of any date (day, month, year, decade, etc.) of introduction
+DateOfFirstReport	No	String	(undefined)	A textual description of any date (day, month, year, decade, etc.) of first report
+Mode	No	String	Natural, Deliberate, Accidental, Unknown 	A high-level categorization of how the organism is dispersing 
+MovementStatus	No	String	Pre-borderMovement, Post-borderMovement	A high-level categorization of how the organism is dispersing 
+*Mechanism	No	String	Commodity, Vector, NaturalDispersal?, Unknown
+Mechanism of arrival, entry and/or dispersal.
+*Pathway	No	String	Release, Escape, Contaminant, Stowaway, Corridor, Unaided, Unknown	Process that results in the introduction of alien species from one location to another
+FromCountryCode	No	String	See section 4.4.1.3 	The country the organism is dispersing from
+Route	No	String	(undefined)	A textual description of the route the organism took from the FromCountryCode?. If used, a LanguageCode? must be specified. 
+
+Mechanism Values
+Mechanism of arrival, entry and dispersal
+Name	Description
+Commodity	Importation of a commodity
+Vector	Arrival of a transport vector. Vector means the physical means, agent or mechanism which facilitates the transfer of organisms or their propagules from one place to another.
+NaturalDispersal	Natural spread from a neighbouring region where the species is alien
+Pathways Values
+Process that results in the introduction of alien species from one location to another
+Name	Description
+Release	Intentional introduction as a commodity for release (examples include biocontrol agents, game animals and plants for erosion control - responsibility should be the applicant&#8217;s)
+Escape	Intentional introduction as a commodity but escapes unintentionally (examples include feral crops and livestock, pets, garden plants, live baits - responsibility should be the importer&#8217;s) [should this include illegal release of e.g. pets, fish for stocking, biocontrol agents, game animals?]
+Contaminant	Unintentional introduction with a specific commodity (examples include parasites, pests and commensals of traded plants and animals - responsibility should be the exporter&#8217;s)
+Stowaway	Unintentional introduction attached to or within a transport vector (examples include hull fouling, ballast water/soil/sediment/organisms - responsibility should be the carrier&#8217;s)
+Corridor	Unintentional introduction via human infrastructures linking previously unconnected regions (examples include Lessepsian migrants, Ponto-Caspian aliens in the Baltic- responsibility should be the developer&#8217;s)
+Unaided	Unintentional introduction through natural dispersal of alien species across political borders (potentially all alien taxa are capable of dispersal - responsibility should be the polluter&#8217;s)
+*Mechanism and Pathway values and descriptions are adapted from: Hulme PE, Bacher S, Kenis M, Klotz S, Kühn I, Minchin D, Nentwig W, Olenin S, Panov V, Pergl J, Py*ek P, Roques A, Sol D, Solarz W & Vilà, M (2008) Grasping at the routes of biological invasions: a framework to better integrate pathways into policy. Journal of Applied Ecology, 45 (in press). 
+6. PROPOSAL: Have a Metadata DataModel?.
+Status: Investigating
+Jim: Does TDWG have something we can use here? The TAPIR MetaData? DataModel? is for the entire data source so it does not fit well.
+7. PROPOSAL: Have a Citation DataModel?. 
+Status: Investigating
+Jim: Does TDWG have something we can use here?
+8. PROPOSAL: Add GUIDs to each record using LSIDs where appropriate
+Status: Proposed
+9. PROPOSAL: We need a method to add general text to each record for comments, descriptions, etc.
+Status: Proposed
+Discussion: Add a &#8220;Comments&#8221; text field to each DataModel? but insure that the documentation indicates it should not be used for information that is covered in elsewhere in the protocol and cannot be queried at the same level of performance or reliability.
+
+
+      * Comments:
+
+
+
+
+----
+-- Main.AnnieSimpson - 01 Mar 2008@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AnnieSimpson" date="1204401522" format="1.1" version="1.1"}%
+a3 1
+
+d10 115
+@

@@ -1,0 +1,282 @@
+head	1.11;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@---+ PartialSearchProposalOne
+
+A proposal for the PartialSearch.
+The parameters needed are the namespace of the ConceptualSchema and the list of concepts for it.
+
+Instead of listing only LeafNodeConcepts one could also allow to list BranchNodeConcepts to implicitly retrieve all child nodes of that branch without having to list all of them in the request. You could for example specify all Identification related information in ABCD just by passing the concept !/DataSets/DataSet/Units/Unit/Identifications
+
+---+++++ Request
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <search>
+      <partialDocument schema="http://www.tdwg.org/schemas/abcd/1.2">
+         <concept path="/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString"/> *
+      </partialDocument>
+   </search>
+</request>
+
+with* indicating repeatable elements
+</verbatim>
+
+---+++++ Response
+
+A response would be like this. 
+Compare it with the FullSearchProposalOne response to see the difference.
+
+<verbatim>
+<response>
+   <header>
+      ...
+   </header>
+   <content>
+      <DataSets xmlns='http://www.tdwg.org/schemas/abcd/1.2'>
+        <DataSet>
+          <OriginalSource>
+            <SourceInstitutionCode>BGBM</SourceInstitutionCode>
+            <SourceName>Lichen DB</SourceName>
+            <SourceLastUpdatedDate>2001-01-01</SourceLastUpdatedDate>
+          </OriginalSource>
+          <DatasetDerivations>
+            <DatasetDerivation>
+         <DateSupplied>2003-08-11</DateSupplied>
+         <Supplier>
+           <Organisation>
+             <OrganisationName>Botanic Garden and Botanical Museum Berlin-Dahlem</OrganisationName>
+           </Organisation>
+         </Supplier>
+            </DatasetDerivation>
+          </DatasetDerivations>
+          <Units>
+            <Unit>
+         <UnitID>11802</UnitID>
+         <Identifications>
+           <Identification PreferredIdentificationFlag='1'>
+             <TaxonIdentified>
+               <NameAuthorYearString>Astrothelium</NameAuthorYearString>
+             </TaxonIdentified>
+           </Identification>
+         </Identifications>
+            </Unit>
+            <Unit>
+         <UnitID>12464</UnitID>
+         <Identifications>
+           <Identification PreferredIdentificationFlag='1'>
+             <TaxonIdentified>
+               <NameAuthorYearString>Gyalectidium</NameAuthorYearString>
+             </TaxonIdentified>
+           </Identification>
+           <Identification PreferredIdentificationFlag='0'>
+             <TaxonIdentified>
+               <NameAuthorYearString>Asterothyrium?</NameAuthorYearString>
+             </TaxonIdentified>
+           </Identification>
+         </Identifications>
+            </Unit>
+          </Units>
+        </DataSet>
+      </DataSets>
+   </content>
+</response>
+</verbatim>
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@a23 14
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <search xmlns:dwc="http://www.tdwg.org/schemas/dwc" xmlns:curaext="http://www.xxx.org/curatorial">
+      <recordDefinition path="dwc:CatalogNumber" PartialSearchProposalOne>*
+      <concept path="dwc:/Fullname"/> *
+      <concept path="curaext:/Whatever/xxx"/> *
+   </search>
+</request>
+
+with* indicating repeatable elements
+</verbatim>
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d30 1
+a30 1
+      <recordDefinition schema="http://www.tdwg.org/schemas/dwc">
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d29 4
+a32 3
+   <search xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.2">
+      <concept path="abcd:/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString"/> *
+      <concept path="abcdext:/Whatever/xxx"/> *
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d24 13
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d6 1
+a6 1
+Instead of listing only LeafNodeConcepts one could also allow to list BranchNodeConcepts to implicitly retrieve all child nodes of that branch without having to list all of them in the request. You could for example specify all Identification related information in ABCD just by passing the concept "/DataSets/DataSet/Units/Unit/Identifications"
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d6 1
+a6 1
+Instead of listing only LeafNodeConcepts one could also allow to list BranchNodeConcepts to implicitly retrieve all child nodes of that branch without having to list all of them in the request. You could for example specify all Identification related information in ABCD just by passing the concept PartialSearchProposalOneDataSets/DataSet/Units/Unit/Identifications
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d6 2
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d3 1
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d13 1
+a13 1
+         <concept path="DataSets/DataSet/Units/Unit/UnitID"/> *
+d23 3
+d31 47
+a77 3
+   <content xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.2">
+      <abcd:DataSets>
+      </abcd:DataSets>
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d13 1
+a13 1
+         <concept path="DataSets/DataSet/Units/Unit/UnitID"/>
+d17 2
+@

@@ -1,0 +1,246 @@
+head	1.8;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.8
+date	2008.03.16.15.12.23;	author JohnWieczorek;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.02.17.19.55.01;	author JohnWieczorek;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.10.23.17.21.33;	author StephenLong;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.10.06.20.26.09;	author StephenLong;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.09.19.18.04.57;	author StephenLong;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.09.14.21.16.27;	author StephenLong;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.09.14.17.33.59;	author StephenLong;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.09.14.05.16.12;	author JohnWieczorek;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@none
+@
+text
+@%META:TOPICINFO{author="JohnWieczorek" date="1205680343" format="1.1" reprev="1.8" version="1.8"}%
+%META:TOPICPARENT{name="DarwinCoreDraftStandard"}%
+---++Element Description: Global Unique Identifier
+A Uniform Resource Name (URN) as a unique identifier for the specimen or observation record. In the absence of a persistent global unique identifier, construct one in the form: &#8220;[InstitutionCode]:[CollectionCode]: [CatalogNumber]&#8221; Examples: 1) !urn:lsid:nhm.ku.edu:Herps:32  2) &#8220;FMNH:Mammal:145732&#8221; 
+
+---++++ Open Questions:
+
+See Open Discussion at: [[http://circa.gbif.net/Public/irc/tdwg/dwcrev/newsgroups?n=dwcrev][GBIF Circa Registries, etc.]]
+
+&#8226;	5 Oct 2004 - !GlobalUniqueIdentifier construction and management. (Ginzbarg GBIF Circa).
+
+---++++ Change Log:
+&#8226;	03 Aug 2005 - made minor wording changes in the description of !GlobalUniqueIdentifier (  Main.JohnWieczorek , per Ginzbarg).
+
+---+++ Comments 
+Use the space below to make comments about this page. -- Main.StephenLong - 24 Aug 2006
+
+------
+%ICON{bubble}% *GlobalUniqueIdentifier*
+Posted by: Steven Ginzbarg [mailto:sginzbar@@biology.as.ua.edu]   Date: Tue, 05 Oct 2004,  21:08:20
+
+The !GlobalUniqueIdentifier description reads: &#8220;...In the absence of a persistent global unique
+identifier, ..."
+
+We use barcodes that contain our herbarium acronym and a unique number for each sheet in the collection, _e.g._ UNA00012345. UNA is a registered acronym. There is no other herbarium using these letters. I can&#8217;t promise you that there isn&#8217;t a Fish collection in China also using UNA as their acronym. If I just enter UNA00012345 as the globally unique identifier it may not be globally unique. However I could enter Herbarium:UNA00012345 and that would be globally unique. More comments on !GlobalUniqueIdentifier:
+
+!GlobalUniqueIdentifier: &#8220;A universal resource name for the global unique identifier for the specimen or observation record. &#8230;&#8221; Why not just: &#8220;A universal resource name for the specimen or observation record. &#8230;&#8221; If Herbarium:UNA00012345 should be entered, I would say: 
+   1. *If* the !CatalogNumber is globally unique within your discipline the !GlobalUniqueIdentifier should be given in the form &#8220;[Discipline]:[CatalogNumber]&#8221;. (Should this be preceded by &#8220;URN:&#8221;? by &#8220;URN:catalog:&#8221;? or just entered as [Discipline]:[CatalogNumber]? Why is &#8220;URN:&#8221; needed if the unique number is entered in a !GlobalUniqueIdentifier field? What does the &#8220;catalog:&#8221; indicate?) Example: "Herbarium:UNA00012345"  [Then we would need a standardized list of names of disciplines which register acronyms to choose from.]
+   2. If the !CatalogNumber is not globally unique with your discipline, construct one in the form "URN:catalog:[InstitutionCode]:[CollectionCode]:[CatalogNumber]".Example: "URN:catalog:UA:UNA:12345"
+------
+%ICON{bubble}% *Globally unique !InstitutionCodes*
+Posted by: Steven Ginzbarg [mailto:sginzbar@@biology.as.ua.edu]   Date: Thu, 07 Oct 2004,  04:33:57
+
+From: "Mary Barkworth" Subject: RE: !GlobalUniqueIdentifier Date sent: Tue, 5 Oct 2004 15:26:05 -0600
+
+Probably the only way to guarantee a globally unique, persistent identifier is for a central registry to be started. Herbarium: herbariumcode would work. Unfortunately I did not think of it so we are USU-UTC (USU = Utah State University). I was disgusted to hear that UTC means University of Tennessee, Chattanooga to GBIF - because GBIF ignores the existence of Index Herbariorum, or perhaps it was the NBII person who was giving the demonstration of GBIF. Until and if there is a central repository (and even when there is), it may be first to register has the choice of identifier.
+
+Mary Barkworth
+<verbatim>-------------------------------</verbatim>
+
+Mary,
+
+In the description of !CatalogNumber, !DwC states &#8220;It is also recommended that each record is universally uniquely identified by the combination of !InstitutionCode, !CollectionCode and !CatalogNumber.&#8221;
+
+To do this the !InstitutionCode must be made globally unique. The description of !InstitutionCode states: &#8220;No global registry exists for institutional codes; use the code that is 'standard' in your discipline.&#8221; Our herbarium acronym is globally unique within our discipline. To make it globally unique, the discipline in which it is standard would need to be included with the acronym in the !InstitutionCode.
+
+ABCD suggests this for their !SourceInstitutionID field: &#8220;&#8230; An institutional abbreviation, perhaps with indication of the standard it pertains to (e.g. IH-P for
+Index Herbariorum and the herbarium at the MNHN in Paris. &#8230;&#8221;
+
+If GBIF is checking the !InstitutionCodes in records of new providers and letting them know if the codes have been previously used by other providers, and providers never change their institution codes, and every institution using !DwC or ABCD is providing their data to GBIF, then that would make GBIF the central registry for !InstitutionCodes and maybe it doesn&#8217;t matter what is provided as the code so long as it hasn&#8217;t been used before to share data on GBIF.
+
+How does the InstitutionCode and CollectionCode provided in the !DwC table relate to the metadata provided to GBIF if at all? Our host code is UA.  Resource is UAPlants.  Host: University of Alabama Biodiversity and Systematics (UA) Resource: Herbarium (UNA) (UAPlants) Record Identifier: UA UNA
+
+!DwC has two fields, !InstitutionCode and !CollectionCode, both of which are required.  !InstitutionCode identifies the institution administering the collection in which the organism is cataloged. In our case that is the University of Alabama Herbarium (UNA). Some institutions such as natural history museums may administer several collections, _e.g._ Field Museum of Natural History may have a mammal collection as well as a plant collection. They could use FMNH as their !InstitutionCode and either Mammal or Plant as their !CollectionCode.
+
+What should institutions administering only one type of collection provide as their InstitutionCode and CollectionCode?  I have been providing UNA, our herbarium acronym as the !CollectionCode and UA (the University of Alabama abbreviation as our InstitutionCode. However, the University of Alabama is not administering our collection, the University of Alabama Herbarium is. If we provide Herbarium_UNA or IH-UNA, as ABCD suggests for their !SourceInstitutionID, what should we enter as our !CollectionCode? &#8220;Plant&#8221; even though we have only plants? Repeat the !InstitutionCode?
+
+------
+%ICON{bubble}% 
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JohnWieczorek" date="1171742101" format="1.1" version="1.7"}%
+d4 1
+a4 1
+A Uniform Resource Name (URN) as a unique identifier for the specimen or observation record. In the absence of a persistent global unique identifier, construct one in the form: &#8220;[InstitutionCode]:[CollectionCode]: [CatalogNumber]&#8221; Example: &#8220;FMNH:Mammal:145732&#8221;
+d59 1
+a59 1
+%ICON{bubble}% @
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1161624093" format="1.1" version="1.6"}%
+d4 1
+a4 1
+A Uniform Resource Name (URN) as a unique identifier for the specimen or observation record. In the absence of a persistent global unique identifier, construct one in the form: &#8220;URN:catalog:[InstitutionCode]:[CollectionCode]: [CatalogNumber]&#8221; Example: &#8220;URN:catalog:FMNH:Mammal:145732&#8221;
+d59 1
+a59 1
+%ICON{bubble}% 
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1160166369" format="1.1" version="1.5"}%
+d3 1
+a3 7
+This is a test documentation page for a <noautolink> *GlobalUniqueIdentifier* </noautolink> concept.
+
+
+
+-- Main.StephenLong - 14 Sep 2006
+
+---++Element Description
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1158689097" format="1.1" version="1.4"}%
+d25 2
+d28 2
+a29 1
+%ICON{bubble}%
+d31 5
+d37 15
+d53 13
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1158268587" format="1.1" version="1.3"}%
+d12 3
+a14 2
+---++++ Change Log:
+&#8226;	03 Aug 2005 - made minor wording changes in the description of !GlobalUniqueIdentifier (Wieczorek, per Ginzbarg).
+d16 1
+d18 2
+d24 1
+d26 1
+a26 1
+See Open Discussion at: [[http://circa.gbif.net/Public/irc/tdwg/dwcrev/newsgroups?n=dwcrev][GBIF Circa Registries, etc.]]
+d28 1
+a28 3
+---++++ Open Questions:
+
+&#8226;	5 Oct 2004 - !GlobalUniqueIdentifier construction and management. (Ginzbarg GBIF Circa).
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1158255239" format="1.1" version="1.2"}%
+d12 5
+d22 5
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JohnWieczorek" date="1158210972" format="1.1" version="1.1"}%
+d3 1
+a3 1
+This is a test documentation page for a GlobalUniqueIdentifier concept.
+d7 10
+a16 1
+-- Main.JohnWieczorek - 14 Sep 2006
+@

@@ -1,0 +1,14 @@
+---+ Count Request Type
+
+This request only returns the number of:
+ a. records for seaches
+   * distinct values for scans
+
+In DiGIR & BioCASE sofar this has been implemented as an additional flag that can be set to true.
+It would be worthwile considering it to be a seperate request method, as the returned data is very different. Consequently the two different count requests ( see above) should become two seperate methods.
+
+---+++++ Proposed CountRequest
+
+Although requesting a count returns a very different parameter than a search or a scan, we concluded that it is not necessary to have a seperate operation for this.
+
+The approach taken ba DiGIR to include a count-flag with a SearchRequest or InventoryRequest could be used here as well. The count-flag works independend from the search/inventory response and turns on or off the counting of all matched records (search) or distinct values (inventory). The searhc or inventory would still return the desired records no matter what value the count-flag has. But if you request 0 records for a search or scan, than only the count should be returned. This is what was expected fro a seperate count request.

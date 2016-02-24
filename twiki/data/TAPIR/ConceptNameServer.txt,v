@@ -1,0 +1,432 @@
+head	1.11;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.11
+date	2007.02.13.14.55.45;	author DonaldHobern;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.10.15.53.04;	author RicardoPereira;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.11
+log
+@none
+@
+text
+@%META:TOPICINFO{author="DonaldHobern" date="1171378545" format="1.1" reprev="1.11" version="1.11"}%
+A ConceptNameServer should provide information about simple aliases for concepts and at a later stage also their relations between each other - especially list the unambiguos synonyms. This should probably be acompanied by a simple XML-RPC service to look up unambiguous synonyms.
+
+This service should be based on one simple file which is always accessible by all services.
+It defines the allowed globally unique concepts (fully qualified) and optionally an alias for them.
+
+A service is free to use several CNS as long as they dont contradict. But is envisioned that each global community has a single CNS.
+
+---+++ Use cases
+The ConceptNameServer should offer services at least for the following cases:
+
+*Browse ontology* - Find classes and the properties defined for each class
+
+   * This use case is of particular relevance for a provider configuration tool.  The responses from this service should allow the configuration tool to prompt the user with properties which are available for mapping to the local data resource (including joins via _object properties_ to other ontology objects).
+   * Client provides an ontology identifier (class or property) and can retrieve associated definitions.
+
+*Get mappings (output models) for class/property* - Find known (XML Schema) mappings including a given ontology class or property
+
+   * This use case allows a configuration tool to determine appropriate output models to offer for a given data resource (based on its mapping to the ontology).  The tool can then offer the user a menu of output models which the resource could automatically be configured to provide.
+   * Client provides an ontology identifier (class or property) and receives a document listing available schema (and other?) representations with the mappings between their XPaths and ontology properties.  Configuration tool adds selected output models to TAPIR configuration.
+
+*Get mappings for schema* - Find classes and properties mapped to a particular (XML Schema) namespace
+
+   * This use case allows a consumer of data (potentially from sources not affiliated with this ConceptNameServer) to interpret data from an external schema as a set of ontology objects.  This allows a ConceptNameServer-aware client to consume data provided by applications that are not ConceptNameServer-aware and to interpret these data in terms of the ConceptNameServer ontology.
+   * Client provides an (XML Schema) namespace string and receives a document with mappings between schema XPaths and ontology properties.
+
+*Extend ontology* - Add classes and properties to the ontology
+
+   * User adds new classes to the ontology or defines properties for an existing class - need to consider authorisation and review processes.
+
+*Register output model* - Map (XML Schema or other?) output model to ontology
+
+   * User defines mappings between output model XPaths and ontology properties - need to consider authorisation and review processes.
+
+---+++ alias.txt
+[[http://ww2.biocase.org/svn/tapir/trunk/protocol/alias.txt][download latest alias.txt]]
+
+<verbatim>
+<!-- 
+ -->
+<!--  GLOBAL UNIQUE ALIASES FOR CONCEPTS
+ -->
+<!-- 
+ -->
+<!--  It is recommended to form aliases by using the following syntax:
+ -->
+<!--  CONCEPT_ABBREVIATION@@NAMESPACE_ABBREVIATION
+ -->
+<!-- 
+ -->
+
+
+
+[concept_source]
+
+label          =  ABCD v1.20
+namespace      =  http://www.tdwg.org/schema/abcd/1.20
+alias          =  abcd120
+location       =  http://www.bgbm.org/TDWG/CODATA/Schema/ABCD-1.20.xsd
+
+[models]
+canonical      =  http://res.tdwg.org/tapir/models/ABCD-1.20.xml
+
+[aliases]
+
+SourceInstCode            ConceptNameServerDataSets/DataSet/OriginalSource/SourceInstitutionCode
+SourceName                ConceptNameServerDataSets/DataSet/OriginalSource/SourceName
+DateSupplied              ConceptNameServerDataSets/DataSet/OriginalSource/SourceLastUpdatedDate
+DateUpdated               ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied
+SupplierName              ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Person/PersonName
+TermsOfUse                ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/TermsOfUse
+LegalOwnerOrganisation    ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationName
+LegalOwnerPerson          ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Person/PersonName
+Disclaimer                ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Disclaimer
+Logo                      ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/LogoURL
+DatasetDescription        ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Description
+UnitID                    ConceptNameServerDataSets/DataSet/Units/Unit/UnitID
+RecordBasis               ConceptNameServerDataSets/DataSet/Units/Unit/RecordBasis
+HigherTaxon               ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon
+ScientificName            ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString
+AuthorString              ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/AuthorString
+BotGenus                  ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus
+Identifier                ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName
+IdentDate                 ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/ISODateTimeBegin
+TypeStatus                ConceptNameServerDataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeDesignation/TypeStatus
+ImageURI                  ConceptNameServerDataSets/DataSet/Units/Unit/UnitDigitalImages/UnitDigitalImage/ImageURI
+GatheringDate             ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeBegin
+Collector                 ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgent/Person/PersonName
+Project                   ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/Project/ProjectTitle
+Locality                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/LocalityText
+Country                   ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/CountryName
+Longitude                 ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal
+Latitude                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal
+Altitude                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementLowerValue
+Description               ConceptNameServerDataSets/DataSet/Units/Unit/UnitDescription
+
+</verbatim>
+
+%META:FILEATTACHMENT{name="alias.txt" attachment="alias.txt" attr="" comment="" date="1168444384" path="alias.txt" size="3891" stream="alias.txt" user="Main.RicardoPereira" version="1"}%
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 97
+a97 65
+%META:TOPICINFO{author="RicardoPereira" date="1168444384" format="1.1" version="1.10"}%
+A ConceptNameServer should provide information about simple aliases for concepts and at a later stage also their relations between each other - especially list the unambiguos synonyms. This should probably be acompanied by a simple XML-RPC service to look up unambiguous synonyms.
+
+This service should be based on one simple file which is always accessible by all services.
+It defines the allowed globally unique concepts (fully qualified) and optionally an alias for them.
+
+A service is free to use several CNS as long as they dont contradict. But is envisioned that each global community has a single CNS.
+
+---+++ alias.txt
+[[http://ww2.biocase.org/svn/tapir/trunk/protocol/alias.txt][download latest alias.txt]]
+
+<verbatim>
+<!--  -->
+<!--  GLOBAL UNIQUE ALIASES FOR CONCEPTS -->
+<!--  -->
+<!--  It is recommended to form aliases by using the following syntax: -->
+<!--  CONCEPT_ABBREVIATION@@NAMESPACE_ABBREVIATION -->
+<!--  -->
+
+
+
+[concept_source]
+
+label          =  ABCD v1.20
+namespace      =  http://www.tdwg.org/schema/abcd/1.20
+alias          =  abcd120
+location       =  http://www.bgbm.org/TDWG/CODATA/Schema/ABCD-1.20.xsd
+
+[models]
+canonical      =  http://res.tdwg.org/tapir/models/ABCD-1.20.xml
+
+[aliases]
+
+SourceInstCode            ConceptNameServerDataSets/DataSet/OriginalSource/SourceInstitutionCode
+SourceName                ConceptNameServerDataSets/DataSet/OriginalSource/SourceName
+DateSupplied              ConceptNameServerDataSets/DataSet/OriginalSource/SourceLastUpdatedDate
+DateUpdated               ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied
+SupplierName              ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Person/PersonName
+TermsOfUse                ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/TermsOfUse
+LegalOwnerOrganisation    ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationName
+LegalOwnerPerson          ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Person/PersonName
+Disclaimer                ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Disclaimer
+Logo                      ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/LogoURL
+DatasetDescription        ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Description
+UnitID                    ConceptNameServerDataSets/DataSet/Units/Unit/UnitID
+RecordBasis               ConceptNameServerDataSets/DataSet/Units/Unit/RecordBasis
+HigherTaxon               ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon
+ScientificName            ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString
+AuthorString              ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/AuthorString
+BotGenus                  ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus
+Identifier                ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName
+IdentDate                 ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/ISODateTimeBegin
+TypeStatus                ConceptNameServerDataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeDesignation/TypeStatus
+ImageURI                  ConceptNameServerDataSets/DataSet/Units/Unit/UnitDigitalImages/UnitDigitalImage/ImageURI
+GatheringDate             ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeBegin
+Collector                 ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgent/Person/PersonName
+Project                   ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/Project/ProjectTitle
+Locality                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/LocalityText
+Country                   ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/CountryName
+Longitude                 ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal
+Latitude                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal
+Altitude                  ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementLowerValue
+Description               ConceptNameServerDataSets/DataSet/Units/Unit/UnitDescription
+
+</verbatim>
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d1 1
+d66 2
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d1 1
+a1 1
+A ConceptNameServer should provide information about simple aliases for concepts and at a later stage also their relations between each other - especially list the unambiguos synonyms.
+d6 2
+d28 3
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d7 1
+a7 1
+[[attachment:alias.txt][download alias.txt]]
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d3 2
+a4 1
+For now we suggest to use a simple text file that is centrally accessible by all services which should look like this:
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d8 2
+a9 1
+<verbatim>#
+d27 31
+a57 30
+SourceInstCode                     ConceptNameServerDataSets/DataSet/OriginalSource/SourceInstitutionCode
+SourceName                         ConceptNameServerDataSets/DataSet/OriginalSource/SourceName
+DateSupplied                       ConceptNameServerDataSets/DataSet/OriginalSource/SourceLastUpdatedDate
+DateUpdated                        ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied
+SupplierName                       ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Person/PersonName
+TermsOfUse                         ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/TermsOfUse
+LegalOwnerOrganisation             ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationName
+LegalOwnerPerson                   ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Person/PersonName
+Disclaimer                         ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Disclaimer
+Logo                               ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/LogoURL
+DatasetDescription                 ConceptNameServerDataSets/DataSet/DatasetDerivations/DatasetDerivation/Description
+UnitID                             ConceptNameServerDataSets/DataSet/Units/Unit/UnitID
+RecordBasis                        ConceptNameServerDataSets/DataSet/Units/Unit/RecordBasis
+HigherTaxon                        ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon
+ScientificName                     ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString
+AuthorString                       ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/AuthorString
+BotGenus                           ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus
+Identifier                         ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName
+IdentDate                          ConceptNameServerDataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/ISODateTimeBegin
+TypeStatus                         ConceptNameServerDataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeDesignation/TypeStatus
+ImageURI                           ConceptNameServerDataSets/DataSet/Units/Unit/UnitDigitalImages/UnitDigitalImage/ImageURI
+GatheringDate                      ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeBegin
+Collector                          ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgent/Person/PersonName
+Project                            ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/Project/ProjectTitle
+Locality                           ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/LocalityText
+Country                            ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/CountryName
+Longitude                          ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal
+Latitude                           ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal
+Altitude                           ConceptNameServerDataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementLowerValue
+Description                        ConceptNameServerDataSets/DataSet/Units/Unit/UnitDescription
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d8 1
+a8 2
+<verbatim>
+<!--  -->
+d26 30
+a55 48
+SourceInstitutionCode           http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/OriginalSource/SourceInstitutionCode
+SourceName                      http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/OriginalSource/SourceName
+DateSupplied                    http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/OriginalSource/SourceLastUpdatedDate
+DateUpdated                     http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied
+PersonName                      http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Person/PersonName
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Addresses/Address
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/TelephoneNumbers/TelephoneNumber/Number
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/EmailAddresses/EmailAddress
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/TermsOfUse
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationName
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationCodes/OrganisationCode
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Person/PersonName
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Addresses/Address
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/TelephoneNumbers/TelephoneNumber/Number
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/EmailAddresses/EmailAddress
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/URLs/URL
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/CopyrightDeclaration
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/IPRDeclaration
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/RightsURL
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Acknowledgement
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Disclaimer
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/LogoURL
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Description
+UnitID                          http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/UnitID
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/RecordBasis
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/AuthorString
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/FirstEpithet
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/SecondEpithet
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Rank
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/ISODateTimeBegin
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeDesignation/TypeStatus
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/UnitDigitalImages/UnitDigitalImage/ImageURI
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/DateText
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeBegin
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgent/Person/PersonName
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/Project/ProjectTitle
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/LocalityText
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/CountryName
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementLowerValue
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementUpperValue
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/BiotopeData/BiotopeText
+                                http://www.tdwg.org/schema/abcd/1.20#/DataSets/DataSet/Units/Unit/UnitDescription
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d20 4
+a23 4
+label          = 'ABCD v1.20'
+namespace      = 'http://www.tdwg.org/schema/abcd/1.20'
+ns_alias       = 'abcd120'
+location       = 'http://www.bgbm.org/TDWG/CODATA/Schema/ABCD-1.20.xsd'
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d6 1
+a6 1
+[[download][alias.txt]]
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d6 2
+@

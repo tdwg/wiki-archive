@@ -1,0 +1,61 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1098868536" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="LinneanCore"}%
+(I take this from a letter by Rich Pyle sent by email to those who participated in the discussion in Christchurch - Gregor)
+---
+
+First of all, I want to thank all of you for participating in the various "Taxon Names Data Standards" breakout groups this past week at TDWG. Secondly, I want to apologize for not being a more "forceful" moderator to the discussion. But I think the discussion -- chaotic as it was -- was very important and productive (I certainly learned a lot!) If I learned one thing above all, it is that there is a clear reason why a standard of this sort does not yet exist.  At the same time, I am more encouraged than ever that a
+standard *can* be developed to meet the needs of the community, and that this is the group to develop it. My purpose in sending this email is several-fold:
+
+1) Jerry Cooper created the first draft of this data core, but at the TDWG meeting he solicited a volunteer to spearhead its continued development.  I am willing to serve in this capacity, but by no means do I feel any sense of entitlement to do so.  If anyone else would like to take the reigns, I will gladly step aside and offer any/all assistance that I can.  [...]
+
+2) [...] c) let me know who else in the community would be interested in this topic and/or should be included on future emails.
+
+3) (see separate topic LinneanCoreChoiceOfName)
+
+---
+
+4) "CONCLUSIONS" Well....the "conclusions" were not really well concluded, as the discussion continued up until the clock ran out.  However, I have listed below a series of things that we seemed to kinda-sort-of agree on, at least in a general sense:
+
+a) Most of the people we've discussed this with, and who were in the room on Sunday, *seemed* to agree that this "Core" should be strictly enveloped within TCS, and not exist as a stand-alone core outside the context of TCS. HOWEVER!  Sally and I had a post-meeting discussion about this with Gregor outside the Millennium hotel, and he raised some important concerns from the SDD perspective (specifically, he wants to be able to point descriptive data directly to a name without requiring that it go through a TCS wrapper). This email is not the place to go into the details of each side of the argument, but it seems that, for the moment at least, we should still consider this a "point of discussion", rather than a "conclusion"
+
+b) We all seemed to agree that a "Protonym" was a Code-independent equivalent to a "Basionym" in the ICBN world.  There may be some subtle differences on typification issues related to replacement names (nom. nov.), but we can probably sort these out within the detailed attributes of the schema. But for practical purposes, "Protonym" means the same thing as "Basionym" in the context of this schema.
+	* Gregor: As far as I understand the problem, it is that since zoologists consider the epithet "*the* name", a new name and thus a new protonym is created when a replacement name is created. In the botanical sense, this is just a special form of combining a name into a new genus. The difference is that a nomen novum has a basionym. I am fully in favor of using protonym if this is more acceptable in zoology. However, a replacement name should have a link to the name it replaces. So can a replacement protonym have a basionym protonym?
+
+c) The schema should be designed specifically to accommodate names governed by the five "major" codes of nomenclature (Botanical, Zoological, Bateriological, Viral, and Cultivar). Although future users may chose to utilize the schema for other kinds of biological names (vernaculars, etc.), the schema will not be specifically designed to accommodate them. It remains a point of discussion as to whether "Trade Names" should be accommodated (see below). The word "PhyloCode" was not uttered, but may yet need to be considered in the context of this schema (ducking for cover....)
+	* Gregor: no fire - but I disagree for the time being and based on my limited knowledge of phylocode. I think LC does not need perfect for the future - nothing wrong with new version. Are there any data based on phylocode concepts right now? If not, I propose to move any phylocode issues that do not acutally help in resolving existing discrepancies between the codes to next years agenda.
+
+d) A "Name" in Zoology is not the same as a "Name" in Botany. Whereas the ICBN includes rules related to properly forming "New Combinations" of pre-existing Protonyms (including specific authorship attributions), ICZN has no such provisions. Moreover, general zoological nomenclatural practice is not to treat "New Combinations" as anything more special than different contextual usages of the same "Name" (= Protonym). Most or all of us knew this already, but what has been made more clear by our discussions is that we should be careful in our future discussions whenever we utter the word "Name" (i.e., we should not assume that a listener will interpret it the same way that a speaker intended it).  We should probably try to confine ourselves to more explicit terms, such as "Protonym" or "Basionym", "New Combination", "Variant Spelling", "Lapsus", etc. -- to avoid further confusion. [...]
+	* Gregor: I agree that there is a lot of confusion. As a botanist, it would help me to have good word for those names regulated by code and priority. Paul Kirk actually maintains that the Name is without the authors - homonym is "same name". He may well be correct, but then I also would find it useful to have a term for "sufficiently unique scientific name" (which would normally have authors or year, and is what I tend to call the scientific "name"). Any ideas?
+
+---
+
+5) "POINTS OF DISCUSSION"  We have many, but the two main ones seem to be:
+
+a) What is the "unit" of a <nop>LinnaeusCore record?  Most agreed that it is a unit of nomenclatural significance, and for most of the discussion it seemed that it should be confined to Protonyms + New Combinations (+ other nomenclaturally significant acts???). Although the ICZN code does not treat new combinations as "new names" or as governed nomenclatural acts, Anna pointed out that we could identify functional equivalents in Zoology and (within the context of this schema) treat them as non-Code-governed
+representatives of New Combinations in the botanical sense.  During the break, however, the suggestion was put forth by Yde & Sally that perhaps the "unit" should be restricted to Protonyms only, and that Botanical "New Combinations" should be constructed outside the Names core, using TCS to map child Protonyms to parent Protonyms.  Some of the nomenclator developers (Greg, Jerry, Paul, me, others?) seemed to suggest that that's how we model our databases; but nevertheless, Paul and Sally (and others?) expressed "cold feet" on that approach.  It would have heavy implications for the schema as a whole, and how it would be used (e.g., Gregor's concerns about direct access to names). All agreed that we need to test the alternative approaches with real-world data to see how it would work.
+	* Gregor: I try to explain in a rather loose way some of my desired use cases (LinneanCoreUseCases). Excluding the name combinations would make it near impossible to find the name record, so I advocate the inclusion of combination/nomen novum as well as the original orthography and even known name variant strings. Providing this information would enable use cases that want to link to nomenclatural data as a mean to make organism data more comparable. Otherwise, I feel the only difference between botany and zoology is the question of priority, and I think this is not relevant for the way LC represents data. Even for zoological names there will be a combining author - and if this publication and author field is unknown - that would be fine.
+
+b) This is tightly related to the previous point of discussion, but there was some confusion/concern about how, exactly, quadrinomial and other non-Code-compliant <nop>NameStrings (e.g. spelling variants) could be tracked/searched if they are not ever presented as complete <nop>NameString elements by the <nop>LinnaeusCore schema, and how they could be applied to a particular TCS Concept instance. There was some discussion about deriving these via recursive TCS instance mappings, but we never really followed through with how this would actually look in the schema design. [...]
+	* Gregor: I agree on the problem of the below-code-governed ranks like formae specialis, races, breeds, etc. We need some good words for these. We also need a category to capture name details of names with explicit concept references. 
+try to explain in a rather loose way some of my desired use cases (LinneanCoreUseCases). Excluding the name combinations would make it near impossible to find the name record, so I advocate the inclusion of combination/nomen novum as well as the original orthography and even known name variant strings. Providing this information would enable use cases that want to link to nomenclatural data as a mean to make organism data more comparable.
+
+---
+
+6) ACTION ITEMS:
+
+	* Paul Kirk volunteered to look into making a copy of the <nop>BioCode available electronically (perhaps as a PDF).
+	* Greg Whitbread (I think???) said he would provide more information on Trade Names and how they would or would not fit well into this schema. I don't actually remember hearing Greg volunteer to do any such thing, but I thought I heard Sally volunteer Greg for this task.
+	* Yde de Jong agreed to draft a short bit of text outlining issues related to DNA Barcoding that might need to be considered.
+	* Sally agreed to flesh-out Jerry's draft schema into a more robust XML document, expressing how to structure a separate and dedicated element for each "bit" of information (assuming the "unit" could be either a Protonym or a New Combination), and get it out by November 5th (right?)
+	* I agreed to take Sally's draft, and play with it from alternative perspectives (e.g., with a generic "NameUnit" structure to build the name units, and/or as a Protonym-only structure)
+	* Several of us (Sally? Paul? Me? Jerry? Others?) agreed to get some "thorny" real-world nomenclatural examples and parse them into whatever draft schemas are created, to see where they each break and/or where they are suboptimal.
+	* I will try to collect my thoughts during the plane ride home and perhaps write them down in a structured way in an effort to clarify what the alternative needs/priorities are, and how the schema should, or should not, accommodate specific data needs.
+
+I *think* that covers it...
+
+Rich Pyle
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1098795465" from="UBIF.LinneanCoreCharter" to="UBIF.LinneanCoreAfterChristchurch"}%

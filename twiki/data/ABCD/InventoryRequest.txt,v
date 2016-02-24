@@ -1,0 +1,50 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@The inventory request is supposed to return a distinct list of a list of concepts.
+Additionally one may request to count the number of records for each distinct combination of concepts.
+
+---+++ Problems accountered
+   * In this request there is no natural "root" table. All concepts are equal and therefore a left join to link the tables is not appropiate. A regular join is implemented. This brings the following problems:
+   * It is impossible to retrieve NULLs in the response
+   * If I ask for example just for distinct specimen names in the database, there is no relation to a specimen in the query anymore and ALL names will be returned, regardless if there is a specimen belonging to it. To prevend this the query must specify a filter with for example: SPECIMEN_ID IS NOT NULL. This forces the query generator to include the specimen table and to make sure there is a specimen attached to a name.
+   * Multiple db attributes mapped to a single concept. It should be possible to map several db attributes or literals to a concept. For example some databases have 2 columns for collector1 and collector2 which both map to the concept "collector".
+      * Is it possible to generate a proper SQL in this case? 
+      * Are UNIONS needed? 
+      * how can the distinct combinations be counted?
+      * *!!! Currently an error is raised if an inventory is done on a concept that has several mappings !!!*
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d8 5
+@

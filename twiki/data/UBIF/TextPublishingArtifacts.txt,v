@@ -1,0 +1,82 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.03.12.19.29.53;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1110655793" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="FormattedText"}%
+In addition to the inline formatting of text (formatting characters with bold, italic, subscript within a block-level element, see FormattedText), a major problem when marking up legacy text (digitized books) is to handle high level publishing artifacts such as page numbering, header and footer text. Neither is the block-level structure nested withing pages, nor reverse. In a single xml tree the text-syntactical view (paragraphs, inline formatting) and the publishing syntactical view (pages) are therefore difficult to express. 
+
+The following publishing artifacts are in general most problematic
+	* page breaks (CSS2:"page-break-before:always"; xhtml example:  &lt;br style="page-break-before:always" /&gt;)
+	* header or footer text, including page numbers. (CSS 2 has no support for changing header or footer information for divisions of a document. If CSS 3 might add this functionality - can someone research this?)
+	* changes between portrait and landscape layout (CSS2: "@@page{size:landscape}" and "portrait")
+	* preservation of line break structure within paragraphs
+	* hyphenation (often is not considered worth preserving; standard hyphen is normal character, no support for optional hyphenation in CSS 2) 
+
+A simple solution simply inserts appropriate empty xml elements (e.g. xhtml using CSS 2 or proprietary methods) into the text at the position of a page break. This solution has several disadvantages:
+	* It is likely to create mixed context xml (a mixture of text and markup, like in xhtml), which is often difficult to process and creates major problems when interacting with most databases.
+	* It may occur in the middle of a hyphenated word, removing the word from indexes that cannot recognize the situation. Unfortunately, in Unicode the same character is used for a hyphen between parts of a word and other uses, such as abbreviating prefixes ("poly-" indicating multiplicity). 
+
+The first problem may be addressed by a similar solution to that in FormattedText, i.e. using xml-like markup, treating it as text by escaping (or encoding) &lt;/&gt; to entities &amp;lt;/&amp;gt;. The text formatting proposal (FormattedText) already contains a method to support line breaks through escaped xhtml &lt;br/&gt; tags. The intended use case in that proposal was not to preserve publishing artifacts, but to increase the "fuzzy semantic expressiveness" where authors believe that a new line is necessary for appropriate separation of statements or arguments.
+
+The second problem may be addressed by always placing publishing artifact information behind the word (in front of the next whitespace character) and informing about the relative position of it (see below).
+
+-- Main.GregorHagedorn - 12 Mar 2005
+
+---
+
+<h3>Recommendations</h3>
+
+Under the assumption that the primary markup of legacy text should follow semantic and syntactical document categories that are independent of the publishing medium (such as divisions, paragraphs, etc.), and that the publishing artifacts of printed publications should be preserved in a form compatible with xhtml, the following recommendations are proposed:
+
+	* line breaks: use &lt;br/&gt; 
+	* page breaks: use &lt;br style="page-break-before:always" /&gt; 
+		* place the break at the the start of a page
+	* page number: use &lt;br id="page0001" style="page-break-before:always" /&gt;
+		* use an appropriate number of leading zeros
+		* for pages that are included in numbering, but where the page number is not printed, append "_nonprinted" to the id. (any other better ideas?)
+		* for pages with roman numeral use id="page-roman0001" (using a hypen after page has the desirable side effect that alphabetic sorting places roman numbered pages in front of normal page number, which is the dominant usage of roman page numbering in traditional publishing).
+	* header or footer text: *No actual recommendation yet.* The paged media module of CSS3 (http://www.w3.org/TR/css3-page) has new options for handling this. with top/bottom-left/center/right header and footer content may be defined, as in: "@@top-left {content: "Hamlet";} @@top-right {content: "Page " counter(pages);}". How these new properties could be used in xhtml/CSS based markup of digitized documents to preserve the publishing artifacts needs further study!
+	* changes between portrait and landscape layout: *No actual recommendation yet.* How shall the CSS2 "@@page{size:landscape} be embedded in the document rather than in the stylesheet? Is this legal at all in a br element?
+	* hyphenation: *No actual recommendation yet.* The authors markup projects chose to remove hyphenation artifacts. Where a page break occurred at a hyphenated word, the page break was moved to after the word. If hyphenation shall be preserved a markup method may be based on CSS display:marker, pseudoformats like ":before" with content{"-"} or other. Although CSS provides positioning methods (position:"relative"), the "left" does not seem to explicitly support position in character of the text. Perhaps it may be possible to create a pseudostatement in CSS comment text like the following examples: To preserve the hyphen in "hyphe-nation" use <"hyphenation&lt;br style=":before content{'-'} /* pos=-6 !*/" /&gt; *Note:* This example has not been tested and needs further study!
+ 
+Please comment on the above - currently this is a very raw first draft!
+
+-- Main.GregorHagedorn - 12 Mar 2005
+
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+@

@@ -1,0 +1,163 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118873" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="DELTAandBDI.SDD"}%
+---+!! %TOPIC%
+
+---++Synopsis
+
+This document attempts to verbally describe how DELTA data sets may be converted for use by BDI.SDD_ compatible applications. First the conversion of the DELTA core directives is fully discussed, next a list of advanced DELTA directives is presented with annotations as to whether or how they can be evaluated in BDI.SDD_.
+
+*This document is currently incomplete and frequently refers to an outdated version, it needs revision!*
+
+See also <a href="SDD_DELTA_CompSections.html">"Comparison of sections and subsections with DELTA features"</a> for a useful overview and the general [[DELTAandBDI.SDD][overview of DELTA related material]].
+
+---++Files to import
+
+Some DELTA compatible applications store all terminological and descriptive data in a single file (Pankey, optionally DeltaAccess). However, CSIRO DELTA (the most widely used DELTA application) uses multiple files. The core files are SPECS, CHARS, and ITEMS. In addition, valuable information is often found in the CNOTES, CIMAGES, KIMAGES, TIMAGES, TOINT, TOKEY, and TONAT files. Some files are created for specific purposes (TOINT = translation into the CSIRO IntKey binary format, TOKEY = creation of printable keys, and TONAT = creation of natural language descriptions) and use the remaining files through an include file mechanism. As a result, the information in CSIRO DELTA files may be overlapping. For example, both TOINT and TOKEY may define different character reliability or include/exclude character directives.
+
+In general the TOINT file (if present) is a good starting point to resolve all DELTA include commands ("*Input File") and import the data. A better strategy is, however, to also look for further include files and directives in other files (esp. TOKEY and TONAT) and add any new directives to the BDI.SDD_ conversion process. Thus, the directives in TOINT (and files referenced therein) have priority over possibly differing information in TOKEY and TONAT.
+
+Note: since CSIRO DELTA usually uses fixed file names, the BDI.SDD_ project name can either be obtained from the (rarely used) *Heading or *Registration Heading directives (see <a href="#AdvancedConversion">Advanced conversion concepts</a> further below), or the name of the folder containing these files can be used.
+
+
+---++Simple export
+
+This sections deals primarily with the task of exporting the most basic <a href="SDD_DELTA_Directives.html">DELTA directives</a>, <b>*Character List</b> (= <b>*Character Descriptions</b>), <b>*Character Types</b> and <b>*Item Descriptions</b> into an BDI.SDD_ document. These directives are relatively complex and map to a number of BDI.SDD_ data elements. Less detailed information about additional DELTA directives can be found in the next chapter <a href="#AdvancedConversion">"Advanced conversion concepts"</a>.
+
+
+---+++Terminology: Character definition
+
+The <b>*Character List</b> (= <b>*Character Descriptions</b>) <a href="SDD_DELTA_Directives.html">directive</a> contains both the primary definition of the character and the states. An example for a character definition could look like (color markup added for the purpose of the discussion):
+
+<span style="color:red">#</span><span style="color:blue">1. Stem &lt;presence&gt;</span><span style="color:red">/</span><br />
+&nbsp; <span style="color:green">1. absent</span><span style="color:red">/</span><br />
+&nbsp; <span style="color:green">2. present</span><span style="color:red">/</span>
+
+The definition is delimited by the two symbols (above formatted in red):  <span style="color:red">#</span> indicates a new character, the slash ('/') the end of a text content. The slash is only a DELTA delimiter if it is followed by a blank or end of a line character. For example in: "<span style="color:red">#</span><span style="color:blue">99. Length/width ratio</span><span style="color:red">/ </span>" only the last slash is considered a delimiter. In general new line character are not significant in DELTA and blanks can be used instead. The following code is identical to the example above<a href="#FNLineLength" class="footnote">1</a>:
+
+<span style="color:red">#</span><span style="color:blue">1. Stem &lt;presence&gt;</span><span style="color:red">/</span> <span style="color:green">1. absent</span><span style="color:red">/</span> <span style="color:green">2. present</span><span style="color:red">/</span>
+
+The character definition (blue) contains the character number and the character label (which includes a definition of the natural language wording). Character numbers start with '#' to distinguish them from state numbers. Similarly the state definition (green) contains a state number and a state label plus wording.
+
+*Character or state numbers:* In DELTA the number in front of characters and states serves both as a unique identifier to reference a character or state from within item descriptions, and as a definition of the sequence in which characters or states are displayed or reported. As a consequence, new character or states can only be added at the end, inserting them requires a revision of all item descriptions using this terminology. Also, it is not possible to have different character arrangements for different reporting purposes. In BDI.SDD_, the key values present at the characters and state definitions only define a unique identifier. The state sequence is defined through the sequence of states in the xml data stream, and whereas the character sequence is independently defined through inclusion of characters into trees (which are called Concept trees in BDI.SDD_). The sequence of characters in BDI.SDD_ Terminology/Characters should not be considered informative! To export characters and states to BDI.SDD_, the DELTA numbers can be used directly as BDI.SDD_ key values. However, to preserve the sequence of characters, in addition to Terminology/Characters, also a Terminology/ConceptTrees/ConceptTree must be generated, see <a href="#CharacterSequenceAndHierarchy">Terminology: Character sequence and hierarchy</a> below.
+
+*Character or state labels and wordings:* DELTA interlaces the label and a wording for natural language generation in a single text string. To obtain the BDI.SDD_ Label/Text, one can either replace the DELTA "comment" markers (&lt;&gt;) with parenthesis ("(" and ")") or omit them altogether. Some DELTA character definitions are designed such that the best label is obtained by omitting the comment markers ("Stem &lt;presence&gt;" would become "Stem presence". A DELTA conversion utility could display a preview of characters and ask whether to convert comments in labels with parentheses or without. Otherwise, the generally acceptable conversion would be to place the comments in parentheses ("Stem &lt;presence&gt;" becomes "Stem (presence)"). This applies to both character and states: In the example above, "absent" could also be "absent &lt;or contracted and invisible&gt;". The BDI.SDD_ Label/Wording/TextBefore (for characters) or Label/Wording/Text (for states) is obtained by stripping any comment from the DELTA character or state name.
+
+<p class="small">The DELTA strategy of interlacing different text representations has the advantage that whenever a change is made, both representations are changed together. It provides for compact, albeit somewhat difficult to read definitions. In English it works quite well to produce natural language descriptions, and in many languages acceptable compromises can be found. However, the mixed representation does put severe constraints on which natural language texts can be produced (or conversely, how readable the character or state labels in interactive use are). Finding good compromises between these purposes requires a significant amount of experience from the biologist starting with structured descriptions. The BDI.SDD_ standard has therefore decided to provide separate data elements for the label and the natural language wording.</p>   
+
+*Inner comments:* The character or state label may contain comments within comments. How these are to be interpreted is in part defined by the <a href="#DeltaOmitInnerComments">*Omit Inner Comments</a> directive (see below).
+
+*Units:* The character definition of a numerical character in DELTA could read: "<span style="color:red">#</span><span style="color:blue">2. Stem &lt;height&gt;</span><span style="color:red">/ </span><span style="color:#CC6600">cm</span><span style="color:red">/</span>". The part after the character label that is shown in brown is intended for a unit of measurement. If the plant height is measured only as the maximum (see <a href="#DeltaOmitLowerForCharacters">*Omit Lower For Characters</a> directive), DELTA may produce "Stem up to 150 cm". However, some DELTA programs use the unit element also for categorical characters. In this case it defines a text that is output after the list of states. To convert DELTA data to BDI.SDD_ the suggested rule is: for numerical characters write the unit text to Numerical/MeasurementUnit, for categorical or even text characters write it to Label/Representation/Wording/TextAfter (both within Characters/Character).
+
+---+++Terminology: Character sequence and hierarchy
+
+DELTA provides a limited character hierarchy in the form of the <a href="#DeltaCharacterHeadings">*Character Headings</a> and <a href="#DeltaItemSubheadings">*Item Subheadings</a> directives. Since an BDI.SDD_ concept tree has to be created anyways to store the character sequence, one may as well also evaluate these frequently used DELTA directives.
+
+Always create a concept tree of the type "UserDefinedHierarchy" and the role "GeneralDefault". If *Character Headings is present, the tree should be based on the headings as nodes, and the sequence of characters in the DELTA *Character List as leaves. If *Character Headings is absent, the characters are listed directly in the root node.
+
+If both the *Character Headings and *Item Subheadings directives are present, a second tree should be created, again using the headings from *Item Subheadings and the sequence from the *Character List. Both trees are of type user defined, but now the roles GeneralDefault and TerminologyEditorView should be added to the first, and only the role NaturalLanguageReporting to the second.
+
+
+---+++INCOMPLETE, MORE TO COME!
+
+Add: discussion of text character @@@@
+
+Add: unit (i.&nbsp;e. a second text following the first character label) in the case of categorical character types (OM or UM): Add to label plus use as TextAfter
+
+
+
+
+
+
+---++Advanced conversion concepts
+
+Comments inside the item descriptions can be analyzed and compared with lists of known frequency (usually, rarely, etc.), probability (probably, perhaps) or other modifiers (strongly, at the tip, etc.). In the future such lists should be downloadable as multilingual templates that help in setting up new projects. If a modifier is recognized, instead of converting the DELTA comment into a Note, it would be translated into a modifier. This process is employed, for example, by DeltaAccess to support modifiers despite the limitations of the DELTA format.
+
+Based on the list of directives shown in "Complexity of BDI.SDD_ versus DELTA", the following table annotates advanced DELTA directives as to how they map to concepts in BDI.SDD_. *Currently this is just a first start, this needs to be further worked out! Also note that many special directives are not yet supported in BDI.SDD_. The reason for this is that first the general structures of BDI.SDD_ should become stable. We believe that the special problems dealt with in these directives can later easily be integrated into the BDI.SDD_ structure.*
+
+<table cellpadding="2" cellspacing="0" border="0" summary="DELTA directives">
+<tr valign="top"><td><b><a name="DeltaAbsoluteError">*Absolute Error</a></b></td><td>Not yet provided for in BDI.SDD_, needs discussion!</td></tr>
+<tr valign="top"><td><b><a name="DeltaAddCharacters">*Add Characters</a></b></td><td>= item specific Include Characters directive. Not supported in BDI.SDD_.</td></tr>
+<tr valign="top"><td><b><a name="DeltaAlternateComma">*Alternate Comma</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!)</td></tr>
+<tr valign="top"><td><b><a name="DeltaApplicableCharacters">*Applicable Characters</a></b></td><td>ConceptTrees/ConceptTrees/Concept/DependencyRules</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterDescriptions">*Character Descriptions</a></b></td><td>(DELTA core directive, synonym of Character List, discussed above under <a href="#SimpleExport">Simple export</a>)</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterForOutputFiles">*Character&nbsp;For&nbsp;Output&nbsp;Files</a></b></td><td>Not supported in BDI.SDD_. Applications may define rules how to create document names based on taxon names or abbreviations, or they may provide external data structures for such a functionality. It should not, however, be stored as a descriptive character.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharactersForSynonymy">*Characters For Synonymy</a></b></td><td>Synonymy is provided for in the taxon tree: Entities/ClassHierarchies/ClassHierarchy//Nodes/Node/Synonyms</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterForTaxonImages">*Character For Taxon Images</a></b></td><td>Delete this character from the Character list, use data inside this character for MediaResources inside CodedDescriptions. Compare *Character Images.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterForTaxonNames">*Character For Taxon Names</a></b></td><td><!-- DELTA: "This directive allows the specification of alternative taxon name for use in output files. It is mainly intended for specifying abbreviated names for output files destined for other programs, in which long names are impossible or inconvenient" -->BDI.SDD_ discusses whether a Abbreviation element should be added to Entities/Classes/Class. Background: In DELTA the normal taxon name is directly provided in the Item Description directive. However, for certain reports of exports abbreviated taxon names are required, which can be provided as text in the character identified in this directive.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterHeadings">*Character Headings</a></b></td><td>Export to a user-defined BDI.SDD_ concept tree (Terminology/ConceptTrees, Type=UserDefinedHierarchy). Add the Role "TerminologyEditorView" to the tree. Background: This defines a single level of headings, used when the character list is reported.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterImages">*Character Images</a></b></td><td>BDI.SDD_ distinguishes between images intended for selecting a character or state, and images supporting the definition of the character in general. In most cases these images will be useful as Label/Representation/Selector media resources. However, one should remember that DELTA provides no images for states. Instead, the Character images are overlayed using a proprietory mechanism similar to the html usemap/map/area hotspot mechanism. No similar hotspot mechanism is defined in BDI.SDD_ (it would conflict with the desired multi-resolution support for media resources). Therefore, usually manual editing of the images to extract state-specific selectors will be necessary to port DELTA identification keys containing images.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterKeywordImages">*Character Keyword Images</a></b></td><td>Not supported in BDI.SDD_. Recommended action: import the referenced images as media resources into the Resources section, but do not further link these images to other objects. Importing them will simplify later manual restructuring of a project. Background: Intkey specific directive to "allows selection of character keywords from image screens (instead of from text screens)". The DELTA User Guide does not define what a character keyword is, but probably this refers to the use of the "*Define Characters directive". <!-- DELTA: "specifies information on character keyword images and associated annotation for use with Intkey. It allows selection of character keywords from image screens (instead of from text screens). The directive is normally created and edited by means of the program Intimate." --></td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterList">*Character List</a></b></td><td>(DELTA core directive, discussed above under <a href="#SimpleExport">Simple export</a>)</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterNotes">*Character Notes</a></b></td><td>Create an BDI.SDD_ Terminology/GlossaryEntry and link this to the character</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterReliabilities">*Character Reliabilities</a></b></td><td>Planned for (discussed in Brazil 2002), but not yet introduced into the schema.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterTypes">*Character Types</a></b></td><td>(DELTA core directive, discussed above under <a href="#SimpleExport">Simple export</a>)</td></tr>
+<tr valign="top"><td><b><a name="DeltaCharacterWeights">*Character Weights</a></b></td><td>(Synonym of Character Reliabilities, see above)</td></tr>
+<tr valign="top"><td><b><a name="DeltaChineseFormat">*Chinese Format</a></b></td><td>If special algorithmic support is required in applications, they can detect the fact that the current output is for chinese from the language (lang) attribute in the audience definition. However, we do need a Chinese speaker to test whether the BDI.SDD_ wording proposal works for Chinese or not.</td></tr>
+<tr valign="top"><td><b><a name="DeltaCommentDirective">*Comment</a></b></td><td>The comment directive itself is in practice often used to express document-wide information like authorship, copyright, version, revision status or dates, for which DELTA provides no specific directives. Although automatic extraction of this information is difficult, it may be useful to display the content of all comment directives when a user is asked to supply required BDI.SDD_ project definition information. This directive should not be confused with the comments in &lt;&gt; signs that can be added at several places inside DELTA directives.</td></tr>
+<tr valign="top"><td><b><a name="DeltaDecimalPlaces">*Decimal Places</a></b></td><td>Currently under discussion in BDI.SDD_, proposal are made but not yet fixed. Decimal places in DELTA are character specific, whereas in BDI.SDD_ they have to be specific to the statistical measure (mean, standard deviation, and sample size value usually use different number of decimal places).</td></tr>
+<tr valign="top"><td><b><a name="DeltaDefineCharacters">*Define Characters</a></b></td><td>Export to a user-defined BDI.SDD_ concept tree (Terminology/ConceptTrees, Type=UserDefinedHierarchy). Add the Role "InteractiveIdentification" to the tree. Background: This is an Intkey-specific heading definition, combining groups of characters into a named character group. Whereas in the other two heading directives in DELTA (Character Headings, Item Subheadings) each character can only be a member of a single heading group, character can be a member in multiple of these definitions.</td></tr>
+<tr valign="top"><td><b><a name="DeltaDefineNames">*Define Names</a></b></td><td>Export to a non-taxonomic (flag!) class hierarchy. Multiple class hierarchy and the non-tax. flag are newly introduced after 0.9 and need discussion!</td></tr>
+<tr valign="top"><td><b><a name="DeltaDefineTaxa">*Define Taxa</a></b></td><td>see *Define Names above.</td></tr>
+<tr valign="top"><td><b><a name="DeltaDependentCharacters">*Dependent Characters</a></b></td><td>ConceptTrees/ConceptTrees/Concept/DependencyRules (is a DELTA-synonym for Inapplicable character)</td></tr>
+<tr valign="top"><td><b><a name="DeltaEmphasizeCharacters">*Emphasize Characters</a></b></td><td>Wording (text before/after and delimiter) information in BDI.SDD_ may contain formatting marks. <span class="hilite">Problem: However, currently it is assumed that each Wording itself is balanced.</span> To achieve emphasis of character content, one would have to define &lt;em&gt; in text before and &lt;/em&gt; in text after. <span class="hilite">This is currently not possible in BDI.SDD_, needs discussion!</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaEmphasizeFeatures">*Emphasize Features</a></b></td><td>(See above)</td></tr>
+<tr valign="top"><td><b><a name="DeltaExcludeCharacters">*Exclude Characters</a></b></td><td>Subset definitions for characters are defined</td></tr>
+<tr valign="top"><td><b><a name="DeltaExcludeItems">*Exclude Items</a></b></td><td>BDI.SDD_ provides for a freely definable hierarchy of taxon definitions, see ClassHierarchy. Export or reporting of BDI.SDD_ data may be limited to higher taxa in this hierarchy. If desired, a class hierarchy may be (ab)used to define unrelated, non-taxonomic groupings of taxa. A separate </td></tr>
+<tr valign="top"><td><b><a name="DeltaHeading">*Heading</a></b></td><td>The project title (first line of title, compare *Registration Subheading)</td></tr>
+<tr valign="top"><td><b><a name="DeltaImageDirectory">*Image Directory</a></b></td><td>Many projects will store all images relative to a specific folder (directory) on a web server or in file system. However, to support those projects that need to access images or other resources from multiple locations, BDI.SDD_ also needs other mechanisms. It would be possible to provide a common-root-URL in the project definition, which could be left empty, if multiple roots are used. The disadvantage would be that consumers of BDI.SDD_ data would have to follow this logic, combining each URL to a full URL. Currently this is not implemented in the BDI.SDD_ model. Instead each media resource URL is expected to be complete. Nevertheless, applications can easily analyze the start of the used URLs and automatically extract a root-URL from these, truncating the individual URLs to relative values. This works without loss of data between applications.</td></tr>
+<tr valign="top"><td><b><a name="DeltaImplicitValues">*Implicit Values</a></b></td><td><span class="hilite">#we need discussion here#</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaInapplicableCharacters">*Inapplicable Characters</a></b></td><td>ConceptTrees/ConceptTrees/Concept/DependencyRules (is a DELTA-synonym for Dependent character)</td></tr>
+<tr valign="top"><td><b><a name="DeltaIncludeCharacters">*Include Characters</a></b></td><td>(Compare *Exclude Characters above)</td></tr>
+<tr valign="top"><td><b><a name="DeltaIncludeItems">*Include Items</a></b></td><td>(Compare *Exclude Items above)</td></tr>
+<tr valign="top"><td><b><a name="DeltaItemAbundances">*Item Abundances</a></b></td><td>Discussed in Brazil 2002. Conclusion: not to be supported in BDI.SDD_</td></tr>
+<tr valign="top"><td><b><a name="DeltaItemDescriptions">*Item Descriptions</a></b></td><td>(DELTA core directive, discussed above under <a href="#SimpleExport">Simple export</a>)</td></tr>
+<tr valign="top"><td><b><a name="DeltaItemHeadings">*Item Headings</a></b></td><td><span style="color:red">#usage of this directive not yet understood, needs study#</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaItemSubheadings">*Item Subheadings</a></b></td><td>Export to a user-defined BDI.SDD_ concept tree (Terminology/ConceptTrees, Type=UserDefinedHierarchy). Add the Role "NaturalLanguageReporting" to the tree. Background: This defines a single level of headings, used when natural language descriptions are generated.</td></tr>
+<tr valign="top"><td><b><a name="DeltaItemWeights">*Item Weights</a></b></td><td>(synonym of *Item Abundances with a different scaling factor)</td></tr>
+<tr valign="top"><td><b><a name="DeltaKeyCharacterList">*Key Character List</a></b></td><td>DELTA provides a separate list of character states that the normal character states can be mapped to (using the DELTA <a name="DeltaKeyStates">*Key States</a> directive). BDI.SDD_ currently provides mapping, but only within the general set, i.&nbsp;e. the states that numeric or categorical data are mapped to can also be scored directly. The intent is to allow recording data that only exist in mapped form (e.&nbsp;g. numerical data only available as a categorized class histogram, which is rather frequently found in monographic treatments. It is unclear whether this will work in practice and <span class="hilite">#we need discussion here#</span>!</td></tr>
+<tr valign="top"><td><b><a name="DeltaKeyStates">*Key States</a></b></td><td>Terminology/Characters/Categorical|Numerical/Mappings</td></tr>
+<tr valign="top"><td><b><a name="DeltaLinkCharacters">*Link Characters</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!)</td></tr>
+<tr valign="top"><td><b><a name="DeltaMandatoryCharacters">*Mandatory Characters</a></b></td><td>Project-wide definitions of mandatory characters (= scoring is required in each item description) are useful only in small to medium sized project. Most larger collaborative projects span a taxonomic diversity, where no characters are mandatory for all taxa. BDI.SDD_ therefore discusses mechanisms to define characters as mandatory in parts of the taxonomic hierarchy. A possible method to do this is to add a new coding status value that, if defined at a higher taxon, expresses that all lower taxa are expected to be scored. <span class="hilite">No formal proposal to do this is yet available in BDI.SDD_ version 0.9.</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaNewFilesAtItems">*New Files At Items</a></b></td><td>Not supported in BDI.SDD_; should be handled algorithmically in the application or with application-specific data.</td></tr>
+<tr valign="top"><td><b><a name="DeltaNewParagraphsAtCharacters">*New Paragraphs At Characters</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!) <span class="hilite">Paragraphs currently do not work yet!</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaNonautomaticControllingCharacters">*Nonautomatic&nbsp;Controlling&nbsp;Characters&nbsp;&nbsp;</a></b></td><td>related to character dependency. <span style="color:red">#usage of this directive not yet understood, needs study#</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaOmitFinalComma">*Omit Final Comma</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!)</td></tr>
+<tr valign="top"><td><b><a name="DeltaOmit Final CommaOmitInapplicables">*Omit Inapplicables</a></b></td><td><span style="color:red">#usage of this directive not yet understood, needs study#</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaOmitInnerComments">*Omit Inner Comments</a></b></td><td>In the DELTA system, this indicates that comments inside comments should be ignored for the purpose of generating descriptions. Example: "15,1&lt;rarely &lt;5%&gt;&gt;/3 41,2&lt;&lt;?need to examine fresher material&gt;&gt;" would become "15,1&lt;rarely&gt;/3 41,2". Recommendation for converting DELTA to BDI.SDD_: If the directive is present, inner comments should be imported as BDI.SDD_ annotations, if it is absent inner comments should be simple left in place (in the label, not in the wording text), the &lt;&gt; being replaced by ().</td></tr>
+<tr valign="top"><td><b><a name="DeltaOmitLowerForCharacters">*Omit Lower For Characters</a></b></td><td>Not yet handled in BDI.SDD_. Indicates that even if lower values (e.&nbsp;g. of height) may occasionally be present in the data matrix, they should be omitted from natural language descriptions. A range 0-150 is then output as up to 150. More precisely: The values omitted are the lower extreme and normal values of a range, and the central value. Note that DELTA does not support the opposite, only reporting a lower range or extreme (DeltaAccess supports both, e.&nbsp;g. to create "fruiting body with at least 10 setae").</td></tr>
+<tr valign="top"><td><b><a name="DeltaOmitOrForCharacters">*Omit Or For Characters</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!) Whether this is covered or not depends on the undecided use of a global Vocabulary list in BDI.SDD_!</td></tr>
+<tr valign="top"><td><b><a name="DeltaOmitPeriodForCharacters">*Omit Period For Characters</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!)</td></tr>
+<tr valign="top"><td><b><a name="DeltaOmitSpaceBeforeUnits">*Omit Space Before Units</a></b></td><td></td></tr>
+<tr valign="top"><td><b><a name="DeltaPercentError">*Percent Error</a></b></td><td>Not yet provided for in BDI.SDD_, needs discussion!</td></tr>
+<tr valign="top"><td><b><a name="DeltaRegistrationHeading">*Registration Heading</a></b></td><td>(synonym of the *Heading directive, deprecated but may still be in use)</td></tr>
+<tr valign="top"><td><b><a name="DeltaRegistrationSubheading">*Registration Subheading</a></b></td><td>Still in use, defines a subheading for an entire project, often containing a version number or version date. Should be displayed together with *Comments for human consumption when filling in the BDI.SDD_ project definition.</td></tr>
+<tr valign="top"><td><b><a name="DeltaReplaceSemicolonByComma">*Replace Semicolon By Comma</a></b></td><td>(Should be covered by Wordings defined inside the ConceptTrees. Current BDI.SDD_ proposal needs testing!)</td></tr>
+<tr valign="top"><td><b><a name="DeltaScaleCharacters">*Scale Characters</a></b></td><td>Not yet provided for in BDI.SDD_, <span style="color:red">needs discussion!</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaStartupImages">*Startup Images</a></b></td><td>Depending on the project, this may map to Icon in ProjectDefinition</td></tr>
+<tr valign="top"><td><b><a name="DeltaTaxonImages">*Taxon Images</a></b></td><td>CodedDescriptions/MediaResources</td></tr>
+<tr valign="top"><td><b><a name="DeltaTaxonKeywordImages">*Taxon Keyword Images</a></b></td><td>Not supported in BDI.SDD_; compare *Character Keyword Images.</td></tr>
+<tr valign="top"><td><b><a name="DeltaTaxonLinks">*Taxon Links</a></b></td><td>= full text document resources for taxa e.&nbsp;g. species pages</td></tr>
+<tr valign="top"><td><b><a name="DeltaUseControllingCharactersFirst">*Use Controlling Characters First</a></b></td><td><span style="color:red">#usage of this directive not yet understood, needs study#</span></td></tr>
+<tr valign="top"><td><b><a name="DeltaVocabulary">*Vocabulary</a></b></td><td>(currently under discussion in BDI.SDD_)</td></tr>
+</table>
+
+
+---++References
+
+M. J. Dallwitz and T. A. Paine 1999. Definition of the DELTA format. [Distributed as MS Word file with the CSIRO DELTA editor for Windows, version 1.3.0.8]
+
+<p class="footnote"><a href="#FNLineLength" class="footnote">1</a> <strong>New line character in DELTA</strong> When importing DELTA data, the best strategy is to replace any kind of new line (0A, 0D) and tab (09) characters with a blank, and replace multiple blanks with a single blank. Note, however, that when producing DELTA, new line characters may occur only in certain places (between directives, within text, but not within the directive name), and that the line length accepted by some DELTA applications (including CSIRO CONFOR) is limited to a value somewhere below 100 characters per line. This is not defined in the DELTA standard description (Dallwitz &amp; Paine 1999), but is a limitation of existing applications.</p>
+
+
+*See also the overview [[DELTAandBDI.SDD][DELTA and BDI.SDD_]].*
+
+-- Main.GregorHagedorn - 10 May 2006 (First published outside of Wiki on 2003-12-11 by Gregor Hagedorn)
+
+DELTA example files:
+   * [[%ATTACHURL%/SDD_DELTA_Exp_CD.txt][SDD_DELTA_Exp_CD.txt]]
+   * [[%ATTACHURL%/SDD_DELTA_Exp_Jur.txt][SDD_DELTA_Exp_Jur.txt]]
+
+
+%META:FILEATTACHMENT{name="SDD_DELTA_Exp_CD.txt" attr="h" autoattached="1" comment="" date="1147272192" path="SDD_DELTA_Exp_CD.txt" size="28979" user="Main.GregorHagedorn" version="1"}%
+%META:FILEATTACHMENT{name="SDD_DELTA_Exp_Jur.txt" attr="h" autoattached="1" comment="" date="1147272244" path="SDD_DELTA_Exp_Jur.txt" size="4794" user="Main.GregorHagedorn" version="1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1147273184" from="SDD.DELTAtoSDD" to="SDD.DeltaToSDD"}%

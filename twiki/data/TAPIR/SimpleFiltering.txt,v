@@ -1,0 +1,158 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@This could be a crazy idea but may also be very useful so I figure it is worth suggesting it.
+   * I believe the majority of filtering operations are of the type "get me all the records where concept1=valueX" or "get me all the records where concept1=valueX AND concept2=valueY" e.g "get me records where Genus = 'Poa' and species 'annua'.
+   * More complex queries are important but less common.
+   * The majority of filter requests will therefore look like a series of name=value pairs.
+   * It would be very useful to have a filter definition that said "I will accept name=value pairs of any combination of my searchable fields for this view".
+   * TapirLite implementations could then take these out of the environmental variables and support searching without the need to parse XML query requests. The alternative is to use parameterised filters for each of the possible combinations of parameters - which really would be crazy.
+
+---++++ Example
+
+      * http://example.org/mydata?operation=view&name=myview&my/first/concept=Poa&my/other/concept=a%
+
+---++++ Possible Solution
+
+One possible (very simple) solution would be to have an <if-defined> operator in filter definitions. It would then be possible to build a complex filter that looked like this:
+        <filter>
+          <and>
+            <if-defined parameter-name="GenusName">
+                <like>
+                    <concept path="/Dataset/TaxonNames/TaxonName/CanonicalName/Genus"/>
+                    <parameter name="GenusName"/>
+                </like>
+            </if-defined>
+
+            <if-defined parameter-name="SpecificEpithet">
+                <like>
+                    <concept path="/Dataset/TaxonNames/TaxonName/CanonicalName/SpecificEpithet"/>
+                    <parameter name="SpecificEpithet"/>
+                </like>
+            </if-defined>
+          </and>
+        </filter>
+
+Note that no one would actually have to implement something to parse filters of this form it is just a service definition.
+
+--->
+Markus Doering: 
+   * Actually the current views are not that different from the suggestion above in some respects. A parameter in a view filter should always be _optional_. See PyTapirWrapper:ViewRequest. Therefore the above example does work already without the <if-defined> tag!
+
+   * I guess like searches are nearly as common as equals operators. So this complicates things already.
+
+   * I think its always OK for an implementation to respond with an error if the filters get too complex. We could have another flag in the capabilities to indicate that only the view defined filters are allowed with this provider. So there wouldnt be any surprisingly complex filters arriving. I just saw that all operators in filters are optional! So by not specifying any supported operator no custom filters are valid and thats exactly what we wanted. I will update the LatestSchemaProposal documentation within the schema for this.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d41 1
+a41 1
+   * I think its always OK for an implementation to respond with an error if the filters get too complex. We could have another flag in the capabilities to indicate that only the view defined filters are allowed with this provider. So there wouldnt be any surprisingly complex filters arriving. I will add this to the LatestSchemaProposal
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d34 8
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d5 1
+a5 1
+   * It would be very useful to have a default filter definition that said "I will accept name=value pairs of any combination of my searchable fields for this view".
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d4 3
+a6 5
+   * The majority of filter requests will therefore look like a series of name=value pairs ANDED together.
+   * It would be very useful to have a default filter definition that said "I will accept name=value pairs of any combination of my searchable fields for this view and will AND them together". TapirLite implementations could then take these out of the environmental variables and support simple searching without the need to parse XML query request. The alternative is to use parameterised filter and second guessing all the combintations of fields that are likely to be asked for.
+   * This is a little like having a webservice method call with a variable number of parameters.
+   * Whether EQUALS or LIKE is used as the comparator should be passed as well.
+
+d10 1
+a10 4
+      * http://example.org/mydata?operation=view&name=myview&comparitor=like&my/first/concept=Poa&my/other/concept=a%
+
+---++++ Risks
+   * This is a slippery slope. How much filtering could creap into the environmental space like this? - I would suggest no more than this should be permitted.
+d14 1
+a14 1
+One possible solution would be to have and <IF> operator in filter definitions. It would then be possible to build a complex filter for a view that defined this
+d16 1
+d23 1
+d30 1
+d32 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d20 14
+@

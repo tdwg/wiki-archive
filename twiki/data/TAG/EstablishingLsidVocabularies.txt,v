@@ -1,0 +1,172 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.5
+date	2006.09.27.14.47.48;	author RogerHyam;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.09.27.12.36.55;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.09.27.08.38.42;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.09.26.19.47.47;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.09.26.16.39.33;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.5
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1159368468" format="1.1" version="1.5"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ <nop>%TOPIC%
+
+
+There is pressure to establish vocabularies for use by people issuing LSIDs as soon as possible. There are issues that need to be resolved with this and that is what this page is for.
+
+---++ Key Current Question 
+   * How do we divide the namespace?
+   * What language do we use for the RDF vocabularies in metadata responses?
+
+----------
+Brain Storming
+
+---++ TDWG Ontology.
+
+   * The TAG has said there should be an ontology and the Executive have approved this approach but this hasn't been presented to a wider TDWG audience yet.
+   * We have a core ontology developed by Jessie's team which some of us have been involved in - but not all. This is in OWL.
+      * Could you please put a link here to the current version -- Main.BobMorris - 26 Sep 2006
+   * Any vocabularies used for LSIDs should ideally be part of this ontology.
+      * I sort of doubt this is always appropriate. Depends what is meant by "vocabulary." the answer to which must end up embedded in the ontology metamodel. Also, LSID is a solution, not a problem, so I believe that while it should be expressible with core ontology concepts, surely memorializing it in the core is not appropriate. I don't think LSID is a core concept. I think the core concept in that case is GUID.  If this is wrong, why was there even a need for the GUID1? workshop  -- Main.BobMorris - 26 Sep 2006
+   * I (Roger) have developed an application called Tonto that could be used to manage the ontology going forward - presenting it in different technologies - the ontology has to work in XSD/GML as well as semantic web technologies ...
+      * I haven't seen Tonto, so I'm writing in ignorance here (not that this always stops me...): I'm not sure what "has to work in ..." means, but I am worried from discussion in the mailing list that each of the various platforms (to use UML terminology) XSD, RDF, GML, ... is going to end up used for different stuff related by concepts from a (core or otherwise) ontology, but not to each other. In other words, say, TCS/RDF and SDD/XDS will not each be Platform Specific Models(PSM) (UML term) of something that is a realization of something expressed in a Platform Independent Model  (PIM) which would be expressed in the core ontology model. What this is likely to result in, later, is what happened with DiGIR/DC and BioCase/ABCD : the need for a rationalization because they didn't play nice together due to not being two different implementations of the same more general thing. -- Main.BobMorris - 26 Sep 2006
+
+
+---++ Namespaces
+   * http://rs.tdwg.org/ is the base namespace for all things TDWG now.
+   * http://rs.tdwg.org/ontology/ is the base namespace for the ontology.
+   * How do we identify things within the ontology so they work across technologies?
+      * As above, I think "work across technologies" is the wrong goal. I think it should be "How do we build PIMs in the ontology that have PSMs in the technologies needed by the tools". -- Main.BobMorris - 26 Sep 2006
+   * Do we subdivide the ontology namespace?
+      * The [[http://www.omg.org/cgi-bin/doc?ad/06-05-01.pdf][OMG Ontology Definition Metamodel (ODM), Sec 10.1.2]] employs UML packages, plus some class naming conventions not unlike the kind you proposed in email. -- Main.BobMorris - 26 Sep 2006
+   * How many classes do we think will be in the ontology namespace? i.e. do we need to divide it?
+
+---++ What language should be used?
+   * I (Roger) am going to suggest a simplified metamodel for use in the TDWG ontology because it has to be mapped into multiple technologies. It has to be expressed in GML/XSD/OBO?/Used for Tagging Micro formats/ all sorts...
+   * Should the LSID vocabularies be RDFS/OWL - Lite/DL/Full?
+      * No, they should be UML PIMs constrained by the ODM. Those other things should be PSMs derived from them. -- Main.BobMorris - 26 Sep 2006
+      * If we use UML PIMs then we need to decide on the points below. Otherwise it would be quite straight forward:
+         * Which dialect of XMI we use to transfer data - none appear to be fully interoperable between tools. The OGC team are all using Enterprise Architect.
+         * How we transfer diagrams - there is no standard. The OGC team are all using EA - so it doesn't matter.
+         * How we break down UML modules and how we link them to each other. We still have the namespace problem and UML is particularly bad at handling linking between models (in the opinion of the OGC team don't seem to have solved this problem).
+         * How we facilitate collaborative working - UML tools tend to be bad at this unless you pay a great deal of money.
+         * How we choose a subset of UML (metamodel/profile) that we are going to use - so we can be sure of expressing our model in the target language(s).
+         * How we enforce/test that any particular model meets the metamodel we have defined above.
+         * How we get a set of distributed biologists to start using UML in the correct way.
+         * How we define a mapping to the target language(s) (if there is only one language then we needn't bother with the UML)
+         * Basically it is this list that has put me off a UML based approach - but I have an open mind... Main.RogerHyam - 2006-09-27
+These are all good points but (a)Most of them apply more or less to any solution to any modeling problem and (b)UML has a long history of producing formal enough representations that there are usually fairly mechanical ways of handling them. Whether or not a given one is simple or complex, when used properly UML has a much lower likelihood of leaving you blindsided---let's call that the !DiGIR vs !BioCase trap to bring the point home---than if you make a bunch of PSMs and try to make them play nice together. Hoping to stimulate discussion of your concerns, I am opening OntologyModelingWithUML-- Main.BobMorris - 27 Sep 2006
+
+
+---++ What is valid?
+   * How do we assess conformance of metadata responses from LSIDs?
+   * Should we use W3C valadator? 
+   * What does Rod's valadator use?
+
+---++ TCS/RDF
+   * There are several versions of TCS ported to RDF.
+   * Steve Perry produced and experimental version (which is now burried?)
+   * Roger Hyam produced and RDFS version that just covered the TaxonName part that is used by the IPNI and IF pilot LSID resolvers.
+   * The RDFS vocabulary can be found [[http://biodiv.hyam.net/schemas/TCS_RDF/TaxonNames.rdfs][here]] with documentation [[http://biodiv.hyam.net/schemas/TCS_RDF/TaxonNames.html][here (you may need sun glasses for the colour scheme)]]. A bunch of related files are [[http://biodiv.hyam.net/schemas/TCS_RDF/][here]]. * These are all work in progress. The namespaces are definitely wrong and there will be minor changes.*
+   * Rob Gales produced as OWL DL version for the core ontology based heavily on the RDFS version.
+   * Tonto - the ontology tool is going to be populated with a TCS Names version based on Rob/Roger vocabulary so that is probably the one going forward.
+
+
+
+
+
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1159360615" format="1.1" version="1.4"}%
+d61 1
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1159346322" format="1.1" version="1.3"}%
+d49 1
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1159300067" format="1.1" version="1.2"}%
+d39 11
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1159288773" format="1.1" version="1.1"}%
+d19 1
+d21 4
+a24 1
+   * I (Roger) have developed an application call Tonto that could be used to manage the ontology going forward - presenting it in different technologies - the ontology has to work in XSD/GML as well as semantic web technologies ...
+d30 1
+d32 1
+d38 1
+a59 1
+
+@

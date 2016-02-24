@@ -1,0 +1,66 @@
+%META:TOPICINFO{author="BobMorris" date="1182234848" format="1.1" reprev="1.7" version="1.7"}%
+%META:TOPICPARENT{name="InstanceExamples"}%
+[[%ATTACHURL%/Ithomids.owl][Ithomids.owl]] is a first cut at a SPM knowledge base of Ithomid butterflies. This is a hand crafted !SpeciesProfileModel owl instance I built with Protege 3.3beta. It was my first use of Protege, so some of the issues may be learning effect, misconfiguration, or other factors of ignorance. There is also a [[%ATTACHURLPATH%/Ithomia_patilla_OWL.png][visualization]] attached.
+
+It has one species, _Ithomia patilla_ about which here is an [[http://efg.cs.umb.edu/keys/controller?findBackEndService=findBackEndService&Scientific%20name=Ithomia%20patilla&Sex=Female&dataSource=Ithomids][html rendering of the original data]] I transcribed by hand with Protege.
+
+At the end is a [[#PngImage][tree rendering]] of the SPM. The tree view, rendered by Altova !SemanticWorks2007 is cute and informative, but 
+for this simple case, a hyperlinked table would be more succinct and probably easier to read, but I have no time to build an XSLT that extends Roger's generic one to cover this case. Maybe Roger will :-)  It is also not likely to be much work to generate the aforementioned HTML rendering from the OWL.  The HTML is presently rendered by XSLT from XML conforming to the UMASS-Boston Electronic Field Guide XML output schema. Doing this would be a fine demonstration of the holy grail of data integration, because if someone else serves, e.g. local abundance data for some other locality---one of my three InfoItems provided with geographic context---I could grab it and throw it in with mine rather easily. However, this would require the discovery of some mappings, e.g. some owl:SameAs stuff somewhere....Is a registry needed for such mappings? 
+
+
+---++ About SPM, lessons learned (or not)
+
+The most urgent thing is to get good applications for fetching
+references to !TaxonConcepts, together with their string forms.
+I spent more time constructing new TCs than anything else. Their
+content is empty, which almost certainly makes them useless for
+machine use, but which OWL permits. They are identifiable only by
+their instance name. This should be regarded as a serious
+incompleteness.
+
+There are two fields in the data I didn't code:
+
+Wingspan and forewing length.  These are descriptive characters, and I
+haven't started to think about how to invoke SDD. We keep talking
+about SDD-Lite in RDF...
+
+Clearly a tabular and ultimately hyperlinked view would be better for
+visualization. No time to write the XSLT extending Roger's to
+instances (aka "individuals" in OWL-speak).
+
+Maybe there needs to be a hasContext property on the whole SPM object,
+inherited by default. I added identical contexts to three
+infoItems. Far better: I should have made only one context and added
+an owl:sameAs
+
+I did virtually everything as hasContent. But there is plenty of room
+for controlled vocabularies on just about everything I coded.
+
+Forcing more informative namespaces might be helpful.
+
+---++ Protégé 3.3beta issues
+
+Protege coughs if the SPM instance owl file does not import all of SpeciesProfileModel, SPMTerms, and TaxonConcept ontologies the instance file uses explicitly. Simply importing in Protege did not leave the import statements in my instance owl. I don't know why. I hand to hand add the import.
+
+At load time, Jena parse keeps warning about the XSLT processing
+instruction in Roger's ontologies, which it ignores. I wish I knew how to turn this warning off.
+
+I don't know how to make Protégé default the Lang attribute on strings
+If you neglect to enter a Lang in a string typed Property,
+Protégé forgets about it after you close the string edit window (sometimes?)
+
+-- Main.BobMorris - 08 May 2007
+
+
+  
+
+-----
+
+Note: the owl file cannot be viewed in Firefox, I receive an error "Error loading stylesheet: A network error occured loading an XSLT stylesheet" - Gregor --- There was a spurious XSLT stylesheet in SVN rev 31 (though my Firefox ignored it and gave a standard XML rendering). ---Bob
+
+  
+
+
+
+%META:FILEATTACHMENT{name="Ithomids.owl" attachment="Ithomids.owl" attr="" comment="Revised for name change to SPM from TDM" date="1182228597" path="Ithomids.owl" size="6093" stream="Ithomids.owl" user="Main.BobMorris" version="4"}%
+%META:FILEATTACHMENT{name="Ithomia_patilla_OWL.png" attachment="Ithomia_patilla_OWL.png" attr="" comment="Revised for name change to SPM from TDM" date="1182228653" path="Ithomia_patilla_OWL.png" size="61489" stream="Ithomia_patilla_OWL.png" user="Main.BobMorris" version="3"}%

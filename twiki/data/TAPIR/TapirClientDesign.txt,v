@@ -1,0 +1,298 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.02.27.23.54.39;	author RenatoDeGiovanni;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.02.15.12.51.12;	author JoseCuadra;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.02.15.11.34.59;	author JoseCuadra;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RenatoDeGiovanni" date="1172620479" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="TapirWorkshop2007"}%
+---++ TAPIR Harvester Proposal
+
+---+++ Proposed class diagram for harvester
+
+   * ClassDiagram1.png: <br />
+     <img src="%ATTACHURLPATH%/ClassDiagram1.png" alt="ClassDiagram1.png" width='1122' height='341' />
+
+
+---+++ Explanation of classes
+
+   * RequestManager:
+      * Load LocalConfiguration in RequestManager
+      * Obtains Provider access points (URLs) ProviderLookup
+      * Create instance of ThreadPool with as many general Threads as specified by local configuration
+      * Loop through Providers
+      * Perform MetaDataRequest and store response in Provider
+      * Harvester Only &#8211; If date of Last Update is not after the last time Harvester gathered information from this access point, then Continue to next Provider
+      * Harvester Only &#8211; If GMT is not equal to (in their indexingPreferences) Provider startTime ± harvestStartTimeOffset (also consider frequency in indexingPreferences), then Continue to next Provider
+      * Perform CapabilitiesRequest and store response in Provider
+      * According to Provider Capabilities and requestType, get KVP for URL from RequestConfigutation
+      * Perform SearchRequest
+      * Check SearchSummary: While (Start index+Page Size) < totalMatched, repeat SearchRequest on next page and Send to ResponseManager in a thread-safe environment
+      * Send response to ResponseManager in a thread-safe environment
+
+
+   * PerformRequest(String requestType, String url, int pageNum, int pageSize)
+      * Get request URL for specified requestType (MetaData, Capabilities, Search or Inventory)
+      * Adjust KVP values inURL for paging according to pageNum and pageSize (requestType Search only)
+      * Create instance of CommunicationProcess with URL
+      * Check for availableThreads in the ThreadPool
+         * If Available: Add this CommunicationProcess to the ThreadPool
+         * Otherwise: Create new Thread outside of ThreadPool and execute
+      * Returns XML response
+
+   * ProviderLookup:
+      * Returns Provider access points (URLs) from flat file or from central UDDI
+
+   * Provider:
+      * Stores data relevant to each individual AccessPoint
+
+   * RequestConfiguration (capabilities):
+      * According to capabilities, retrieve and return KVP from configuration file (yet to be defined)
+
+   * Request (Configuration):
+      * Return URL from specified function
+
+   * DigirRequest:
+      * Extends general Request for functions specific to DiGIR
+
+   * TapirRequest:
+      * Extends general Request for functions specific to TAPIR
+      * Return URL of KVP parameters from specified function (MetaData, Capabilities, Search or Inventory) according to Configuration
+      * MetaDataRequest(String accessPoint):
+         * If MetaData for this particular accessPoint is stored in local cache and is not expired, return. Otherwise, perform MetaDataRequest
+      * CapabilitiesRequest(String accessPoint):
+         * If Capabilities for this particular accessPoint is stored in local cache and is not expired, return. Otherwise, perform CapabilitiesRequest
+      * searchRequest(String accessPoint)
+      * inventoryRequest(String accessPoint)
+
+   * BioCaseRequest:
+      * Extends general Request for functions specific to BioCASE
+
+   * ThreadPool:	
+      * Initialized to a certain number of threads according to local configuration
+
+   * ResponseManager:
+      * Handles response according to local configuration
+         * Portals could display result with XSLT
+         * Harvesters could cache data in local DB
+         * Create RSS feed
+         * Add data to OAI environment
+         * UnMarshall response and create specific Response type
+
+   * Response:
+      * DigirResponse
+      * TapirResponse
+      * BioCaseResponse
+
+---+++ Proposed execution flow
+
+   * Load LocalConfiguration
+
+   * Create RequestManager, Initialize ThreadPool with runnable objects (HTTPTheads) based on local configuration
+
+   * RequestManager does ProviderLookup
+  
+   * (Harvester Only - RequestManager performs MetadataRequest to get date of last update)
+  
+   * Loop through providers, performs CapabilitiesRequest, or load capabilities from local cache * (Harvester Only &#8211; if there have been no changes since last harvest, move to next provider)
+      * See steps 7-10
+  
+   * Create specific request URL and configure according to capabilities using RequestConfiguration
+  
+   * RequestManager adjusts KVP parameters according to paging size and page number
+  
+   * RequestManager passes URL to an HTTPThread in the ThreadPool
+  
+   * HTTPThread connects to the provider
+  
+   * HTTPThread gets back XML and initializes the Response object
+  
+   * Response is passed to the ResponseManager in a thread-safe environment
+  
+   * Repeat steps 7-11 until all pages have been accessed according to local specifications
+  
+   * ResponseManager deals with the response according to local specifications (Harvester, Portal, &#8230;)
+      * Process response with XSLT
+      * Cache data
+      * Create RSS feed
+      * Add to OAI environment
+
+
+%META:FILEATTACHMENT{name="ClassDiagram1.png" attachment="ClassDiagram1.png" attr="" comment="" date="1171537240" path="ClassDiagram1.png" size="12559" stream="ClassDiagram1.png" user="Main.JoseCuadra" version="1"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JoseCuadra" date="1171543872" format="1.1" reprev="1.2" version="1.2"}%
+d13 67
+a79 73
+* RequestManager:
+   * Load LocalConfiguration in RequestManager
+   * Obtains Provider access points (URLs) ProviderLookup
+   * Create instance of ThreadPool with as many general Threads as specified by local configuration
+   * Loop through Providers
+   * Perform MetaDataRequest and store response in Provider
+   * Harvester Only &#8211; If date of Last Update is not after the last time Harvester gathered information from this access point, then Continue to next Provider
+   * Harvester Only &#8211; If GMT is not equal to (in their indexingPreferences) Provider startTime ± harvestStartTimeOffset (also consider frequency in indexingPreferences), then Continue to next Provider
+   * Perform CapabilitiesRequest and store response in Provider
+   * According to Provider Capabilities and requestType, get KVP for URL from RequestConfigutation
+   * Perform SearchRequest
+   * Check SearchSummary: While (Start index+Page Size) < totalMatched, repeat SearchRequest on next page and Send to ResponseManager in a thread-safe environment
+   * Send response to ResponseManager in a thread-safe environment
+
+
+* PerformRequest(String requestType, String url, int pageNum, int pageSize)
+   * Get request URL for specified requestType (MetaData, Capabilities, Search or Inventory)
+   * Adjust KVP values inURL for paging according to pageNum and pageSize (requestType Search only)
+   * Create instance of CommunicationProcess with URL
+   * Check for availableThreads in the ThreadPool
+      * If Available: Add this CommunicationProcess to the ThreadPool
+      * Otherwise: Create new Thread outside of ThreadPool and execute
+   * Returns XML response
+
+* ProviderLookup:
+   * Returns Provider access points (URLs) from flat file or from central UDDI
+
+* Provider:
+   * Stores data relevant to each individual AccessPoint
+
+* RequestConfiguration (capabilities):
+   * According to capabilities, retrieve and return KVP from configuration file (yet to be defined)
+
+* Request (Configuration):
+   * Return URL from specified function
+
+* DigirRequest:
+   * Extends general Request for functions specific to DiGIR
+
+* TapirRequest:
+   * Extends general Request for functions specific to TAPIR
+   * Return URL of KVP parameters from specified function (MetaData, Capabilities, Search or Inventory) according to Configuration
+   * MetaDataRequest(String accessPoint):
+      * If MetaData for this particular accessPoint is stored in local cache and is not expired, return. Otherwise, perform MetaDataRequest
+   * CapabilitiesRequest(String accessPoint):
+      * If Capabilities for this particular accessPoint is stored in local cache and is not expired, return. Otherwise, perform CapabilitiesRequest
+   * searchRequest(String accessPoint)
+   * inventoryRequest(String accessPoint)
+
+BioCaseRequest:
+   * Extends general Request for functions specific to BioCASE
+
+ThreadPool:	
+   * Initialized to a certain number of threads according to local configuration
+
+ResponseManager:
+   * Handles response according to local configuration
+      * Portals could display result with XSLT
+      * Harvesters could cache data in local DB
+      * Create RSS feed
+      * Add data to OAI environment
+      * UnMarshall response and create specific Response type
+
+Response:
+
+DigirResponse:
+
+TapirResponse:
+
+BioCaseResponse:
+
+
+
+a91 1
+  
+a108 1
+  
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JoseCuadra" date="1171539299" format="1.1" reprev="1.1" version="1.1"}%
+d89 1
+a89 1
+  * Load LocalConfiguration
+d91 1
+a91 1
+  * Create RequestManager, Initialize ThreadPool with runnable objects (HTTPTheads) based on local configuration
+d93 1
+a93 1
+  * RequestManager does ProviderLookup
+d95 1
+a95 1
+  * (Harvester Only - RequestManager performs MetadataRequest to get date of last update)
+d97 1
+a97 1
+  * Loop through providers, performs CapabilitiesRequest, or load capabilities from local cache * (Harvester Only &#8211; if there have been no changes since last harvest, move to next provider)
+d99 1
+a99 1
+  * See steps 7-10
+d101 1
+a101 1
+  * Create specific request URL and configure according to capabilities using RequestConfiguration
+d103 1
+a103 1
+  * RequestManager adjusts KVP parameters according to paging size and page number
+d105 1
+a105 1
+  * RequestManager passes URL to an HTTPThread in the ThreadPool
+d107 1
+a107 1
+  * HTTPThread connects to the provider
+d109 1
+a109 1
+  * HTTPThread gets back XML and initializes the Response object
+d111 1
+a111 1
+  * Response is passed to the ResponseManager in a thread-safe environment
+d113 1
+a113 1
+  * Repeat steps 7-11 until all pages have been accessed according to local specifications
+d115 1
+a115 1
+  * ResponseManager deals with the response according to local specifications (Harvester, Portal, &#8230;)
+d117 4
+a120 4
+     * Process response with XSLT
+     * Cache data
+     * Create RSS feed
+     * Add to OAI environment
+@

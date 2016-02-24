@@ -1,0 +1,239 @@
+head	1.9;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.9
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.07.15.18.15.55;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.06.07.09.50.47;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.06.07.04.41.37;	author BobMorris;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.04.13.37.06;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.25.18.29.32;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.05.25.15.28.18;	author WalterBerendsohn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.05.25.13.51.26;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.05.25.12.24.07;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1089915355" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="UBIF.DerivationHistory"}%
+In UBIF.DerivationHistory, Gregor Hagedorn wrote
+
+"Actually one thing missing is the expiration data of a dataset, which is not yet in SDD. I seem to have a block here, but I have no idea how the provider could know this date. Nobody can look into the future when the next change in the data will be made. So any value will be just heuristic. Would that not be a better choice for the receiving side to be made? Where should it go, and what should be the annotation that gives a provider a hint about what should go in there?"
+
+I have been harping on this point in TDWG for years but seem to make little progress. If instead of the term "expiration date" we use the notion "good until" we see better that this is a guarantee of the usefulness of the data, not a guarantee that it will become useless after the given date. Its purpose is to support caching. If an agent is processing a record before the expiration date, it is contractually guaranteed not to have to go back to the source for assurance the data hasn't changed, and it can use a cached copy with impunity.
+
+Possibly a reason Gregor Hagedorn and others block here is the model that an SDD document is a static object, not a container for dynamic data. That is, if two queries to an SDD provider produce identical results except for something indicating the time at which the query was answered, a document-centric model will assert that these are two different documents and the second should displace any cached instance of the first. Since I am a data-centric, not document-centric, kind of fellow, I don't subscribe to this model. I believe that applications will need to cache _payloads_ not SDD documents. (Gregor: we completely agree here. Note the <nop>LastRevisionDate (datetime) in all <nop>RevisionData. The SDD design requires this and it is assumed to be a reliable way to know data have to be invalidated)
+
+Expiration dates benefit both providers and consumers. The latter for cache management, the former to reduce traffic from consumers that must be satisfied about currency. Of course, they impose something on the producer: it must accept that it cannot serve changes to a given record until the expiration date. I find this a small issue for biodiversity data, where the time to revise data is dominated by the science, not the data management. Besides, if a provider thinks it needs to update data with zero latency, it can just mark its expiration date as equal to its service date plus some tiny interval, possibly even zero. This gives the effective message that data should be regarded as potentially obsolete as soon as you get it, which anyway is the only possible conclusion to be drawn from an absence of expiration date.
+
+ITIS provides an example of (implicit) expiration dates. Unless something has changed recently, US ITIS makes new data available only monthly on some (known?) date. Although the US site possibly is serving always the latest data, ITIS*ca and probably GBIF never are. Their data comes with an effective good-until date of the next monthly update. Before then, there is no point to a consumer asking for the same data again.
+
+(There are technical issues about implementation of expiration dates that needn't be discussed much here. Just stamping an expiration date is a relatively easy, relatively low overhead solution, but not perfectly robust, because perfect enforcement requires synchronization of the provider and consumer's clocks. I find this unnecessary and think that a "good enough" contract is OK for biodiversity data. More robust solutions include stamping a "time to live" (TTL). However, this requires the receiving agent to count down the TTL. That is, whenever it serves a record with a TTL, it decrements the TTL by the length of time it has held it. The Internet Domain Name Service protocols use TTLs to support caching of the mappings of DNS to IP addresses. Typically, the originating host uses small TTLs for volatile addresses and large ones for less-volatile addresses. As I write this, Gregor Hagedorn's mail server bba.de has a TTL on my own dns server of 71243 seconds and the wiki server, efgblade.cs.umb.edu, has a ttl of 10800 seconds in my dns server. If I don't submit this within the next 3 hours, my web browser will need to refresh its dns entry. (Though actually, twiki will release the edit lock after one hour, so I better hurry...) )
+
+-- Main.BobMorris - 25 May 2004
+
+I agree on the use case that data are only occasionally updated at the server, but I think this is rather the exception than the rule. In most cases I still fail to see how I can give a "guarantee of the usefulness of the data". If I have a specimen collection database into which 10 scientists enter data every day, as a provider I have a completely unpredictable update behavior. In my mind only the consumer can decide whether it is ok to have cached data slightly out of date, or whether to requery in case it has just changed. This is entirely dependent on the consumer's purpose. For many purposes yearly updates would be fine, but for other purposes someone may repeat the query every week and there may be a <nop>Ph.D. thesis depending on it. You already say that you can leave it empty, so in a way it is ok for me to consider only the case of updates of known intervals. Please do provide an element name, annotation, and path/position in SDD and I will add it to the schema!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+
+I see this item mostly to support caching, but in quite a different way than Bob: after the expiration date, a cache should stop providing the data. It should try to update before, of course, but if the expiration date has not been changed, the contents should be deleted from the cache. Providers would set this date not as a fixed item, but as something like date()+30. This would ensure that IF they decide to take data off line for some reason, it would not persist for more than 30 days in the cache. Of course, only "well-behaved" caches would respect that ...
+
+-- Main.WalterBerendsohn - 25 May 2004	
+
+Well, an expired record should of course be deleted from the cache. But you are saying that an unexpired record should also be updated. In other words, your model is "guaranteed not good after" rather than "guaranteed good until". That model, in particular, does nothing to assure the holder that they have current data, and nothing to defend the provider against frequent refreshes. I'm not sure that people would agree that a cache without a guranteee that the cached data is valid deserves to be called a cache. In other words, I think the semantics of an expiration date should be: "guaranteed good until and no guarantee after." It is thus silly for a cache entry to remain after the expiration date unless there is a way to get a new expiration date substantially cheaper than getting the whole stamped object again (hence obviating the need to refresh the cache).
+
+As a separate subtopic, before I propose a mechanism perhaps we need some discussion about the granularity. My inclination is that it should finer than on the <nop>DataSet, but maybe that depends on the granularity of queries we mean to support/encourage/require, and maybe on <nop>DataSet is a conceptually simple place to hang it. My preference would be to do so on whatever is conceptually a "record", but in SDD it isn't so clear what that is.
+
+-- Main.BobMorris - 25 May 2004
+
+*Data Expiration proposal*
+
+Hearing no counter argument to my reply to Main.WalterBerendsohn, I will make this explicit proposal which is meant to implement semantics of "guaranteed good until", with silence on what happens after (which, for a reliable cache means "not good after"). I propose an optional attribute "goodUntil" of type xs:date which can be placed on any of the elements proposed in DataExpirationGranularity. If an element has a goodUntil and so does some sub element, the consuming application is wholly responsible for comparing them and arranging for refresh if the subelement will expire before the element. It is also the responsibility of the consuming application to understand whether and how the source can offer fine-grained refresh, or whether the entire document must be reconstructed. A producer that wishes to offer no guarantees of changing a datum only at a specified date can simply omit all goodUntil attributes. 
+
+As Main.WalterBerendsohn observes a good strategy for a provider that does wish to reduce its traffic is to put something like date()+ X  on records it wants to guarantee. Suppose the provider is willing to hold updates for 31 days from the date D0 at which they are ready. In the worst case, a new record is ready just after service of an old one, and the current date is D0. The producer should at that time begin offering date()+16 for 16 days, at which time it should offer date()+8 for 8 days, etc. This strategy minimizes the number of refreshes the worst case holder makes and provides for everyone to have new at D0+16+8+4+2+1=D0+31 days.
+
+-- Main.BobMorris - 7 Jun 2004
+
+As said above, I have reservations about the ability of the majority of providers to give such a strong guarantee to the consumer. This can only occur in offline-situation, where data at the provider are updated at intervals. These situations used to be frequent, but I believe they more and more become the exception since the databases simply have to be live to allow editing over the internet. Walter's proposal would have allowed providers to provide a validity guess. Bob's "guaranteed-no-change" semantics, this can only be given if large datasets are updated at known intervals. Thus both semantics are naturally restricted to Dataset granularity.
+
+I think that most data providers of live database will either omit <nop>GoodUntil, set it to Now() (=expires immediately), or they may set it to an arbitrary date like 30 days to reduce traffic - basically lying to the consumer that the data are certainly good until this date.
+
+So I have added a "gooduntil" attribute on the <nop>DerivationMetadataType in the upcoming SDD: &lt;xs:attribute name="gooduntil" type="xs:dateTime" use="optional"&gt;. My annotation attempt is: <em>"The data in this Dataset are guaranteed not to change until this date. No guarantee is given after this date and a cache should be refreshed. If the provider cannot guarantee that the data will not be changed until a future date, this attribute should be omitted."</em> Please correct if you can express it better.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 7 Jun 2004
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="GregorHagedorn" date="1086601846" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="DerivationHistory"}%
+In DerivationHistory, Gregor Hagedorn wrote
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1086583297" format="1.0" version="1.6"}%
+d37 11
+a47 2
+As Main.WalterBerendsohn observes a good strategy for a provider that does wish to reduce its traffic is to put something like date()+ X  on records it wants to guarantee. Suppose the provider is willing to hold updates for 31 days from the date D0 at which they are ready. In the worst case, a new record is ready just after service of an old one, and the current date is D0. The producer should at that time begin offering date()+16 for 16 days, at which time it should offer date()+8 for 8 days, etc. This strategy minimizes the number of refreshes the worst case holder makes and provides for everyone to have new at D0+16+8+4+2+1=D0+31 days.
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086356226" format="1.0" version="1.5"}%
+d33 1
+d35 1
+d37 2
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1085509772" format="1.0" version="1.4"}%
+d21 1
+a21 1
+-- Gregor Hagedorn - 25 May 2004
+a26 1
+
+a30 1
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="WalterBerendsohn" date="1085498898" format="1.0" version="1.3"}%
+d25 12
+a36 2
+-- Main.WalterBerendsohn - 25 May 2004	
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085493086" format="1.0" version="1.2"}%
+d22 5
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1085487847" format="1.0" version="1.1"}%
+d3 1
+d5 1
+a5 1
+In DerivationHistory, Main.GregorHagedorn wrote
+d7 1
+a7 1
+"actually one thing missing is the expiration data of a dataset, which is not yet in SDD. I seem to have a block here, but I have no idea how the provider could know this date. Nobody can look into the future when the next change in the data will be made. So any value will be just heuristic. Would that not be a better choice for the receiving side to be made? Where should it go, and what should be the annotation that gives a provider a hint about what should go in there?"
+d9 1
+a9 1
+I have been harping on this point in TDWG for years but seem to make little progress.  If instead of the term "expiration date" we use the notion "good until" we see better that this is a guarantee of the usefulness of the data, not a guarantee that it will become useless after the given date. Its purpose is to support caching. If an agent is processing a record before the expiration date, it is contractually guaranteed not to have to go back to the source for assurance the data hasn't changed, and it can use a cached copy with impunity.
+d11 1
+a11 3
+Possibly a reason Main.GregorHagedorn and others block here is the model that an SDD document is a static object, not a container for dynamic data. That is, if two queries to an SDD provider produce identical results except for something indicating the time at which the query was answered, a document-centric model will assert that these are two different documents and the second should displace any cached instance of the first. Since I am a data-centric, not document-centric, kind of fellow, I don't subscribe to this model. I believe that applications will need to cache _payloads_ not SDD documents.
+
+Expiration dates benefit both providers and consumers. The latter for cache management, the former to reduce traffic from consumers that must be satisfied about currency. Of course, they impose something on the producer: it must accept that it cannot serve changes to a given record until  the expiration date. I find this a small issue for biodiversity data, where the time to revise data is dominated by the science, not the data management. Besides, if a provider thinks it needs to update data with zero latency, it can just mark its expiration date as equal to its service date plus some tiny interval, possibly even zero. This gives the effective message that data should be regarded as potentially obsolete as soon as you get it, which anyway is the only possible conclusion to be drawn from an absence of expiration date.
+d15 1
+a15 1
+(There are technical issues about implementation of expiration dates that needn't be discussed much here. Just stamping an expiration date is a relatively easy, relatively low overhead solution, but not perfectly robust, because perfect enforcement requires synchronization of the provider and consumer's clocks. I find this unnecessary and think that a "good enough" contract is OK for biodiversity data. More robust solutions include stamping a "time to live" (TTL). However, this requires the receiving agent to count down the TTL. That is, whenever it serves a record with a TTL, it decrements the TTL by the length of time it has held it. The Internet Domain Name Service protocols use TTLs to support caching of the mappings of DNS to IP addresses. Typically, the originating host uses small TTLs for volatile addresses and large ones for less-volatile addresses. As I write this, Main.GregorHagedorn's mail server bba.de has a TTL on my own dns server of 71243 seconds and the wiki server, efgblade.cs.umb.edu, has a ttl of 10800 seconds in my dns server. If I don't submit this within the next 3 hours, my web browser will need to refresh its dns entry. (Though actually, twiki will release the edit lock after one hour, so I better hurry...) )
+d18 4
+@

@@ -1,0 +1,175 @@
+%META:TOPICINFO{author="RyanKaldari" date="1266626987" format="1.1" version="1.17"}%
+---+!!LSID HTTP Proxy Usage Recommendations
+
+*Recommendations to make LSID more interoperable with the World Wide Web and the Semantic Web*
+
+While independence of protocol and persistent association between object and identifier are benefits of the LSID identification scheme, standard World Wide Web software cannot consume LSIDs directly. Therefore, LSID adopters cannot take advantage of the wealth of software developed by the World Wide Web and the Semantic Web communities.
+
+To work around that limitation and retain the benefits of the LSID specification, we recommend the use of *LSID HTTP proxies* to simplify the resolution process for tools that do not yet handle LSIDs directly.
+
+An *LSID HTTP proxy* is a web service that resolves LSIDs by returning the results of the getMetadata() call via HTTP GET. For example, consider the following LSID in its *standard form*: ==urn:lsid:authority:namespace:identifier==
+
+Through the use of an LSID HTTP proxy at http://lsid.tdwg.org, for example, one can create an equivalent *proxy version* of the LSID above, by concatenating the proxy web address to the LSID, as in: ==http://lsid.tdwg.org/urn:lsid:authority:namespace:identifier==
+
+TDWG provides an LSID HTTP proxy at http://lsid.tdwg.org/ and encourages anyone in the biodiversity information community to use it. 
+
+To completely work around the limitation of the LSID specification mentioned above we recommend that LSIDs occurring in RDF documents must follow three simple rules.
+
+   1. Objects must be identified by LSID in its *standard form* using the *rdf:about* attribute as in: <verbatim><rdf:Description rdf:about="urn:lsid:authority:namespace:identifier"></verbatim>
+   2. The description of all objects identified by an LSID must contain an *owl:sameAs* statement expressing the equivalence between the object identifier in its *standard form* and its *proxy version* as in: <verbatim><owl:sameAs rdf:resource="http://lsid.tdwg.org/urn:lsid:authority:namespace:identifier"/></verbatim>
+   3. All references to objects identified by LSIDs using the *rdf:resource* attribute must use a *proxy version* of the LSID as in: <verbatim><someProperty  rdf:resource="http://proxy.example.com/urn:lsid:authority:namespace:identifier"/></verbatim>
+
+The strength of this approach is that it maintains the archival nature of LSID while allowing any standard World Wide Web or Semantic Web client to follow the links to the objects. 
+
+Objects archived for posterity retain their LSIDs in the standard, archival form. Consequently, the stored data remain valid even if the standard resolution protocol is not available anymore.
+
+Below are two sample RDF documents; the first one does not comply with this recommendation while the second does. Namespace declarations have been omitted for conciseness.
+
+----
+
+*Listing 1:* The RDF document below *DOES NOT COMPLY* with the LSID proxy usage recommendation:
+
+<verbatim>
+<rdf:RDF> 
+   <rdf:Description rdf:about="urn:lsid:ubio.org:namebank:11815"> 
+     <dc:identifier>urn:lsid:ubio.org:namebank:11815</dc:identifier> 
+
+     <dc:creator rdf:resource="http://www.ubio.org"/> 
+     <dc:subject>Pternistis leucoscepus (Gray, GR) 1867</dc:subject> 
+     <dc:title>Pternistis leucoscepus</dc:title> 
+     <dc:type>Scientific Name</dc:type> 
+
+     <gla:vernacularName rdf:resource="urn:lsid:ubio.org:namebank:954940"/> 
+     <gla:vernacularName rdf:resource="urn:lsid:ubio.org:namebank:954941"/> 
+     <gla:vernacularName rdf:resource="urn:lsid:ubio.org:namebank:1564236"/> 
+     <gla:objectiveSynonym rdf:resource="urn:lsid:ubio.org:namebank:12292"/> 
+   </rdf:Description> 
+</rdf:RDF>
+</verbatim>
+
+----
+
+*Listing 2:* The RDF document below *DOES COMPLY* with the LSID proxy usage recommendation:
+
+<verbatim>
+<rdf:RDF>
+  <rdf:Description rdf:about="urn:lsid:ubio.org:namebank:11815">
+    <dc:identifier>urn:lsid:ubio.org:namebank:11815</dc:identifier>
+    <owl:sameAs rdf:resource="http://lsid.tdwg.org/urn:lsid:ubio.org:namebank:11815" />
+
+    <dc:creator rdf:resource="http://www.ubio.org"/>
+    <dc:subject>Pternistis leucoscepus (Gray, GR) 1867</dc:subject>
+    <dc:title>Pternistis leucoscepus</dc:title>
+    <dc:type>Scientific Name</dc:type>
+
+    <gla:vernacularName rdf:resource="http://lsid.tdwg.org/urn:lsid:ubio.org:namebank:954940"/>
+    <gla:vernacularName rdf:resource="http://lsid.tdwg.org/urn:lsid:ubio.org:namebank:954941"/>
+    <gla:vernacularName rdf:resource="http://lsid.tdwg.org/urn:lsid:ubio.org:namebank:1564236"/>
+    <gla:objectiveSynonym rdf:resource="http://lsid.tdwg.org/urn:lsid:ubio.org:namebank:12292"/>
+  </rdf:Description>
+</rdf:RDF>
+</verbatim>
+
+----
+
+-- Main.RicardoPereira and Main.RogerHyam - 02 May 2007
+
+---+++ Structured Discussion
+
+This space is reserved for discussion of issues raised on the next section of this page, one by one, in a structured manner. We will filter the issues from the section below as they arise and move them to this section.
+
+---++++ 1. LSID vs. HTTP
+
+Although the choice of LSID over HTTP or vice-versa is a central issue in discussing the use of identifiers in our community, the issue is not in the scope of discussions in this page. In here we are concerned about whether or not (and how) to use LSID HTTP proxies to improve LSID interoperability with standard WWW and SW applications. In other words, this proposal and the related discussion only concern those who wish to use LSID to identify objects in our domain and should not be used by itself to guide their choice of an identification scheme. However, this proposal could be used as one argument for or against the choice of an ID scheme.
+
+The discussion about which of technology is better for biodiversity information application should occur elsewhere. We will create such a space shortly and will link to that page when it is available. 
+
+-- Main.RicardoPereira - 10 May 2007
+
+
+---++++ 2. LSID supports other description languages besides RDF
+
+Contrary to what Main.GregorHagedorn indicated below, LSID does support multiple description languages to represent metadata. However, RDF is currently the preferred language.
+
+LSID standard does support multiple metadata representation languages through the parameter *accepted_formats* of the _getMetadata(lsid, accepted_formats)_ call (see page 10 of [[http://www.omg.org/cgi-bin/doc?dtc/04-05-01][LSID Specification]]). That parameter accepts valid MIME types as values and the server response to that parameter is similar to standard content negotiation.
+
+One could then use that property of LSID specification and extend this proposal to make the LSID HTTP proxy perform standard content negotiation and pass the format requested by the HTTP client on to the getMetadata call, thus making LSID even more interoperable with WWW and SW applications.
+
+-- Main.RicardoPereira - 10 May 2007
+
+Indeed, I did not know about the LSID negotiation. In my eyes that would then be an urgent extension to the proposal, i.e. how to make LSID content negotiation, http content negotiation and the http-LSID proxy URLs work together. As future metadata formats arise, transition should be smooth: Providers can still supply old OWL for those clients which can only handle this, plus provide improved standards for those already handling it.
+
+Can you extend the proposal? I wonder how this would work, since any interaction according to the proposal requires a mixture of LSID and http-proxy GUIDs.
+
+ -- Main.GregorHagedorn - 15 May 2007
+
+Incorporating content negotiation into this proposal would be simple. Any client dereferencing a proxy version of an LSID could provide the *Accept:* HTTP header field in the request. The LSID HTTP proxy would then pass the preferred content types requested by the client on to the LSID authority responsible for the identifier being resolved, using the parameter *accepted_types* of the getMetadata(lsid, *accepted_types*) call. According to the LSID specification, the authority would then make the best effort to fulfill the request, just like any other HTTP server would.
+
+Note that LSID content negotiation do not support the weights (q=0.5) specified by the HTTP content negotiation, but that would not be a significant problem.
+
+-- Main.RicardoPereira - 23 May 2007
+
+---++++ 3. Navigation is required to get to the owl:sameAs property
+
+Main.GregorHagedorn mentions below that forcing clients, human or machines, to navigate to the owl:sameAs property within an object description is cumbersome. 
+
+I argue that *it is not*. Decent RDF(S) and OWL tools make the equivalence established by owl:sameAs property completely transparent to clients. When using the appropriate tools, querying using either identifier will retrieve resources identified by both.
+
+It will only be cumbersome to navigate to the owl:sameAs property if you do not use the appropriate tools. But that would be the same as parsing XML by hand without using a standard XML parser.
+
+As for human readable documents (such as those in HTML format), the owl:sameAs property is irrelevant because the user is already seeing an HTML representation of the object of interest (that he supposedly got via a proxy version of an LSID) and the URL to that object is already presented in his web browser address bar. 
+
+-- Main.RicardoPereira - 10 May 2007
+
+We all agree it is a question of tools. Only the tools are currently available only for a few selected ones. It seems to be risky to simply bet that OWL will overtake everything else. At the moment my estimate is that most current data providers and consumers are not prepared, and especially do not have the human resources to only consider OWL-Artificial intelligence approaches. I believe that many people will have to work with current mainstream software tools like relational databases, Java, Php, Python, etc. Of course, machine-reasoners exist that can be called from, e.g., Java, but they seem to be in relatively early development stage and I read about serious scaling problems. I maintain my believe that the system proposed is complicated and error prone.
+
+From a software engineering standpoint, another important question is perhaps: How will the rules outlined here be enforced through software? Does a validator exist, ensuring that the alternate use of LSID and http-proxy IDs is always maintained in the right order, and that for every one, the complementary one is indeed provided? Or do we just hope everyone will get it right?
+
+ -- Main.GregorHagedorn - 15 May 2007
+
+The recommendations here would not be enforced by software, only by humans (software developers and systems administrators). The penalty for a non-compliant LSID Authority would be that general WWW and SW clients wouldn't be able to follow the pure LSIDs provided in the RDF metadata. Non-compliance to these recommendations wouldn't break any clients, it would only restrict the set of clients that can make use of the linked data. It is up the the LSID Authority to choose which set of clients they will serve. 
+
+-- Main.RicardoPereira - 23 May 2007
+
+Is not the purpose of the current proxy usage recommendation to enable standard RDF/OWL-based semantic web tools to be used as clients (or parts of the processing chain)? Is yes, then these clients *would break* if these recommendations are not followed. Clients not affected as you describe don't need the current method at all. Having no validation method essentially prevents biodiversity providers from relying on standard semantic web technology. (That does not exclude creating custom tools incorporating LSID resolvers and knowledge of TDWG recommendations, of course.)
+
+-- Main.GregorHagedorn - 23 May 2007
+
+Maybe we don't agree about what a broken client is. What I meant was that standard clients won't be able to follow pure LSIDs, but that wosn't break them. In those cases, they will just ignore the unknown identifier and won't try to dereference it. To me that client isn't broken, it just can't get to all the data that is available. It is similar to finding HTTP URLs that are only used as identifiers (such as those used to identify XML namespaces). 
+
+Semantic Web clients usually operate under a open world assumption, that is, they assume that the information they come across is only part of the available information. They also don't validate documents against schemata in general (apart from requiring valid RDF/OWL documents). They just ignore what they don't know. In this kind of environment, it is common for clients to come across unknown identifier schemes, such as DOI, and LSID.
+
+It wouldn't hurt however to extend [[http://linnaeus.zoology.gla.ac.uk/~rpage/lsid/tester/][Rod Page's LSID Tester]] to check whether an authority follows the recommendations in this page and emit a warning message in case it doesn't. Apart from that, any LSID aware client could check if these recommendations are followed by the data providers it gets data from. Was that kind of software "enforcement" you were looking for, or something more strict and broad?
+
+-- Main.RicardoPereira - 24 May 2007
+
+I think it is a question of purpose. If you are looking for potential search result that another agent will then consider whether relevant or not, an OWL client that usually works but sometimes breaks is not so bad. However, if you do data analysis or recommendations for which you take legal responsibility (e.g. on quarantine matters) it may be different. One would desire a reliable system that behaves in the expected way. The analysis of the possibilty that the current recommendation is not followed precisely - given the complex nature of the alternating types of identifiers it requires - is adding a huge debugging load. My conclusion would be, if I cannot rely on this recommendation, then I must ignore it and make sure that the analysis works without it.
+
+-- Main.GregorHagedorn - 24 May 2007
+
+---+++ General Comments and Discussion
+
+Please, use the space below to make comments about this page, or send your comments to the tdwg-guid mailing list at tdwg-guid@lists.tdwg.org.
+
+To me this looks confusing. For every purpose every client, human or machine, has to go from resource to same-as and then to the ID of the object... This does not look like a good software architecture to a biologist... -- Why not use http in the first place? If I read what you have to do to become an LSID server or client it seems to me much simpler to add [[http://www.w3.org/2003/01/xhtml-mimetype/content-negotiation][content negotation]] to your web server. As I understand LSID, it is all about a contract of not reusing identifier, not about resolving forever. If we could agree on such a contract to deliver all our object guid using a "lsid" either as server name or as first path (<nop>http://lsid.myorg.org/namespace/identifier or <nop>http://myorg.org/lsid/namespace/identifier - both would be interoperable) we would have it. We would in fact become more flexible than with LSIDs: the latter support only data and metadata, with run-of-the-mill content negotiation the biodiversity community would have an open, extensible path to further future (especially metadata supporting the format of the future...). Even now, with content negotiation humans using webbrowsers could get a readable html-metadata page, rather than rdf gibberish. Which would exactly follow the [[http://www.w3.org/TR/swbp-vocab-pub/#negotiation][w3c recommendations for serving rdf/owl vocabularies]]! Why don't we follow? -- Main.GregorHagedorn - 07 May 2007
+
+----
+
+I fully agree with Gregor. The more I know about LSIDs I can't see what we gain over http. As LSIDs even use DNS at their core they do not seem any more stable than http. And I would think that in case the entire web decides to drop http and use some other protocol they will have some solutions to migrate away from it. With the small LSID community I wouldn't be so sure. 
+Another guarantee for reliable resolution I would like to see are caches that can act as a fallback option in case the original resource is down or gone. This would probably require a central GUID system like [[http://purl.oclc.org/][PURLs]] that can redirect the resolution or at least a central resolver for non DNS based GUIDs like [[http://www.prescod.net/rest/combining_names_and_locations/][UUIDs]], but the proposed tdwg proxy is exactly that! [[http://www.handle.net/rfc/rfc3650.html][Handles]], the free basis of DOI, do support multiple locations of a single resource by the way - as well as different data representations through a feature they call "multiple attributes" (see [[http://www.handle.net/rfc/rfc3650.html][RFC4650]] -- Main.MarkusDoering - 08 May 2007
+
+----
+
+I feel that this RFC makes the best attempt possible to support semantic web applications from outside the biodiversity data domain -- Main.BenRichardson - 25 May 2007
+
+----
+
+If you are going to do this, I recommend that the http://lsid.tdwg.org/... URIs result in 303 responses from the server. You want the LSIDs to denote domain objects, and you want the proxy HTTP URIs to denote the same things (that's what owl:sameAs means). But according to current semantic web practice, a 200-responding URI necessarily denotes the document (actually the "network resource"), so your current server behavior is saying something nonsensical, that a dog is a document. If you do a 303 See Other to a second URI that identifies the document carrying the RDF, then you'll be following W3C TAG recommendation httpRange-14 (see http://lists.w3.org/Archives/Public/www-tag/2005Jun/0039.html) and your service will make semantic web tools and pedants happier, and no one will confuse a dog with a dogpile of RDF. -- Main.JonathanRees - 14 Oct 2007
+
+----
+
+Assuming that this discussion is still open (or relevant), I have to say that I agree with the statements of Gregor and Markus. If the chief argument for LSID over HTTP is persistence, I have far more confidence in the persistence of most HTTP URIs than LSID records. (For example, it seems that amnh.org is no longer resolving as an LSID authority, thus breaking all of their LSID records). The LSID community is simply much too small and specialized to insure data persistence, no matter how much that may be the intention. PURLs are only slightly better, as they introduce a second point of failure for each record (and rely on the likelihood that administrators will actually update their PERL records in the event of changes to their websites). Web archiving services such as archive.org or webcitation.org are adequate solutions for online material that is likely to be ephimeral, but for most specimen records I would prefer citing HTTP URIs for persistence. For accessibility, actionability, flexibility, and practicality, HTTP URIs win hands down. I think we just need to accept the fact that absolute location persistence on the internet is not a realistic goal (nor is it really that important compared to other considerations).
+
+-- Main.RyanKaldari - 20 Feb 2010
+
+%META:TOPICMOVED{by="RicardoPereira" date="1178294393" from="Sandbox.LsidHttpProxyUsageRecommendation" to="GUID.LsidHttpProxyUsageRecommendation"}%

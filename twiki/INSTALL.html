@@ -1,0 +1,2267 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<!-- version="$Rev$" -->
+<head>
+  <title>TWiki Installation Guide</title>
+  <style type="text/css" media="all">
+
+/* 
+Basic layout derived from http://www.positioniseverything.net/articles/pie-maker/pagemaker_form.php.
+I've changed many so things that I won't put a full copyright notice. However all hacks (and comments!) are far beyond my knowledge and this deserves full credits:
+
+Original copyright notice:
+Parts of these notes are
+(c) Big John @ www.positioniseverything.net and (c) Paul O'Brien @ www.pmob.co.uk, all of whom contributed significantly to the design of
+the css and html code.
+
+Reworked for TWiki: (c) Arthur Clemens @ visiblearea.com
+*/
+
+html, body {
+	margin:0; /*** Do NOT set anything other than a left margin for the page
+as this will break the design ***/
+	padding:0;
+	border:0;
+/* \*/
+	height:100%;
+/* Last height declaration hidden from Mac IE 5.x */
+}
+body {
+	background:#fff;
+	min-width:100%; /*** This is needed for moz. Otherwise, the header and patternBottomBar will
+slide off the left side of the page if the screen width is narrower than the design.
+Not seen by IE. Left Col + Right Col + Center Col + Both Inner Borders + Both Outer Borders ***/
+	text-align:center; /*** IE/Win (not IE/MAC) alignment of page ***/
+}
+.clear {
+	clear:both;
+	/*** these next attributes are designed to keep the div
+	height to 0 pixels high, critical for Safari and Netscape 7 ***/
+	height:0px;
+	overflow:hidden;
+	line-height:1%;
+	font-size:0px;
+}
+
+#patternWrapper {
+	height:100%; /*** moz uses this to make full height design. As this #patternWrapper is inside the #patternPage which is 100% height, moz will not inherit heights further into the design inside this container, which you should be able to do with use of the min-height style. Instead, Mozilla ignores the height:100% or min-height:100% from this point inwards to the center of the design - a nasty bug.
+If you change this to height:100% moz won't expand the design if content grows.
+Aaaghhh. I pulled my hair out over this for days. ***/
+/* \*/
+	height:100%;
+/* Last height declaration hidden from Mac IE 5.x */
+/*** Fixes height for non moz browsers, to full height ***/
+}
+#patternWrapp\65	r{ /*** for Opera and Moz (and some others will see it, but NOT Safari) ***/
+	height:auto; /*** For moz to stop it fixing height to 100% ***/
+}
+/* \*/
+* html #patternWrapper{
+	height:100%;
+}
+
+#patternPage {
+	margin-left:auto; /*** Mozilla/Opera/Mac IE 5.x alignment of page ***/
+	margin-right:auto; /*** Mozilla/Opera/Mac IE 5.x alignment of page ***/
+	text-align:left; /*** IE Win re-alignment of page if page is centered ***/
+	position:relative;
+	width:100%; /*** Needed for Moz/Opera to keep page from sliding to left side of
+page when it calculates auto margins above. Can't use min-width. Note that putting
+width in #patternPage shows it to IE and causes problems, so IE needs a hack
+to remove this width. Left Col + Right Col + Center Col + Both Inner Border + Both Outer Borders ***/
+/* \*/
+	height:100%;
+/* Last height declaration hidden from Mac IE 5.x */
+/*** Needed for Moz to give full height design if page content is
+too small to fill the page ***/
+}
+/* Last style with height declaration hidden from Mac IE 5.x */
+/*** Fixes height for IE, back to full height,
+from esc tab hack moz min-height solution ***/
+#patternOuter {
+	z-index:1; /*** Critical value for Moz/Opera Background Column colors fudge to work ***/
+	position:relative; /*** IE needs this or the contents won't show outside the parent container. ***/
+
+	height:100%;
+/* Last height declaration hidden from Mac IE 5.x */
+/*** Needed for full height inner borders in Win IE ***/
+}
+
+#patternFloatWrap {
+	width:100%;
+	float:left;
+	display:inline;
+}
+
+#patternLeftBar {
+	/* Left bar width is defined in viewleftbar.pattern.tmpl */
+	float:left;
+	display:inline;
+	position:relative; /* IE needs this or the contents won't show
+outside the parent container. */
+	overflow:hidden;
+}
+#patternLeftBarContents {
+	left:-1px;
+	position:relative;
+	/* for margins and paddings use style.css */
+}
+#patternMain {
+	width:100%;
+	float:right;
+	display:inline;
+}
+#patternTopBar {
+	/* Top bar height is defined in viewtopbar.pattern.tmpl */
+	z-index:1; /*** Critical value for Moz/Opera Background Column colors fudge to work ***/
+	position:absolute;
+	top:0px;
+	width:100%;
+}
+#patternTopBarContents {
+	height:1%; /* or Win IE won't display a background */
+	/* for margins/paddings use style.css */
+}
+#patternBottomBar {
+	z-index:1; /* Critical value for Moz/Opera Background Column colors fudge to work */
+	clear:both;
+	width:100%;
+}
+
+/* Pages that are not view */
+
+.patternNoViewPage #patternOuter {
+	/* no left bar, margin at both sides */
+	margin-left:4%;
+	margin-right:4%;
+}
+
+/* edit.pattern.tmpl */
+
+.patternEditPage #patternOuter,
+.patternPreviewPage #patternOuter {
+	margin-left:0;
+	margin-right:0;
+}
+
+.twikiLeft {
+	float:left;
+	position:relative;
+}
+.twikiRight {
+	position:relative;
+	float:right;
+	display:inline;
+	margin:0;
+}
+.twikiClear {
+	/* to clean up floats */
+	margin:0;
+	padding:0;
+	height:0;
+	line-height:0px;
+	clear:both;
+	display:block;
+}
+.twikiHidden {
+	display:none;
+}
+.twikiLast,
+.patternTopic .twikiLast {
+	border-bottom:0px;
+}
+
+/*	-----------------------------------------------------------
+	STYLE
+	Appearance: margins, padding, fonts, borders
+	-----------------------------------------------------------	*/
+	
+
+/*	---------------------------------------------------------------------------------------
+	CONSTANTS
+	
+	Sizes
+	----------------------------------------
+	S1 line-height																	1.4em
+	S2 somewhat smaller font size													94%
+	S3 small font size, twikiSmall													font-size:86%; line-height:110%;
+	S4 horizontal bar padding (h2, patternTop)										5px
+	S5 form and attachment padding													20px
+	S6 left margin left bar															1em
+
+	---------------------------------------------------------------------------------------	*/
+
+/* GENERAL HTML ELEMENTS */
+
+html body {
+	font-size:104%; /* to change the site's font size, change #patternPage below */
+	voice-family:"\"}\""; 
+	voice-family:inherit;
+	font-size:small;
+}
+html>body { /* Mozilla */
+	font-size:small;	
+}
+p {
+	margin:1em 0 0 0;
+}
+table {
+	border-collapse:separate;
+}
+th {
+	line-height:1.15em;
+}
+strong, b {
+	font-weight:bold;
+}
+hr {
+	height:1px;
+	border:none;
+}
+
+/* put overflow pre in a scroll area */
+pre {
+    width:100%;
+    margin:1em 0; /* Win IE tries to make this bigger otherwise */
+}
+html>body pre { /* hide from IE */
+	/*\*/ overflow:auto !important; /* */ overflow:scroll; width:auto; /* for Mac Safari */
+}
+/* IE behavior for pre is defined in twiki.pattern.tmpl in conditional comment */
+ol li, ul li {
+	line-height:1.4em; /*S1*/
+}
+	
+/* Text */
+h1, h2, h3, h4, h5, h6 {
+	line-height:104%;
+	padding:0em;
+	margin:1em 0 .1em 0;
+	font-weight:normal;
+}
+h1 {
+	margin:0 0 .5em 0;
+}
+h1 { font-size:210%; }
+h2 { font-size:160%; }
+h3 { font-size:135%; }
+h4 { font-size:122%; }
+h5 { font-size:110%; }
+h6 { font-size:95%; }
+h2, h3, h4, h5, h6 {
+	display:block;
+	/* give header a background color for easy scanning:*/
+	padding:.1em 5px;
+	margin:1em -5px .35em -5px;
+	border-width:0 0 1px 0;
+	border-style:solid;
+	height:auto;	
+}
+h1.patternTemplateTitle {
+	font-size:175%;
+	text-align:center;
+}
+h2.patternTemplateTitle {
+	text-align:center;
+}
+/* Links */
+/* somehow the twikiNewLink style have to be before the general link styles */
+.twikiNewLink {
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+.twikiNewLink a {
+	text-decoration:none;
+	margin-left:1px;
+}
+.twikiNewLink a sup {
+	text-align:center;
+	padding:0 2px;
+	vertical-align:baseline;
+	font-size:100%;
+	text-decoration:none;
+}
+.twikiNewLink a:link sup,
+.twikiNewLink a:visited sup {
+	border-width:1px;
+	border-style:solid;
+	text-decoration:none;
+}
+.twikiNewLink a:hover sup {
+	text-decoration:none;
+}
+
+:link:focus,
+:visited:focus,
+:link,
+:visited,
+:link:active,
+:visited:active {
+	text-decoration:underline;
+}
+:link:hover,
+:visited:hover {
+	text-decoration:none;
+}
+img {
+	vertical-align:text-bottom;
+	border:0;
+}
+
+/* Form elements */
+form { 
+	display:inline;
+	margin:0em;
+	padding:0em;
+}
+textarea,
+input,
+select {
+	vertical-align:middle;
+	border-width:1px;
+	border-style:solid;
+}
+textarea {
+	padding:1px;
+}
+input,
+select option {
+	padding:1px;
+}
+.twikiSubmit,
+.twikiButton,
+.twikiCheckbox {
+	border-width:1px;
+	border-style:solid;
+	padding:.15em .25em;
+	font-size:94%;
+	font-weight:bold;
+	vertical-align:middle;
+}
+.twikiCheckbox,
+.twikiRadioButton {
+	margin:0 .3em 0 0;
+	border:0;
+}
+.twikiInputField {
+	border-width:1px;
+	border-style:solid;
+	padding:.15em .25em;
+	font-size:94%; /*S2*/
+}
+.patternFormButton {
+	border:0;
+	margin:0 0 0 2px;
+}
+textarea {
+	font-size:100%;
+}
+
+/* LAYOUT ELEMENTS */
+/* for specific layout sub-elements see further down */
+
+#patternPage {
+	font-family:arial, "Lucida Grande", verdana, sans-serif;
+	line-height:1.4em; /*S1*/
+	/* change font size here */
+	font-size:105%;
+}
+#patternTopBar {
+	border-width:0 0 1px 0;
+	border-style:solid;
+	overflow:hidden;
+}
+#patternTopBarContents {
+	padding:0 1.5em 0 1em;
+}
+#patternBottomBar {
+	border-width:1px 0 0 0;
+	border-style:solid;
+}
+#patternBottomBarContents {
+	padding:1em;
+	font-size:86%; line-height:110%; /*S3*/
+	text-align:center;
+}
+#patternMainContents {
+	padding:0 1.5em 3em 3em;
+}
+#patternLeftBarContents {
+	margin:0 1em 1em 1em;
+}
+
+/*	-----------------------------------------------------------
+	Plugin elements
+	-----------------------------------------------------------	*/
+
+/* EditTablePlugin */
+.editTable .twikiTable {
+	margin:0 0 2px 0;
+}
+.editTableInput,
+.editTableTextarea {
+	font-family:monospace;
+}
+.editTableEditImageButton {
+	border:none;
+}
+
+/* TablePlugin */
+.twikiTable {
+}
+.twikiTable td,
+.twikiTable th {
+}
+.twikiTable th {
+    padding:4px;
+}
+.twikiTable td {
+    padding:2px 4px;
+}
+.twikiTable th a:link,
+.twikiTable th a:visited,
+.twikiTable th a font {
+	text-decoration:none;
+}
+.twikiTable th a:hover,
+.twikiTable th a:hover font {
+	text-decoration:none;
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+
+/* TablePlugin - sorting of table columns */
+th.twikiSortedAscendingCol a:link,
+th.twikiSortedAscendingCol a:link font,
+th.twikiSortedAscendingCol a:visited,
+th.twikiSortedAscendingCol a:visited font {
+	border-width:1px 0 0 0;
+	border-style:solid;	
+}
+th.twikiSortedDescendingCol a:link,
+th.twikiSortedDescendingCol a:link font,
+th.twikiSortedDescendingCol a:visited,
+th.twikiSortedDescendingCol a:visited font {
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+th.twikiSortedAscendingCol a:hover,
+th.twikiSortedAscendingCol a:hover font {
+	border-width:0 0 1px 0;
+	border-style:solid;
+	text-decoration:none;
+}
+th.twikiSortedDescendingCol a:hover,
+th.twikiSortedDescendingCol a:hover font {
+	border-width:1px 0 0 0;
+	border-style:solid;
+	text-decoration:none;
+}
+
+.twikiEditForm {
+	margin:0 0 .5em 0;
+}
+.twikiEditForm .twikiFormTable {
+	text-align:center;
+}
+
+/* TipsContrib */
+.tipsOfTheDayContents .tipsOfTheDayTitle {
+	font-weight:bold;
+}
+.patternTopic .tipsOfTheDayHeader {
+	display:block;
+	padding:3px 5px;
+}
+.patternTopic .tipsOfTheDayText {
+	padding:0 5px 5px 5px;
+}
+.patternTopic .tipsOfTheDayText a:link,
+.patternTopic .tipsOfTheDayText a:visited {
+	text-decoration:none;
+}
+/* TipsContrib - in left bar */
+#patternLeftBar .tipsOfTheDayHeader img {
+	/* hide lamp icon */
+	display:none;
+}
+#patternLeftBar .tipsOfTheDayContents {
+	padding:.25em .25em .5em .25em;
+	height:1%; /* or Win IE won't display a background */
+	overflow:hidden;
+}
+#patternLeftBar .tipsOfTheDayHeader {
+	display:block;
+	font-weight:normal;
+}
+
+/* TwistyContrib */
+a:link.twistyTrigger,
+a:visited.twistyTrigger {
+	text-decoration:none;
+}
+a:link .twistyLinkLabel,
+a:visited .twistyLinkLabel {
+	text-decoration:underline;
+}
+
+/*	-----------------------------------------------------------
+	TWiki styles
+	-----------------------------------------------------------	*/
+
+#twikiLogin {
+	width:40em;
+	margin:0 auto;
+	text-align:center;
+}
+#twikiLogin .twikiFormSteps {
+	border-width:5px;
+}
+.twikiAttachments,
+.twikiForm {
+	margin:1em 0;
+	padding:1px; /* fixes disappearing borders because of overflow:auto; in twikiForm */
+}
+.twikiForm h1,
+.twikiForm h2,
+.twikiForm h3,
+.twikiForm h4,
+.twikiForm h5,
+.twikiForm h6 {
+	margin-top:0;
+}
+.patternContent .twikiAttachments,
+.patternContent .twikiForm {
+	/* form or attachment table inside topic area */
+	font-size:94%; /*S2*/
+	padding:.5em 20px; /*S5*/ /* top:use less padding for the toggle link; bottom:use less space in case the table is folded in  */
+	border-width:1px 0 0 0;
+	border-style:solid;
+	margin:0;
+}
+.twikiAttachments table,
+table.twikiFormTable {
+	margin:5px 0 10px 0; /* bottom:create extra space in case the table is folded out */
+	border-collapse:collapse;
+	padding:0px;
+	border-spacing:0px;
+	empty-cells:show;
+	border-style:solid;
+	border-width:1px;
+}
+.twikiAttachments table {
+	line-height:1.4em; /*S1*/
+	width:auto;
+	voice-family:"\"}\""; /* hide the following for Explorer 5.x */
+	voice-family:inherit;
+	width:100%;
+}
+.twikiAttachments td, 
+.twikiAttachments th {
+	border-style:solid;
+	border-width:1px;
+}
+.twikiAttachments th,
+table.twikiFormTable th.twikiFormTableHRow {
+	padding:3px 6px;
+	height:2.5em;
+	vertical-align:middle;
+}
+table.twikiFormTable th.twikiFormTableHRow {
+	text-align:center;
+}
+.twikiEditForm .twikiFormTable th,
+.twikiEditForm .twikiFormTable td {
+	padding:.25em .5em;
+	vertical-align:middle;
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+.twikiAttachments th a:link,
+.twikiAttachments th a:visited {
+	text-decoration:none;
+}
+/* don't show any of those ugly sort icons */
+.twikiAttachments th img,
+.twikiAttachments th a:link img,
+.twikiAttachments th a:visited img {
+	display:none;
+}
+.twikiAttachments td,
+table.twikiFormTable td {
+	padding:3px 6px;
+	height:1.4em; /*S1*/
+	text-align:left;
+	vertical-align:top;
+}
+.twikiAttachments td {
+	/* don't show column lines in attachment listing */
+	border-width:0 0 1px 0;
+}
+.twikiAttachments th.twikiFirstCol,
+.twikiAttachments td.twikiFirstCol {
+	/* make more width for the icon column */
+	width:26px;
+	text-align:center;
+}
+.twikiAttachments caption {
+	display:none;
+}
+table.twikiFormTable th.twikiFormTableHRow a:link,
+table.twikiFormTable th.twikiFormTableHRow a:visited {
+	text-decoration:none;
+}
+
+.twikiFormSteps {
+	text-align:left;
+	padding:.25em 0 0 0;
+	border-width:1px 0;
+	border-style:solid;
+}
+.twikiFormStep {
+	line-height:140%;
+	padding:1em 20px; /*S5*/
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+.twikiFormStep h3,
+.twikiFormStep h4 {
+	font-size:115%;
+	border:none;
+	margin:0;
+	padding:0;
+}
+.twikiFormStep h3 {
+	font-weight:bold;
+}
+.twikiFormStep h4 {
+	font-weight:normal;
+}
+.twikiFormStep p {
+	margin:.3em 0;
+}
+
+.twikiToc {
+	margin:1em 0;
+	padding:.3em 0 .6em 0;
+}
+.twikiToc ul {
+	list-style:none;
+	padding:0 0 0 .5em;
+	margin:0em;
+}
+.twikiToc li {
+	margin-left:1em;
+	padding-left:1em;
+	background-repeat:no-repeat;
+	background-position:0 .5em;
+}
+.twikiToc .twikiTocTitle {
+	margin:0em;
+	padding:0em;
+	font-weight:bold;
+}
+
+.twikiSmall {
+	font-size:86%; line-height:110%; /*S3*/
+}
+.twikiSmallish {
+	font-size:94%; /*S2*/
+}
+.twikiNew { }
+.twikiSummary {
+	font-size:86%; line-height:110%; /*S3*/
+}
+.twikiEmulatedLink {
+	text-decoration:underline;
+}
+.twikiPageForm table {
+	border-width:1px;
+	border-style:solid;
+}
+.twikiPageForm table {
+	width:100%;
+	margin:0 0 2em 0;
+}
+.twikiPageForm th,
+.twikiPageForm td {
+	border:0;
+	padding:.15em 1em;
+}
+.twikiPageForm td {}
+.twikiPageForm td.first {
+	padding-top:1em;
+}
+.twikiBroadcastMessage {
+	padding:.25em .5em;
+	margin:0 0 1em 0;
+}
+.twikiHelp {
+	padding:1em;
+	margin:0 0 1em 0;
+	border-width:1px 0;
+	border-style:solid;
+}
+.twikiHelp ul,
+.twikiHelp li {
+	margin:0;
+}
+.twikiHelp ul {
+	padding-left:2em;
+}
+.twikiAccessKey {
+	text-decoration:none;
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+a:hover .twikiAccessKey {
+	text-decoration:none;
+	border:none;
+}
+.twikiWebIndent {
+	margin:0 0 0 1em;
+}
+
+a.twikiLinkInHeaderRight {
+	float:right;
+	display:block;
+	margin:0 0 0 5px;
+}
+
+/*	-----------------------------------------------------------
+	Pattern skin specific elements
+	-----------------------------------------------------------	*/
+
+.patternTopic {
+	margin:1em 0 2em 0;
+}
+#patternLeftBarContents {
+	font-size:94%; /*S2*/
+	padding:0 0 .5em 0;
+}
+#patternLeftBarContents a img {
+	margin:1px 0 0 0;
+}
+#patternLeftBarContents a:link,
+#patternLeftBarContents a:visited {
+	text-decoration:none;
+}
+#patternLeftBarContents ul {
+	padding:0;
+	margin:.5em 0 1em 0;
+	list-style:none;
+}
+#patternLeftBarContents li {
+	width:100%;
+	margin:0 1.1em 0 0;
+	overflow:hidden;
+}
+#patternLeftBarContents .patternWebIndicator {
+	margin:0 -1em; /*S6*/
+	padding:.55em 1em; /*S6*/
+	line-height:1.4em;
+	text-align:center;
+}
+#patternLeftBarContents .patternWebIndicator a:link,
+#patternLeftBarContents .patternWebIndicator a:visited {
+	text-decoration:none;
+}
+#patternLeftBarContents .patternLeftBarPersonal {
+	margin:0 -1em; /*S6*/
+	padding:.55em 1em; /*S6*/
+	width:100%;
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+#patternLeftBarContents .patternLeftBarPersonal ul {
+	margin:0;
+	padding:0;
+}
+#patternLeftBarContents .patternLeftBarPersonal li {
+	padding-left:1em;
+	background-repeat:no-repeat;
+}
+#patternLeftBarContents .patternLeftBarPersonal a:hover {
+	text-decoration:none;
+}
+
+
+.patternTop {
+	font-size:94%; /*S2*/
+}
+/* Button tool bar */
+.patternToolBar {
+	margin:.4em 0 0 0;
+	padding:0 .5em 0 0;
+	height:1%; /* for Win IE */
+}
+.patternToolBarButtons {
+	float:right;
+}
+.patternToolBarButtons .twikiSeparator {
+	display:none;
+}
+.patternToolBar .patternButton {
+	float:left;
+}
+.patternToolBar .patternButton s,
+.patternToolBar .patternButton strike,
+.patternToolBar .patternButton a:link,
+.patternToolBar .patternButton a:visited {
+	display:block;
+	margin:0 0 -1px 4px;
+	border-width:1px;
+	border-style:solid;
+	/* relative + z-index removed due to buggy Win/IE redrawing problems */
+	/*
+	position:relative;
+	z-index:0;
+	*/
+	padding:.15em .45em;
+}
+.patternToolBar .patternButton a:link,
+.patternToolBar .patternButton a:visited {
+	text-decoration:none;
+}
+.patternToolBar .patternButton s,
+.patternToolBar .patternButton strike {
+	text-decoration:none;
+}
+.patternToolBar .patternButton a:hover {
+	text-decoration:none;
+	/*z-index:3;*/
+}
+.patternToolBarBottom {
+	position:relative;
+	border-width:1px 0 0 0;
+	border-style:solid;
+	z-index:2;
+	clear:both;
+}
+.patternMetaMenu input,
+.patternMetaMenu select,
+.patternMetaMenu select option {
+	font-size:.86em; /* use em instead of % for consistent size */
+	margin:0;
+	width:8em;
+}
+.patternMetaMenu select option {
+	padding:1px 0 0 0;
+}
+.patternMetaMenu ul {
+    padding:0;
+    margin:0;
+   	list-style:none;
+}
+.patternMetaMenu ul li {
+    padding:0 .1em 0 .1em;
+	display:inline;
+}
+
+/* breadcrumb */
+.patternHomePath {
+	font-size:94%; /*S2*/
+	margin:.3em 0;
+}
+.patternHomePath a:link,
+.patternHomePath a:visited {
+	text-decoration:none;
+}
+.patternRevInfo {
+	margin:0 0 0 .15em;
+	font-size:94%;
+}
+
+.patternTopicAction {
+	line-height:1.5em;
+	padding:.4em 20px; /*S5*/
+	border-width:1px 0;
+	border-style:solid;
+}
+.patternViewPage .patternTopicAction {
+	font-size:94%; /*S2*/
+}
+.patternActionButtons a:link,
+.patternActionButtons a:visited {
+	padding:1px 1px 2px 1px;
+}
+.patternTopicAction .patternActionButtons a:link,
+.patternTopicAction .patternActionButtons a:visited {
+	text-decoration:none;
+}
+.patternTopicAction .patternSaveOptions {
+	margin-bottom:.5em;
+}
+.patternTopicAction .patternSaveOptions .patternSaveOptionsContents {
+	padding:.2em 0;
+}
+.patternMoved {
+	font-size:94%; /*S2*/
+	margin:1em 0;
+}
+.patternMoved i,
+.patternMoved em {
+	font-style:normal;
+}
+
+/* WebSearch, WebSearchAdvanced */
+table#twikiSearchTable {
+	background:none;
+	border-bottom:0;
+} 
+table#twikiSearchTable th,
+table#twikiSearchTable td {
+	padding:.5em;
+	border-width:0 0 1px 0;
+	border-style:solid;
+} 
+table#twikiSearchTable th {
+	width:20%;
+	text-align:right;
+}
+table#twikiSearchTable td {
+	width:80%;
+}
+table#twikiSearchTable td.first {
+	padding:1em;
+}
+
+/*	-----------------------------------------------------------
+	Search results
+	styles and overridden styles used in search.pattern.tmpl
+	-----------------------------------------------------------	*/
+
+.patternSearchResults {
+	/* no longer used in search.pattern.tmpl, but remains in rename templates */
+	margin:0 0 1em 0;
+}
+.patternSearchResults blockquote {
+	margin:1em 0 1em 5em;
+}
+h3.patternSearchResultsHeader,
+h4.patternSearchResultsHeader {
+	display:block;
+	border-width:0 0 1px 0;
+	border-style:solid;
+	height:1%; /* or WIN/IE wont draw the backgound */
+	font-weight:bold;
+}
+.patternSearchResults h3 {
+	font-size:115%; /* same as twikiFormStep */
+	margin:0;
+	padding:.5em 20px;
+	font-weight:bold;
+}
+h4.patternSearchResultsHeader {
+	font-size:100%;
+	padding-top:.3em;
+	padding-bottom:.3em;
+	font-weight:normal;
+}
+.patternSearchResult .twikiTopRow {
+	padding-top:.2em;
+}
+.patternSearchResult .twikiBottomRow {
+	padding-bottom:.25em;
+	border-width:0 0 1px 0;
+	border-style:solid;
+}
+.patternSearchResult .twikiAlert {
+	font-weight:bold;
+}
+.patternSearchResult .twikiSummary .twikiAlert {
+	font-weight:normal;
+}
+.patternSearchResult .twikiNew {
+	border-width:1px;
+	border-style:solid;
+	font-size:85%; /*S3*/
+	padding:0 1px;
+	font-weight:bold;
+}
+.patternSearchResults .twikiHelp {
+	display:block;
+	width:auto;
+	padding:.1em 5px;
+	margin:1em -5px .35em -5px;
+}
+.patternSearchResult .twikiSRAuthor {
+	width:15%;
+	text-align:left;
+}
+.patternSearchResult .twikiSRRev {
+	width:30%;
+	text-align:left;
+}
+.patternSearchResultCount {
+	margin:1em 0 3em 0;
+}
+.patternSearched {
+}
+
+/* Search results in book view format */
+
+.patternBookView {
+	border-width:0 0 2px 2px;
+	border-style:solid;
+	/* border color in cssdynamic.pattern.tmpl */
+	margin:.5em 0 1.5em -5px;
+	padding:0 0 0 5px;
+}
+.patternBookView .twikiTopRow {
+	padding:.25em 5px .15em 5px; /*S4*/
+	margin:1em -5px .15em -5px; /*S4*/
+}
+.patternBookView .twikiBottomRow {
+	font-size:100%;
+	padding:1em 0 1em 0;
+	width:auto;
+	border:none;
+}
+
+/* pages that are not view */
+
+.patternNoViewPage #patternMainContents {
+	padding-top:1.5em;
+}
+
+
+/* oopsmore.pattern.tmpl */
+
+table.patternDiffOptions {
+	margin:.5em 0;
+	border:none;
+}
+table.patternDiffOptions td {
+	border:none;
+	text-align:center;
+}
+table.patternDiffOptions img {
+	padding:0 10px;
+	border-width:1px;
+	border-style:solid;
+}
+
+/* edit.pattern.tmpl */
+
+.patternEditPage .twikiForm h1,
+.patternEditPage .twikiForm h2,
+.patternEditPage .twikiForm h3 {
+	/* same as twikiFormStep */
+	font-size:120%;
+	font-weight:bold;
+}	
+.twikiEditboxStyleMono {
+	font-family:"Courier New", courier, monaco, monospace;
+}
+.twikiEditboxStyleProportional {
+	font-family:"Lucida Grande", verdana, arial, sans-serif;
+}
+.twikiChangeFormButtonHolder {
+	margin:.5em 0;
+	float:right;
+}
+.twikiChangeFormButton .twikiButton,
+.twikiChangeFormButtonHolder .twikiButton {
+	padding:0em;
+	margin:0em;
+	border:none;
+	text-decoration:underline;
+	font-weight:normal;
+}
+.patternFormHolder { /* constrains the textarea */
+	width:100%;
+}
+.patternSigLine {
+	margin:.25em 0 .5em 0;
+	padding:0 .5em 0 0;
+}
+.patternAccessKeyInfo {
+	margin:1em 0 .5em 0;
+	padding:.25em .5em;
+	border-width:1px 0;
+	border-style:solid;
+}
+.patternAccessKeyInfo a:link,
+.patternAccessKeyInfo a:visited {
+	text-decoration:underline;
+}
+.patternAccessKeyInfo a:hover {
+	text-decoration:none;
+}
+
+
+/* preview.pattern.tmpl */
+
+.patternPreviewArea {
+	border-width:1px;
+	border-style:solid;
+	margin:0em -.5em 2em -.5em;
+	padding:.5em;
+}
+
+/* attach.pattern.tmpl */
+
+.patternAttachPage .twikiAttachments table {
+	width:auto;
+}
+.patternAttachPage .patternTopicAction {
+	margin-top:-1px;
+}
+.patternAttachPage .twikiAttachments {
+	margin-top:0;
+}
+.patternAttachForm {
+	margin:0 0 3.5em 0;
+}
+.patternMoveAttachment {
+	margin:.5em 0 0 0;
+	text-align:right;
+}
+
+/* rdiff.pattern.tmpl */
+
+.patternDiff {
+	/* same as patternBookView */
+	border-width:0 0 2px 2px;
+	border-style:solid;
+	margin:.5em 0 1.5em -5px;
+	padding:0 0 0 5px;
+}
+.patternDiffPage .patternRevInfo ul {
+	padding:0;
+	margin:2em 0 0 0;
+	list-style:none;
+}
+.patternDiffPage .twikiDiffTable {
+	margin:2em 0;
+}
+.patternDiffPage .twikiDiffTable th,
+.patternDiffPage .twikiDiffTable td {
+	padding:.2em;
+}
+tr.twikiDiffDebug td {
+	border-width:1px;
+	border-style:solid;
+}
+.patternDiffPage td.twikiDiffDebugLeft {
+	border-bottom:none;
+}
+.twikiDiffLineNumberHeader {
+	padding:.3em 0;
+}
+
+/*	-----------------------------------------------------------
+	COLOR
+	Appearance: text colors, background colors, border colors
+	-----------------------------------------------------------	*/
+	
+/*	---------------------------------------------------------------------------------------
+	CONSTANTS
+	
+	Text colors
+	----------------------------------------
+	T1 text color																	#000
+	T2 link color																	#06c
+	T3 link hover text color														#FBF7E8
+	T4 link action button color (red) (same as BG2)									#D6000F
+	T5 header color																	#a00
+	T6 code text, left bar text														#7A4707
+	T7 muted (dark gray) text														#666
+	T8 grayed out text																#8E9195
+	T9 alert 																		#f00
+	T10 green 'new'																	#049804
+	T11 dark gray																	#333
+	
+	Background colors
+	----------------------------------------
+	BG1	white; attachment, form table background									#fff
+	BG2 link hover background color (red)  											#D6000F 
+	BG3	light gray																	#efefef
+	BG4 active form field (not implemented yet)										#ffc
+	BG5 info background very light blue	(placeholder for background image)			#ECF4FB
+	BG6	patternTopicAction light yellow (same as T3)								#FBF7E8
+	BG7 header background (very light yellow)										#FDFAF1
+	BG8 accent on sorted table column												#ccc
+	BG9 light yellow; attachment, form background									#FEFBF3
+	BG10 light green 'new'															#ECFADC
+	BG11 dark gray; diff header background (same as T8)								#8E9195
+	BG12 dark yellow, submit button													#FED764
+	BG13 light blue: form steps														#F6FAFD
+	BG14 lighter blue: left bar														#F9FCFE
+	
+	Border colors
+	----------------------------------------
+	BO1	light gray																	#efefef
+	BO2 submit button border blue ('active')										#88B6CF
+	BO3	info light blue border														#D5E6F3
+	BO4 border color beige, header h2 bottom border									#E2DCC8
+	BO5 header h3..h6 bottom border	(75% of BO4)									#E9E4D2
+	BO6 darker gray																	#aaa
+	BO7 neutral gray border															#ccc
+	BO8 light neutral gray															#ddd
+	BO9 alert border																#f00
+	BO10 dark gray (same as BG11)													#8E9195
+
+	---------------------------------------------------------------------------------------	*/
+
+/* LAYOUT ELEMENTS */
+
+#patternTopBar{
+	background-color:#fff;
+	border-color:#ccc;
+}
+#patternMain { /* don't set a background here; use patternOuter */ }
+#patternOuter {
+	background-color:#fff; /*** Sets background of center col***/
+	border-color:#ccc;
+}
+#patternLeftBar, #patternLeftBarContents { /* don't set a background here; use patternWrapper */ }
+#patternWrapper {
+	background-color:#F6FAFD; /*BG13*/
+}
+#patternBottomBar {
+	background-color:#fff;
+	border-color:#ccc;
+}
+#patternBottomBarContents,
+#patternBottomBarContents a:link,
+#patternBottomBarContents a:visited {
+	color:#8E9195;	/*T8*/
+}
+
+/* GENERAL HTML ELEMENTS */
+
+html body {
+	background-color:#fff; /*BG1*/
+	color:#000; /*T1*/
+}
+/* be kind to netscape 4 that doesn't understand inheritance */
+body, p, li, ul, ol, dl, dt, dd, acronym, h1, h2, h3, h4, h5, h6 {
+	background-color:transparent;
+}
+hr {
+	color:#ccc; /*BO7*/
+	background-color:#ccc; /*BO7*/
+}
+pre, code, tt {
+	color:#7A4707; /*T6*/
+}
+h1, h2, h3, h4, h5, h6 {
+	color:#a00; /*T5*/
+}
+h1 a:link,
+h1 a:visited {
+	color:#a00; /*T5*/
+}
+h1 a:hover {
+	color:#FBF7E8; /*T3*/
+}
+h2 {
+	background-color:#FDFAF1;
+	border-color:#E2DCC8; /*BO4*/
+}
+h3, h4, h5, h6 {
+	border-color:#E9E4D2; /*BO5*/
+}
+/* to override old Render.pm coded font color style */
+.twikiNewLink font {
+	color:inherit;
+}
+.twikiNewLink a:link sup,
+.twikiNewLink a:visited sup {
+	color:#666; /*T7*/
+	border-color:#ddd; /*BO8*/
+}
+.twikiNewLink a:hover sup {
+	background-color:#D6000F; /*BG2*/
+	color:#FBF7E8; /*C3*/
+	border-color:#D6000F; /*BG2*/ /* (part of bg) */
+}
+.twikiNewLink {
+	border-color:#ddd; /*BO8*/
+}
+:link:focus,
+:visited:focus,
+:link,
+:visited,
+:link:active,
+:visited:active {
+	color:#06c; /*T2*/;
+	background-color:transparent;
+}
+:link:hover,
+:visited:hover {
+	color:#FBF7E8; /*C3*/
+	background-color:#D6000F; /*BG2*/
+}
+:link:hover img,
+:visited:hover img {
+	background:#fff; /*BG1*/
+}
+
+.patternTopic a:visited {
+	color:#666; /*T7*/
+}
+.patternTopic a:hover {
+	color:#FBF7E8; /*C3*/
+}
+
+/* Form elements */
+
+textarea,
+input,
+select {
+	border-color:#aaa; /*BO6*/
+}
+.twikiSubmit,
+.twikiButton {
+	border-color:#ddd #aaa #aaa #ddd;
+	color:#333;
+	background-color:#fff; /*BG1*/
+}
+.twikiSubmit:active,
+.twikiButton:active {
+	border-color:#999 #ccc #ccc #999;
+	color:#000;
+}
+.twikiInputField,
+.twikiSelect {
+	border-color:#aaa #ddd #ddd #aaa;
+	color:#000;
+	background-color:#fff; /*BG1*/
+}
+
+/*	-----------------------------------------------------------
+	Plugin elements
+	-----------------------------------------------------------	*/
+
+/* TablePlugin */
+.twikiTable,
+.twikiTable td,
+.twikiTable th {
+	border-color:#ccc; /*BO8*/
+}
+.twikiTable th a:link,
+.twikiTable th a:visited,
+.twikiTable th a font {
+	color:#06c; /*T2*/
+}
+.twikiTable th a:hover,
+.twikiTable th a:hover font {
+	background-color:transparent;
+	color:#D6000F; /*T4*/
+	border-color:#D6000F; /*T4*/
+}
+
+/* TablePlugin - sorting of table columns */
+.patternTopic th.twikiSortedAscendingCol,
+.patternTopic th.twikiSortedDescendingCol {
+	background-color:#ccc; /*BG8*/
+}
+th.twikiSortedAscendingCol a:link,
+th.twikiSortedAscendingCol a:link font,
+th.twikiSortedAscendingCol a:visited,
+th.twikiSortedAscendingCol a:visited font,
+th.twikiSortedDescendingCol a:link,
+th.twikiSortedDescendingCol a:link font,
+th.twikiSortedDescendingCol a:visited,
+th.twikiSortedDescendingCol a:visited font {
+	border-color:#666; /*T7*/
+}
+th.twikiSortedAscendingCol a:hover,
+th.twikiSortedAscendingCol a:hover font,
+th.twikiSortedDescendingCol a:hover,
+th.twikiSortedDescendingCol a:hover font {
+	border-color:#D6000F; /*T4*/
+}
+
+/* TwistyContrib */
+.twistyPlaceholder {
+	color:#8E9195; /*T8*/
+}
+a:hover.twistyTrigger {
+	color:#FBF7E8; /*T3*/
+}
+
+/* TipsContrib */
+.tipsOfTheDay {
+	background-color:#ECF4FB; /*BG5*/
+}
+.patternTopic .tipsOfTheDayHeader {
+	color:#333; /*T11*/
+}
+/* TipsContrib - in left bar */
+#patternLeftBar .tipsOfTheDay a:link,
+#patternLeftBar .tipsOfTheDay a:visited {
+	color:#a00; /*T5*/
+}
+#patternLeftBar .tipsOfTheDay a:hover {
+	color:#FBF7E8; /*T3*/
+}
+
+/*	-----------------------------------------------------------
+	TWiki styles
+	-----------------------------------------------------------	*/
+
+.twikiGrayText {
+	color:#8E9195; /*T8*/
+}
+.twikiGrayText a:link,
+.twikiGrayText a:visited {
+	color:#8E9195; /*T8*/
+}
+.twikiGrayText a:hover {
+	color:#FBF7E8; /*C3*/
+}
+
+table.twikiFormTable th.twikiFormTableHRow,
+table.twikiFormTable td.twikiFormTableRow {
+	color:#666; /*T7*/
+}
+.twikiEditForm {
+	color:#000; /*T1*/
+}
+.twikiEditForm .twikiFormTable th,
+.twikiEditForm .twikiFormTable td {
+	border-color:#ddd; /*BO8*/
+}
+.twikiEditForm .twikiFormTable td  {
+	background-color:#F6F8FC;
+}
+.twikiEditForm .twikiFormTable th {
+	background-color:#ECF4FB; /*BG5*/
+}
+.patternContent .twikiAttachments,
+.patternContent .twikiForm {
+	background-color:#FEFBF3; /*BG9*/
+	border-color:#E2DCC8; /*BO4*/
+}
+.twikiAttachments table,
+table.twikiFormTable {
+	border-color:#ccc; /*BO7*/
+	background-color:#fff; /*BG1*/
+}
+.twikiAttachments table {
+	background-color:#fff; /*BG1*/
+}
+.twikiAttachments td, 
+.twikiAttachments th {
+	border-color:#ccc;
+}
+.twikiAttachments th/*,
+table.twikiFormTable th.twikiFormTableHRow*/ {
+	background-color:#fff; /*BG1*/
+}
+.twikiAttachments td {
+	background-color:#fff; /*BG1*/
+}
+.twikiAttachments th a:link,
+.twikiAttachments th a:visited,
+table.twikiFormTable th.twikiFormTableHRow a:link,
+table.twikiFormTable th.twikiFormTableHRow a:visited {
+	color:#06c; /*T2*/
+}
+.twikiAttachments th font,
+table.twikiFormTable th.twikiFormTableHRow font {
+	color:#06c; /*T2*/
+}
+.twikiAttachments th a:hover,
+table.twikiFormTable th.twikiFormTableHRow a:hover {
+	border-color:#06c; /*T2*/
+	background-color:transparent;
+}
+.twikiAttachments th.twikiSortedAscendingCol,
+.twikiAttachments th.twikiSortedDescendingCol {
+	background-color:#efefef; /*BG3*/
+}
+.twikiFormSteps {
+	background-color:#F6FAFD; /*BG13*/
+	border-color:#E2DCC8;
+}
+.twikiFormStep {
+	border-color:#E2DCC8;
+}
+.twikiFormStep h3,
+.twikiFormStep h4 {
+	background-color:transparent;
+}
+.twikiToc .twikiTocTitle {
+	color:#666; /*T7*/
+}
+.twikiBroadcastMessage {
+	background-color:yellow;
+}
+.twikiBroadcastMessage b,
+.twikiBroadcastMessage strong {
+	color:#f00; /*T9*/
+}
+.twikiAlert,
+.twikiAlert code {
+	color:#f00; /*T9*/
+}
+.twikiEmulatedLink {
+	color:#06c; /*T2*/
+}
+.twikiPageForm table {
+	border-color:#ddd; /*BO8*/
+	background:#fff; /*BG1*/
+}
+.twikiPageForm hr {
+	border-color:#efefef; /*BO1*/
+	background-color:#efefef; /*BO1*/
+	color:#efefef; /*BO1*/
+}
+.twikiHelp {
+	background-color:#ECF4FB; /*BG5*/
+	border-color:#D5E6F3; /*BO3*/
+}
+.twikiAccessKey {
+	color:inherit;
+	border-color:#8E9195; /*T8*/
+}
+a:link .twikiAccessKey,
+a:visited .twikiAccessKey,
+a:hover .twikiAccessKey {
+	color:inherit;
+}
+
+
+/*	-----------------------------------------------------------
+	Pattern skin specific elements
+	-----------------------------------------------------------	*/
+#patternPage {
+	background-color:#fff; /*BG1*/
+}
+/* Left bar */
+#patternLeftBarContents {
+	color:#666; /*T7*/
+}
+#patternLeftBarContents .patternWebIndicator {
+	color:#000; /*T1*/
+}
+#patternLeftBarContents .patternWebIndicator a:link,
+#patternLeftBarContents .patternWebIndicator a:visited {
+	color:#000; /*T1*/
+}
+#patternLeftBarContents .patternWebIndicator a:hover {
+	color:#FBF7E8; /*T3*/
+}
+#patternLeftBarContents hr {
+	color:#E2DCC8; /*BO4*/
+	background-color:#E2DCC8; /*BO4*/
+}
+#patternLeftBarContents a:link,
+#patternLeftBarContents a:visited {
+	color:#7A4707; /*T6*/
+}
+#patternLeftBarContents a:hover {
+	color:#FBF7E8; /*C3*/
+}
+#patternLeftBarContents b,
+#patternLeftBarContents strong {
+	color:#333; /*T11*/
+}
+#patternLeftBarContents .patternChangeLanguage {
+	color:#8E9195; /*T8*/
+}
+#patternLeftBarContents .patternLeftBarPersonal {
+	border-color:#D9EAF6;
+}
+#patternLeftBarContents .patternLeftBarPersonal a:link,
+#patternLeftBarContents .patternLeftBarPersonal a:visited {
+	color:#06c; /*T2*/;
+}
+#patternLeftBarContents .patternLeftBarPersonal a:hover {
+	color:#FBF7E8; /*C3*/
+	background-color:#D6000F; /*BG2*/
+}
+
+.patternSeparator {
+	font-family:monospace;
+}
+.patternTopicAction {
+	color:#666; /*T7*/
+	border-color:#E2DCC8; /*BO4*/
+	background-color:#FBF7E8;
+}
+.patternTopicAction .twikiSeparator {
+	color:#aaa;
+}
+.patternActionButtons a:link,
+.patternActionButtons a:visited {
+	color:#D6000F; /*T4*/
+}
+.patternActionButtons a:hover {
+	color:#FBF7E8; /*C3*/
+}
+.patternTopicAction .twikiAccessKey {
+	border-color:#C75305;
+}
+.patternTopicAction label {
+	color:#000; /*T1*/
+}
+.patternHelpCol {
+	color:#8E9195; /*T8*/
+}
+.patternFormFieldDefaultColor {
+	/* input fields default text color (no user input) */
+	color:#8E9195; /*T8*/
+}
+
+.patternToolBar .patternButton s,
+.patternToolBar .patternButton strike,
+.patternToolBar .patternButton a:link,
+.patternToolBar .patternButton a:visited {
+	border-color:#E2DCC8; /*BO4*/
+	background-color:#fff; /*BG1*/
+}
+.patternToolBar .patternButton a:link,
+.patternToolBar .patternButton a:visited {
+	color:#666; /*T7*/
+}
+.patternToolBar .patternButton s,
+.patternToolBar .patternButton strike {
+	color:#ccc;
+	border-color:#e0e0e0;
+	background-color:#fff; /*BG1*/
+}
+.patternToolBar .patternButton a:hover {
+	background-color:#D6000F; /*BG2*/
+	color:#FBF7E8; /*C3*/
+	border-color:#D6000F; /*T4*/
+}
+.patternToolBar .patternButton img {
+	background-color:transparent;
+}	
+.patternToolBarBottom {
+	border-color:#E2DCC8; /*BO4*/
+}
+.patternToolBar a:link .twikiAccessKey,
+.patternToolBar a:visited .twikiAccessKey {
+	color:inherit;
+	border-color:#666; /*T7*/
+}
+.patternToolBar a:hover .twikiAccessKey {
+	background-color:transparent;
+	color:inherit;
+}
+
+.patternRevInfo,
+.patternRevInfo a:link,
+.patternRevInfo a:visited {
+	color:#8E9195; /*T8*/
+}
+.patternRevInfo a:hover {
+	color:#FBF7E8; /*C3*/
+}
+
+.patternMoved,
+.patternMoved a:link,
+.patternMoved a:visited {
+	color:#8E9195; /*T8*/
+}
+.patternMoved a:hover {
+	color:#FBF7E8; /*T3*/
+}
+
+/* WebSearch, WebSearchAdvanced */
+table#twikiSearchTable th,
+table#twikiSearchTable td {
+	background-color:#fff; /*BG1*/
+	border-color:#ddd; /*BO8*/
+} 
+table#twikiSearchTable th {
+	color:#8E9195; /*T8*/
+}
+table#twikiSearchTable td.first {
+	background-color:#efefef; /*BG3*/
+}
+
+/*	-----------------------------------------------------------
+	Search results
+	styles and overridden styles used in search.pattern.tmpl
+	-----------------------------------------------------------	*/
+
+h3.patternSearchResultsHeader,
+h4.patternSearchResultsHeader {
+	background-color:#FEFBF3; /*BG9*/
+	border-color:#ccc; /*BO7*/
+}
+h4.patternSearchResultsHeader {
+	color:#000;
+}
+.patternNoViewPage h4.patternSearchResultsHeader {
+	color:#a00; /*T5*/
+}
+.patternSearchResult .twikiBottomRow {
+	border-color:#ddd; /*BO8*/
+}
+.patternSearchResult .twikiAlert {
+	color:#f00; /*T9*/
+}
+.patternSearchResult .twikiSummary .twikiAlert {
+	color:#900; /*C5*/
+}
+.patternSearchResult .twikiNew {
+	background-color:#ECFADC; /*BG10*/
+	border-color:#049804; /*T10*/
+	color:#049804; /*T10*/
+}
+.patternViewPage .patternSearchResultsBegin {
+	border-color:#ddd; /*BO8*/
+}
+
+/* Search results in book view format */
+
+.patternBookView .twikiTopRow {
+	background-color:transparent; /* set to WEBBGCOLOR in css.pattern.tmpl */
+	color:#666; /*T7*/
+}
+.patternBookView .twikiBottomRow {
+	border-color:#ddd; /*BO8*/
+}
+.patternBookView .patternSearchResultCount {
+	color:#8E9195; /*T8*/
+}
+
+/* oopsmore.pattern.tmpl */
+
+table.patternDiffOptions img {
+	border-color:#ccc; /*BO7*/
+}
+
+/* edit.pattern.tmpl */
+
+.patternEditPage textarea#topic {
+	background-color:#fff; /*BG1*/
+}
+.twikiChangeFormButton .twikiButton,
+.twikiChangeFormButtonHolder .twikiButton {
+	color:#06c; /*T2*/
+	background:none;
+}
+.patternSig input {
+	color:#8E9195; /*T8*/
+	background-color:#fff; /*BG1*/
+}
+.patternAccessKeyInfo {
+	color:#666; /*T7*/
+	background-color:#ECF4FB; /*BG5*/
+	border-color:#D5E6F3; /*BO3*/
+}
+.patternAccessKeyInfo a:link,
+.patternAccessKeyInfo a:visited {
+	color:#06c; /*T2*/
+}
+.patternAccessKeyInfo a:hover {
+	color:#FBF7E8; /*T3*/
+}
+
+/* preview.pattern.tmpl */
+
+.patternPreviewArea {
+	border-color:#f00; /*BO9*/
+	background-color:#fff; /*BG1*/
+}
+
+/* rdiff.pattern.tmpl */
+
+.patternDiff {
+	border-color:#ccc;
+}
+.patternDiff h4.patternSearchResultsHeader {
+	background-color:#ccc;
+}
+tr.twikiDiffDebug td {
+	border-color:#ddd; /*BO8*/
+}
+.patternDiffPage .twikiDiffTable th {
+	background-color:#eee;
+}
+tr.twikiDiffDebug .twikiDiffChangedText,
+tr.twikiDiffDebug .twikiDiffChangedText {
+	background:#99ff99; /* green */
+}
+/* Deleted */
+tr.twikiDiffDebug .twikiDiffDeletedMarker,
+tr.twikiDiffDebug .twikiDiffDeletedText {
+	background-color:#f99;
+}
+/* Added */
+tr.twikiDiffDebug .twikiDiffAddedMarker,
+tr.twikiDiffDebug .twikiDiffAddedText {
+	background-color:#ccf;
+}
+/* Unchanged */
+tr.twikiDiffDebug .twikiDiffUnchangedText {
+	color:#8E9195; /*T8*/
+}
+/* Headers */
+.twikiDiffChangedHeader,
+.twikiDiffDeletedHeader,
+.twikiDiffAddedHeader {
+	background-color:#ccc;
+}
+/* Unchanged */
+.twikiDiffUnchangedTextContents { }
+.twikiDiffLineNumberHeader {
+	background-color:#eee;
+}
+  </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body class="patternNoViewPage">
+<div id="patternScreen"><div id="patternPageShadow"><div id="patternPage"><div id="patternOuter"><div id="patternFloatWrap"><div id="patternMain"><div id="patternMainContents"><a name="PageTop"></a>
+<a href="http://twiki.org" title="http://twiki.org"><img width="140" alt="TWiki" src="pub/TWiki/TWikiLogos/T-logo-140x40-t.gif" class="logo" height="40" /></a>
+<div class="patternContent"><div class="patternTopic">
+<!-- This is start of content for html document -->
+<h1><a name="TWiki_Installation_Guide"> </a><a name="_TWiki_Installation_Guide"> </a>  TWiki Installation Guide </h1>
+
+<strong>The following is installation instructions for the TWiki Dakar production release on an Apache web server on Linux.</strong> Visit <a href="http://twiki.org/cgi-bin/view/TWiki.InstallingTWiki" title="'TWiki.InstallingTWiki' on TWiki.org">TWiki:TWiki.InstallingTWiki</a> for the latest updates to this guide and supplemental information for installing or upgrading TWiki, including notes on installing TWiki on other  platforms.
+<p />
+<div class="twikiToc">
+
+      <ul>
+
+<li> <a href="#Preparing_to_install_TWiki">Preparing to install TWiki</a>
+</li>
+<li> <a href="#Basic_Installation">Basic Installation</a>
+</li>
+<li> <a href="#Important_Server_Security_Settings">Important Server Security Settings</a>
+</li>
+<li> <a href="#Next_Steps_optional">Next Steps (optional)</a>
+<ul>
+<li> <a href="#Enable_Authentication_of_Users">Enable Authentication of Users</a>
+
+</li>
+<li> <a href="#Set_TWiki_Preferences">Set TWiki Preferences</a>
+</li>
+<li> <a href="#Enable_Email_Notification">Enable Email Notification</a>
+</li>
+<li> <a href="#Enable_WebStatistics">Enable WebStatistics</a>
+</li>
+<li> <a href="#Enable_Localisation">Enable Localisation</a>
+</li>
+<li> <a href="#Tailor_New_Users_Home_Topic">Tailor New Users Home Topic</a>
+</li>
+
+<li> <a href="#Install_Plugins">Install Plugins</a>
+</li>
+<li> <a href="#Customize_your_TWiki">Customize your TWiki!</a>
+</li>
+</ul>
+</li>
+<li> <a href="#Troubleshooting">Troubleshooting</a>
+</li>
+<li> <a href="#Appendixes">Appendixes</a>
+<ul>
+<li> <a href="#TWiki_System_Requirements">TWiki System Requirements</a>
+
+<ul>
+<li> <a href="#Server_Requirements">Server Requirements</a>
+</li>
+<li> <a href="#Required_CPAN_Modules">Required CPAN Modules</a>
+</li>
+<li> <a href="#Optional_CPAN_Modules">Optional CPAN Modules</a>
+</li>
+<li> <a href="#Client_Requirements">Client Requirements</a>
+</li>
+
+<li> <a href="#Important_note_about_TWiki_Plugi">Important note about TWiki Plugins</a>
+</li>
+</ul>
+</li>
+<li> <a href="#Notes_on_Installing_TWiki_on_Non">Notes on Installing TWiki on Non-Root Account</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p />
+<h2><a name="Preparing_to_install_TWiki"> </a> Preparing to install TWiki </h2>
+<p />
+Before attempting to install TWiki, you are encouraged to review the <a href="http://twiki.org/cgi-bin/view/TWiki.AdminSkillsAssumptions" title="'TWiki.AdminSkillsAssumptions' on TWiki.org">TWiki:TWiki.AdminSkillsAssumptions</a>. This guide assumes the person installing TWiki has, at a minimum, basic knowledge of server administration and cgi script management on the system on which TWiki is to be installed. While it is possible to install TWiki with FTP access alone (for example, on a hosted site), it is tricky and may require additional support from your hosting service (for example, in setting file ownership).
+<p />
+To help setup a correct Apache configuration, you can use the automatic <a href="http://twiki.org/cgi-bin/view/TWiki/ApacheConfigGenerator" title="'TWiki/ApacheConfigGenerator' on TWiki.org">TWIki:TWiki.ApacheConfigGenerator</a> which generates the contents for an Apache config file for TWiki based on your inputs.
+<p />
+While this installation guide specifically describes installation on an Apache web server on Linux, TWiki should be fine with any web server and OS that meet the <a href="#SystemRequirements" class="twikiAnchorLink">system requirements</a>. For additional notes on installing TWiki on other systems, see <a href="http://twiki.org/cgi-bin/view/TWiki/InstallingTWiki#OtherPlatforms" title="'TWiki/InstallingTWiki#OtherPlatforms' on TWiki.org">TWiki:TWiki.InstallingTWiki#OtherPlatforms</a>.
+
+<p />
+If you are installing TWiki without Unix/Linux root (administrator) privileges (for example, on a hosted domain), see <a href="#NonRootInstallNotes" class="twikiAnchorLink">Notes on Installing TWiki on Non-Root Account</a> for supplemental instructions to the basic steps presented below.
+<p />
+If you are upgrading from an earlier major version of TWiki such a Cairo (TWiki 3) you will need the information found in <a href="http://twiki.org/cgi-bin/view/TWiki/TWikiUpgradeGuide" title="'TWiki.TWikiUpgradeGuide' on TWiki.org"> TWiki:TWiki.TWikiUpgradeGuide</a> which includes a description of both an automated and a manual procedure. The manual procedure is probably the safest to follow but takes more time. The upgrade guide describes essential steps needed to avoid problems with locked topics. 
+<p />
+Upgrading from a recent TWiki4 release is much simpler. Upgraders from earlier TWiki4 versions can with advantage follow the steps described in <a href="http://twiki.org/cgi-bin/view/TWiki/UpgradingTWiki04x00PatchReleases" title="'TWiki.TWikiUpgradeGuide' on TWiki.org"> TWiki:TWiki.UpgradingTWiki04x00PatchReleases</a> to ensure a safe upgrade without accidently overwriting customizations.
+<p />
+If you need help, ask a question in the <a href="http://twiki.org/cgi-bin/view/Support" title="'Support' on TWiki.org">TWiki:Support</a> web or on <a href="http://twiki.org/cgi-bin/view/Codev.TWikiIRC" title="'Codev.TWikiIRC' on TWiki.org">TWiki:Codev.TWikiIRC</a> (irc.freenode.net, channel #twiki) 
+<p />
+<p />
+<a name="StandardInstallation"></a>
+<h2><a name="Basic_Installation"> </a> Basic Installation </h2>
+
+<p />
+<ol>
+<li> <strong>Download</strong> the TWiki distribution from <a href="http://TWiki.org/download.html" target="_top">http://TWiki.org/download.html</a>.
+</li>
+<li> <strong>Make a directory</strong> for the installation and <strong>unpack the distribution</strong> in it. In the rest of this document we assume this directory is called <code>twiki</code>.
+</li>
+
+<li> <strong>Make sure</strong> the user that runs CGI scripts on your system can read and write all files in the distribution.
+     <br /> Detailed instructions on file permissions are beyond the scope of this guide, and the best and safest set of file and directory permissions depend on the actual server environment. For Unix/Linux see <a href="http://twiki.org/cgi-bin/view/TWiki/SettingFileAccessRightsLinuxUnix" title="'TWiki/SettingFileAccessRightsLinuxUnix' on TWiki.org">TWIki:TWiki.SettingFileAccessRightsLinuxUnix</a> which contains scripts to setup the right file and directory access rights.
+     <br /> The general rules for access rights are:
+<ul>
+<li> During installation and configuration, the CGI user needs to be able to read and write <em>everything</em> in the distribution,
+</li>
+<li> Once installation and configuration is complete, the CGI user needs write access to everything under the <code>data</code> and <code>pub</code> directories and to <code>twiki/lib/LocalSite.cfg</code>. <em>Everything else</em> should be read-only.
+
+</li>
+<li> Everybody else should be denied access to everything, always.
+</li>
+</ul>
+</li>
+<li> <strong>Make sure</strong> Perl 5 and the Perl CGI library are installed on your system. 
+     <br /> The default location of Perl is <code>/usr/bin/perl</code>. <strong>If it's somewhere else</strong>, change the path to Perl in the first line of each script in the <code>twiki/bin</code> directory.
+     <br /> <img src="pub/TWiki/TWikiDocGraphics/help.gif" border="0" alt="HELP" width="16" height="16" /> Some systems require a special extension on perl scripts (e.g. <code>.cgi</code> or <code>.pl</code>). If necessary, rename all files in <code>twiki/bin</code>  (i.e. rename <code>view</code> to <code>view.pl</code> etc). If you do this, make sure you set the <code>ScriptSuffix</code> option in <code>configure</code> (Step 6).
+
+</li>
+<li> <strong>Create the file</strong> <code>twiki/bin/LocalLib.cfg</code>.
+      <br /> There is a template for this file in <code>twiki/bin/LocalLib.cfg.txt</code>.
+      <br /> (Make sure you do not mix up <code>twiki/bin/LocalLib.cfg.txt</code> with the similarly named <code>twiki/lib/LocalSite.cfg.txt</code> which you should normally never need to copy or touch.)
+      <br /> The file <code>twiki/bin/LocalLib.cfg.txt</code> must contain a setting for <code>$twikiLibPath</code>, which must point to the absolute file path of your <code>twiki/lib</code> e.g. <code>/home/httpd/twiki/lib</code>.
+     <br /> <img src="pub/TWiki/TWikiDocGraphics/help.gif" border="0" alt="HELP" width="16" height="16" /> If you need to install additional <a class="twikiLink" href="/cgi-bin/view/Codev/CPAN" title=" ComprehensivePerlArchiveNetwork, http://cpan.perl.org/ Basically, if you have written a perl module you can make it available to others by uploading it to this website ... (07 May 2003 - 11:28 - 1.5, RichardDonkin)">CPAN</a> modules, but can't update the main Perl installation files on the server, you can set <code>$CPANBASE</code> to point to your personal <a class="twikiLink" href="/cgi-bin/view/Codev/CPAN" title=" ComprehensivePerlArchiveNetwork, http://cpan.perl.org/ Basically, if you have written a perl module you can make it available to others by uploading it to this website ... (07 May 2003 - 11:28 - 1.5, RichardDonkin)">CPAN</a> install. Don't forget that the webserver user has to be able to read those files as well.
+
+</li>
+<li> <strong>Configure the webserver</strong> so you can execute the <code>bin/configure</code> script from your browser. But limit the access to either localhost, an IP address or a specific user using basic Apache authentication. You should never leave the <code>configure</code> script open to the public.
+<ul>
+<li> If you are unsure about how to do this on your system, see <a href="http://twiki.org/cgi-bin/view/TWiki.InstallingTWiki#OtherPlatforms" title="'TWiki.InstallingTWiki#OtherPlatforms' on TWiki.org">TWiki:TWiki.InstallingTWiki#OtherPlatforms</a> for links to information about various server setups. There is an example Apache <code>httpd.conf</code> file in <code>twiki_httpd_conf.txt</code> at the root of the package. This file also contains advice on securing your installation. There's also a script called <code>tools/rewriteshebang.pl</code> to help you in fixing up the shebang lines in your CGI scripts.
+</li>
+</ul>
+</li>
+<li> <strong>Run the <code>configure</code> script</strong> from your browser (i.e. enter <code>http://yourdomain/twiki/bin/configure</code> into your browser address bar) and resolve any errors or warnings it tells you about.
+      <br /> <img src="pub/TWiki/TWikiDocGraphics/warning.gif" border="0" alt="ALERT!" width="16" height="16" /> When you run <code>configure</code> for the first time, remember to <em>first</em> set the <code>General Path Settings</code>, save these settings, and then return to <code>configure</code> to continue configuration.
+      <br />When you return to configure you now need to setup <em>Mail and Proxies</em>. Especially the <code>{WebMasterEmail}</code>, and <code>{SMTP}{MAILHOST}</code> must be defined to enable TWiki to send registration emails. Many ISPs have introduced authentication when sending emails to fight spam so you may also have to set <code>{SMTP}{Username}</code> and <code>{SMTP}{Password}</code>. 
+</li>
+</ol>
+<p />
+You now have a basic, unauthenticated installation running. At this point you can just point your Web browser at <code>http://yourdomain.com/twiki/bin/view</code> and start TWiki-ing away!
+<p />
+<h2><a name="Important_Server_Security_Settings"> </a>Important Server Security Settings</h2>
+Before you continue any further there are some basic and very important security settings you have to make sure are set correctly.
+<ul>
+<li>You should protect the configure script from general access. The configure script the tool is designed for use by administrators only and should be restricted to invocation by them only, by using the basic Apache authentication. Because of this there has not been put much effort into hardening the script. The configure script cannot save any settings once the password has been saved the first time, but the script could still be vulnerable to specially crafted field values and the script reveals many details about the webserver that you should not display in public.
+</li>
+<li>You absolutely must turn off any kind of PHP, Perl, Python, Server Side Includes etc in the <code>pub</code> directory. TWiki has some builtin protection which renames files with dangerous filenames by appending .txt to the filename. But this is a secondary security measure. The essential action that you must take is to turn off any possible execution of any of the attached files.<br /> Most Linux distributions have a default Apache installation which has PHP and server side include (SSI) enabled. The <code>twiki_httpd_conf.txt</code> file provided in the root of the twiki directory is an example of an Apache config file which you would normally include from httpd.conf. In many distributions this happens automatically if the file is copied to a specific directory (Example RedHat/Fedora/Centos: /etc/httpd/conf.d) and has suffix <code>.conf</code>. This example file shows how to protect the <code>pub</code> directory from executing both PHP scripts and server side includes.<br />
+If you do not have access to the apache config files you can normally control control access by placing a file called <code>.htaccess</code> in the directory you want to protect. The <code>pub-htaccess.txt</code> file provided in the root of the twiki directory is an example of an Apache <code>.htaccess</code> file which protects against execusion of PHP and SSI scripts.
+</li>
+<li>Make sure that you deny access to all other twiki directories than the <code>bin</code> and <code>pub</code> directories. When you have access to the Apache config files the <code>twiki_httpd_conf.txt</code> file mentioned above also contains protection of these directories.<br />
+For those that do not have access to the Apache config files a sample <code>subdir-htaccess.txt</code> file can be copied as <code>.htaccess</code> to the data, lib, locale, templates and tools directories.
+</li>
+</ul>
+The <a href="http://twiki.org/cgi-bin/view/TWiki/ApacheConfigGenerator" title="'TWiki/ApacheConfigGenerator' on TWiki.org">TWIki:TWiki.ApacheConfigGenerator</a> will help you address all 3 security elements.
+<p />
+<h2><a name="Next_Steps_optional"> </a><a name="Next_Steps_optional_"> </a> Next Steps (optional) </h2>
+Once you have TWiki installed and running, you might consider the following optional steps for setting up and customizing your TWiki site. Many of the references below refer to topics within your TWiki installation. For example, <code>TWiki.TWikiSkins</code> refers to the <code>TWikiSkins</code> topic in your TWiki web. If not available locally, you can find these topics in the on-line reference copy of <a href="http://twiki.org/cgi-bin/view/TWiki04.WebHome" target="_top">TWiki Release 4.0</a>. 
+
+<p />
+<a name="AuthenticationOfUsers"></a>
+<h2><a name="Enable_Authentication_of_Users"> </a> Enable Authentication of Users </h2>
+This step provides for site access control and user activity tracking on your TWiki site. <strong><em>This is particularly important for sites that are publicly accessible on the web.</em></strong> This guide describes only the most common of several possible authentication setups for TWiki and is suitable for public web sites. For information about other setups, see <code>TWiki.TWikiUserAuthentication</code>, and <a href="http://twiki.org/cgi-bin/view/TWiki.TWikiUserAuthenticationSupplement" title="'TWiki.TWikiUserAuthenticationSupplement' on TWiki.org">TWiki:TWiki.TWikiUserAuthenticationSupplement</a>.
+<p />
+These are the steps for enabling "Template Login" which asks for a username and password in a web page, and processes them using the Apache 'htpasswd' password manager. Users can log in and log out.
+<p />
+
+<ol>
+<li> Under the <code>Security Settings</code> pane of <code>configure</code> :
+<ol>
+<li> Select <code>TWiki::Client::TemplateLogin</code> for <code>{LoginManager}</code>.
+
+</li>
+<li> Select <code>TWiki::Users::HtPasswdUser</code> for <code>{PasswordManager}</code>.
+</li>
+<li> Save your <code>configure</code> settings.
+</li>
+</ol>
+</li>
+<li> Register yourself using the <code>TWiki.TWikiRegistration</code> topic.
+     <br /> <img src="pub/TWiki/TWikiDocGraphics/help.gif" border="0" alt="HELP" width="16" height="16" /> Check that the password manager recognizes the new user. Check that a new line with the username and encrypted password is added to the <code>data/.htpasswd</code> file. If not, you probably got a path wrong, or the permissions may not allow the webserver user to write to that file.
+</li>
+<li> Edit a topic (by clicking on the <code>Edit</code> link at beginning or end of topic) to check if authentication works.
+</li>
+<li> Edit the <code>Main/TWikiAdminGroup</code> topic to include users with system administrator status. Additional instructions are provided in that topic.
+     <br /> <img src="pub/TWiki/TWikiDocGraphics/warning.gif" border="0" alt="ALERT!" width="16" height="16" /> This is a very important step, as users in this group can access all topics, independent of TWiki access controls.
+
+</li>
+<li> Clear admin notes: Some pages are meant to be customized after choice of authentication - check and update these topics (remove notice): <code>Main.TWikiAdminGroup</code>, <code>TWiki.ChangePassword</code>, <code>TWiki.ResetPassword</code>, and <code>TWiki.ChangeEmailAddress</code>.
+</li>
+</ol>
+<p />
+You are strongly encouraged to read <code>TWiki.TWikiUserAuthentication</code>, <a href="http://twiki.org/cgi-bin/view/TWiki/TWikiUserAuthenticationSupplement" title="'TWiki/TWikiUserAuthenticationSupplement' on TWiki.org">TWiki:TWiki.TWikiUserAuthenticationSupplement</a>, and <a href="http://twiki.org/cgi-bin/view/TWiki/SecuringTWikiSite" title="'TWiki/SecuringTWikiSite' on TWiki.org">TWiki:TWiki.SecuringTWikiSite</a> 
+for further information about managing users and security of your TWiki site. 
+<p />
+<a name="SetPreferences"></a>
+<h2><a name="Set_TWiki_Preferences"> </a> Set TWiki Preferences </h2>
+
+<p />
+Preferences for customizing many aspects of TWiki are set simply by editing a special topic with TWiki.
+<ul>
+<li> Edit <code>TWiki.TWikiPreferences</code>. Read through it and set any additional settings you think you might need. (You can click the 'Edit' button near the top to edit the settings in place).
+</li>
+<li> <img src="pub/TWiki/TWikiDocGraphics/tip.gif" border="0" alt="IDEA!" width="16" height="16" /> Alternately, you can copy any settings or variables that you want to customize from <code>TWiki.TWikiPreferences</code> and paste them into <code>Main.TWikiPreferences</code>. This will protect your local customizations from being overwritten in later upgrades. See notes at top of <code>TWiki.TWikiPreferences</code> for more information.
+
+</li>
+</ul>
+<p />
+<h2><a name="Enable_Email_Notification"> </a> Enable Email Notification </h2>
+<p />
+Each TWiki web has an automatic email notification service that sends you an email with links to all of the topics modified since the last alert. To enable this service:
+<p />
+<ol>
+<li> Confirm the Mail and Proxies settings in the Configure interface.
+</li>
+<li> Setup a cron job (or equivalent) to call the <code>bin/mailnotify</code> script as described in the <code>TWiki.MailerContrib</code> topic.
+</li>
+</ol>
+<p />
+<h2><a name="Enable_WebStatistics"> </a> Enable <a class="twikiLink" href="/cgi-bin/view/Codev/WebStatistics" title=" Statistics for Codev Web Month: Topic Views: Topic Saves: Attachment Uploads: Most Popular Topic Views: Top Contributors for Topic Save and Uploads: Jan 2006 301570 ... (31 Jan 2006 - 03:42 - 1.1689, PeterThoeny)">WebStatistics</a> </h2>
+
+You can generate a listing manually, or on an automated schedule, of visits to individual pages, on a per web basis. For information on setting up this feature, see the <code>TWiki.TWikiSiteTools</code> topic.
+<p />
+<h2><a name="Enable_Localisation"> </a> Enable Localisation </h2>
+<p />
+TWiki now supports displaying of national (non-ascii) characters and presentation of basic interface elements in different languages. To enable these features, see the <code>Localisation</code> section of <code>configure</code>. For more information about these features, see <a href="http://twiki.org/cgi-bin/view/TWiki.InternationalizationSupplement" title="'TWiki.InternationalizationSupplement' on TWiki.org">TWiki:TWiki.InternationalizationSupplement</a>.
+
+<p />
+<h2><a name="Tailor_New_Users_Home_Topic"> </a> Tailor New Users Home Topic </h2>
+<p />
+When a new users registers on your TWiki a home topic is created for him based on the <code>TWiki/NewUserTemplate</code> template topic. This can be tailored. It contains additional resources you can use to:
+<li> Localise the user topic.
+</li>
+<li> Add a default ALLOWTOPICCHANGE so only the user can edit his own home topic. We do not encourage this for Intranet sites as it sends a wrong signal to new users, but it can be necessary on a public TWiki to avoid that the user topics get spammed.
+</li>
+
+<p />
+
+<h2><a name="Install_Plugins"> </a> Install Plugins </h2>
+<a href="http://twiki.org/cgi-bin/view/Plugins" title="'Plugins' on TWiki.org">TWiki:Plugins</a> is an extensive library of Plugins for TWiki, that enhance functionality in a huge number of ways. A few plugins are pre-installed in the TWiki distribution. For more information on these, see <code>TWiki.InstalledPlugins</code>.
+<p />
+You activate installed plugin in the <em>Plugins</em> section of <code>configure</code>. In this section you also find a <em>Find More Extensions</em> button which opens an application which can install additional plugins from the TWiki.org website. If you are behind a firewall or your server has no access to the Internet it is also possible to install plugins manually. Manual installation instructions for the plugins can be found in the plugin topics on TWiki.org. Additional documenation on TWiki plugins can be found at <a href="http://twiki.org/cgi-bin/view/TWiki.TWikiPluginsSupplement" title="'TWiki.TWikiPluginsSupplement' on TWiki.org">TWiki:TWiki.TWikiPluginsSupplement</a>.
+<p />
+Some plugins require that you define their settings in <code>configure</code>. You fill find these under the <em>Extensions</em> section of configure.
+<h2><a name="Customize_your_TWiki"> </a><a name="Customize_your_TWiki_"> </a> Customize your TWiki! </h2>
+
+The real power of TWiki lies in it's flexibility to be customized to meet your needs. A good place to start for exploring what's possible is <a href="http://twiki.org/cgi-bin/view/TWiki/TWikiAdminCookBook" title="'TWiki/TWikiAdminCookBook' on TWiki.org">TWiki:TWiki.TWikiAdminCookBook</a> which offers tips and tricks for customizing your TWiki site. Many of these are appropriate to implement immediately after installing TWiki and before adding content so now's a good time to look at these. If you would like to customize the look of your TWiki, see <a href="http://twiki.org/cgi-bin/view/TWiki.TWikiSkinsSupplement" title="'TWiki.TWikiSkinsSupplement' on TWiki.org">TWiki:TWiki.TWikiSkinsSupplement</a>.
+<p />
+<h2><a name="Troubleshooting"> </a> Troubleshooting </h2>
+
+The first step is to re-run the <code>configure</code> script and make sure you have resolved all errors, and are satisfied that you understand any warnings.
+<p />
+Failing that, please check the topics listed below which include important tips for HP-UX, Solaris, OS/390, and many other platforms.
+<ul>
+<li> For Unix or Linux, check <a href="http://twiki.org/cgi-bin/view/Codev/TWikiOnUnix" title="'Codev/TWikiOnUnix' on TWiki.org">TWiki:Codev.TWikiOnUnix</a> and <a href="http://twiki.org/cgi-bin/view/Codev/TWikiOnLinux" title="'Codev/TWikiOnLinux' on TWiki.org">TWiki:Codev.TWikiOnLinux</a>.
+</li>
+<li> For Windows, check the <a href="http://twiki.org/cgi-bin/view/Codev/WindowsInstallCookbook" title="'Codev/WindowsInstallCookbook' on TWiki.org">TWiki:Codev.WindowsInstallCookbook</a>. 
+
+</li>
+<li> For MacOS X, check <a href="http://twiki.org/cgi-bin/view/Codev/TWikiOnMacOSX" title="'Codev/TWikiOnMacOSX' on TWiki.org">TWiki:Codev.TWikiOnMacOSX</a>. 
+</li>
+<li> To install TWiki on SourceForge, for use on a software development project, read <a href="http://twiki.org/cgi-bin/view/Codev/TWikiOnSourceForge" title="'Codev/TWikiOnSourceForge' on TWiki.org">TWiki:Codev.TWikiOnSourceForge</a>
+</li>
+<li> For other platforms, see <a href="http://twiki.org/cgi-bin/view/Codev/TWikiOn" title="'Codev/TWikiOn' on TWiki.org">TWiki:Codev.TWikiOn</a>, and search the <a href="http://twiki.org/cgi-bin/view/Codev" title="'Codev' on TWiki.org">TWiki:Codev</a> and <a href="http://twiki.org/cgi-bin/view/Support" title="'Support' on TWiki.org">TWiki:Support</a> webs for other installation notes.
+
+</li>
+</ul>
+<p />
+It is also advisable to review <a href="http://twiki.org/cgi-bin/view/Codev/KnownIssuesOfTWiki04x00x00" title="'Codev/KnownIssuesOfTWiki04x00x00' on TWiki.org">TWiki:Codev.KnownIssuesOfTWiki04x00x00</a>.
+<p />
+If you need help, ask a question in the <a href="http://twiki.org/cgi-bin/view/Support" title="'Support' on TWiki.org">TWiki:Support</a> web or on <a href="http://twiki.org/cgi-bin/view/Codev/TWikiIRC" title="'Codev/TWikiIRC' on TWiki.org">TWiki:Codev/TWikiIRC</a> (irc.freenode.net, channel #twiki)
+<p />
+<p />
+<h2><a name="Appendixes"> </a> Appendixes </h2>
+
+<p />
+<a name="SystemRequirements"></a>
+<h2><a name="TWiki_System_Requirements"> </a> TWiki System Requirements </h2>
+<p />
+Low client and server base requirements are core features that keep TWiki widely deployable, particularly across a range of browser platforms and versions. 
+<p />
+<h3><a name="Server_Requirements"> </a> Server Requirements </h3>
+<p />
+TWiki is written in Perl 5, uses a number of shell commands, and requires <a href="http://www.gnu.org/software/rcs/rcs.html" rel="nofollow" target="_top">RCS (Revision Control System)</a>, a GNU Free Software package. TWiki is developed in a basic Linux/Apache environment. It also works with Microsoft Windows, and should have no problem on any other platform that meets the requirements.
+
+<p />
+<table border="0" cellspacing="2" cellpadding="1">
+<tr><th class="twikiFirstCol" bgcolor="#2E414E"> <strong><font color="#F3EDE7">Resource</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">Required Server Environment *</font></strong> </th></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Perl </td><td bgcolor="#F8F8F8"> 5.8.4 or higher is recommended </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> RCS </td><td bgcolor="#E2E2E2"> 5.7 or higher (including GNU <code>diff</code>) <br /> Optional, TWiki includes a pure perl implementation of RCS that can be used instead (although it's slower) </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> GNU <code>diff</code> </td><td bgcolor="#F8F8F8"> GNU <code>diff</code> 2.7 or higher is required when not using the all-Perl RcsLite.  <br /> Install on PATH if not included with RCS (check version with <code>diff -v</code>)  <br /> Must be the version used by RCS, to avoid problems with binary attachments - RCS may have hard-coded path to <code>diff</code> </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Other external programs </td><td bgcolor="#E2E2E2"> <code>fgrep, egrep</code> </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Cron/scheduler </td><td bgcolor="#F8F8F8"> &#8226; Unix: <code>cron</code> <br />&#8226; Windows: <code>cron</code> equivalents <!-- SMELL: Macintosh version? --> </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Web server </td><td bgcolor="#E2E2E2"> Apache is well supported; for information on other servers, see <a href="http://twiki.org/cgi-bin/view/TWiki.InstallingTWiki#OtherWebServers" title="'TWiki.InstallingTWiki#OtherWebServers' on TWiki.org">TWiki:TWiki.InstallingTWiki#OtherWebServers</a>. </td></tr>
+</table>
+<p />
+<h3><a name="Required_CPAN_Modules"> </a> Required CPAN Modules </h3>
+The following Perl <a href="http://cpan.perl.org/" rel="nofollow" target="_top">CPAN</a> modules are used by TWiki:
+
+<table border="0" cellspacing="2" cellpadding="1">
+<tr><th class="twikiFirstCol" bgcolor="#2E414E"> <strong><font color="#F3EDE7">Module</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">Preferred version</font></strong> </th></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Algorithm::Diff (included) </td><td bgcolor="#F8F8F8"> &nbsp; </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> CGI::Carp </td><td bgcolor="#E2E2E2"> &gt;=1.26 </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Config </td><td bgcolor="#F8F8F8"> &gt;=0 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Cwd </td><td bgcolor="#E2E2E2"> &gt;=3.05 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Data::Dumper </td><td bgcolor="#F8F8F8"> &gt;=2.121 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Error (included) </td><td bgcolor="#E2E2E2"> &nbsp; </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> File::Copy </td><td bgcolor="#F8F8F8"> &gt;=2.06 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> File::Find </td><td bgcolor="#E2E2E2"> &gt;=1.05 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> File::Spec </td><td bgcolor="#F8F8F8"> &gt;=3.05 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> FileHandle </td><td bgcolor="#E2E2E2"> &gt;=2.01 </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> IO::File </td><td bgcolor="#F8F8F8"> &gt;=1.10 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Text::Diff (included) </td><td bgcolor="#E2E2E2"> &nbsp; </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Time::Local </td><td bgcolor="#F8F8F8"> &gt;=1.11 </td></tr>
+</table>
+<p />
+
+<h3><a name="Optional_CPAN_Modules"> </a> Optional CPAN Modules </h3>
+The following Perl modules may be used by TWiki:
+<table border="0" cellspacing="2" cellpadding="1">
+<tr><th class="twikiFirstCol" bgcolor="#2E414E"> <strong><font color="#F3EDE7">Module</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">Preferred version</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">Description</font></strong> </th></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Archive::Tar </td><td bgcolor="#E2E2E2"> &nbsp; </td><td bgcolor="#E2E2E2"> May be required by the Extensions Installer in configure if command line tar or unzip is not available </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> CGI::Cookie </td><td bgcolor="#F8F8F8"> &gt;=1.24 </td><td bgcolor="#F8F8F8"> Used for session support </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> CGI::Session </td><td bgcolor="#E2E2E2"> &gt;=3.95 </td><td bgcolor="#E2E2E2"> Highly recommended! Used for session support </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Digest::base </td><td bgcolor="#F8F8F8"> &nbsp; </td><td bgcolor="#F8F8F8"> &nbsp; </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Digest::SHA1 </td><td bgcolor="#E2E2E2"> &nbsp; </td><td bgcolor="#E2E2E2"> &nbsp; </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Jcode </td><td bgcolor="#F8F8F8"> &nbsp; </td><td bgcolor="#F8F8F8"> Used for I18N support with perl 5.6 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Locale::Maketext::Lexicon </td><td bgcolor="#E2E2E2"> &gt;=0 </td><td bgcolor="#E2E2E2"> Used for I18N support </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Net::SMTP </td><td bgcolor="#F8F8F8"> &gt;=2.29 </td><td bgcolor="#F8F8F8"> Used for sending mail </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Unicode::Map </td><td bgcolor="#E2E2E2"> &nbsp; </td><td bgcolor="#E2E2E2"> Used for I18N support with perl 5.6 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Unicode::Map8 </td><td bgcolor="#F8F8F8"> &nbsp; </td><td bgcolor="#F8F8F8"> Used for I18N support with perl 5.6 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> Unicode::MapUTF8 </td><td bgcolor="#E2E2E2"> &nbsp; </td><td bgcolor="#E2E2E2"> Used for I18N support with perl 5.6 </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> Unicode::String </td><td bgcolor="#F8F8F8"> &nbsp; </td><td bgcolor="#F8F8F8"> Used for I18N support with perl 5.6 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> URI </td><td bgcolor="#E2E2E2"> &nbsp; </td><td bgcolor="#E2E2E2"> Used for configure </td></tr>
+</table>
+<p />
+Most of them will probably already be available in your installation. You can check version numbers with the <code>configure</code> script, or if you're still trying to get to that point, check from the command line like this:
+
+<pre>
+perl -e 'use FileHandle; print $FileHandle::VERSION."\n"'
+</pre>
+<p />
+<a name="ClientRequirements"></a>
+<h3><a name="Client_Requirements"> </a> Client Requirements </h3>
+<p />
+The TWiki standard installation has relatively low browser requirements:
+<p />
+<ul>
+<li> HTML 3.2 compliant
+</li>
+<li> Cookies, if persistent sessions are required
+
+</li>
+</ul>
+<p />
+CSS and Javascript are used in most skins, although there is a low-fat skin (Classic skin) available that minimises these requirements. Some skins will require more recent releases of browsers. The default skin (Pattern) is tested on IE 6, Safari, and Mozilla 5.0 based browsers (such as Firefox).
+<p />
+You can easily select a balance of browser capability versus look and feel. Try the installed skins at <code>TWiki/TWikiSkinBrowser</code> and more at <a href="http://twiki.org/cgi-bin/view/Plugins.SkinPackage" title="'Plugins.SkinPackage' on TWiki.org">TWiki:Plugins.SkinPackage</a>.
+<p />
+<h3><a name="Important_note_about_TWiki_Plugi"> </a> Important note about TWiki Plugins </h3>
+<p />
+
+<ul>
+<li> Plugins can require just about anything -  browser-specific functions, stylesheets (CSS), Java applets, cookies, specific Perl modules,... - check the individual Plugin specs.
+<ul>
+<li> <strong><em><img src="pub/TWiki/TWikiDocGraphics/tip.gif" border="0" alt="TIP" width="16" height="16" /> Note:</em></strong> Plugins included in the TWiki distribution do not add requirements, except for the CommentPlugin which requires Perl 5.6.1.
+</li>
+</ul>
+</li>
+</ul>
+<p />
+<a name="NonRootInstallNotes"></a>
+<h2><a name="Notes_on_Installing_TWiki_on_Non"> </a> Notes on Installing TWiki on Non-Root Account </h2>
+
+<p />
+The following supplemental notes to the <a href="#StandardInstallation" class="twikiAnchorLink">Basic Installation</a> instructions apply to installing TWiki on a system where you don't have Unix/Linux root (administrator) privileges, for example, on a hosted Web account or an intranet server administered by someone else.
+<p />
+Referring to the <a href="#StandardInstallation" class="twikiAnchorLink">Basic Installation</a> steps presented above:
+<p />
+<ul>
+<li> <strong>Step 2:</strong> If you cannot unpack the TWiki distribution directly in your installation directory, you can unpack the distribution on your local PC and then manually create the directory structure on your host server and upload the files as follows:
+<ul>
+
+<li> Using the table below, create a directory structure on your host server
+</li>
+<li> Upload the TWiki files by FTP (transfer as text except for the image files in <code>pub</code> directory.)
+</li>
+<li> <strong><em>Note:</em></strong> Don't worry if you are not able to put the twiki/lib directory at the same level as the <code>twiki/bin</code> directory (e.g. because CGI bin directories can't be under your home directory and you don't have root access). You can create this directory elsewhere and configure the <code>twiki/bin/setlib.cfg</code> file (done in Step 2).
+
+</li>
+</ul>
+</li>
+</ul>
+<p />
+<blockquote>
+<table border="0" cellspacing="2" cellpadding="1">
+<tr><th class="twikiFirstCol" bgcolor="#2E414E"> <strong><font color="#F3EDE7">TWiki dir:</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">What it is:</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">Where to copy:</font></strong> </th><th bgcolor="#2E414E"> <strong><font color="#F3EDE7">Example:</font></strong> </th></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> <code>twiki</code> </td><td bgcolor="#F8F8F8"> start-up pages </td><td bgcolor="#F8F8F8"> root TWiki dir </td><td bgcolor="#F8F8F8"> <code>/home/smith/twiki/</code> </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> <code>twiki/bin</code> </td><td bgcolor="#E2E2E2"> CGI bin </td><td bgcolor="#E2E2E2"> CGI-enabled dir </td><td bgcolor="#E2E2E2"> <code>/home/smith/twiki/bin</code> </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> <code>twiki/lib</code> </td><td bgcolor="#F8F8F8"> library files </td><td bgcolor="#F8F8F8"> same level as <code>twiki/bin</code> </td><td bgcolor="#F8F8F8"> <code>/home/smith/twiki/lib</code> </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> <code>twiki/locale</code> </td><td bgcolor="#E2E2E2"> language files </td><td bgcolor="#E2E2E2"> dir secure from public access </td><td bgcolor="#E2E2E2"> <code>/home/smith/twiki/locale</code> </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> <code>twiki/pub</code> </td><td bgcolor="#F8F8F8"> public files </td><td bgcolor="#F8F8F8"> htdoc enabled dir </td><td bgcolor="#F8F8F8"> <code>/home/smith/twiki/pub</code> </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> <code>twiki/data</code> </td><td bgcolor="#E2E2E2"> topic data </td><td bgcolor="#E2E2E2"> dir secure from public access </td><td bgcolor="#E2E2E2"> <code>/home/smith/twiki/data</code> </td></tr>
+
+<tr><td class="twikiFirstCol" bgcolor="#F8F8F8"> <code>twiki/templates</code> </td><td bgcolor="#F8F8F8"> web templates </td><td bgcolor="#F8F8F8"> dir secure from public access </td><td bgcolor="#F8F8F8"> <code>/home/smith/twiki/templates</code> </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#E2E2E2"> <code>twiki/tools</code> </td><td bgcolor="#E2E2E2"> TWiki utlilities </td><td bgcolor="#E2E2E2"> dir secure from public access </td><td bgcolor="#E2E2E2"> <code>/home/smith/twiki/tools</code> </td></tr>
+
+</table>
+</blockquote>
+<p />
+<ul>
+<li> <strong>Step 3:</strong> Files in the pub directory must be readable as a url. This means that directory permissions should be set to <code>755</code> (or <code>775</code> ) and file permissions should be set to <code>644</code> (or <code>664</code>). If you can run a <code>chmod</code> command, you can accomplish this in two quick steps by running these commands from the root direct:
+
+<ol>
+<li> <code>chmod -R 755 pub</code>
+</li>
+<li> <code>chmod 644 `find pub -type f -print`</code>
+<ul>
+<li> In addition, you should create a <code>.htaccess</code> file in the pub directory, using the template included in the root level of the distribution entitled <code>pub-htaccess.txt</code>.
+</li>
+
+<li> Note: This setup does not provide for absolute security for TWiki attachments. For more information, see <a href="http://twiki.org/cgi-bin/view/Codev.SecuringYourTWiki" title="'Codev.SecuringYourTWiki' on TWiki.org">TWiki:Codev.SecuringYourTWiki</a>.
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li> <strong>Step 6:</strong> In order to run the configure script, create a file called <code>.htaccess</code> in the bin directory that includes the following single line: <code>SetHandler cgi-script</code> . This informs the server to treat all the perl scripts in the bin directory as scripts.
+
+</li>
+</ul>
+<p />
+For additional information about installing TWiki on a hosted accounts, see <a href="http://twiki.org/cgi-bin/view/TWiki.InstallingTWiki#WebHostingSites" title="'TWiki.InstallingTWiki#WebHostingSites' on TWiki.org">TWiki:TWiki.InstallingTWiki#WebHostingSites</a>
+<!-- This is end of content for html document -->
+ </div>
+
+      </div>
+
+      </div>
+</div><!--/patternTopic--></div><!--/patternContent--></div><!--/patternMainContents--></div><!--/patternMain-->
+</div><!--/patternFloatWrap--><div class="clear">&nbsp;</div>
+</div><!--/patternOuter--></div><!--/patternPage--></div><!--/patternPageShadow--></div><!--/patternScreen-->
+</body>
+</html>

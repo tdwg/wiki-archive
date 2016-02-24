@@ -1,0 +1,49 @@
+%TMPL:INCLUDE{"twiki"}%
+
+%TMPL:DEF{"templatescript"}%
+<script type="text/javascript">
+//<![CDATA[
+	var pageElem = document.renameweb;
+//]]>
+</script>
+<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_renamebase.js"></script>
+%TMPL:END%
+
+%TMPL:DEF{"content"}%
+<form method="post" name="renameweb" action="%SCRIPTURLPATH{"rename"}%/%WEB%">
+<input type="hidden" name="action" value="renameweb" />
+<input type="hidden" name="confirm" value="getlock" />
+---+ %TMPL:P{"webaction"}% <code>%WEB%</code>
+
+| |  *Web:* ||
+|  *From:* |    <nop>%NEW_PARENTWEB%. |%NEW_SUBWEB%   |
+|  *To:* |  %TMPL:P{"newparentweb"}%. |%TMPL:P{"newsubweb"}%  |
+%TMPL:P{"notes"}%
+
+---++ Notices
+*Topics which are currently being edited by other users in the <nop>%WEB% Web:*
+%MOVE_LOCKED%
+
+*Topics which refer to this web and are are currently being edited by other users:* %REF_LOCKED%
+
+*Topics which refer to this web that you do not have permission to change:*
+%REF_DENIED%
+
+---++ Change links in topics that refer to <nop>%WEB%.Topicname in the <nop>%WEB% Web:
+
+%LOCAL_SEARCH%
+
+---++ Change links in topics that refer to <nop>%WEB% in any Web:
+
+%GLOBAL_SEARCH%
+
+<input type="button" value="Select all" onclick="checkAll(true);" />&nbsp;<input type="button" value="Clear" onclick="checkAll(false);" /> checkboxes of referenced topics
+
+__Note:__
+   * Get help on
+     <a target="ManagingWebs" onclick="return launchWindow('%TWIKIWEB%','ManagingWebs')" href="%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/ManagingWebs" rel='nofollow'>Renaming and moving webs</a>.
+   * Select the %TRASHWEB% Web to delete the topic.
+   * The checkmarked topics will be updated. 
+%TMPL:P{"topicinfo"}%
+</form>%TMPL:END%
+

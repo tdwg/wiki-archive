@@ -1,0 +1,183 @@
+%META:TOPICINFO{author="TWikiContributor" date="1162394433" format="1.1" version="1"}%
+---+!! !Behaviour Javascript framework Contrib
+
+This contrib packages the third-party =Behaviour= Javascript event library, available from http://bennolan.com/behaviour/.
+
+Behaviour is suited to create javascript based interaction that degrades well when javascript is not available.
+
+Javascript file: [[%PUBURL%/%TWIKIWEB%/%TOPIC%/behaviour.js][behaviour.js]] (8.1K). The [[%PUBURL%/%TWIKIWEB%/%TOPIC%/behaviour.compressed.js][compressed javascript file]] (2.9K) has been processed by [[http://alex.dojotoolkit.org/shrinksafe/][ShrinkSafe]].
+
+%TOC{title="On this page:"}%
+
+---++ Introduction
+From the website:
+<blockquote>
+After all the work of WASP and others to promote clean markup, valid pages and graceful degradation via css - it sucks that we're going back to tag soup days by throwing javascript tags into our html.
+
+The better way to do javascript is to do it unobtrusively. PPK and Simon Willison have been recommending this approach for ages. And it's definitely the way to go. The only problem is that it's a bit of a pain in the ass.
+
+That's why I came up with Behaviour - my solution to unobtrusive javascript behaviours.
+
+*How does it work?*
+
+Behaviour lets you use CSS selectors to specify elements to add javascript events to. This means that instead of writing:
+
+<verbatim>
+<li>
+	<a onclick="this.parentNode.removeChild(this)" href="#">
+		Click me to delete me
+	</a>
+</li>
+</verbatim>
+
+You can use:
+
+<verbatim>
+<ul id="example">
+	<li>
+		<a href="/someurl">Click me to delete me</a>
+	</li>
+</ul>
+</verbatim>
+
+And then use css selectors to select that element and add javascript functions to it.
+
+<verbatim>
+var myrules = {
+	'#example li' : function(el){
+		el.onclick = function(){
+			this.parentNode.removeChild(this);
+
+		}
+	}
+};
+
+Behaviour.register(myrules);
+</verbatim>
+</blockquote>
+
+---++ Usage
+Include the javascript file:
+
+<blockquote>
+<verbatim>
+<script type="text/javascript" src="%PUBURL%/%TWIKIWEB%/BehaviourContrib/behaviour.compressed.js"></script>
+</verbatim>
+</blockquote>
+
+In your code you create a "rules" object, with sub-objects for each html element class name or id:
+<blockquote>
+<verbatim>
+var myrules = {
+	'.classname' : function(element) {
+		// element event
+		element.onclick = function() {
+			// code here
+		}
+	},
+	
+	'#id' : function(element) {
+		// element event
+		element.onclick = function() {
+			// code here
+		}
+	}
+};
+</verbatim>
+
+Or use nested identifiers:
+
+<verbatim>
+var myrules = {
+	'.menu li a' : function(element) {
+		element.onclick = function() {
+			// code here
+		}
+	}
+};
+</verbatim>
+</blockquote>
+
+Apply the rules with:
+
+<blockquote>
+<verbatim>
+Behaviour.register(myrules);
+</verbatim>
+</blockquote>
+
+
+---++ Example
+If we have a 'normal' link to TWiki Web hometopic: [[%TWIKIWEB%.%HOMETOPIC%][TWiki Web Home]], we can use javascript to make it open a popup window. When javascript is not available the link behaviour defaults to opening the page in the current window.
+
+<blockquote>
+<verbatim>
+<span class="link%TWIKIWEB%%HOMETOPIC%">[[%TWIKIWEB%.%HOMETOPIC%][TWiki Web Home]]</span>
+
+<script type="text/javascript">
+// <![CDATA[
+var myrules = {
+	'.link%TWIKIWEB%%HOMETOPIC% a' : function(el){
+		el.onclick = function() {
+			// open in a popup with no other attributes than template 'viewplain'
+			launchTheWindow(this.href,null,null,null,"viewplain");
+			return false;
+		}
+	}
+};
+
+Behaviour.register(myrules);
+// ]]>
+</script>
+</verbatim>
+
+The class name =link%<nop>TWIKIWEB%%<nop>HOMETOPIC%= will get expanded to =link%TWIKIWEB%%HOMETOPIC%=
+</blockquote>
+
+Creates:
+
+<span class="link%TWIKIWEB%%HOMETOPIC%">[[%TWIKIWEB%.%HOMETOPIC%][TWiki Web Home]]</span>
+
+<script type="text/javascript">
+// <![CDATA[
+var myrules = {
+	'.link%TWIKIWEB%%HOMETOPIC% a' : function(el){
+		el.onclick = function() {
+			// open in a popup with no other attributes than template 'viewplain'
+			launchTheWindow(this.href,null,null,null,"viewplain");
+			return false;
+		}
+	}
+};
+
+Behaviour.register(myrules);
+// ]]>
+</script>
+
+---++ Development
+   * [[http://groups.google.com/group/behaviour][Google Groups: Behaviour Javascript Library]]
+   * [[http://dean.edwards.name/weblog/2006/03/faster/][Dean Edwards: Faster DOM Queries]] - with a speed-up hack to Behaviour
+
+---++ License
+Behaviour is freely distributable under the terms of an BSD license.
+For details, see the Behaviour website.
+
+---++ Links
+   * [[http://bennolan.com/behaviour/][Behaviour website]]
+   * [[http://groups.google.com/group/behaviour][Behaviour Google Group]]
+   
+---++ Contrib Info
+
+| Author: | TWiki:Main.ArthurClemens |
+| Copyright: | version 1.1 - Copyright (c) Ben Nolan and Simon Willison |
+| License: | BSD |
+| Dependencies: | None |
+| 4 June 2006| 1.000 First Version. Included Behaviour version: 1.1 |
+|  Home: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC% |
+|  Feedback: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Dev |
+|  Appraisal: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Appraisal |
+
+__Related Topics:__ %TWIKIWEB%.TWikiPreferences
+
+%META:FILEATTACHMENT{name="behaviour.compressed.js" attr="" autoattached="1" comment="" date="1162075796" path="behaviour.compressed.js" size="2902" user="UnknownUser" version=""}%
+%META:FILEATTACHMENT{name="behaviour.js" attr="" autoattached="1" comment="" date="1161199153" path="behaviour.js" size="8149" user="UnknownUser" version=""}%

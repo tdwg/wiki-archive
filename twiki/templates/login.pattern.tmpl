@@ -1,0 +1,110 @@
+%TMPL:INCLUDE{"page"}%
+%TMPL:INCLUDE{"logo"}%
+%TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%TMPL:INCLUDE{"viewbottombar"}%
+
+
+
+%TMPL:DEF{"templatejavascript"}%
+<script type="text/javascript">
+//<![CDATA[
+	addLoadEvent(setfocus);
+	function setfocus() {
+		document.loginform.username.focus();
+	}
+//]]>
+</script>%TMPL:END%
+
+
+
+%TMPL:DEF{"bodyclassname"}%patternNoViewPage%TMPL:END%
+
+
+
+%TMPL:DEF{"body"}%<body class="%TMPL:P{"bodyclassname"}%"><a name="PageTop"></a>
+<div id="patternScreen">
+<div id="patternPageShadow">
+<div id="patternPage">
+%TMPL:P{"startleftbarwrapper"}%<div id="patternOuter">
+<div id="patternFloatWrap">
+<div id="patternMain">%TMPL:P{"topbarspacer"}%
+<div id="patternMainContents">%TMPL:P{"logo"}%%TMPL:P{"content"}%
+</div><!-- /patternMainContents-->
+</div><!-- /patternMain-->%TMPL:P{"leftbar"}%
+</div><!-- /patternFloatWrap-->
+<div class="clear">&nbsp;</div>
+</div><!-- /patternOuter-->%TMPL:P{"endleftbarwrapper"}%%TMPL:P{"topbar"}%%TMPL:P{"bottombar"}%
+</div><!-- /patternPage-->
+</div><!-- /patternPageShadow-->
+</div><!-- /patternScreen-->
+</body></html>%TMPL:END%
+
+%TMPL:DEF{"LOG_IN_BANNER"}%%MAKETEXT{"Please enter your username and password:"}% %TMPL:END%
+
+
+
+%TMPL:DEF{"LOGGED_IN_BANNER"}%%MAKETEXT{"[_1] is currently logged in" args="%MAINWEB%.%WIKINAME%"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"NEW_USER_NOTE"}%<h4 class="twikiAlert">%ICON{"warning"}% %MAKETEXT{"Enter a new username and password to change identity:"}%</h4>%TMPL:END%
+
+
+
+%TMPL:DEF{"UNRECOGNISED_USER"}%<h4 class="twikiAlert">%ICON{"warning"}% %MAKETEXT{"Unrecognized user and/or password"}%</h4>%TMPL:END%
+
+
+
+%TMPL:DEF{"pagetitle"}%<h3 class="patternTemplateTitle">%BANNER%</h3>%TMPL:END%
+
+
+
+%TMPL:DEF{"pagenote"}%%NOTE%%TMPL:END%
+
+
+
+%TMPL:DEF{"authenticationnote"}%<p><span class="twikiSmallish twikiGrayText">%MAKETEXT{"Enter your TWiki.LoginName. (Typically First name and last name, no space, no dots, capitalized, e.g. !JohnSmith, unless you chose otherwise). Visit %TWIKIWEB%.TWikiRegistration if you do not have one."}%</span></p>%TMPL:END%
+
+
+
+%TMPL:DEF{"forgotpasswordnote"}%&nbsp;<span class="twikiSmallish">[[%TWIKIWEB%.ResetPassword][%MAKETEXT{"I forgot my password"}%]]</span>%TMPL:END%
+
+
+
+%TMPL:DEF{"seealsonote"}%<div class="twikiSmallish twikiGrayText">
+%MAKETEXT{"See also:"}% %TWIKIWEB%.TWikiRegistration, %TWIKIWEB%.ResetPassword, %TWIKIWEB%.ChangePassword <br />
+%MAKETEXT{"If you have any questions, please contact [_1]." args="%WIKIWEBMASTER%"}%
+</div>%TMPL:END%
+
+
+
+%TMPL:DEF{"content"}%<div class="patternTopic"><div id="twikiLogin">
+<form name="loginform" action="%SCRIPTURLPATH{"login"}%/%WEB%/%TOPIC%" method="post">
+<div class="twikiFormSteps">
+<div class="twikiFormStep">
+%TMPL:P{"pagetitle"}%%TMPL:P{"pagenote"}%
+</div><!-- /twikiFormStep-->
+<div class="twikiFormStep">
+---+++ %MAKETEXT{"Username"}%
+
+%ICON{"person"}% <input class="twikiInputField" type="text" size="30" name="username" value="%URLPARAM{"username"}%" tabindex="1" />
+%TMPL:P{"authenticationnote"}%
+</div><!-- /twikiFormStep-->
+<div class="twikiFormStep">
+---+++ %MAKETEXT{"Password"}%
+
+%ICON{"key"}% <input class="patternFormFieldVerticalForm" type="password" size="30" class="twikiInputField" name="password" value="" tabindex="2" />%TMPL:P{"forgotpasswordnote"}%
+</div><!-- /twikiFormStep-->
+<div class="twikiFormStep twikiLast">
+<input class="twikiSubmit" type="submit" value='%MAKETEXT{"Logon"}%' tabindex="3" />
+</div><!-- /twikiFormStep-->
+</div><!-- /twikiFormSteps-->
+<literal>
+%QUERYPARAMS{format="<input type='hidden' name='$name' value='$percntENCODE{$quot()$value$quot type=$quot()html$quot}$percnt' />"}%
+</literal>
+<input type="hidden" name="origurl" value="%ORIGURL%" />
+</form>
+
+%TMPL:P{"seealsonote"}%
+</div><!-- /twikiLogin-->
+</div><!-- /patternTopic-->%TMPL:END%

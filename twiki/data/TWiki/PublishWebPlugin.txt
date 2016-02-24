@@ -1,0 +1,144 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118881" format="1.1" version="1.7"}%
+---+!! Publish Web Plugin
+
+Utility to publish a TWiki web to static HTML pages. Useful to maintain a static website collaboratively in an access restricted TWiki.
+
+%TOC%
+
+---++ Description and Syntax Rules
+
+One web (defined in the PUBLISHWEBNAME setting) serves as the master for the static HTML pages. The Plugin generates an HTML pages every time a user saves a topic in the Publish web. The static HTML files are based on a TWiki skin of choice. All referred attachments (images etc) are copied to a publish directory.
+
+---+++ Topics and Links
+   * The home topic is assumed to be =Index=
+   * Topic names: For clarity, use capitalized words and underscores (%TWIKIWEB%.WikiWord names are possible too)
+   * All links should be defined as double square bracket links, e.g. =[<nop>[Topic]]= or =[<nop>[Topic][label]]= (do not use %TWIKIWEB%.WikiWord links)
+
+#PublishProcess
+---+++ Publish process
+<form action="%SCRIPTURL%/view%SCRIPTSUFFIX%/%WEB%/%TOPIC%#PublishProcess">
+   * A static HTML page is generated for exery topic saved in the %PUBLISHWEBNAME% web (unless listed in the EXCLUDETOPIC setting)
+   * Topic names get converted to a lowercase filename, e.g. =Index= to =index.html=, =AboutUs= to =aboutus.html=, and =Customer_Support= to =customer_support.html=
+   * Only text between =%<nop>STARTPUBLISH%= and =%<nop>STOPPUBLISH%= is used (the whole text if missing)
+   * !WikiWord links are ignored, also across webs
+   * Page layout is based on the skin defined in the PUBLISHSKIN setting
+   * Topics can be re-published without an edit/save cycle.%BR%
+     Topic:
+     <select name="tname">
+     <option value="">select...</option>
+     <option>all</option>
+     %TOPICLIST{ web="%PUBLISHWEBNAME%" format="<option>$name</option>" separator=" " }% </select>
+     <input type="hidden" name="action" value="publish" />
+     <input type="submit" value="Publish" />
+     [[%SCRIPTURL%/view%SCRIPTSUFFIX%/%WEB%/%TOPIC%#PublishProcess][Clear]]%BR%
+     %PUBLISHWEB{ "%URLPARAM{ "action" }%" topic="%URLPARAM{ "tname" }%" }%
+</form>
+
+---+++ Variables
+   * =%<nop>STARTPUBLISH%= - place in topic text where to start publishing
+      * Optional, start from top if missing
+   * =%<nop>STOPPUBLISH%= - place in topic text where to stop publishing
+      * Optional, publish to end of topic if missing
+   * =%<nop>PUBLISHWEB{"nicetopic"}%= - nice topic name
+      * Shows a "nice" topic name of the current topic: Underscores in topic names are rendered as space; the Index topic is rendered with the HOMELABEL Plugin setting
+      * Example: Topic =Customer_Support= turns into =Customer Support=
+   * =%<nop>PUBLISHWEB{"breadcrumb"}%= - nice breadcrumb
+      * The breadcrumb is based on the parent child relationship of topics, starting at the Index topic
+      * The breadcrumb does _not_ include the current topic, append =%<nop>PUBLISHWEB{"nicetopic"}%= to get the complete breadcrumb
+      * The skin may contain a =%<nop>PUBLISHWEB{"breadcrumb"}%= variable to show the breadcrumb
+      * Underscores in topic names are rendered as space
+      * Example: =You are here: <u>Home</u> &gt; <u>Customer Support</u> &gt;=
+   * =%<nop>PUBLISHWEB{"publish" topic="Name"}%= - re-publish topic(s) without edit/save cycle
+      * Useful to refresh all HTML pages if the skin has been modified
+      * A =topic="all"= publishes all topics in the Publish web except for the excluded ones
+      * A =topic="Any_Topic"= publishes a specific topics
+
+---++ Plugin Settings
+
+Plugin settings are stored as preferences variables. To reference a plugin setting write ==%<nop>&lt;plugin&gt;_&lt;setting&gt;%==, i.e. ==%<nop>PUBLISHWEBPLUGIN_SHORTDESCRIPTION%==
+
+   * One line description, is shown in the %TWIKIWEB%.TextFormattingRules topic:
+      * Set SHORTDESCRIPTION = Maintain a static website collaboratively in a TWiki web
+
+   * Debug plugin: (See output in =data/debug.txt=)
+      * Set DEBUG = 0
+
+   * Web to publish:
+      * Set PUBLISHWEBNAME = BDI.SDD_.Primer
+
+   * Skin to use to publish:
+      * Set PUBLISHSKIN = static
+
+   * Exclude topics from publishing:
+      * Set EXCLUDETOPIC = WebPublish, WebChanges, WebHome, WebIndex, WebLeftBar, WebNotify, WebPreferences, WebAtom, WebRss, WebSearchAdvanced, WebSearch, WebStatistics, WebTopicList
+
+   * Home label, used in =%<nop>PUBLISHBREADCRUMB%=:
+      * Set HOMELABEL = Home
+
+---++ Plugin Installation Instructions
+
+__Note:__ You do not need to install anything on the browser to use this plugin. The following instructions are for the administrator who installs the plugin on the TWiki server. 
+
+   * Download the ZIP file from the Plugin web (see below)
+   * Unzip ==%TOPIC%.zip== in your twiki installation directory. Content:
+     | *File:* | *Description:* |
+     | ==data/TWiki/%TOPIC%.txt== | Plugin topic |
+     | ==data/TWiki/%TOPIC%.txt,v== | Plugin topic repository |
+     | ==data/Publish/WebPublish.txt== | Plugin topic |
+     | ==data/Publish/WebPublish.txt,v== | Plugin topic repository |
+     | ==lib/TWiki/Plugins/%TOPIC%.pm== | Plugin Perl module |
+   * Configure and test the installated Plugin:
+      * TWiki 4.0 and up: Run the [[%SCRIPTURL%/configure%SCRIPTSUFFIX%][configure]] script to enable the Plugin
+      * Change the Plugin settings as needed (for now leave =PUBLISHSKIN = print= setting)
+      * Configuration on shell level:
+         * Settings in =lib/TWiki/Plugins/%TOPIC%.pm=: For security, the output directories are defined in the =%TOPIC%.pm= library. Change the hardcoded settings if needed:
+            * =$publishPath= defines the output directory of the static HTML files, __relative to__ the =twiki/pub= directory; defaults to the parent directory of the =twiki/pub= directory; should point to the htdocs root directory
+            * =$attachPath= defaults =_publish=; is __relative to__ =$publishPath=
+         * Create the directory indicated in the =$attachPath= setting
+         * Change the permission of directories indicated by =$publishPath= and =$attachPath= to be writable by the cgi user (typically user =nobody=)
+      * Create new TWiki web for website publishing:
+         * Create a new =Publish= web (name indicated by the =PUBLISHWEBNAME= Plugin setting)
+         * In !WebPreferences of that web, set the =NOAUTOLINK= setting to =on=
+         * For convenience, add these links to the WebLeftBar:
+            * =*Publishing*=
+            * =[<nop>[Index][Home page topic]]=
+            * =[<nop>[http://%<nop>HTTP_HOST%/index.html][/index.html]]=
+            * =[<nop>[http://%<nop>HTTP_HOST%%<nop>PUBLISHWEB{topicurl}%][%<nop>PUBLISHWEB{topicurl}%]]=
+            * =[<nop>[%<nop>SCRIPTURL%/view%<nop>SCRIPTSUFFIX%/%<nop>WEB%/WebPublish?\%BR%action=publish;ptopic=%<nop>BASETOPIC%][Re-publish this topic]]=
+            * =[<nop>[%<nop>TWIKIWEB%.PublishWebPlugin][PublishWebPlugin]]=
+         * Create an =Test= topic in that web
+         * This should generate an =test.html= page on topic save
+         * Create =Index= topic and other topics
+   * Publish skin:
+      * Create a new publish skin based on your branding. The [[%TWIKIWEB%.TWikiSkins][TWiki skin]] can be derived from any =twiki/templates/view.*.tmpl= skin file
+      * Omit any links to TWiki, such as edit and attach links
+      * The skin can use Plugin specific settings =%<nop>PUBLISHWEB{"breadcrumb"}%= and =%<nop>PUBLISHWEB{"nicetopic"}%=
+      * The skin can introduce skin specific [[Publish.WebPreferences]] settings, such as =%<nop>PUBLISH_SITE%=, =%<nop>PUBLISH_LOGO%=, etc.
+      * Activate the new skin in the Plugin's =PUBLISHSKIN= setting
+
+---++ Limitations
+
+   * All attachments are copied into the same directory, e.g. make sure you use unique filenames across all topics in your publish web and in your skin
+
+---++ Plugin Info
+
+|  Plugin Author: | TWiki:Main.PeterThoeny |
+|  Copyright: | &copy; 2006, Peter@Thoeny.org |
+|  License: | GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]]) |
+|  Plugin Version: | 15 Feb 2006 (V1.022) |
+|  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  15 Feb 2006: | Added =%<nop>PUBLISHWEB{"publish" topic="Name"}%= |
+|  13 Feb 2006: | Initial version |
+|  TWiki Dependency: | $TWiki::Plugins::VERSION 1.024 |
+|  CPAN Dependencies: | none |
+|  Other Dependencies: | none |
+|  Perl Version: | 5.005 |
+|  [[TWiki:Plugins/Benchmark][Benchmarks]]: | %TWIKIWEB%.GoodStyle 100%, %TWIKIWEB%.FormattedSearch 100%, %TOPIC% 99% |
+|  Plugin Home: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC% |
+|  Feedback: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Dev |
+|  Appraisal: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Appraisal |
+
+__Related Topics:__ %TWIKIWEB%.TWikiPlugins, %TWIKIWEB%.DeveloperDocumentationCategory, %TWIKIWEB%.AdminDocumentationCategory, %TWIKIWEB%.TWikiPreferences
+
+-- TWiki:Main.PeterThoeny - 15 Feb 2006
+

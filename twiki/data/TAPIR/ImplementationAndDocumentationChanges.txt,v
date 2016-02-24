@@ -1,0 +1,472 @@
+head	1.23;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.23
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.23
+log
+@Revision 23
+@
+text
+@A short list of changes suggested during the documentation and implementation process. This is just a temporary page. As soon as a change is accpeted, its description should move from this page to the changelog.
+
+   * _Policy for concept identifiers_
+   * Concept identifiers are just strings for TAPIR, so the protocol does not enforce any pattern. However it is recommended to use globally, resolvable and permanent unique identifiers for them. It is also recommended to avoid using characters that are not allowed in the "query" term of URLS, since concepts can be referenced there by many TAPIR parameters. When defining concepts based on xml schemas we recommend to simply concatenate the namespace of the schema with the local xpath to the instance element. For example ImplementationAndDocumentationChangesDataSets/DataSet/Units/Unit/InstitutionID in abcd becomes http://www.tdwg.org/schemas/abcd/2.06/DataSets/DataSet/Units/Unit/InstitutionID
+   * _Make dct:modified optional in metadata responses_
+   * Motivation: not all providers will have that information.
+   * _Include optional dct:created in metadata responses_
+   * Motivation: there's no way to tell now when a provider has been created.
+   * _Include optional attribute "wsdl" to element <template> in capabilities responses_
+   * Motivation: This can provide an interesting bridge between TAPIR and other tools that support wsdl.
+   * _Include new response <logged> for logOnly requests_
+   * Motivation: Current approach is confusing and not symmetric across operations. It can take some time for users to realize that an empty <search> response is actually caused by the logOnly attribute being set to true. Entire metadata responses consume unecessary bandwidth (even if they can be sent out quickly due to caching). On the other hand, <logged> is very clear about what happened on the server side, all operations could use it, and it would keep the response small.
+   * _Allow inline output model definition in templates_
+   * Motivation: Now clients can only point to existing output models (as an URL) in requests. This completely eliminates one of the current functionalities provided by DiGIR networks which is to define record structures on the fly. This change would allow two ways of defining an output model (as it happens with templates): URI or inline definition. Only providers that can parse "anyOutputModels" would be able to handle this new kind of definition.
+   * _Drop "view" operation and rearrange definitions of templates and output models_
+   * Motivation: the current name can bring confusion considering what was initially considered a "view" in the integration document, and the same functionality can be achieved with searches if new options are added to capabilities. The position of templates and output models inside capabilities could also lead to confusion.
+   * Related changes (see also CapabilitiesReview for details and an example):
+      * _Include a <templates> section under inventory and search capabilities._
+      * _Include option <anyConcepts> under inventory to be advertised when the provider accepts inventories on any available concept (this will require that the provider understands filters)._
+      * _Have a single <outputModels> optional element inside search, with optional subelements <knownOutputModels> and <anyOutputModels>. The first indicates one or more output models advertised by the provider (this will require that the provider understands filters, partial selection and order by). The second one indicates that the provider accepts searches involving any output model, as soon as it references mapped concepts._
+      * _Include new section called <requests>, with sub sections <encoding> (with options kvp and xml), <globalParameters> (with options logOnly, and xslt), and also the filter section._
+   * _New definitions for the request encodings_
+   * _KVP requests:_ Available through GET or POST with the regular KVP parameters for each operation.
+   * _XML requests:_ Available through POST without specifiying any parameters, when the HTTP Content-Type should be "text/xml" and the XML should go directly in the content. Also available through GET with a single parameter called "request" whose value should be either a URL pointing to an XML or the URL encoded XML itself.
+@
+
+
+1.22
+log
+@Revision 22
+@
+text
+@d9 1
+a9 1
+   * _Include optional attribute "wsdl" to element <queryTemplate> in capabilities responses_
+d14 1
+a14 1
+   * Motivation: Now clients can only point to existing output models (as an URL) in requests. This completely eliminates one of the current functionalities provided by DiGIR networks which is to define record structures on the fly. This change would allow two ways of defining an output model (as it happens with templates): URI or inline definition. Only providers with "dynamicParsing" capabilities would be able to handle this new kind of definition.
+d18 1
+a18 1
+      * _Include a <queryTemplates> section under inventory and search capabilities._
+@
+
+
+1.21
+log
+@Revision 21
+@
+text
+@d1 1
+a1 31
+A short list of changes done to TAPIR based on the documentation and implementation process. This is just a reminder to not forget about them and include them in the specification
+
+   * New namespace http://rs.tdwg.org/tapir/1.0
+   * qualified concepts
+      * the delimiter for NS and ConceptId hash (#) is used in URLs as a fragment identifier and needs to be percentage escaped. thats bad. we suggest to use the double colon instead '::'
+   * envelope (=all elements from TAPIR namespace in response)
+      * by default it is on for all requests except search views
+      * can be turned off only for searches, no matter if view or xml message based
+      * envelope gets turned on automatically for searches when
+     * error occurs
+     * count is requested
+   * no matches in queries result in empty content and a warning diagnostic message.
+   * logOnly request
+      * new boolean attribute "logOnly" to operationRequestGroup 
+      * the response content of such requests are the usual ones, with inventories and searches returning empty results
+      * attribute "logRequests" in the <operations> element of capabilities with a controlled vocabulary: [[required][| accepted | denied]]
+   * serialized filter strings
+      * we removed the* prefix from filter concepts, because a @@ is used for aliased concepts or '::' for qualified ones. so we can detect concepts even without a* prefix. See GetInvokedOperations
+   * Give reason why the View operation exists:
+      * to accommodate TAPIRLite providers. Apparently it was the easiest way to do that. Their requirements:
+     * No need to parse XML requests (only GET requests with simple key/value parameters)
+     * No need to parse filters.
+     * No need to implement "partial".
+     * All queries based on templates.
+   There could be other ways to allow the existence of TAPIRLite without having the view operation, such as including many new attributes in the search operation capabilities, but it would easily get confusing and contradictory.
+   Searches and inventories can make use of templates already.
+   * add an optional "alias" attribute to the mappedConcept in capabilities. Providers can advertise a short alias they understand as a short reference to the concept. This alias should be taken from a global ConceptNameServer, so the alias name is shared. This way clients dont have to interact with a CNS to know the alias.
+
+--------------------------
+<a name="proposed"></a>
+---++ Last minute changes to be considered
+@
+
+
+1.20
+log
+@Revision 20
+@
+text
+@d39 2
+a40 2
+      * _Include optional attribute "wsdl" to element <queryTemplate> in capabilities responses_
+    * Motivation: This can provide an interesting bridge between TAPIR and other tools that support wsdl.
+@
+
+
+1.19
+log
+@Revision 19
+@
+text
+@a34 2
+   * _Drop "view" operation_
+   * Motivation: the current name can bring confusion considering what was what initially considered a "view" in the integration document, and the same functionality can be achieved with searches if new options are added to capabilities.
+d39 2
+a40 2
+   * _Make all operations invokable through GET or POST_
+   * Motivation: aviod confusion making the operations more symmetric.
+d45 10
+a54 6
+   * See CapabilitiesReview for details and an example of capabilities response related changes. they include:
+      * _Include optional attribute "wsdl" to element <queryTemplate> in capabilities responses_
+    * Motivation: This can be an interesting bridge between TAPIR and other tools that support wsdl.
+      * _Add new section in capabilities response to specify server side processing options_
+    * Motivation: <dynamicOutputModels> is now under search, but its meaning can be applied to view. The name is also still confusing.
+      * _Include a <queryTemplates> section under inventory and search capabilities, since they were under view and it was removed_
+@
+
+
+1.18
+log
+@Revision 18
+@
+text
+@d47 1
+a47 1
+   * *Capabilities*: See CapabilitiesReview for details and example
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@a42 9
+   * _Include a <queryTemplates> section under inventory and search capabilities, since they were under view and it was removed_
+
+to be continued...
+
+   * _Include optional attribute "wsdl" to element <queryTemplate> in capabilities responses_
+   * Motivation: This can be an interesting bridge between TAPIR and other tools that support wsdl.
+   * _Add new section in capabilities response to specify server side processing options_
+   * Motivation: <dynamicOutputModels> is now under search, but its meaning can be applied to view. The name is also still confusing.
+   * Note: the new section could be called <serverSideProcessing>, with optional subelements <dynamicParsing> and <xslt>.
+d47 6
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d34 1
+a34 1
+   * Concept identifiers are just strings for TAPIR, so the protocol does not enforce any pattern. However it is recommended to use globally, resolvable and permanent unique identifiers for them. It is also recommended to avoid using characters that are not allowed in the "query" term of URLS, since concepts can be referenced there by many TAPIR parameters.
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d33 4
+a36 3
+   * _Rename "view" operation_
+   * Motivation: the current name can bring confusion considering was what initially considered a "view" in the integration document.
+   * Options: link, or simply remove the operation after improving other parts of capabilities.
+d43 4
+a46 2
+   * _Move query templates out of the view operation in capabilities responses_
+   * Motivation: They can also be used on searches and this can bring confusion.
+a48 3
+   * _Move output models out of the search operation in capabilities responses_
+   * Motivation: Right now they are under view, but can also be used on searches and this can bring confusion.
+   * Note: the element could be simply called "outputModels" (no reference to static or dynamic!).
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d30 1
+a30 1
+
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d35 1
+a35 1
+   * Options: link, RESTservice
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d28 28
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d27 1
+a27 1
+   * add an optional "alias" attribute to the mappedConcept in capabilities. Providers can advertise a short alias they understand as a short reference to the concept. This alias should be taken from a global CocneptNameServer, so the alias name is shared. This way clients dont have to interact with a CNS to know the alias.
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d15 2
+a16 2
+      * </received> as new response content
+      * attribute "acceptLogRequests" in the <operations> element of capabilities
+d18 2
+a19 2
+      * we can remove the* from filter concepts, because a @@ is used for aliased concepts or '::' for qualified ones. so we can detect concepts even without a* prefix. See GetInvokedOperations
+   * View operation is existing because:
+d27 1
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d6 4
+a9 3
+   * envelope
+      * by default it is on for all requests except views
+      * envelope gets turned on automatically when
+a11 1
+      * Evelopeless is only available in search operation and the content inside the <search> element is returned.
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d11 1
+a11 1
+      * envelope off means for all operations to just respond the inner TAPIR content like <pong> <capabilities> <metadata> <inventory> <search>
+d13 1
+a13 1
+   * logOnly request ???
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d3 1
+a3 1
+   * New namespace http://rs.tdwg.org/tapir/.
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d3 1
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d18 8
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d13 3
+a15 1
+      * new boolean attribute "logOnly" to responseGroup ???
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d6 1
+a6 1
+      * by default its on for XML messages, off for GET requests
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d14 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d4 1
+a4 1
+      * the delimiter for NS and ConceptId hash (#) is used in URLs as a fragment identifier and needs to be percentage escaped. thats bad. we suggest to use the double colon instead ::
+@

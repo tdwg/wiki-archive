@@ -1,0 +1,113 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@---+ Protocol Differences in Scan/Inventory Method
+
+---+++++ BioCASE
+   * Allows only to scan a single concept
+   * (-) Does not allow filters
+   * (-) Does not allow counts on scans
+   * Request format:
+<verbatim>
+<scan>
+  <requestFormat>http://www.tdwg.org/schemas/abcd/1.2</requestFormat>
+  <concept>/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus</concept> 
+</scan>
+</verbatim>
+   * Response format:
+<verbatim>
+<content>
+  <scan>
+    <value>Acantholimon</value> 
+    <value>Achillea</value> 
+    <value>Aethionema</value> 
+    ...
+  </scan>
+<content>
+</verbatim>
+
+
+---+++++ DiGIR
+   * Allows only to scan a single concept
+   * Does allow filters
+   * Does allow counts on scans
+   * Request format:
+<verbatim>
+<inventory xmlns:dwc='http://digir.net/schema/conceptual/darwin/2003/1.0'>
+  <dwc:Genus/>
+  <count>true</count>
+</inventory>
+</verbatim>
+   * Response format:
+<verbatim>
+<content xmlns:dwc="http://digir.net/schema/conceptual/darwin/2003/1.0">
+  <record>
+    <dwc:Genus count="18">Acantholimon</dwc:Genus> 
+  </record>
+  <record>
+    <dwc:Genus count="34">Achillea</dwc:Genus> 
+  </record>
+  <record>
+    <dwc:Genus count="41">Aethionema</dwc:Genus> 
+  </record>
+  ...
+</content>
+</verbatim>
+
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+   * Format:
+d10 2
+a11 4
+  <value>Acantholimon</value> 
+  <value>Achillea</value> 
+  <value>Aethionema</value> 
+  ...
+d14 11
+d31 1
+a31 1
+   * Format:
+d33 17
+a49 4
+<inventory>
+  <???>Acantholimon</???> 
+  <???>Achillea</???> 
+  <???>Aethionema</???> 
+d51 1
+a51 1
+</inventory>
+@

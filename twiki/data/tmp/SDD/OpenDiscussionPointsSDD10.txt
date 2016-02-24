@@ -1,0 +1,59 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1092655980" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+This topic lists discussion points still open with the release of 1.0. They may be addressed in future versions of SDD, or already before the finalization of 1.0.
+
+---
+
+<h1>Open Questions<a name="questions"/></h1>
+
+*General 1: IDs and relations*
+	* A major non-change that was debated in Berlin is the type of internal versus external ID relations. The options for the id/ref attributes within SDD are:
+		* leave it highly restrictive at positive integers, and consider GUIDs a combination of the dataset GUID (present in Metadata) with these (note that a similar kind of combined key is used in OWL!)
+		* allow any kind of string
+		* allow integers for purely local, and a specific kind of GUID like LSID or DOI identifiers for public relations.
+	* Since no decision was made whether LSID may be the preferred identifier, and since a resolvable URN type of identifier is thought to be desirable, I think the best decision of version 1.0 of SDD is to leave it at the integers, and extend this in the next version.
+
+*General 2*
+	* Should we use xml:lang instead of the attribute "language"? One problem is that the "language" attribute has to be required if uniqueness identity constraints are to be enforced. The UBIF language type adds "-" and "?", but it seems a lot of complication for a simple problem.
+	* We probably need to have more than one class hierarchy and add a marker to indicate which hierarchy is formal, and which contains non-taxonomic groupings. In Brazil Kevin reported on Lucid providing a "tag" mechanism to mark "silly characters" intended only to group items like "100 worst weed species: yes/no". XPER reported a similar tag mechanism for items (instead of characters as in Lucid) to tags items for specific problems: diseases / quarantine species / disease vectors. To me both kind of problems seem to be most appropriately handled as a non-taxonomic class hierarchy. Any proposals how to handle this? As a first step an additional attribute "IsPhylogenetic" in the class hierarchy is proposed (already done).
+	* Media Resource may need a location detail (if figure has multiple labeled fragments). 
+		* Perhaps call this <nop>FragmentLabel?
+		* Such <nop>MediaResource-"FragmentLabels", but even more the "Location" in Citations may be language sensitive! "table 1", "tab. 2", "figure 3" in English, "Abbildung 3" in German etc.!
+	* We probably ultimately need some documentation of quality control methods and standards, e. g. 
+		* <nop>QualityControlStandard: Name (and version, if applicable) of the published or internally documented quality control standard used.
+		* <nop>QualityControlDescription: Free-form description of methods used to ensure the quality of the descriptive data. In the absence of a standard, this should be a short description of the quality control procedures taken.
+
+*Terminology*
+	* In SDD "character type" is now simplified in relation to DELTA (Categorical/Quantitative instead of OM/UM/IN/RN). It is an operational data type, i.e. refers to the digitized representation rather than underlying measurable properties of the object (which may be quantitative (ratio scale), even if measured on the ordinal scale). 
+		* One remaining problem seems to be the definition of state sequence in ordinal characters. Basing character states on concept states (= reuse of state sets in multiple characters) causes problem with the definition of order. The states in a character may be inherited from multiple concepts nodes. Each of these will probably have order in the concept, but the final order can only be defined in each character. Either only nominal sets can be combined, or the state order is defined after being combined,  i. e. not in the concept but in the character. This seems unfortunate and an worrisome artifact of the SDD model.
+	* Glossary:
+		* Do we need some method to express ranges for cardinality: How many legs may there be etc.?
+		* Do we need some method to associate states with properties/types?
+		* Should Glossary change to a proxy object? A problem is that then we would need a Label combining term and <nop>SensuLabel and separate entities as well. Should only the linking mechanism be used?
+		* Glossary often has a taxonomic scope. Although a general "sensu" mechanism for terms exists, a specifically taxonomic scope may be desirable.
+	* Can we format numeric values in reports? See DELTA  *DECIMAL PLACES. How do we format sets of statistical measures in natural language or other reports? The (min-) lowerrange - central - upperrange (-max) format is not necessarily universal. Currently it is nevertheless fixed in application code and cannot be defined by users. Since many variants which individual measures are present exist, this can probably not be done with a <nop>TextBefore/After strategy (possible for Min, Max, but not for ranges with/without mean, "3-6", "5", "3-5-6"). Also, open ranges exist, which should be output as "at least 3 cm long" in natural language. Also: formats are audience/language-specific!
+	* Can we find a smart method to format related and dependent value like width x length?
+	* Should <nop>ConceptTree/Concept/ReferableDefinitions/<nop>__AutoUpdateCharacters be renamed to <nop>UpdateStateRefsTriggers? The element is intended to define those characters for which upon adding new states to a concept state set, <nop>StateReference elements in Character/Categorical/States should be automatically added).
+	* Make the mappings of fine-grained states to coarse-grained states expertise-specific (part of audience definition)? Do we need multiple <em>named</em> mapping definitions in the future? See StateMapping for further discussion.
+	* Automatically inherit concept states within concept tree? Consider placing a character in a concept tree as a contract to add all added concept states to the character? At the moment concept states need to be explicitly added at characters as a character reference, which in itself defines a new character-local id!
+
+*Descriptions*
+	* Generalization questions, i. e. inferring descriptions from other descriptions:
+		* Main.PrometheusII proposes to explicitly reference descriptions that are to be included or generalized into a current description. Currently we expect in SDD this to rely on am automatic "description resource discovery" mechanism, i. e. _all_ object descriptions with the same class name are generalized, and classes are generalized to higher classes following the class (taxon) hierarchy defined in Entities.
+		* <nop>BioLink proposes (correct?) to explicitly flag which characters or states allow generalization, and whether from above or below.
+		* (= the first is explicit generalization on the object/class hierarchy level, the second explicit which characters/states are included in generalization.)
+		* SDD already has a basic mechanism to mark the origin of data as aggregation/generalization, computed characters, calculated statistics. See the Origin attribute (type <nop>DataOriginEnum).
+		* Related: Do we have to document original terminology labels during data entry (i.e. in the language/audience representation used during scoring). The audience itself may be interesting (as a code), but even more the terminology may have been changed slightly (evolution of terminology) since scoring. A record of score-time representation would increase the trust in the coded scores and allow some backtracking of problems.
+	* In Descriptions we call an element <nop>GeographicalScope, in <nop>ProjectDefinition basically the same thing <nop>GeographicalCoverage! However, Descriptions refers to defined objects in Resources, whereas in <nop>ProjectDefinition it is free-form text (modeled directly after <nop>DublinCore). Make this consistent and always use Resources/Geography/Location object references?
+	* Problem of storing calculated data and marking them as "autogenerated" (or which term to use?). Related to problem of inheriting information up and down taxonomic tree. Similar problems are already marked up in the "Origin" element in Coded and Nat. Language data, and in the inherited attribute associated with character ratings. In the case of statistical measures, marking the Origin as calculated would refer to the raw data in an observation set. However, there is some discussion on the Wiki (see RepeatedObservations) whether we need a keyref to exactly one observation set or not.
+	* Should the natural language markup be brought closer to xhtml by using &lt;span class="state"&gt; for markup instead of the SDD-CodedDescription like names? It may be desirable to view natural language markup as pure xhtml, without xslt transformations.
+	* Can we describe images? Is this automatically implied in reversing the association between a description and an image or not? Images may only illustrate parts of the description.
+	* Perhaps <nop>CodedDescriptions should be renamed to <nop>SymbolicDescriptions? See Analytical Philosophy (I only checked the Enc. Britannica, I am no expert in this!)
+
+---
+
+Looking for the most recent schema file? See CurrentSchemaVersion!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 August 2004

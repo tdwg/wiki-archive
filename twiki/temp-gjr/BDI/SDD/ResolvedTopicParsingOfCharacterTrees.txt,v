@@ -1,0 +1,318 @@
+head	1.10;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.10
+date	2009.11.20.02.45.28;	author LeeBelbin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.05.04.11.26.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.06.21.11.30.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.05.28.14.05.17;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.04.19.16.24.32;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2003.12.15.08.43.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2003.11.24.10.52.17;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.09.29.16.25.52;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.09.29.08.30.38;	author KevinThiele;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.10
+log
+@none
+@
+text
+@%META:TOPICINFO{author="LeeBelbin" date="1258685128" format="1.1" reprev="1.10" version="1.10"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+Consider the following character tree:
+
+<verbatim>
+leaves
+    shape
+        ovate
+        elliptic
+    indumentum
+        upper surface
+            glabrous
+            pubescent
+        lower surface
+            glabrous
+            pubescent
+    ...etc        
+</verbatim>
+
+We can tell from this tree that "ovate" and "elliptic" are character states
+(they have no children), "shape" is a character (it has only states as
+children) and "leaves" is a character group (it has only characters or other character groups as
+children). 
+
+It's tempting then to say that there's no need to specify a type for each node of the tree, since we can easily parse the tree to work out what type any node is.
+
+However, partially marked up natural language descriptions may
+have character trees with no character states:
+
+e.g.
+
+<verbatim>
+"<Leaves>Leaves simple, ovate to elliptic, with toothed margins,
+undersurface pale, pubescent.</Leaves> <Flowers>Flowers blue.</Flowers>"
+</verbatim>
+
+This would require a simple tree:
+
+<verbatim>
+Leaves
+Flowers
+</verbatim>
+
+The simple rules than can be used to deduce the types of nodes in a complete character tree (one in which all branches eventually lead to states) cannot be used to identify the nodes in this partial tree as character group nodes.
+
+So - the types of nodes in character trees will need to specified.
+
+-- Main.KevinThiele - 29 Sep 2003
+
+---
+Character trees are subsumed in the object called <nop>CharacterGroup, and nodes are the recursive object called <nop>CharacterGroupItem. The main defect I see in version 0.62 is not that it is difficult to tell what branch is a Character definition in Definitions (resp a <nop>CharacterReference in a Description) ---that is easy because in both <nop>CharacterGroupItem and <nop>CharacterReference character definitions are by keyref only---. Rather, I think the (small) defect is that there are two ways to represent a flat character list either in Terminology or Descriptions, namely as a sequence of <nop>CharacterDefinition objects (resp. <nop>Character keyrefs). The second is inside a <nop>CharacterGroupItem whose tree happens to be of depth two---a root and a bunch of nodes each with a single Character and nothing else).
+
+-- Main.BobMorris - 29 Sep 2003
+
+---
+
+"defect is that there are two ways to represent a flat character list either in Terminology or Descriptions, namely as a sequence of <nop>CharacterDefinition objects [... or ...] <nop>CharacterGroupItem tree"
+
+This is not correct. The sequence of characters in Terminology/Characters is <em>not</em> informative, it may change without changing the arrangement of the characters. A flat sequence of character can <em>only</em> be defined in character (or now "concept") trees. The character list itself does not define a sequence, it should be considered an unordered set. Unfortunatly, there is no support in schema to express whether a sequence has semantics or not (in RDF we have set, seq, and alt collections!).
+
+Gregor Hagedorn - 24 Nov 2003
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085753116" from="SDD.ParsingOfCharacterTrees" to="SDD.ResolvedTopicParsingOfCharacterTrees"}%
+@
+
+
+1.9
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1146741989" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+d9 11
+a19 11
+	 shape
+		  ovate
+		  elliptic
+	 indumentum
+		  upper surface
+				glabrous
+				pubescent
+		  lower surface
+				glabrous
+				pubescent
+	 ...etc		  
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 63
+a63 62
+%META:TOPICINFO{author="GregorHagedorn" date="1087817402" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+Consider the following character tree:
+
+<verbatim>
+leaves
+	 shape
+		  ovate
+		  elliptic
+	 indumentum
+		  upper surface
+				glabrous
+				pubescent
+		  lower surface
+				glabrous
+				pubescent
+	 ...etc		  
+</verbatim>
+
+We can tell from this tree that "ovate" and "elliptic" are character states
+(they have no children), "shape" is a character (it has only states as
+children) and "leaves" is a character group (it has only characters or other character groups as
+children). 
+
+It's tempting then to say that there's no need to specify a type for each node of the tree, since we can easily parse the tree to work out what type any node is.
+
+However, partially marked up natural language descriptions may
+have character trees with no character states:
+
+e.g.
+
+<verbatim>
+"<Leaves>Leaves simple, ovate to elliptic, with toothed margins,
+undersurface pale, pubescent.</Leaves> <Flowers>Flowers blue.</Flowers>"
+</verbatim>
+
+This would require a simple tree:
+
+<verbatim>
+Leaves
+Flowers
+</verbatim>
+
+The simple rules than can be used to deduce the types of nodes in a complete character tree (one in which all branches eventually lead to states) cannot be used to identify the nodes in this partial tree as character group nodes.
+
+So - the types of nodes in character trees will need to specified.
+
+-- Main.KevinThiele - 29 Sep 2003
+
+---
+Character trees are subsumed in the object called <nop>CharacterGroup, and nodes are the recursive object called <nop>CharacterGroupItem. The main defect I see in version 0.62 is not that it is difficult to tell what branch is a Character definition in Definitions (resp a <nop>CharacterReference in a Description) ---that is easy because in both <nop>CharacterGroupItem and <nop>CharacterReference character definitions are by keyref only---. Rather, I think the (small) defect is that there are two ways to represent a flat character list either in Terminology or Descriptions, namely as a sequence of <nop>CharacterDefinition objects (resp. <nop>Character keyrefs). The second is inside a <nop>CharacterGroupItem whose tree happens to be of depth two---a root and a bunch of nodes each with a single Character and nothing else).
+
+-- Main.BobMorris - 29 Sep 2003
+
+---
+
+"defect is that there are two ways to represent a flat character list either in Terminology or Descriptions, namely as a sequence of <nop>CharacterDefinition objects [... or ...] <nop>CharacterGroupItem tree"
+
+This is not correct. The sequence of characters in Terminology/Characters is <em>not</em> informative, it may change without changing the arrangement of the characters. A flat sequence of character can <em>only</em> be defined in character (or now "concept") trees. The character list itself does not define a sequence, it should be considered an unordered set. Unfortunatly, there is no support in schema to express whether a sequence has semantics or not (in RDF we have set, seq, and alt collections!).
+
+Gregor Hagedorn - 24 Nov 2003
+---
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085753116" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082391872" format="1.0" version="1.5"}%
+d63 1
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1071477780" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="HandlingPartialMarkupOfNaturalLanguage"}%
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1069671137" format="1.0" version="1.3"}%
+a52 2
+A small(?) oversight in ver 0.62 is the AbsenceOfCharacterGroupsInDescriptions.
+
+d59 1
+a59 1
+This is not correct. The sequence of characters in Terminology/Characters is <em>not</em> informative, it may change without changing the arrangement of the characters. A flat sequence of character can <em>only</em> be defined in character (or now "concept") trees.
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1064852752" format="1.0" version="1.2"}%
+d56 9
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1064824238" format="1.0" version="1.1"}%
+d49 7
+@

@@ -1,0 +1,64 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118874" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="DiscussionFor1dot1RC2"}%
+---+!! %TOPIC%
+
+In SDD1.1RC2 the uniqueness constraint(<nop>CharacterStateKey) on <nop>StateDefinition's ensure's that global states cannot be referenced more than once within Characters in a Terminology. This is because of
+<verbatim>
+<xs:field xpath="@id|@ref"/>
+</verbatim>
+in the identity constraint declaration.
+
+This issue is illustrated with the example below. Attempting to reference 'efg301' more than once results in a validation error.
+<verbatim>
+...
+        <ConceptStates>
+          <StateDefinition id="efg301">
+            <Representation>
+              <Label xml:lang="en" audience="efg2">brown</Label>
+            </Representation>
+          </StateDefinition>
+....
+  <CategoricalCharacter id="efg458">
+        <Representation>
+          <Label xml:lang="en" audience="efg2">Flower Color</Label>
+        </Representation>
+        <States>
+          <StateReference ref="efg301"/>
+        </States>
+      </CategoricalCharacter>
+  <CategoricalCharacter id="efg459">
+        <Representation>
+          <Label xml:lang="en" audience="efg2">Leaf Color</Label>
+        </Representation>
+        <States>
+          <StateReference ref="efg301"/>
+        </States>
+      </CategoricalCharacter>
+</verbatim>
+
+A solution will be to declare both !ConceptStateKey and !CharacterStateKey as follows
+<verbatim>
+   <xs:unique name="SomeUniqueName">
+         
+         <xs:selector xpath=".//u:StateDefinition"/>
+         <xs:field xpath="@id"/>
+      </xs:unique>
+</verbatim>
+
+This ensures that id's on <nop>StateDefinition's are unique throughout a document. 
+
+I have implemented this in BDI.SDD_.xsd at rev 39 of the Subversion trunk
+
+-- Main.JacobAsiedu - 05 Oct 2006
+
+The issue seems indeed to be a bug. I believe that the result should make sure that:
+   * concept state id-values are unique within the entire document (not only within a single concept).
+   * concept state references are unique within the scope of a single character. If the latter is truly difficult, we could drop the constraint.
+
+Did we have any other intentions? I cannot remember.
+
+At the moment I cannot follow your proposed solution - please check for me whether the constraint above are stated correctly, and whether your solution fullfills them.
+
+Thanks!
+
+-- Main.GregorHagedorn - 20 Oct 2006

@@ -1,0 +1,144 @@
+%META:TOPICINFO{author="RenatoDeGiovanni" date="1173665063" format="1.1" version="1.15"}%
+This page has been created to explore the possibilities of using and incorporating semantic mapping features into the TAPIR protocol. It supersedes previous discussions and proposals about EnhancedViewMapping.
+
+---+++ Main goal
+
+Allow data providers and output model creators to map local databases and output model definitions using concepts from one or more ontologies.
+
+---+++ Rationale
+
+Although the current protocol tried to be generic in the mapping sections, concepts were always mapped to literal properties ("leaf" nodes). No attempt has been made to explore the possibilities of mapping other things like classes and relationships. 
+By using only literal properties, the real meaning encoded in XML Schema and database mappings remains unclear - especially with complex structures involving different concepts.
+New TDWG directions (whose standards are supposed to be exchanged by TAPIR) are also pointing to ontologies as a means of integrating and modularising existing schemas.
+
+---+++ Requirements
+
+   1. Have one or more ontologies (or global data models) clearly defining classes, properties and relationships.
+   2. Enable data providers to "advertise" which parts of the ontologies are known to them through capabilities responses, under the section "concepts".
+   3. Enable the output model "mapping" section to also make use of classes and relationships.
+   4. Review parts of the protocol where concepts are used (such as filter, orderBy and list of inventory concepts) to see if there are any adjustments needed.
+
+---+++ Possible approaches to each requirement
+
+*1) Ontology definition*
+
+Considering a federated ontology-driven approach, the first issue to be considered is what kind of ontology definition languages (like RDFS, OWL-lite, Topic Maps) should be supported by providers in order to map local data sources. In principle, this could be left outside the protocol, and providers could be free to choose which languages they support during configuration. But even so, there should be at least some agreement involving provider developers and ontology makers since the basic functionality and interoperability of networks would depend on that.
+
+Ontology definitions have different levels of complexity, and it is important to specify what kind of definitions would be of primary interest to be used in a TAPIR context. An initial suggestion includes:
+
+   * Class definitions.
+   * Property definitions (in terms of class members, or literal properties).
+   * Relationship definitions (inheritance and other associations between classes).
+
+The level of expressiveness suggested forms the basis of an object oriented design. Things like inheritance across properties, reification and other features from conceptual modeling should probably not be considered at this point. However, cardinality constraints could be desirable (?).
+
+A sample ontology following this level of expressiveness using RDFS can be found here: [[%ATTACHURL%/sample_ontology.xml][sample_ontology.xml]]
+
+(next paragraphs will sometimes reference concepts from this ontology)
+
+Potentially, provider software could also support multiple ontology languages during configuration.
+
+Once a provider is configured and mapped, it should advertise which parts of the ontology are known (capabilities response). So any concepts referenced by arbitrary output models can be immediately checked against the list of known concepts.
+
+*2) Advertising mapped concepts*
+
+At the moment TAPIR treats only "atomic" concepts that are advertised by capabilities responses, such as:
+
+<verbatim>
+<concepts>
+  <schema namespace="http://res.tdwg.org/dwc/1.0"
+          location="http://res.tdwg.org/dwc/1.0/dwc.xsd">
+    <mappedConcept id="InstitutionCode" searchable="1" mandatory="0" />
+    <mappedConcept id="CollectionCode" searchable="1" mandatory="0" />
+    <mappedConcept id="CatalogNumber" searchable="1" mandatory="0" />
+  </schema>
+</concepts>
+</verbatim>
+
+If we first try the simplest approach, a concept could represent a class, a property, or a relationship. Until now, only literal properties have been mapped with TAPIR. Literal properties are the easiest things to map  - when mapped, it means "I have values for this concept". 
+
+However, what should be the criteria to map a class?
+One possible way is "a class must only be mapped when its individuals can be identified in the local database". That's perhaps the most accurate approach, but there are situations typically found with DiGIR/DarwinCore providers when all data is stored in a single table. In this case, should the data provider say that it knows about a "Collector" class when the only reference that all specimen records have is a field "collectorname"? And if in this case the data provider says "no", how should the property "collector name" be shared without having mapped the respective "Collector" class?
+
+Suggested approach:
+
+   * A class must only be mapped when its individuals can be identified in the local database.
+   * Individuals of a class can be locally identified by:
+   * global unique identifiers (prefered way).
+   * normalized local unique identifiers.
+   * denormalized local unique identifiers.
+   * Literal properties can only be mapped if the corresponding class (domain) was mapped.
+   * Relationships can only be mapped if the corresponding classes at both ends (domain and range) were mapped.
+
+So in the previous ontology example and considering relational databases, a data provider could map the class "SpecimenRecord" indicating the "catalogNumber" field as the identifier, then it could map the class "Collector" indicating the "collectorName" field as the identifier, even if it's denormalized. This would not be the ideal approach because output models designed to retrieve collector data would incorrectly repeat collector records. In this case a workaround could be to define a collector view selecting distinct collector names from the specimen table, and linking them through the name.
+
+If we consider that the ontology is defined by conceptual modeling (such as the previous RDFS example), there's one issue that needs to be sorted out. Associations and simple properties can have a single definition referencing more than one class (multiple domains, or single range pointing to a class with subclasses). One example in the RDFS provided is the property "name", which is identified by:
+
+http://res.tdwg.org/ont/1.0/base#name
+
+However, a data provider *can't* just say: 
+
+<verbatim>
+<mappedConcept id="name" searchable="1" mandatory="0" />
+</verbatim>
+
+It must indicate which class has the property name mapped.
+
+In this case, how should providers advertise properties and relationships that are mapped?
+
+One approach could be to produce subsets of the ontologies during the mapping stage, and then point to those subsets in the capabilities response, using the same format (RDFS?). However we couldn't find any references about how to point to specific parts of an ontology indicating that they are known to a local data source. And in this case, how should additional options like "searchable" and "mandatory" be defined?
+
+Another approach would be to organize the mapped concepts in a different way, like:
+
+<verbatim>
+<concepts>
+  <source namespace="http://res.tdwg.org/dwc/1.0" location="http://res.tdwg.org/dwc/1.0/dwc.xsd" />
+  <mapping>
+    <class id="SpecimenRecord">
+      <property id="catalogNumber" searchable="1" mandatory="0" />
+      <relationship id="hasIdentification" myRole="domain" withClass="Identification" othersRole="range" />
+    </class>
+    <class id="Collector">
+      <property id="name" searchable="1" mandatory="0" />
+    </class>
+    <class id="Identification">
+      <property id="name" searchable="1" mandatory="0" />
+      <relationship id="hasIdentification" myRole="range" withClass="SpecimenRecord" othersRole="domain" />
+    </class>
+  </mapping>
+</concepts>
+</verbatim>
+
+This strategy could include the following principles:
+
+   * Maximize clarity by exposing all known concepts without relying on any other implicit knowlege:
+   * If the ontology defines inheritance chains, all classes that are understood by a provider must appear as separate classes, each one with the mapped properties and relationships, even if the same property is repeated across super and sub classes. There are clear reasons for a provider to map a super class and not map any of its sub classes (for instance, it might know about BiologicalEntityRecords but not about what kind of biological records they are). There may be reasons for a provider to map a sub class and not a super class (if the provider has limitations about  how to handle inheritance properly). So in the previous example, clients should not assume that, because "SpecimenRecord" is mapped, the provider will understand queries referencing a "BiologicalEntityRecord".
+   * Relationships appear in both sides (classes). Besides an "id" it needs the roles for each class. Since RDFS doesn't define role names, "domain" and "range" were used in the previous example.
+   * When multiple ontologies are used, avoid cross-referencing problems by defining all mapped concepts under the same <concepts> element and requiring them to use fully qualified identifiers (however, shorter identifiers were used in the example). So the <schema> element was removed and now each ontology referenced by mapped concepts must appear in a <source> element which includes namespace and location.
+
+Provider software could be free to enforce that all mapped classes should be joined by some relationship.
+
+The changes suggested in the protocol schema can be found at ProposedChangesToAdvertiseMappedConcepts.
+
+*3) Output model mapping*
+
+Two alternatives are being considered:
+
+   * Define a new set of OutputModelMappingRules (currently prefered).
+
+   * Adopt an existing mapping language, such as MDL (http://www.charteris.com/capability/technology/XMLToolkit/Downloads/IntroToMDL.pdf). Issues to be considered in this case:
+   * How can MDL reference more than one ontology?
+   * Definition of an XmlWriterAlgorithmForMdl.
+
+*4) Other parts of the protocol*
+
+Concepts are also referenced from orderBy (as part of search templates), filter, and the list of inventory concepts. 
+
+See:
+
+   * ProposedChangesToOrderBy
+   * ProposedChangesToFilter
+   * ProposedChangesToInventory
+
+
+%META:FILEATTACHMENT{name="sample_ontology.xml" attachment="sample_ontology.xml" attr="" comment="" date="1168444440" path="sample_ontology.xml" size="2523" stream="sample_ontology.xml" user="Main.RicardoPereira" version="1"}%

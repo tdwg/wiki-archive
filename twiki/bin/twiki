@@ -1,0 +1,198 @@
+#!/usr/bin/perl -wT
+###############################################################################
+#
+# TWiki Enterprise Collaboration Platform, http://TWiki.org/
+#
+# Copyright (C) 2005 Martin at Cleaver.org
+# Copyright (C) 2005-2007 TWiki Contributors
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version. For
+# more details read LICENSE in the root of this distribution.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# As per the GPL, removal of this notice is prohibited.
+#
+# TWiki configuration:
+# --------------------
+#
+# If you are using ApacheLogin (aka realm based authentification)
+# create a link twiki->twikiauth and add twikiauth to the list of controlled cgis.
+# If you are NOT using ApacheLogin you might replace
+# /bin/twikiauth... with /bin/twiki... below.
+#
+# Add the following lines to lib/LocalSite.cfg
+#
+#   $TWiki::cfg{ScriptUrlPath} = '/bin'; # default to normal cgi mechanism
+#   $TWiki::cfg{ScriptUrlPaths}{attach} = '/bin/twikiauth/attach';
+#   $TWiki::cfg{ScriptUrlPaths}{changes} = '/bin/twiki/changes';
+#   $TWiki::cfg{ScriptUrlPaths}{edit} = '/bin/twikiauth/edit';
+#   $TWiki::cfg{ScriptUrlPaths}{login} = '/bin/twiki/login';
+#   $TWiki::cfg{ScriptUrlPaths}{logon} = '/bin/logon';
+#   $TWiki::cfg{ScriptUrlPaths}{manage} = '/bin/twikiauth/manage';
+#   $TWiki::cfg{ScriptUrlPaths}{oops} = '/bin/twiki/oops';
+#   $TWiki::cfg{ScriptUrlPaths}{passwd} = '/bin/twiki/passwd';
+#   $TWiki::cfg{ScriptUrlPaths}{preview} = '/bin/twiki/preview';
+#   $TWiki::cfg{ScriptUrlPaths}{rdiff} = '/bin/twiki/rdiff';
+#   $TWiki::cfg{ScriptUrlPaths}{register} = '/bin/twiki/register';
+#   $TWiki::cfg{ScriptUrlPaths}{rename} = '/bin/twikiauth/rename';
+#   $TWiki::cfg{ScriptUrlPaths}{resetpasswd} = '/bin/twiki/resetpasswd';
+#   $TWiki::cfg{ScriptUrlPaths}{rest} = '/bin/twiki/rest';
+#   $TWiki::cfg{ScriptUrlPaths}{save} = '/bin/twikiauth/save';
+#   $TWiki::cfg{ScriptUrlPaths}{search} = '/bin/twiki/search';
+#   $TWiki::cfg{ScriptUrlPaths}{statistics} = '/bin/twiki/statistics';
+#   $TWiki::cfg{ScriptUrlPaths}{upload} = '/bin/twikiauth/upload';
+#   $TWiki::cfg{ScriptUrlPaths}{viewauth} = '/bin/twikiauth/view';
+#   $TWiki::cfg{ScriptUrlPaths}{viewfile} = '/bin/twiki/viewfile';
+#   $TWiki::cfg{ScriptUrlPaths}{view} = '/bin/twiki/view';
+#
+# Plugins that add cgi scripts can benefit from this mechanism too. Here are two 
+# examples:
+#
+#   # NatSkinPlugin
+#   $TWiki::cfg{ScriptUrlPaths}{natsearch} = '/bin/twiki/natsearch';
+#   $TWiki::cfg{ScriptUrlPaths}{natlogon} = '/bin/twiki/natlogon';
+#   $TWiki::cfg{SwitchBoard}{natsearch} = [TWiki::Plugins::NatSkinPlugin::Search, natSearchCgi] ;
+#   $TWiki::cfg{SwitchBoard}{natlogon} = [TWiki::Plugins::NatSkinPlugin::Auth, logonCgi] ;
+#  
+#   # XmlRpcContrib
+#   $TWiki::cfg{SwitchBoard}{xmlrpc} = [TWiki::Contrib::XmlRpcContrib, dispatch] ;
+#
+#
+# SpeedyCGI:
+# ----------
+#
+# Put the following line
+#!/usr/bin/speedy -wT -- -t600 -M10 -r50
+# at the beginning of this script replacing the '/usr/bin/perl' line
+#
+# Useful parameters:
+#
+#   -t600 : timeout backend after 600 seconds
+#   -M10: limit the number of backends to 5
+#   -r50: re-exec the backend after serving 50 requests
+#
+# The given values are rather arbitrary and quite conservative to prevent
+# occasional memory leaks to bite back. I.e. you might to increase the number
+# of backends to more than 5 on hight traffic sites.
+#
+# for more information see here: http://daemoninc.com/SpeedyCGI/
+#
+###############################################################################
+
+BEGIN {
+  # Set default current working directory (needed for mod_perl)
+  if( $ENV{"SCRIPT_FILENAME"} && $ENV{"SCRIPT_FILENAME"} =~ /^(.+)\/[^\/]+$/ ) {
+      chdir $1;
+  }
+  # Set library paths in @INC, at compile time
+  unshift @INC, '.';
+  require 'setlib.cfg';
+
+  # default switchboard settings
+  $TWiki::cfg{SwitchBoard} = {
+    'attach' => [TWiki::UI::Upload, 'attach'],
+    'changes' => [TWiki::UI::Changes, 'changes'],
+    'edit' => [TWiki::UI::Edit, 'edit'],
+    'login' => [undef, 'login'],
+    'manage' => [TWiki::UI::Manage, 'manage'],
+    'oops' => [TWiki::UI::Oops, 'oops_cgi'], # SMELL this should trigger the 'oops' and not the 'oops_cgi' context
+    'passwd' => [TWiki::UI::Register, 'passwd_cgi'],
+    'preview' => [TWiki::UI::Preview, 'preview'],
+    'rdiff' => [TWiki::UI::RDiff, 'diff'],
+    'register' => [TWiki::UI::Register, 'register_cgi'],
+    'rename' => [TWiki::UI::Manage, 'rename'],
+    'resetpasswd' => [TWiki::UI::Register, 'resetPassword'],
+    'rest' => [TWiki::UI::Rest, 'gateway'],
+    'save' => [TWiki::UI::Save, 'save'],
+    'search' => [TWiki::UI::Search, 'search'],
+    'statistics' => [TWiki::UI::Statistics, 'statistics'],
+    'upload' => [TWiki::UI::Upload, 'upload'],
+    'viewauth' => [TWiki::UI::View, 'view'], # SMELL this should trigger the 'view' not the 'viewauth' context
+    'viewfile' => [TWiki::UI::View, 'viewfile'],
+    'view' => [TWiki::UI::View, 'view'],
+  };
+
+  # load more
+  require 'LocalSite.cfg';
+
+  %isInitialized = (); # useful for perl accelerators
+  $counter = 0;
+}
+
+use strict;
+use CGI;
+use TWiki::UI;
+use vars qw(%isInitialized $debug $counter);
+$debug = 0; # toggle me
+
+###############################################################################
+sub writeDebug {
+  print STDERR "twiki - $_[0]\n" if $debug;
+}
+
+###############################################################################
+# stub for the template login manager
+sub login {
+  my $session = shift;
+  $session->{loginManager}->login( $session->{cgiQuery}, $session );
+}
+
+###############################################################################
+# serve one request
+sub doRequest {
+  my $action = 'view';
+  my $path = $ENV{PATH_INFO} || '';
+
+  #writeDebug("### new request at $path");
+
+  #if ($debug) {
+  #  foreach my $key (sort keys %ENV) {
+  #    writeDebug("ENV{$key}=$ENV{$key}");
+  #  }
+  #}
+
+  # get action
+  if ($path =~ /^\/([a-z]*?)(\/.*)?$/) {
+    $action = $1 || 'view';
+    $path = $2 || '';
+    unless (defined $TWiki::cfg{SwitchBoard}{$action}) {
+      #writeDebug("unknown action '$action' ... defaulting to view");
+      $action = 'view';
+    }
+  }
+  #writeDebug("action=$action, $path");
+
+  # botch env
+  $ENV{PATH_INFO} = $path;
+  $ENV{SCRIPT_NAME} =~ s/^(.*)\/twiki(auth)?$/$1\/$action/g;
+
+  # get package and function
+  my ($package, $function) = @{$TWiki::cfg{SwitchBoard}{$action}};
+  #writeDebug("package=$package, function=$function");
+
+  # lazy compilation
+  if ($package && !$isInitialized{$package}) {
+    #writeDebug("initializing package $package");
+    $isInitialized{$package} = 1;
+    eval "use $package;";
+    die $@ if $@;
+  }
+
+  # do it
+  my $sub;
+  $sub .= $package.'::' if $package;
+  $sub .= $function;
+  TWiki::UI::run(\&$sub, $function => 1);
+
+  #writeDebug("counter=$counter");
+  $counter++;
+}
+
+###############################################################################
+&doRequest();

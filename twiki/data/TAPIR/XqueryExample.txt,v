@@ -1,0 +1,286 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@---+ Five Practical XQuery Applications
+
+XQuery is still a relatively new and unfamiliar XML-based language, but it offers many possibilities for simplifying tasks that today are difficult or tedious. These five practical scenarios should give you ideas for leveraging XQuery in your own applications. 
+
+by Tim Matthews,  May 9, 2003 
+Srinivas Pandrangi   
+
+
+(taken from http://www.devx.com/xml/Article/15618/0/page/1)
+-----
+
+What's the latest sleeper technology that promises to make your life easier? It's XQuery (short for XML Query) and it's the 'Ginsu knife' of XML standards.
+
+XML can represent almost anythingfiles, graphics, Web services, etc. As developers store more and more information in XML format, they also have an increasing need to be able to search and update XML documents. Unfortunately, query language evolution hasn't quite kept up with XML's increasing popularity. Until recently, the available search technologies didn't meet developers' needs; full text search was too simplistic, and SQL was suitable only for relational databases. XML needed a new query language. Just as XML has the ability to describe virtually any data source, its query language needs to have the expressive power befitting a universal query language for disparate data sources.
+
+The Worldwide Web Consortium (W3C) began working on the problem in October of 1999. The result of that effort is the XQuery language. XQuery is something of a hybrida powerful language with grammar similar to SQL, but more widely applicable.
+
+The creators of XQuery went beyond basic search and update capabilities. XQuery also provides information integration and transformation capabilities. An XQuery implementation can search multiple back-end systems and combine results, effectively integrating multiple sources of information. XQuery can also transform the content and structure of XML documents. You can use XQuery expressions such as element and attribute constructors to express the structure of the result document. With transformation powers that rival XSLT, XQuery goes where no query language has gone before because it not only provides query results, but can also prepare those results for presentation.
+
+XQuery is timely not just because XML's popularity is on the rise. It's an all-in-one tool that does more for lessperfect for these tough economic times. The remainder of this article presents five application scenarios that use XQuery to solve real problems. It's our hope that even if your application development needs don't precisely match these scenarios you'll still glean some of XQuery's capabilities and perhaps get some ideas about how you might be able to use XQuery in your own applications.
+
+---+++++ Application 1: Log File Intelligence
+Application log files hold a tremendous amount of information. Every day, processes on servers track operations and append information to text files somewhere on the server farm. Even if you have only a limited understanding of the log files, XQuery can help by giving you access to two types of information your CIO is worried about these dayscosts and security.
+
+XQuery lets you mine log files to reveal trends, to find security holes and to allocate resources appropriately to match system usage needs. The log files do not have to be in XML format; the XQuery language is defined on an abstract XML data model. Therefore, you can map just about any data source to that data model. So even if the log file uses a delimited or fixed-field text format or a binary data format, an XML server may be capable of applying XQuery queries to it. Here's an example that queries a log file to find clients making more than an average number of connections to a server.
+
+<verbatim>
+   let $log := collection("logs")
+   let $logCount := count($log//logEntry)
+   let $hosts := distinct-values($log//host)
+   let $avg := $logCount div count($hosts)
+   for $host in $hosts
+   where count($log//host) > $avg
+   order by count($log//host)
+   return $host
+</verbatim>
+
+The preceding query returns a sorted list of hosts with more than an average number of connectionsthe high load clients. While it may take a bit of log file study to create the first query for this poor man's log auditor, it is extremely easy to build. Of course, having built this simple log auditor, you can also modify and extend it to turn it into a cost reduction toolfor example, one that looks for usage patterns to bill the Marketing department more for hogging the Web conferencing server, or one to identify systems that aren't being used. Analyzing logs will continue to get easier as more and more application vendors use XML to structure their log filessomething that's increasingly common.
+
+---+++++ Application 2: An Executive Dashboard
+Keeping tabs on a company's performance is at the top of the priority list for executives these days . That's why so-called "executive dashboards" are becoming so popular. Building an executive dashboard generally involves collecting real-time data from multiple sources and displaying that data in a Web portal, often in summary or graphic form.
+
+But executive dashboard applications can make you crazy. You no sooner finish building the dashboard exactly as the clients want it than they want to add two more sources and completely change the layout. Recoding all those JSPs or ASPs can be tedious, but that's what the clients expect.
+
+Rather than recoding each time, consider writing it all in XQuery That way you can add another data source (a query from a relational table or a snippet from a news feed) and change the layout in a much easier and more flexible way.
+
+In this scenario, the apparel chain Wearhouse Inc. has a product catalog maintained in XML, but a sales database maintained in DB2. You are charged with building some custom reporting applications. You have just discovered the power of XQuery, so you decide to use an XML server capable of data integration to build these reports. Here's a sample query you might write that combines information from both the XML and DB2 data sources:
+
+<verbatim>
+   <sales>
+   {
+   for $product in 
+      document("products.xml")/products/product,
+        $sales in view("db2/sales_view")/sales/product
+   where $product/productId = $sales/productId
+   return <product id="{$product/productId}">
+         {$product/productName, $product/productSpec,
+           $sales/mrq, $sales/ytd, $sales/margin}
+              </product>
+   }
+   </sales>
+</verbatim>
+
+Now suppose that two months after you deploy your reporting application, Wearhouse Inc. acquires Caribbean Sunwear, a casual apparel business. Suddenly your reports need to include sales information for Caribbean Sunwear. But that information isn't in either XML or DB2, it's in a SQL Server database. You are in luckyour decision to use XQuery will spare you weeks of painful work integrating another data source into your application. All you need to do is define another view over the SQL Server database and modify your query to include that view. Doing that might take less than 20 minutes. Here's the altered query. 
+
+<verbatim>
+   <sales>
+   {
+   for $product in 
+      document("products.xml")/products/product,
+        $sales in (view("db2/sales_view")/sales/product, 
+           view("sqlserver/sales_view")/sales/product)
+   where $product/@@productId = $sales/productId
+   return <product id="{$product/@@productId}">
+         {$product/productName, $product/productSpec,
+           $sales/mrq, $sales/ytd, $sales/margin}
+              </product>
+   }
+   </sales>
+</verbatim>
+
+The altered query includes the new SQL Server view and integrates the sales information from the newly acquired company into the executive dashboard sales report.
+
+---+++++ Application 3: Stock Analysis Automation
+
+In the financial world, news is a business tool. If you can find a way to compose news stories automatically from wire sources you can save staff time. In addition, building stories targeted to a specific user or client can increase customer satisfaction. XQuery is well suited to both tasks, because it lets you perform targeted full text search even across structured data sources such as stock prices, and can compose the results into a custom format.
+
+Suppose a trader wants to be alerted of specific types of news for a company he's following. He wants to see the effect that positive earnings from a NASDAQ bellwether has on some smaller cap stocks he's tracking. The task involves more than just popping up all AP and Reuter's stories with a stock list; he wants to test for a combination of conditions.
+
+Reliant Corp maintains a news service through which traders can get custom news reports. Reliant uses XML extensively to hold information about exchange-listed companies as well as daily news stories. Traders maintain lists of companies in their portfolio. The trader portal needs to execute a search of daily news for stories that mention traders' portfolio companies in the headlines, and that also mention any of that company's partners within a single paragraph in the story content. You can write an XQuery application that fulfills all these needs.
+
+First, create a simple user-defined function to retrieve all partners of a given company.
+
+<verbatim>
+   define function getPartners($company as xs:string)
+      as element*
+   {
+       let $c := document("company/company.xml")
+          XqueryExample/company[[name][= $company]]
+       return $c//partner
+   }
+</verbatim>
+
+Next, you need to find news items where a specific trader's portfolio company appears in the headline, and one or more of its partners are mentioned within a single paragraph in the document body. The result should list each news item by its headline and date. The trader is identified by a user id passed to the query shown below as the parameter $user. The portions of the query below in boldface text apply the required constraints.
+
+<verbatim>
+   <trader_portal trader_name="{$user}">
+     <news_alerts>
+       {
+       for $companyName in 
+          document("UserProfiles")//Profile
+          [userId=$user]//company
+       return
+       <news_by_company name="{$companyName}">
+         {
+         let $foobar_partners := 
+            getPartners($companyName)
+         for $item in document("News/companyNews.xml")
+            XqueryExample/NewsItem
+         where some $line in $item//NewsLines/HeadLine 
+            satisfies
+               (contains($line, $companyName))
+               and
+               (some $para in 
+                  $item//ContentItem/DataContent//p 
+                  satisfies
+                    (some $partner in $foobar_partners 
+                     satisfies
+                       contains($para, $partner))
+                  )
+         return     
+           <news_item>
+             {$item//NewsLines/HeadLine}
+             {$item//NewsLines/DateLine}
+           </news_item>
+         }
+       </news_by_company>
+       }
+     </news_alerts>
+     ......
+     ......
+   </trader_portal>
+</verbatim>
+
+The query is specific to each trader because it retrieves only news items that contain company names that also appear in that trader's user profile, which the query retrieves via the passed-in $user value. The where condition restricts the output to news items where the headline contains a company name, and where the data content (the body of the news item) contains the name of one or more partner companies. Here's a sample result:
+
+<verbatim>
+   <trader_portal trader_name="wbuffet">
+     <news_alerts>
+       <news_by_company name="KO">
+         <news_item>
+           <HeadLine>KO knocks out Pepsi Co. 
+              in Asia</HeadLine>
+        <DateLine>04-01-2002Z05:10:00</DateLine>
+      </news_item>
+      <news_item>
+           <HeadLine>KO releases earning results 
+              for Q1 2003</HeadLine>
+        <DateLine>04-01-2002Z07:30:00</DateLine>
+      </news_item>
+       </news_by_company>
+       <news_by_company name="WMT">
+      <news_item>
+        <HeadLine>WMT to acquire Ben and Jerry</HeadLine>
+        <DateLine>04-01-2002Z08:10:00</DateLine>
+      </news_item>
+      ......
+      ......
+       </news_by_company>
+     </news_alerts>
+     ......
+     ......
+   </trader_portal>
+</verbatim>
+
+The results clearly show that the returned data is specific to one trader and meets the query restrictions.
+
+
+---+++++ Application 4: Supply Chain Band Aid
+
+One of the costliest areas in a supply chain application is integration. This typically takes the form of incompatible message formats. The buyer has decided to move to something more standard, like RosettaNet, and away from its previous in-house created format. As a supplier, you agree in principal with open standards, but you weren't quite ready to move just yet. The move to RosettaNet is really going to throw a wrench in the works.
+
+What you need is a band-aid, something to get you by until you have time to move your whole application to the new standard. Essentially what you are looking for is a way to map, or transform your existing format to the RosettaNet format, but you don't want to write a bunch of code. Instead, you want to control exactly how the components of the input document get mapped to the schema your application already accepts.
+
+Here's a query that demonstrates how to transform a document snippet into a format suitable for the local application. The customer's RosettaNet format uses an XML vocabulary that represents a sample purchase order and line items, such as:
+
+
+<verbatim>
+   <ord:item xmlns:ord="http://www.customer.com/orders">
+      <ord:itemIdentifier>pxz100121</ord:itemIdentifier>
+      <ord:quantity>12</ord:quantity>
+      <ord:price>12:00</ord:price>
+      <ord:currency>USD</ord:currency>
+      <ord:discount>DNBX22</ord:discount>
+   </ord:item>
+</verbatim>
+Your application expects line items represented in the following format:
+
+<verbatim>
+   <po:LineItem itemId="pxz100121" qty="12" 
+      unitPrice="12.00" 
+   currency="USD" discount="DNBX22" 
+   xmlns:po="http://www.myapp.com/po"/>
+</verbatim>
+
+You need a query that can transform the incoming RosettaNet document into your custom format. Here's a query that achieves the transformation.
+
+<verbatim>
+   declare namespace ord="http://www.customer.com/orders"
+   declare namespace po="http://www.myapp.com/po"
+   for $custlineitem in 
+      document("customerPO.xml")//ord:item
+   return
+      <po:LineItem 
+         itemId="{$custlineitem/ord:itemIdentifier}"
+         qty="{$custlineitem/ord:quantity}"
+         unitPrice="{$custlineitem/ord:price}"
+         currency="{$custlineitem/ord:currency}"
+         discount="{$custlineitem/ord:discount}"/>
+</verbatim>
+
+---+++++ Application 5: Trade Audit Server
+
+Several industries require that trade documents be saved in their original form. Examples range from EBT in the energy industry to XBRL for retail banks. These inescapable regulations typically require an IT department to set up a custom environment outside the trading application. Companies often want to hold on to these documents in case disputes ariseshowing an actual copy of a trade is proof that it happened. This is often referred to as non-repudiationno one can repudiate the trade if you have a copy of the trade message or document.
+
+The problem is that transactions add up. Trying to find a trade document days or weeks after the fact can be a challenge. A good solution would be a search application that can mine through hundreds or thousands of trades to find a specific trade. With XQuery, you can do much better than a simple search. You can look for a set of conditionssay, a certain trading partner, a time range, and a combination of words in the instructions (like "trade" and "at market").
+
+In this scenario, a trading firm keeps all the trading documents in a collection of documents named "tradelogs". We need a query which, for any given trader, finds all the trades that trader executed after hours where the total trade price is less than $15,000, and where the trade instructions contain a specific keyword or phrase.
+
+The following query uses the $trader parameter and the $keyword parameter to retrieve all the matching trades.
+
+<verbatim>
+   for $trade in collection("tradelogs")//trade
+   where $trade/traderName = $trader and
+      $trade/executionTime = "afterhours" and
+      $trade/tradePrice < 15000 and
+      (some $instruction in $trade//instruction satisfies
+         (contains($instruction, $keyword)))
+   return $trade
+</verbatim>
+
+As you can see from these scenarios, XQuery can help solve practical problems faced by IT departments. However, these scenarios only scratch the surface of XQuery's capabilities. Anyone with only modest knowledge of XML and SQL can learn XQuery relatively quickly. Because XQuery works against many different data types and formats, it's tremendously useful whether you are searching a file system, a relational database, a document management system, a Web service, or all of these simultaneously. When you top that off with its ability to integrate and transform results, XQuery truly embodies the next generation of query languages.
+
+---+++++ Authors
+   * *Tim Matthews* is co-founder of Ipedo, Inc. He has extensive experience in high tech sales, marketing, and engineering. Prior to co-founding Ipedo in 2000, he was Director of Product Marketing at RSA Security (Nasdaq: RSAS), where he oversaw a line of developer security products and a line of security infrastructure servers. Previously, Tim worked in international sales and business development at Digital Equipment Corporation in Tokyo, Japan and Irvine, California. Email Tim here. 
+  
+   * *Srinivas Pandrangi* is a software architect at Ipedo Inc. and a member of the W3C XML Query working group, where he is working on the standardization of XQuery. His recent articles have been published in XML Journal and on DevX. You can reach him here. 
+  
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d8 2
+@

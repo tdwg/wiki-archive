@@ -1,0 +1,74 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118880" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+Are two Agents the same if the have same last names and <nop>FreeFormDescriptions
+
+-- Main.JacobAsiedu - 06 Feb 2004
+
+(Note GH: <nop>FreeFormDescription is the older name for what is now called Label in the <nop>ProxyBaseType, see UBIF.ObsoleteTopicProxyDataModel)
+
+---
+
+Not necessarily. There are two agents known to me with last name Morris and description "One of the sons of Rose P. and Melvin M. Morris."
+
+
+Anyway, this is only half of the question. Equally important is the question: Can two agents be the _same_ if they have _different_ last names and the same descriptions. For example:
+1. Last name "Forman" 2. Last name "Forman Orth"; Descriptions 1 and 2: "The person known in the BDI.SDD_ Wiki as Main.JenniferForman".
+
+Quite possibly, the best way to address this is with an optional alias field which is a keyref to another Agent, or else to provide some way to declare that the <nop>ExternalID is optionally a URI.
+Either of these mechanisms may require an exhaustive search through the Agents list to find the alias list. Furthermore, this is quadratic in the number of Agents, although it is unlikely that the Agents list is very long in most cases. Even particle physics papers rarely have more than a few hundred authors. :-)
+
+-- Main.BobMorris - 07 Feb 2004
+
+---
+
+1. It seems to me that you interpret the <nop>FreeFormDescription as something different than it is intended for. It is _not_ an arbitrary description of the object, but a consize and unique description. <nop>FreeFormDescription in BDI.SDD_ 0.9 is annotated as:
+
+"Human readable representation; this may be the only data item if no machine readable ID exists. Example in the case of a publication resource: "Smith 1998. Flora of Erehwon, Fingers Publishers." If an external ID exists, this is considered cached information and required to be present."
+
+If we can clarify the misunderstanding by a better general name for the element I am very grateful for proposals! Also if the annotation can be improved...
+
+2. <nop>FreeFormDescription must be unique by definition, since it is a human readable representation of the connected object, i.e. an alternative for the technical ID.
+
+3. That makes it technically impossible to have two agent entry for the same agent. Two entries may have the same name, or different names. They must have different IDs and different <nop>FreeFormDescriptions.
+
+4. Two entries may have different IDs and still be the same person. Technically this would not be known to the system. No synomization inside BDI.SDD_ exists - but an external service may give that information. 
+
+That means I would argue against solving the Alias problem inside BDI.SDD_. We are not talking of an Agent data system, but conversely of a mechanism (the resource connectors) to use an external system. 
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9. Feb. 2004
+
+---
+
+Gregor wrote:
+"Two entries may have different IDs and still be the same person".
+
+Would that not defeat the whole purpose of having a key/ref on an Agent?
+This means we(a machine) cannot easily re-use an already defined agent in the creation
+of BDI.SDD_ instance documents. Perhaps, the programmer should have some more external metadata to enable them do the distinction?
+
+-- Main.JacobAsiedu - 09 Feb 2004 
+
+---
+
+I am quite in favor or adding a few more bits of optional Agent metadata. Please do make a proposal!
+
+However, which meta data would enable truly distinctions? Not even passport ID number can do that, many people are multinational and have more than one passport. Even more people in the world don't have one, because they either cannot have one or don't care...
+
+A complete DNA sequence may do it, but that is not seriously possible...
+
+My scenario here is: Two agent connectors may refer to two different services providing agent information. Each has a quality statement that they believe their agent IDs uniquely refer to names. That already does not guarantee it...
+
+However, the two different services may well have significant overlap. I think the alternative, to demand that only a single agent service may be used, and anybody not a member of that (Microsoft Passport :-)? ) is not allowed to have a scientific opinion 
+
+So, in the end, an agent is what it is, an ID from a service.
+
+You CAN and should reuse that ID without problems in BDI.SDD_. This mimizes the chance that two different agent objects are the same person (as opposed to having your own internal agent database as part of BDI.SDD_). I think I do not understand your statement "This means we(a machine) cannot easily re-use an already defined agent in the creation of BDI.SDD_ instance documents."
+
+(ASIDE: the most frequent error I see in literature reference databases is to treat authors as persons. They are just strings, and the connection to a person is n:m and incontingent to the literature database.)
+This may not yet be true.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9. Feb. 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085755117" from="SDD.AreTwoAgentsTheSameTheyHaveSameLastNamesAndFreeFormDescription" to="SDD.WhenAreTwoAgentsTheSame"}%

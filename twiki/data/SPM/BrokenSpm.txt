@@ -1,0 +1,46 @@
+%META:TOPICINFO{author="BobMorris" date="1215515645" format="1.1" reprev="1.5" version="1.5"}%
+%META:TOPICPARENT{name="WebHome"}%
+
+*Markus has resolved the issue below as of SVN rev 1392 for !SpeciesProfileModel.rdf and 1393 for !SPMInfoItems.rdf* -- Main.BobMorris - 08 Jul 2008
+
+
+-- Main.BobMorris - 02 Jul 2008
+Per observation of Sep 22 by Gregor(?), the files !SpeciesProfileModel.rdf and !SPMInfoItems.rdf have overlap as of 9/22/2007. They also have a few other issues deserving of discussion, before fixing
+
+   * Besides the duplicate InfoItem classes, these classes appear in !SpeciesProfileModel.rdf  but do not appear in !SPMInfoItems.rdf
+      * spm:Biology   --- probably meant to be same as spmt:TaxonBiology and so is superfluous
+      * spm:Conservation
+      * spm:Description  ---has a spurious(?) subclass spm:Size
+      * spm:Ecology
+      * spm:Use --- probably meant to be same as spmt:Uses; I think the singular is better since can have repeated InfoItems
+
+
+
+As a trivial aside, I'd rather see the !SPMInfoItem namespace be called
+spmi  than spmt.  It is just a little more mnemonic in the case where
+applications that import the class happen to assign the same prefix as
+is in the file.  My Protege 3.3.1 assigned its own namespace prefix. I
+don't know why---some configuration maybe---
+
+The attached two files address the overlap problem by moving all !SPMInfoItems into !SPMInfoItems.rdf. They leave the above unaddressed.
+The broken files  carry 
+<verbatim>
+<!-- $Rev: 1332 $ -->
+<!-- Date: 2007-10-08 11:42:05 +0200 (Mon, 08 Oct 2007) $ -->
+<!--  Author: RogerHyam $ -->
+
+</verbatim>
+
+for !SpeciesProfileModel.rdf
+and 
+<verbatim>
+<!-- $Rev: 1294 $ -->
+<!-- Date: 2007-08-15 15:05:50 +0200 (Wed, 15 Aug 2007) $ -->
+<!-- Author: MarkusDoering $ -->
+
+</verbatim>
+for !SPMInfoItems.rdf
+
+
+%META:FILEATTACHMENT{name="SpeciesProfileModel.rdf" attachment="SpeciesProfileModel.rdf" attr="" comment="A top level SPM with no SPM !InfoItem classes in it." date="1214968067" path="SpeciesProfileModel.rdf" size="7030" stream="SpeciesProfileModel.rdf" user="Main.BobMorris" version="1"}%
+%META:FILEATTACHMENT{name="SPMInfoItems.rdf" attachment="SPMInfoItems.rdf" attr="" comment="An !InfoItems file with items moved from the !SPeciesProfileModel file" date="1214968141" path="SPMInfoItems.rdf" size="18928" stream="SPMInfoItems.rdf" user="Main.BobMorris" version="1"}%

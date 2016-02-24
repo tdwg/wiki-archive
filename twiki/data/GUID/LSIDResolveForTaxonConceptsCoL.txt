@@ -1,0 +1,24 @@
+---++ Test LSID Resolver for Catalogue of Life data
+DonaldHobern, 24 Feb 2006:
+
+Tim Robertson, working as a developer on the new GBIF Data Portal, has set up a test implementation of a TCS-based data model for the Catalogue of Life Annual Checklist 2005 data (a test implementation of the TaxonAPI interface using SOAP) and has now added an LSID resolver for browsing TaxonConcepts from the data set.  Please note that this is a test implementation and any errors are not the responsibility of the Catalogue of Life partners.
+
+The representation is as follows:
+
+   * All concepts for taxa above the species level are simply represented as concepts from the Catalogue of Life.
+   * Species-level concepts and below are represented as concepts from ITIS or the appropriate Species 2000 Global Species Database.
+   * Concepts discovered from references within the database are represented without further information as concepts from the authority concerned.
+   * Parent-child relationships are represented between the higher taxon concepts and the concepts for species-level and below which are accepted by the Catalogue of Life.
+   * Has-synonym relationships are represented between accepted and non-accepted taxon concepts within the Catalogue of Life taxonomy.
+   * Is-congruent-with relationships are represented between the Catalogue of Life taxon concepts and those from the associated references.
+
+The following LSID leads to a quick entrypoint for the whole data set (with a Has-root-concepts relationship to each of the Catalogue of Life kingdoms).
+
+urn:lsid:col2005.gbif.org:col2005:col2005
+
+Try lsidres:urn:lsid:col2005.gbif.org:col2005:col2005 in the LSID Launchpad.  
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryPrototypingWG

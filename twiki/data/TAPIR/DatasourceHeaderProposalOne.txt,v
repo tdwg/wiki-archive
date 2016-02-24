@@ -1,0 +1,309 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@---+ DatasourceHeaderProposalOne
+
+The header is used in both requests and responses to communicate directly with a single datasource.
+
+Headers are mandatory elements in both requests and responses and they can contain "source" and "destination" elements. 
+
+Each "source" element represents a stage in the process of making the request reach its final destination. It is possible to have multiple "sources" in a header due to the action of middleware software like MessageBrokers. It's recommended, although not necessary, that each middleware software add its "source" element after the last position in the "source" list.
+
+Each source element must contain two attributes: accesspoint and sendTime.
+
+Each source element can contain one software element.
+
+Each software element must have a name and can also have a version attribute. A software element can contain other software elements inside it, in case it wants to be more specific about other components.
+
+In requests, the destination element should be the accesspoint of the service. In responses it should be the accesspoint of the first source element in the associated request. The main reason for having a destination element is to facilitate asynchronous messaging. 
+
+Since it's possible to send direct requests, it should be possible to have empty headers. A direct request could be sent through a browser and it would look like:
+
+http://datasource.url/wrapper?request=http://myserver/myrequest.xml
+
+In that case it's better not to require source/destination elements than to have them with incorrect information. Without any source in the header, the server can use the REMOTE_ADDR CGI variable as the client accesspoint.
+
+In requests, both source and destination are optional elements.
+In responses, both source and destination are mandatory elements.
+
+---+ Request Examples
+
+---+++++ Simple header from a client software request sent directly to a datasource
+<verbatim>
+<header>
+  <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+Note: in this case there's only a single source element with no software specified, and there's also no destination element.
+
+---+++++ Header from a client software request that has been dispatched by a portal
+<verbatim>
+<header>
+  <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+    <software name="GBIF client" DatasourceHeaderProposalOne>
+  </source>
+  <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+    <software name="Portal Engine" version="0.95" DatasourceHeaderProposalOne>
+  </source>
+  <destination accesspoint="http://mydomain.org/provider/wrapper.php" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+Note: Intermediaries such as portals (MessageBrokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+
+---+ Response Examples
+Responses must contain a single destination element that identifies the original source of the request.
+
+---+++++ Header from a response to the previous request
+<verbatim>
+<header>
+  <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+   <software="PHP Provider" version="1.1.4" DatasourceHeaderProposalOne>
+  </source>
+  <destination accesspoint="11.12.13.14" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+
+Note: the client destination is always taken from the first source of the request header which is representing the original source of the request.
+
+---+++++ Header from a response to the previous request with more detailed information about the server software
+<verbatim>
+<header>
+  <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+   <software="PyWrapper" version="1.3.6">
+     <software="Python" version="2.3" DatasourceHeaderProposalOne>
+   </software>
+  </source>
+  <destination accesspoint="11.12.13.14" DatasourceHeaderProposalOne>
+</header>
+</verbatim>
+
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d3 1
+a3 1
+The header is used in both requests and responses to communicate directly with a single resource (datasource). Examples:
+d5 24
+a28 1
+---+++++ Header from a "manual" request sent directly to a resource
+d31 1
+a31 1
+   <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" DatasourceHeaderProposalOne>
+d35 1
+a35 1
+Note: in this case no software has been specified, and there's only a single source element.
+d37 1
+a37 1
+---+++++ Header from a response to the previous request
+d40 7
+a46 3
+   <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PHP Provider" version="1.1.4" DatasourceHeaderProposalOne>
+        </source>
+d50 4
+a53 1
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+d55 1
+a55 1
+---+++++ Header from a client software request that has been dispatched by a portal
+d58 4
+a61 6
+   <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+     <software name="GBIF Website" DatasourceHeaderProposalOne>
+   </source>
+   <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+     <software name="Portal Engine" version="0.95" DatasourceHeaderProposalOne>
+   </source>
+d65 3
+a67 1
+Note: Intermediaries such as portals (MessageBrokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+d69 1
+a69 1
+---+++++ Header from a more detailed response to the previous request
+d72 6
+a77 4
+   <source accesspoint="http://mydomain.org/myresource/wrapper.py" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PyWrapper" version="1.3.6" DatasourceHeaderProposalOne>
+     <software name="Python" version="2.3" DatasourceHeaderProposalOne>
+        </source>
+a80 1
+Note: each "source" has the freedom to specify other related software.
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d3 1
+a3 1
+The header is used in both requests and responses to communicate directly with a single datasource.
+a4 1
+---+ Request Examples
+d8 1
+a8 1
+  <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" DatasourceHeaderProposalOne>
+d14 11
+d28 6
+a33 2
+  <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00" software="GBIF Website" DatasourceHeaderProposalOne>
+  <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00" software="Portal Engine 0.95" DatasourceHeaderProposalOne>
+d39 1
+a39 4
+---+ Response Examples
+Responses still contain a single destination element that identifies the original source of the request.
+
+---+++++ Header from a response to the previous request
+d42 4
+a45 2
+  <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00" software="PHP Provider 1.1.4" DatasourceHeaderProposalOne>
+  <destination client="11.12.13.14" DatasourceHeaderProposalOne>
+d49 1
+a49 3
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+
+Note: the client destination is always taken from the first source of the request header which is representing the original source of the request.
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d3 1
+a3 1
+The header is used in both requests and responses to communicate directly with a single resource (datasource). Examples:
+d5 1
+d15 1
+a15 1
+---+++++ Header from a response to the previous request
+d18 2
+a19 1
+  <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00" software="PHP Provider 1.1.4" DatasourceHeaderProposalOne>
+d23 4
+a26 1
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+d28 1
+a28 1
+---+++++ Header from a client software request that has been dispatched by a portal
+d31 2
+a32 2
+  <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00" software="GBIF Website" DatasourceHeaderProposalOne>
+  <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00" software="Portal Engine 0.95" DatasourceHeaderProposalOne>
+d36 3
+a38 1
+Note: Intermediaries such as portals (MessageBrokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d8 1
+a8 1
+   <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" DatasourceHeaderProposalOne>
+d17 1
+a17 2
+   <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00" software="PHP Provider 1.1.4" DatasourceHeaderProposalOne>
+        </source>
+d26 2
+a27 4
+   <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00" software="GBIF Website" DatasourceHeaderProposalOne>
+   </source>
+   <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00" software="Portal Engine 0.95" DatasourceHeaderProposalOne>
+   </source>
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 1
+a1 1
+---+ HeaderProposalThree
+d17 1
+a17 2
+   <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PHP Provider" version="1.1.4" DatasourceHeaderProposalOne>
+d27 1
+a27 2
+   <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+     <software name="GBIF Website" DatasourceHeaderProposalOne>
+d29 1
+a29 2
+   <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+     <software name="Portal Engine" version="0.95" DatasourceHeaderProposalOne>
+a34 12
+
+---+++++ Header from a more detailed response to the previous request
+<verbatim>
+<header>
+   <source accesspoint="http://mydomain.org/myresource/wrapper.py" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PyWrapper" version="1.3.6" DatasourceHeaderProposalOne>
+     <software name="Python" version="2.3" DatasourceHeaderProposalOne>
+        </source>
+</header>
+</verbatim>
+
+Note: each "source" has the freedom to specify other related software.
+@

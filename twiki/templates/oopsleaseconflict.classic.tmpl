@@ -1,0 +1,35 @@
+%{ Templates for lease conflict messages. One DEF is selected and inserted at %INSTANTIATE }%
+%TMPL:INCLUDE{"twiki.classic"}%
+%TMPL:DEF{"titleaction"}%%MAKETEXT{"(oops)"}% %TMPL:END%
+%TMPL:DEF{"webaction"}% *%MAKETEXT{"Attention"}%* %TMPL:END%
+%TMPL:DEF{"heading"}%%MAKETEXT{"Conflict"}%%TMPL:END%
+%TMPL:DEF{"topicaction"}%%TMPL:END%
+%TMPL:INCLUDE{"messages"}%
+
+%TMPL:DEF{"content"}%
+
+%{ Instantiate either lease_active or lease_old }%
+%INSTANTIATE%
+
+<form action="%SCRIPTURLPATH{"%PARAM4%"}%/%WEB%/%TOPIC%" method="post">
+<literal>
+%QUERYPARAMS{format="<input type='hidden' name='$name' value='$percntENCODE{$quot()$value$quot type=$quot()html$quot}$percnt' />"}%
+</literal>
+%MAKETEXT{"To see if [_1] has finished editing yet, click " args="%PARAM1%"}%
+<input type="submit" class="twikiButton" value='%MAKETEXT{"Try Again"}%' />
+</form>
+<form action="%SCRIPTURLPATH{"%PARAM4%"}%/%WEB%/%TOPIC%" method="post">
+%MAKETEXT{"To edit the topic anyway, click "}%
+<input type="hidden" name="breaklock" value="on" />
+<literal>
+%QUERYPARAMS{format="<input type='hidden' name='$name' value='$percntENCODE{$quot()$value$quot type=$quot()html$quot}$percnt' />"}%
+</literal>
+<input type="submit" class="twikiButton" value='%MAKETEXT{"Edit Anyway"}%' />
+</form> 
+%TMPL:P{"topicinfo"}%
+%TMPL:END%
+
+%TMPL:DEF{"topicaction"}%
+[[%WEB%.%TOPIC%][%MAKETEXT{"View topic"}%]] %TMPL:P{"sep"}% <a href="%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?raw=on">View raw text without formatting</a>%TMPL:END%
+
+%TMPL:P{"oops"}%

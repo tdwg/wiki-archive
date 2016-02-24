@@ -1,0 +1,239 @@
+head	1.8;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.8
+date	2009.11.25.03.14.35;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2009.11.20.02.45.28;	author LeeBelbin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.05.28.14.50.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.04.13.48.27;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.05.04.08.54.42;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.05.03.16.57.07;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.05.03.13.53.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118875" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="SDD2004Berlin"}%
+---+!! %TOPIC%
+
+<h2>Issues related to repeated observations / observation sets</h2>
+
+"ObservationSet" etc. can be confused with collection vs. observation of an object. Should we rather call it "RawData", like the type? The "raw" seems to be colloquial though. Any better term?
+
+Also, the association b/w raw data and synthetic statements (categorical data with frequency categories, univariate statistical measures) is not preserved. Note that it can not be automatically assumed that statistical measures come from those raw data recorded in an <nop>ObservationSet. They may have been calculated separately and entered without the raw data they are based on. Although this makes little sense, it may even be possible to have an <nop>ObservationSet from which nothing is calculated, and statistical measures calculated from other data. Not clarifying this seems to be poor design.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3 May 2004
+
+I guess here you mean that the raw data may not be available in the instance document, even by reference, and that the stat. measure is "original" data, at least to this instance document. So I guess the point is the distinction between derived and primary data. Alas, "primary" has a certain cachet not intended here. "Anecdotal" or "uncomputed" might. Another possibility is that if there is a reference to raw data for the computation, then end of story. The distinction is thus that for which there is a reference and that for which there isn't. Machines can, in principle, redo the computation in the first case but not in the second.
+All other semantics of the _lack_ of reference would be unspecified.
+
+-- Main.BobMorris - 3 May 2004
+
+"uncomputed" is misleading, the statistical measures would have been calculated, but not in a way that can be reproduced by an SDD consuming process. Same for anecdotal: statistical measures published in a scientific paper are not appropriately called "anecdotal". The assumption is that they are correctly calculated.
+
+So, is it sufficient to say for data source of the statistical measure "inherited (from above)", "aggregated from below", "computed from raw data"? Or do we have to ID-ref it as well? What is a good element name for this "data source" concept?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 4 May 2004
+
+---
+I guess we need a key/keyref to a data set or a resource: &lt;computedData keyref=refToDataSetOrResource>
+
+I'd most like a program to be able to verify the claim. This might be possible with a reference to data in the current instance doc, but for external data might require us to define a protocol for data service. That is not a small issue, and is being addressed in the communities that do modeling servers. 
+
+-- Main.BobMorris - 04 May 2004
+---
+
+The problem of attributing the source of data may be a more general problem, also relating to inheritance of data for other reasons, e.&nbsp;g. from higher or lower taxa. Again, either all data resulting from inheritance should be considered dynamic and never stored, or the storage must maintain the reason/association. 
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 04 May 2004
+---
+
+Multiple Observation sets, e.&nbsp;g. 5 individuals, each with 30 leaf measurements. The hierarchy of measurements may be relevant to detect that perhaps one individual is in fact a different species. Should we distinguish between "observation of repeated part" and "observation on whole individual = repeated as individual". How?
+
+Do we need to change our base model (i.e. make the part hierarchy special and required / which would prevent exporting DELTA legacy data to the new format!) or can we find a better solution. Perhaps have instead of Observations Individuals and Parts containers? Would this work?
+
+A related problem is the handling of outliers in raw observation data. It seems to be unsatisfactorily to simply purge them from the list of recorded data. Instead they should preferably be marked up to indicate they are not to be included in the statistical evaluation.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 03 May 2004@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685128" format="1.1" reprev="1.7" version="1.7"}%
+d18 1
+a18 1
+"uncomputed" is misleading, the statistical measures would have been calculated, but not in a way that can be reproduced by an BDI.SDD consuming process. Same for anecdotal: statistical measures published in a scientific paper are not appropriately called "anecdotal". The assumption is that they are correctly calculated.
+d43 1
+a43 1
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 03 May 2004
+@
+
+
+1.6
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085755800" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SDD2004Berlin"}%
+d18 1
+a18 1
+"uncomputed" is misleading, the statistical measures would have been calculated, but not in a way that can be reproduced by an SDD consuming process. Same for anecdotal: statistical measures published in a scientific paper are not appropriately called "anecdotal". The assumption is that they are correctly calculated.
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1083678507" format="1.0" version="1.4"}%
+a2 4
+(This discussion thread is currently specific to the [[SDD2004Berlin][Agenda for review meeting in Berlin]])
+
+---
+
+d9 1
+a9 1
+-- Gregor Hagedorn - 3 May 2004
+d20 1
+a20 1
+-- Gregor Hagedorn - 4 May 2004
+d25 3
+a27 1
+I'd most like a program to be able to verify the claim. This might be possible with a reference to data in the current instance doc, but for external data might require us to define a protocol for data service. That is not a small issue, and is being addressed in the communities that do modeling servers. -- Main.BobMorris - 04 May 2004
+d30 1
+a30 1
+The problem of attributing the source of data may be a more general problem, also relating to inheritance of data for other reasons, e.&nbsp;g. from higher or lower taxa. Again, either all data resulting from inheritance should be considered dynamic and never stored, or the storage must maintain the reason/association. --Main.GregorHagedorn
+d32 1
+d41 1
+a41 1
+-- Gregor Hagedorn - 03 May 2004
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083660882" format="1.0" version="1.3"}%
+d27 1
+d29 4
+a32 1
+The problem of attributing the source of data may be a more general problem, also relating to inheritance of data for other reasons, e.&nbsp;g. from higher or lower taxa. Again, either all data resulting from inheritance should be considered dynamic and never stored, or the storage must maintain the reason/association.
+d42 1
+a42 2
+-- Gregor Hagedorn - 03 May 2004
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1083603427" format="1.0" version="1.2"}%
+d11 1
+a11 1
+Also, the association b/w raw data and synthetic statements (categorical data with frequency categories, univariate statistical measures) is not preserved. Note that it can not be automatically assumed that stat. measures come from raw data, they may have been recorded separately and may differ! 
+d13 3
+a15 3
+-- Gregor Hagedorn - 03 May 2004
+---
+Aw, gee. I thought I let you beat me into agreeing that all stat. measures come from raw data. Oh, I guess here you mean that the raw data may not be available in the instance document, even by reference, and that the stat. measure is "original" data, at least to this instance document. So I guess the point is the distinction in spreadsheets between derived and primary data. Alas, "primary" has a certain cachet not intended here. "Anecdotal" or "uncomputed" might. Another possibility is that if there is a reference to raw data for the computation, then end of story. The distinction is thus that for which there is a reference and that for which there isn't. Machines can, in principle, redo the computation in the first case but not in the second.
+d18 7
+a24 1
+-- Main.BobMorris - 03 May 2004
+d28 1
+d30 1
+d32 1
+a32 3
+This may be a more general problem, also relating to inheritance of data for other reasons, e.g. from higher or lower taxa. Again, either all data resulting from inheritance should be considered dynamic and never stored, or the storage must maintain the reason/association.
+
+Multiple Observation sets, e. g. 5 individuals, each with 30 leaf measurements. The hierarchy of measurements may be relevant to detect that perhaps one individual is in fact a different species. Should we distinguish between "observation of repeated part" and "observation on whole individual = repeated as individual". How?
+d38 2
+a39 1
+-- Gregor Hagedorn - 03 May 2004
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083592380" format="1.0" version="1.1"}%
+d11 12
+a22 1
+Also, the association b/w raw data and synthetic statements (categorical data with frequency categories, univariate statistical measures) is not preserved. Note that it can not be automatically assumed that stat. measures come from raw data, they may have been recorded separately and may differ!
+@

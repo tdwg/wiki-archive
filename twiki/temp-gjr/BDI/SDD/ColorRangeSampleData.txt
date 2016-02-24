@@ -1,0 +1,34 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118871" format="1.1" version="1.5"}%
+%META:TOPICPARENT{name="WhatToDoWithElementsMarkedForDiscussion"}%
+---+!! %TOPIC%
+
+   + Range representation problems
+
+The element in !ColorRangeSampleData element in 1.1b8 has its !ColorRange expressed as a polygon. This is somewhat conventional, but is known in the technical graphic arts to solve only a limited range of problems, mostly related to comparing color gamuts of different devices. In particular, because most color spaces are three-dimensional, it is always the case that specifying a single polygon as a range represents projection on some plane in the color space and necessarily loses information. Most typically this is done by normalizing by luminance (roughly, intensity) to make a range that is indepedent of intensity and only encodes chromatic information. That is particularly unhelpful cases where _color appearance_ is the goal, because it removes all information about the luminence in the original scene and makes it impossible to know how a color , say, on a screen actually appears compared to the original specimen as it was imaged. The most notable problem arising from this is distinguishing brown from orange (there being no brown color that is a mix of lights or reflected lights. Rather, the _perception_ of brown is what happens when one views desaturated orange). But there are many other cases. Some will matter, some will not, depending on the intended use of the color representation.
+
+We should consider representing the color range as a polyhedron, as is done in more sophisticated color range descriptions. This is not much of a stretch as a polyhedron is a just a list of polygons. 
+
+-- Main.BobMorris - 24 Apr 2006
+
+---
+
+The relevant types in BDI.SDD_ 1.1 beta 8 would be:
+
+!__ColorRangeCharacter (containing a mapping based on color ranges)
+
+!__ColorRangeCharData
+
+!__ColorRangeSampleData
+
+How should a list of polygons look like?
+
+!ColorRange/ColorPolygon[1..n]/ColorPoint[1..n]?
+
+Also, currently !ColorPoint is currently a string, annotated as: "Colors defined as RGB (red-green-blue) values combined as hex-encoded into a string, like in html. Example: #EE88FF. Colors may also be expressed as HSV (hue-saturation-luminance), but this is convertible to RGB. RGB is preferred because it is used in HTML."
+
+I feel probably we should be able to do better than this. On the other hand, the real reason to introduce it is to help people writing clients for it, so it should not become too theoretical!
+
+-- Main.GregorHagedorn - 26 Apr 2006
+
+
+---

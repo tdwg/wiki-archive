@@ -1,0 +1,88 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.12.05;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::I18N::Extract=
+
+Support translatable strings extraction from TWiki topics and templates.
+Depends on Locale::Maketext::Extract (part of CPAN::Locale::Maketext::Lexicon).
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($session) -> $extract</tt>
+
+Constructor. Creates a fresh new Extract object. A $session object, instance of
+the TWiki class, is optional: if it's available, it'll be used for printing
+warnings.
+
+
+
+---++ ObjectMethod *extract* <tt>($file,$text)</tt>
+
+Extract the strings from =$text=,m using =$file= as the name of the current
+file being read (for comments in PO file, for example). Overrides the base
+class method but calls it so the base behavior is preserved.
+
+As in base class, extracted strings are just stored in the =$self='s internal
+table for further use (e.g. creating/updating a PO file). Nothing is returned.
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d17 1
+a17 1
+---++ ObjectMethod *extract* <tt>($msgid) -> $formated</tt>
+d19 3
+a21 4
+This method overrides the one with same name in =Locale::Maketext::Extract=, as
+a workaround for [[http://rt.cpan.org/Public/Bug/Display.html?id=14629][a bug]]
+in the =Locale::Maketext::Lexicon= Perl package, and was not fixed up to the
+0.53 release.
+d23 2
+a24 3
+What it does is to call an alternative version of the _format function, which
+avoids [[http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1500][double-escaping]]
+the extracted strings.
+a25 4
+This method was tested only under the circumstances of TWiki's needs, i.e.,
+extracting strings from source and topics and generating a brand new POT file.
+Merging with previous PO files is done with GNU gettext tools, so maybe if it's
+used for merging it can 
+a26 5
+Once that bug is fixed, in future TWiki versions this method may be removed.
+
+
+
+!!!extract!!!
+@

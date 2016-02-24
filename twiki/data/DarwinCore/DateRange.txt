@@ -1,0 +1,100 @@
+%META:TOPICINFO{author="StephenLong" date="1158783952" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="DateTime"}%
+---++ Date and Time Elements
+
+The primary representation of "CollectingDate" now in the Darwin Core consists of !YearCollected, !MonthCollected, and !DayCollected expressed as integers, and !TimeCollected expressed in decimal hours. A secondary representation, !JulianDay (= day of year, expressed as an integer), supports queries on season regardless of year.
+
+These elements represent just one of several possible compromises among competing criteria, such as fidelity to the data as they are given, simplicity of representation, ease of query formulation, and precision of query expression.
+
+The requirements or goals for our representations should be:
+
+   * to accommodate a wide variety of vague date expressions that exist in our data;
+   * to enable record retrieval by simple queries against the time-line; simple queries are typically expressed as:
+      * after T1,
+      * before T2,
+      * or both after T1 and before T2.
+
+Such simple queries are commonly understood to operate against records where date-time is represented as a "point" rather than an interval, with distinct begin and end points.
+
+Representatives from several disciplines have asked for separate begin and end points (date-time elements). Begin and end points are commonly recorded in disciplines where mechanical devices are used to collect over some duration.
+
+[To be continued...]
+
+             created by [[http://darwincore.calacademy.org/Members/sblum][sblum]]
+
+             Last Modified 2004-08-26 08:08 PM
+
+---++ Comments 
+Use the space below to make comments about this page. - Main.JohnWieczorek - 24 Aug 2006
+
+------
+
+%ICON{bubble}%The primary representation of "CollectingDate" now in the Darwin Core consists of !YearCollected, !MonthCollected, and !DayCollected expressed as integers, and !TimeCollected expressed in decimal hours. A secondary representation, !JulianDay (= day of year, expressed as an integer), supports queries on season regardless of year.
+These elements represent just one of several possible compromises among competing criteria, such as fidelity to the data as they are given, simplicity of representation, ease of query formulation, and precision of query expression.
+The requirements or goals for our representations should be:
+
+   * to accommodate a wide variety of vague date expressions that exist in our data;
+
+   * to enable record retrieval by simple queries against the time-line; simple queries are typically expressed as:
+
+      * after T1,
+
+      * before T2,
+
+      * or both after T1 and before T2.
+
+Such simple queries are commonly understood to be operate against records where date-time is represented as a "point" rather than an interval, with distinct begin and end points.
+Representatives from several disciplines have asked for separate begin and end points (date-time elements). Begin and end points are commonly recorded in disciplines where mechanical devices are used to collect over some duration.
+
+[To be continued...]
+Created by sblum
+Last modified 2004-08-26 08:08 PM
+
+------%ICON{bubble}% *Date range*
+Posted by Korbinus at 2004-10-11 03:38 PM
+
+I think it would be good to have the possiblity to enter an interval of dates, since it is very common to find records with date information such as "March 1978 - June 1978".
+
+Data providers need today to pick up one date out of the range (or calculate an average date) and present it in !YearCollected & _al_. By doing so, we are losing here some critical information.
+
+It would be very helpful to integrate this concept in the coming version of !DwC.
+
+      %ICON{bubble}% *Replies to this comment* 
+Posted by  regiov  at  2005-06-15 09:24 AM
+
+I also agree that !DarwinCore should support date ranges. If it happens, people would still be able to use simple queries based on either the initial or end point of the collecting event. By using date ranges:
+
+1) Providers that store information in that way would not lose information when exposing their data (as mentioned in the previous comment);
+
+2) Complex queries considering the range would be possible, even if not frequently used;
+
+3) !DarwinCore would better serve as a basis for further extensions. Some of the existing extensions, like the one used by OBIS (http://iobis.org/obis/obis.xsd) decided to include the date range, which makes the composition !DarwinCore + Extension require three date mappings related to the collecting event.
+
+------
+
+%ICON{bubble}% *Suggestion*
+Posted by fini at 2005-12-19 03:32 AM
+
+Earlier today I posted a possible solution at this location:
+http://darwincore.calacademy.org/Documentation/DarwinCore2Draft_v1-4_HTML/talkback/1134989637/discussionitem_view
+
+I will post it here since it seems to fit better in this location.
+
+Charlie Lapham: "We need to revert back to a single !CollectionDate !DateTime element with a verbatim field for fragmentary dates."
+
+I agree with Charlie Lapham, it is basically impossible to decide dates to fill out if there is only one, this would lead to people filling both fields with the same values, or even worse people would just fill out one of them, but not always the same.
+
+My suggestion along Charlie's idea is to have fields similar to these:
+
+<noautolink>YearCollected, YearCollectedRangeEnd.
+MonthCollected, MonthCollectedRangeEnd.
+DayCollected, DayCollectedRangeEnd.
+TimeCollected, TimeCollectedRangeEnd.</noautolink>
+
+All the *RangeEnd* fields are optional.
+
+Issues: This might not be perfect for situations where you know *only* the end of a range, but in the case of ever getting start and end date, the complete date range could fairly easy be modified on the record by copying !MonthCollected to !MonthCollectedRangeEnd, and updating the !MonthCollected with the start month. 
+
+------
+
+%ICON{bubble}%

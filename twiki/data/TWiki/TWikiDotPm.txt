@@ -1,0 +1,523 @@
+---+ Package =TWiki=
+
+TWiki operates by creating a singleton object (known as the Session
+object) that acts as a point of reference for all the different
+modules in the system. This package is the class for this singleton,
+and also contains the vast bulk of the basic constants and the per-
+site configuration mechanisms.
+
+Global variables are avoided wherever possible to avoid problems
+with CGI accelerators such as mod_perl.
+
+
+%TOC%
+
+---++ StaticMethod *getTWikiLibDir* <tt>() -> $path</tt>
+
+STATIC method.
+
+Returns the full path of the directory containing TWiki.pm
+
+
+
+---++ ObjectMethod *UTF82SiteCharSet* <tt>($utf8) -> $ascii</tt>
+
+Auto-detect UTF-8 vs. site charset in string, and convert UTF-8 into site
+charset.
+
+
+
+---++ ObjectMethod *writeCompletePage* <tt>($text,$pageType,$contentType)</tt>
+
+Write a complete HTML page with basic header to the browser.
+   * =$text= is the text of the page body (&lt;html&gt; to &lt;/html&gt; if it's HTML)
+   * =$pageType= - May be "edit", which will cause headers to be generated that force
+     caching for 24 hours, to prevent Codev.BackFromPreviewLosesText bug, which caused
+     data loss with IE5 and IE6.
+   * =$contentType= - page content type | text/html
+
+This method removes noautolink and nop tags before outputting the page unless
+$contentType is text/plain.
+
+
+
+---++ ObjectMethod *writePageHeader* <tt>($query,$pageType,$contentType,$contentLength)</tt>
+
+All parameters are optional.
+
+   * =$query= CGI query object | Session CGI query (there is no good reason to set this)
+   * =$pageType= - May be "edit", which will cause headers to be generated that force caching for 24 hours, to prevent Codev.BackFromPreviewLosesText bug, which caused data loss with IE5 and IE6.
+   * =$contentType= - page content type | text/html
+   * =$contentLength= - content-length | no content-length will be set if this is undefined, as required by HTTP1.1
+
+Implements the post-Dec2001 release plugin API, which requires the
+writeHeaderHandler in plugin to return a string of HTTP headers, CR/LF
+delimited. Filters any illegal headers. Plugin headers will override
+core settings.
+
+
+
+---++ ObjectMethod *redirect* <tt>($url,$passthrough)</tt>
+
+Redirects the request to =$url=, *unless*
+   1 It is overridden by a plugin declaring a =redirectCgiQueryHandler=.
+   1 =$session->{cgiQuery}= is =undef= or
+   1 $query->param('noredirect') is set to a true value.
+Thus a redirect is only generated when in a CGI context.
+
+Normally this method will ignore parameters to the current query.
+If $passthrough is set, then it will pass all parameters that were passed
+to the current query on to the redirect target. If the request_method was
+GET, then all parameters can be passed in the URL. If the
+request_method was POST then it caches the form data and passes over a
+cache reference in the redirect GET.
+
+Passthrough is only meaningful if the redirect target is on the same server.
+
+
+
+---++ ObjectMethod *cacheQuery* <tt>() -> $queryString</tt>
+
+Caches the current query in the params cache, and returns a rewritten
+query string for the cache to be picked up again on the other side of a
+redirect.
+
+We can't encode post params into a redirect, because they may exceed the
+size of the GET request. So we cache the params, and reload them when the
+redirect target is reached.
+
+
+
+---++ StaticMethod *isValidWikiWord* <tt>($name) -> $boolean</tt>
+
+Check for a valid WikiWord or WikiName
+
+
+
+---++ StaticMethod *isValidTopicName* <tt>($name) -> $boolean</tt>
+
+Check for a valid topic name
+
+
+
+---++ StaticMethod *isValidAbbrev* <tt>($name) -> $boolean</tt>
+
+Check for a valid ABBREV (acronym)
+
+
+
+---++ StaticMethod *isValidWebName* <tt>($name,$system) -> $boolean</tt>
+
+STATIC Check for a valid web name. If $system is true, then
+system web names are considered valid (names starting with _)
+otherwise only user web names are valid
+
+
+
+---++ ObjectMethod *readOnlyMirrorWeb* <tt>($theWeb) -> ($mirrorSiteName,$mirrorViewURL,$mirrorLink,$mirrorNote)</tt>
+
+If this is a mirrored web, return information about the mirror. The info
+is returned in a quadruple:
+
+| site name | URL | link | note |
+
+
+
+---++ ObjectMethod *getSkin* <tt>() -> $string</tt>
+
+Get the currently requested skin path
+
+
+
+---++ ObjectMethod *getScriptUrl* <tt>($absolute,$script,$web,$topic,...) -> $scriptURL</tt>
+
+Returns the URL to a TWiki script, providing the web and topic as
+"path info" parameters.  The result looks something like this:
+"http://host/twiki/bin/$script/$web/$topic".
+   * =...= - an arbitrary number of name,value parameter pairs that will be url-encoded and added to the url. The special parameter name '#' is reserved for specifying an anchor. e.g. <tt>getScriptUrl('x','y','view','#'=>'XXX',a=>1,b=>2)</tt> will give <tt>.../view/x/y?a=1&b=2#XXX</tt>
+
+If $absolute is set, generates an absolute URL. $absolute is advisory only;
+TWiki can decide to generate absolute URLs (for example when run from the
+command-line) even when relative URLs have been requested.
+
+The default script url is taken from {ScriptUrlPath}, unless there is
+an exception defined for the given script in {ScriptUrlPaths}. Both
+{ScriptUrlPath} and {ScriptUrlPaths} may be absolute or relative URIs. If
+they are absolute, then they will always generate absolute URLs. if they
+are relative, then they will be converted to absolute when required (e.g.
+when running from the command line, or when generating rss). If
+$script is not given, absolute URLs will always be generated.
+
+If either the web or the topic is defined, will generate a full url (including web and topic). Otherwise will generate only up to the script name. An undefined web will default to the main web name.
+
+
+
+---++ ObjectMethod *getPubUrl* <tt>($absolute,$web,$topic,$attachment) -> $url</tt>
+
+Composes a pub url. If $absolute is set, returns an absolute URL.
+If $absolute is set, generates an absolute URL. $absolute is advisory only;
+TWiki can decide to generate absolute URLs (for example when run from the
+command-line) even when relative URLs have been requested.
+
+$web, $topic and $attachment are optional. A partial URL path will be
+generated if one or all is not given.
+
+
+
+---++ ObjectMethod *getIconUrl* <tt>($absolute,$iconName) -> $iconURL</tt>
+
+Map an icon name to a URL path.
+
+
+
+---++ ObjectMethod *mapToIconFileName* <tt>($fileName,$default) -> $fileName</tt>
+
+Maps from a filename (or just the extension) to the name of the
+file that contains the image for that file type.
+
+
+
+---++ ObjectMethod *getOopsUrl* <tt>($template,@options) -> $absoluteOopsURL</tt>
+
+Composes a URL for an "oops" error page. The @options consists of a list
+of key => value pairs. The following keys are used:
+   * =-web= - web name
+   * =-topic= - topic name
+   * =-def= - optional template def within the main template file
+   * =-params= - a single parameter, or a reference to an array of parameters  These are passed in the URL as '&param1=' etc.
+
+Do _not_ include the "oops" part in front of the template name.
+
+Alternatively you can pass a reference to an OopsException in place of the template. All other parameters will be ignored.
+
+The returned URL ends up looking something like this:
+"http://host/twiki/bin/oops/$web/$topic?template=$template&param1=$scriptParams[0]..."
+
+Note: if {keep} is true in the params, then they will also be pushed into the
+current query.
+
+
+
+---++ ObjectMethod *normalizeWebTopicName* <tt>($theWeb,$theTopic) -> ($theWeb,$theTopic)</tt>
+
+Normalize a Web<nop>.<nop>TopicName
+
+See TWikiFuncDotPm for a full specification of the expansion (not duplicated here)
+
+*WARNING* if there is no web specification (in the web or topic parameters) the web
+defaults to $TWiki::cfg{UsersWebName}. If there is no topic specification, or the topic
+is '0', the topic defaults to the web home topic name.
+
+
+
+---++ ClassMethod *new* <tt>($loginName,$query,\%initialContext)</tt>
+
+Constructs a new TWiki object. Parameters are taken from the query object.
+
+   * =$loginName= is the username of the user you want to be logged-in if none is
+     available from a session or browser. Used mainly for side scripts and debugging.
+   * =$query= the CGI query (may be undef, in which case an empty query is used)
+   * =\%initialContext= - reference to a hash containing context name=value pairs
+     to be pre-installed in the context hash
+
+
+
+---++ ObjectMethod *finish* <tt></tt>
+
+Complete processing after the client's HTTP request has been responded
+to. Right now this does two things:
+   1 calling TWiki::Client to flushing the user's session (if any) to disk,
+   2 breaking circular references to allow garbage collection in persistent
+     environments
+
+
+
+---++ ObjectMethod *writeLog* <tt>($action,$webTopic,$extra,$user)</tt>
+
+   * =$action= - what happened, e.g. view, save, rename
+   * =$wbTopic= - what it happened to
+   * =$extra= - extra info, such as minor flag
+   * =$user= - user who did the saving (user object or string user name)
+Write the log for an event to the logfile
+
+
+
+---++ ObjectMethod *writeWarning* <tt>($text)</tt>
+
+Prints date, time, and contents $text to $TWiki::cfg{WarningFileName}, typically
+'warnings.txt'. Use for warnings and errors that may require admin
+intervention. Use this for defensive programming warnings (e.g. assertions).
+
+
+
+---++ ObjectMethod *writeDebug* <tt>($text)</tt>
+
+Prints date, time, and contents of $text to $TWiki::cfg{DebugFileName}, typically
+'debug.txt'.  Use for debugging messages.
+
+
+
+---++ StaticMethod *applyPatternToIncludedText* <tt>($text,$pattern) -> $text</tt>
+
+Apply a pattern on included text to extract a subset
+
+
+
+---++ ObjectMethod *inlineAlert* <tt>($template,$def,...) -> $string</tt>
+
+Format an error for inline inclusion in rendered output. The message string
+is obtained from the template 'oops'.$template, and the DEF $def is
+selected. The parameters (...) are used to populate %PARAM1%..%PARAMn%
+
+
+
+---++ StaticMethod *parseSections* <tt>($text) -> ($string,$sectionlistref)</tt>
+
+Generic parser for sections within a topic. Sections are delimited
+by STARTSECTION and ENDSECTION, which may be nested, overlapped or
+otherwise abused. The parser builds an array of sections, which is
+ordered by the order of the STARTSECTION within the topic. It also
+removes all the SECTION tags from the text, and returns the text
+and the array of sections.
+
+Each section is a =TWiki::Attrs= object, which contains the attributes
+{type, name, start, end}
+where start and end are character offsets in the
+string *after all section tags have been removed*. All sections
+are required to be uniquely named; if a section is unnamed, it
+will be given a generated name. Sections may overlap or nest.
+
+See test/unit/Fn_SECTION.pm for detailed testcases that
+round out the spec.
+
+
+
+---++ ObjectMethod *expandVariablesOnTopicCreation* <tt>($text,$user) -> $text</tt>
+
+   * =$text= - text to expand
+   * =$user= - reference to user object. This is the user expanded in e.g. %USERNAME. Optional, defaults to logged-in user.
+Expand limited set of variables during topic creation. These are variables
+expected in templates that must be statically expanded in new content.
+
+# SMELL: no plugin handler
+
+
+
+---++ StaticMethod *entityEncode* <tt>($text,$extras) -> $encodedText</tt>
+
+Escape special characters to HTML numeric entities. This is *not* a generic
+encoding, it is tuned specifically for use in TWiki.
+
+HTML4.0 spec:
+"Certain characters in HTML are reserved for use as markup and must be
+escaped to appear literally. The "&lt;" character may be represented with
+an <em>entity</em>, <strong class=html>&amp;lt;</strong>. Similarly, "&gt;"
+is escaped as <strong class=html>&amp;gt;</strong>, and "&amp;" is escaped
+as <strong class=html>&amp;amp;</strong>. If an attribute value contains a
+double quotation mark and is delimited by double quotation marks, then the
+quote should be escaped as <strong class=html>&amp;quot;</strong>.</p>
+
+Other entities exist for special characters that cannot easily be entered
+with some keyboards..."
+
+This method encodes HTML special and any non-printable ascii
+characters (except for \n and \r) using numeric entities.
+
+FURTHER this method also encodes characters that are special in TWiki
+meta-language.
+
+$extras is an optional param that may be used to include *additional*
+characters in the set of encoded characters. It should be a string
+containing the additional chars.
+
+
+
+---++ StaticMethod *entityDecode* <tt>($encodedText) -> $text</tt>
+
+Decodes all numeric entities (e.g. &amp;#123;). _Does not_ decode
+named entities such as &amp;amp; (use HTML::Entities for that)
+
+
+
+---++ StaticMethod *urlEncode* <tt>($string) -> encodedstring</tt>
+
+Encode by converting characters that are illegal in URLs to
+their %NN equivalents. This method is used for encoding
+strings that must be embedded _verbatim_ in URLs; it cannot
+be applied to URLs themselves, as it escapes reserved
+characters such as = and ?.
+
+RFC 1738, Dec. '94:
+<verbatim>>
+...Only alphanumerics [0-9a-zA-Z], the special
+characters $-_.+!*'(), and reserved characters used for their
+reserved purposes may be used unencoded within a URL.
+</verbatim>
+Reserved characters are $&+,/:;=?@ - these are _also_ encoded by
+this method.
+
+SMELL: For non-ISO-8859-1 $TWiki::cfg{Site}{CharSet}, need to convert to
+UTF-8 before URL encoding. This encoding only supports 8-bit
+character codes.
+
+
+
+---++ StaticMethod *urlDecode* <tt>($string) -> decodedstring</tt>
+
+Reverses the encoding done in urlEncode.
+
+
+
+---++ StaticMethod *isTrue* <tt>($value,$default) -> $boolean</tt>
+
+Returns 1 if =$value= is true, and 0 otherwise. "true" means set to
+something with a Perl true value, with the special cases that "off",
+"false" and "no" (case insensitive) are forced to false. Leading and
+trailing spaces in =$value= are ignored.
+
+If the value is undef, then =$default= is returned. If =$default= is
+not specified it is taken as 0.
+
+
+
+---++ StaticMethod *spaceOutWikiWord* <tt>($word,$sep) -> $string</tt>
+
+Spaces out a wiki word by inserting a string (default: one space) between each word component.
+With parameter $sep any string may be used as separator between the word components; if $sep is undefined it defaults to a space.
+
+
+
+---++ ObjectMethod *enterContext* <tt>($id,$val)</tt>
+
+Add the context id $id into the set of active contexts. The $val
+can be anything you like, but should always evaluate to boolean
+TRUE.
+
+An example of the use of contexts is in the use of tag
+expansion. The commonTagsHandler in plugins is called every
+time tags need to be expanded, and the context of that expansion
+is signalled by the expanding module using a context id. So the
+forms module adds the context id "form" before invoking common
+tags expansion.
+
+Contexts are not just useful for tag expansion; they are also
+relevant when rendering.
+
+Contexts are intended for use mainly by plugins. Core modules can
+use $session->inContext( $id ) to determine if a context is active.
+
+
+
+---++ ObjectMethod *leaveContext* <tt>($id)</tt>
+
+Remove the context id $id from the set of active contexts.
+(see =enterContext= for more information on contexts)
+
+
+
+---++ ObjectMethod *inContext* <tt>($id)</tt>
+
+Return the value for the given context id
+(see =enterContext= for more information on contexts)
+
+
+
+---++ StaticMethod *registerTagHandler* <tt>($tag,$fnref)</tt>
+
+STATIC Add a tag handler to the function tag handlers.
+   * =$tag= name of the tag e.g. MYTAG
+   * =$fnref= Function to execute. Will be passed ($session, \%params, $web, $topic )
+
+
+
+---++ StaticMethod *registerRESTHandler* <tt>($subject,$verb,\&fn)</tt>
+
+Adds a function to the dispatch table of the REST interface 
+for a given subject. See TWikiScripts#rest for more info.
+
+   * =$subject= - The subject under which the function will be registered.
+   * =$verb= - The verb under which the function will be registered.
+   * =\&fn= - Reference to the function.
+
+The handler function must be of the form:
+<verbatim>
+sub handler(\%session,$subject,$verb) -> $text
+</verbatim>
+where:
+   * =\%session= - a reference to the TWiki session object (may be ignored)
+   * =$subject= - The invoked subject (may be ignored)
+   * =$verb= - The invoked verb (may be ignored)
+
+*Since:* TWiki::Plugins::VERSION 1.1
+
+
+
+---++ StaticMethod *restDispatch* <tt>($subject,$verb)=>\&fn</tt>
+
+Returns the handler  function associated to the given $subject and $werb,
+or undef if none is found.
+
+*Since:* TWiki::Plugins::VERSION 1.1
+
+
+
+---++ ObjectMethod *handleCommonTags* <tt>($text,$web,$topic) -> $text</tt>
+
+Processes %<nop>VARIABLE%, and %<nop>TOC% syntax; also includes
+'commonTagsHandler' plugin hook.
+
+Returns the text of the topic, after file inclusion, variable substitution,
+table-of-contents generation, and any plugin changes from commonTagsHandler.
+
+
+
+---++ ObjectMethod *addToHEAD* <tt>($id,$html)</tt>
+
+Add =$html= to the HEAD tag of the page currently being generated.
+
+Note that TWiki variables may be used in the HEAD. They will be expanded
+according to normal variable expansion rules.
+
+The 'id' is used to ensure that multiple adds of the same block of HTML don't
+result in it being added many times.
+
+
+
+---++ StaticMethod *initialize* <tt>($pathInfo,$remoteUser,$topic,$url,$query) -> ($topicName,$webName,$scriptUrlPath,$userName,$dataDir)</tt>
+
+Return value: ( $topicName, $webName, $TWiki::cfg{ScriptUrlPath}, $userName, $TWiki::cfg{DataDir} )
+
+Static method to construct a new singleton session instance.
+It creates a new TWiki and sets the Plugins $SESSION variable to
+point to it, so that TWiki::Func methods will work.
+
+This method is *DEPRECATED* but is maintained for script compatibility.
+
+Note that $theUrl, if specified, must be identical to $query->url()
+
+
+
+---++ StaticMethod *readFile* <tt>($filename) -> $text</tt>
+
+Returns the entire contents of the given file, which can be specified in any
+format acceptable to the Perl open() function. Fast, but inherently unsafe.
+
+WARNING: Never, ever use this for accessing topics or attachments! Use the
+Store API for that. This is for global control files only, and should be
+used *only* if there is *absolutely no alternative*.
+
+
+
+---++ StaticMethod *expandStandardEscapes* <tt>($str) -> $unescapedStr</tt>
+
+Expands standard escapes used in parameter values to block evaluation. The following escapes
+are handled:
+
+| *Escape:* | *Expands To:* |
+| =$n= or =$n()= | New line. Use =$n()= if followed by alphanumeric character, e.g. write =Foo$n()Bar= instead of =Foo$nBar= |
+| =$nop= or =$nop()= | Is a "no operation". |
+| =$quot= | Double quote (="=) |
+| =$percnt= | Percent sign (=%=) |
+| =$dollar= | Dollar sign (=$=) |
+
+

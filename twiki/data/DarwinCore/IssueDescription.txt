@@ -1,0 +1,47 @@
+%META:TOPICINFO{author="StephenLong" date="1158783375" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="ContainingElement"}%
+---++Issue Description
+
+At present the Darwin Core 2 is only an unordered list of elements. It begins with an xml schema document tag, which defines the namespace, and contains set of element tags.
+<verbatim>
+  <xsd:schema ... >
+    <xsd:element ... >  ...  </xsd:element>
+    <xsd:element ...>  ...  </xsd:element>
+  </xsd:schema>
+</verbatim>
+The specification imposes relatively few constraints on a valid instance document -- only that certain elements are required (minoccurs=1 nillable=false). In particular, elements can be given in any order, some elements can be absent, and some elements can be repeated.
+
+*Arguments against specifying more structure:*
+
+Imposing structure that is not needed just restricts future flexibility.
+
+*Arguments for more structure:*
+
+Applications (portals and end-user applications) will not behave predictably or consistently if elements repeat. Possible behaviors include: concatenate values, keep only the first, keep only the last, error).
+
+Defining a Darwin Core record as a complex element type (object class) will give us a more formally correct framework for schema extension (inheritance). 
+
+See ContainingElementProposal1
+
+
+             created by [[http://darwincore.calacademy.org/Members/sblum][sblum]]
+             Last Modified 2004-08-26 08:08 PM
+
+---++ Comments 
+Use the space below to make comments about this page. - Main.JohnWieczorek - 24 Aug 2006
+
+------
+
+%ICON{bubble}%  *Application behaviour*  Posted by vieglais at 2004-08-31 10:50 AM
+
+The comment that applications will behave unpredictably is not really correct. It is correct to say that without appropriate guidelines, then unpredictable behaviour will appear. The question is whether those guidelines are defined in the protocol or in the record structure definition external to the protocol.
+
+------
+
+%ICON{bubble}% *On the use of repeating elements*  Posted by dhobern at 2005-03-17 12:56 AM
+
+I agree that there is an issue around our not defining the semantics of repeating elements within a Darwin Core record, and that different processors may handle the situation very differently. It is however important to remember that some of the elements should be repeatable and that this should not be excluded. This can be solved independently of whether or not a containing element is defined, but must not be forgotten.
+
+------
+
+%ICON {bubble}%

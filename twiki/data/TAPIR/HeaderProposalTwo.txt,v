@@ -1,0 +1,91 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@---+ HeaderProposalTwo
+
+The header is used in both requests and responses.
+So it must be flexible to accomodate the different software and paths involved.
+
+Based on the HeaderProposalOne the major change is that for a single destination accesspoint there will never be multiple destination elements. Multiple datasources can be addressed within a single destination header element. This allows the provider software to ignore the filtering of the destination elements to detect only destinations meant for itself.
+
+The software/version element was integrated as an attribute into the source element, because for each source on the way there might have been different software acting on the document.
+
+---+++++ Request Header Example
+<verbatim>
+<header>
+   <source software="DiGIR portal 2.3" sendtime="2001-12-17T09:30:47-05:00" ip="213.214.215.216" HeaderProposalTwo> *
+   <destination accesspoint="13.14.15.16/biocase/provider.py"> *
+      <datasource name="lichens"> *
+      <datasource name="mites">
+   </destination>
+   <type>search</type>
+</header>
+</verbatim>
+
+---+++++ Response Header Example
+<verbatim>
+<header>
+   <source ip="13.14.15.16" datasource="lichens" software="PyWrapper 1.3.6" sendtime="2001-12-17T09:30:47-05:00" HeaderProposalTwo> *
+   <source ip="13.14.15.16" datasource="mites" software="PyWrapper 1.4.0" sendtime="2001-12-17T09:30:47-56:00" HeaderProposalTwo>
+   <destination accesspoint="178.4.99.1" HeaderProposalTwo>
+   <type>search</type>
+</header>
+</verbatim>
+
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d8 2
+d18 1
+d28 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d12 2
+a13 2
+   <destination accesspoint="13.14.15.16/biocase/provider.py">
+      <datasource name="lichens">
+d23 1
+a23 1
+   <source ip="13.14.15.16" datasource="mites" software="PyWrapper 1.4.0" sendtime="2001-12-17T09:30:47-56:00" HeaderProposalTwo> *
+@

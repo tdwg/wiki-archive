@@ -1,0 +1,295 @@
+head	1.10;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@---+ Capabilities Proposal I
+
+A first proposal for the CapabilitiesRequest.
+
+---+++++ Request Example
+
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <capabilities CapabilitiesProposalOne>
+</request>
+</verbatim>
+
+---+++++ Response Example
+<verbatim>
+<response>
+   <header>
+      ...
+   </header>
+   <content>
+      <capabilities>
+         <configurations>
+            <minQueryTermLength>3</minQueryTermLength>
+            <maxSearchResponseRecords>100</maxSearchResponseRecords>
+            <maxInventoryResponseRecords>1000</maxInventoryResponseRecords>
+         </configurations>
+         <requestTypes>
+            <ping/>
+            <capabilities/>
+            <metadata/>
+            <inventory/>
+            <fullSearch/>
+            <partialSearch/>
+            <customSearch/>
+         </requestTypes>
+         <conceptualSchemas>
+            <schema namespace="http://www.altova.com"> *
+               <concept searchable="1" path="/abcd/efg/@@h"/> *
+            </schema>
+         </conceptualSchemas>
+      </capabilities>
+   </content>
+</response>
+
+with* indicating repeatable elements
+</verbatim>
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@a28 3
+         <protocols>
+            <protocol schema="http://www.altova.com" CapabilitiesProposalOne> *
+         </protocols>
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d3 2
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d28 1
+a28 1
+            <protocol schema="http://www.altova.com" name="String"/> *
+a29 14
+         <filter>
+            <comparative>
+               <operator name="String" type="String"/> *
+            </comparative>
+            <logical>
+               <operator name="String" type="String"/> *
+            </logical>
+            <function>
+               <operator name="String" type="String"/> *
+            </function>
+            <spatial>
+               <operator name="String" type="String"/> *
+            </spatial>
+         </filter>
+a38 3
+         <compression>
+            <method name="zip"/> *
+         </compression>
+a43 1
+         <security>Text</security>
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@a2 24
+---+++++ General Idea
+
+We could add more information to this CapabilitiesRequest. Everything related to machine readable data describing the capabilities, abilities of a providers resource like the limit to the number of returned records. Also every concept should include a flag indicating whether it is searchable.
+
+Information we would like to add to the capabilities:
+   * provider configuration parameters affecting the response:
+      * minQueryTermLength
+      * maxSearchResponseRecords
+      * maxInventoryResponseRecords
+   * type & version of the protocols supported by a software
+   * type of FilterOperators supported by a software
+      * logical
+      * comparative
+      * functions
+     * min, max
+     * len
+      * SpatialOperators
+   * type of operations or RequestMethods supported
+   * is ContentCompression supported ?
+   * ConceptualSchemas and their "mapped" concepts supported (see above)
+   * a slot for security related information
+      * access restriction
+      * encryption mechanisms
+
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d68 9
+a76 3
+         <operations>
+            <operation requesttype="String"/> *
+         </operations>
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d40 43
+a82 36
+<capabilities>
+   <configurations>
+      <minQueryTermLength>3</minQueryTermLength>
+      <maxSearchResponseRecords>100</maxSearchResponseRecords>
+      <maxInventoryResponseRecords>1000</maxInventoryResponseRecords>
+   </configurations>
+   <protocols>
+      <protocol schema="http://www.altova.com" name="String"/> *
+   </protocols>
+   <filter>
+      <comparative>
+         <operator name="String" type="String"/> *
+      </comparative>
+      <logical>
+         <operator name="String" type="String"/> *
+      </logical>
+      <function>
+         <operator name="String" type="String"/> *
+      </function>
+      <spatial>
+         <operator name="String" type="String"/> *
+      </spatial>
+   </filter>
+   <operations>
+      <operation requesttype="String"/> *
+   </operations>
+   <compression>
+      <method name="zip"/> *
+   </compression>
+   <conceptualSchemas>
+      <schema namespace="http://www.altova.com"> *
+         <concept searchable="1" path="/abcd/efg/@@h"/> *
+      </schema>
+   </conceptualSchemas>
+   <security>Text</security>
+</capabilities>
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d5 1
+a5 1
+We could add more information to this capabilities request. Everything related to machine readable data describing the capabilities, abilities of a providers resource like the limit to the number of returned records. Also every concept should include a flag indicating whether it is searchable.
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d1 1
+a1 1
+---+ Capabilities Response, Proposal I
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d27 12
+a38 1
+---+++++ Example
+@

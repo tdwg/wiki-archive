@@ -1,0 +1,43 @@
+%META:TOPICINFO{author="RicardoPereira" date="1174000707" format="1.1" version="1.6"}%
+%META:TOPICPARENT{name="AgadirMeeting"}%
+---+   %TOPIC%
+
+This is the first cut at the revised schema per discussion. Anything with @@@ in annotation indicates elements still needing discussion. @@@+++ means some technical work is still needed. Some of that will be filled in by actions that were taken by breakout groups when they are reported.
+   * [[%ATTACHURL%/Agadir09.xsd][Agadir09.xsd]]: Agadir draft schema, v 0.9
+   * [[%PUBURL%/%WEB%/RevisedSchema/HTML/Agadir09.html][Agadir09.html]] Schema in html form
+   * [[%PUBURL%/%WEB%/RevisedSchema/HTML/Agadir09.zip][Agadir09.zip]] Zipped form of html form, convenient for downloading if you have no schema editor
+
+The Agadir meeting focused on checklists, and those are the most fleshed out in v 0.9.
+
+The changes from the original schema are principally these. Some are cosmetic. 
+
+   * All(?) elements with content are strongly typed to assist with transport by current implementations of TAPIR
+   * Annotations that were placeholders for an enumeration have been turned into an actual enumeration
+   * All XML Schema complex and simple type declarations carry a name like "NameT" instead of "NameType". An attempt is made to reserve the word "Type" in the schema for its non-technical meanings to reduce confusion. Alas, in _discussion_ of the schema, the use of "type" for schema data types is unavoidable.
+   * An object called Dataset holds one of four new kinds of objects identified in Agadir:
+      * Checklist:  Such an object has schema type !ChecklistByLocationT and is organized by location, per discussion in Agadir. Checklists organized by taxon will be expected to be derived by transformation of one of these and is left to applications. After the Agadir schema is stable, I'll provide some XSLT that does this.
+      * Images: a container of image !URIs. We can do better than this...
+      * Taxonpages: a container of objects of schema type !TaxonpageT, the datatype formerly known as "Fact sheet". !TaxonpageT will ultimately track the [[http://ip50.eti.uva.nl/TDWGSpecies/index.php/Main_Page][species page efforts of TDWG]]. This data type will be the next one to be refactored. There are quite a few placeholders in it.
+      * Experts: a list of experts. Hasn't been visited at all except to make a stab at strong typing.
+
+
+Some other remarks:
+
+If you mean to explore Agadir0.9, I wouldn't go much beyond checklists. Nothing else is fleshed out in the new organization.
+
+The notion of "Location Specific Facts" is gone per discussion in Agadir. _All_ facts and other properties of taxa are now location specific. If such a property is deemed to hold planetwide, providers should map to a location named "World". One implication of this is discussed in NeedForLocalReferences.
+
+I have introduced more rigourous ways of typing measures. Everything that can be measured has a decimal value and an optional units attribute (e.g. meters, grams, seconds, hectares, etc.). The datatypes for these are organized as to whether they are time measures, linear, area, or volume measures. (Oops, forgot weight measures. Didn't see any use of them, but they should be added). Any such measure can also have an associated time unit, so it is possible to give, for example, cu. meters/sec., hectares/year etc.
+
+---++ Extending Enumerations
+In the original XML schema there is a notion of "DefinedSchema" to represent external terminologies when a data provider insists on using something other than a defined enumeration. In the original it was just a !URI plus DefinedSchemaName, DefinedSchemaValue, DefinedSchemaReference and ReferencedSource, but there really was no way to compare the external strings to local enumerations. In Agadir0.9 there is a chaotic hint, not uniformly treated, of the following idea I am experimenting with to give external vocabularies a hope of working short of describing everything in RDF internally and externally, a solution I believe is overkill in this application. The idea is this: where-ever a provider gets to insist on an external vocabulary there will be several resources: (a)a string comprising the value of the item from the external vocabulary (b)a !URI or GUID by the resolution of which a sufficiently determined application can acquire a list of strings that can be compared, at least as to equality, with those of the enumeration that is locally defined in the schema. This almost certainly requires programming in a language supporting cass reflection because the application has to  examine the class, not the instance, to get the enumeration. Java, C#, and PHP all have a reflection API, and I believe Python also has something that will solve the problem. I greatly desire opinions of this idea or discussion of simpler alternatives,  in the topic ExtendingEnumerations. 
+
+-- Main.BobMorris - 02 Mar 2006
+
+---++ Keys and References
+Are probably going to rear their head, despite what we hoped for in Agadir. Please see KeysAndReferences.
+
+
+---
+
+%META:FILEATTACHMENT{name="Agadir09.xsd" attr="h" comment="Agadir draft schema, v 0.9" date="1141274893" path="Agadir09.xsd" size="94354" user="BobMorris" version="1.2"}%

@@ -1,0 +1,95 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="DrewKoning" date="1105037310" format="1.0" version="1.2"}%
+* [[%ATTACHURL%/NovitatesTreatment_1_0.xml][NovitatesTreatment_1_0.xml]]: Natural Language Coding of a taxonomic treatment in the AMNH legacy literature project
+
+
+This is my first attempt at an SDD coding of the Novitates ant
+treatment of  Baikurus casei from the digitized version of
+http://research.amnh.org/informatics/ants/pdf/N3208.pdf the initial
+digitization of which is
+http://research.amnh.org/informatics/ants/xml_lite/N3208.xml
+See also other representations of this particular treatment at
+http://research.amnh.org/informatics/ants/
+
+Especially see Ants.WebHome
+
+I've done the treatment entirely with the
+<nop>NaturalLanguageDescriptions ("NLD") of
+SDD. This kind of coding is intended exactly for this purpose, and is
+designed to encode the text at any level of conceptual granularity
+desired. In particular, it is the aim of NLD to support subsequent
+refinement of the markup to subsequently refined concepts. For
+example, in the document [[%ATTACHURL%/NovitatesTreatment_1_0.xml][NovitatesTreatment_1_0.xml]], I use an SDD
+Terminology with two <nop>ConceptTrees. The first <nop>ConceptTree is a (rather flat) tree of SDD
+whose <nop>ConceptTreeType is <nop>PartsCompositionHierarchy. It has Concepts
+named HEAD, ALITRUNK, and GASTER, corresponding to the named parts in
+the treatment. The second tree is of type <nop>MethodHierarchy and has
+entries labelled MATERIALS EXAMINED, ETYMOLOGY, and DISCUSSION. (These
+probably do not really correspond to the intent of a  <nop>MethodHierarchy
+in SDD, which is more designed to detail how data was
+gathered. However, it is interesting to note that the
+<nop>ConceptTrees could quite easily be reorganized, retyped, and
+renamed (i.e. relabeled) in the Terminology without having to recode
+the <nop>NaturalLanguageDescription. That's because in the Description are
+only references to the keys that uniquely specify the Concept and
+these would survive such a reorganization in most cases. (There are
+uniqueness constraints on those keys that would have to be maintained
+in such a reorganization.)
+
+The essential point of SDD NLD markup is that subsequent agents acting
+on the document with a refined Terminology could mark it up
+further. For example, the HEAD section could be refined to separate
+markup of the ocelli, the eyes, etc., all the way to detailed
+character/state based markup that would be as searchable with XQuery
+as had it derived from a database in the first place. Accomplishing
+that markup is either expert handwork, or the subject of research in natural
+language processing of morphological characters such as that in Bryan
+Heidorn's lab.
+ 
+What's missing in this coding. It's important to the AMNH work to also
+include certain automatically marked document characteristics,
+including page boundaries, figure locations, etc. I haven't tried to
+capture that here in part because there have not yet been any attempts
+to use SDD markup as fragments, e.g. via namespaces, of something
+else. This doesn't seem difficult in principle, although the heavy
+dependence of SDD on key/keyref mechanisms could make validation
+complicated in such a scenario. Particularly unclear to me are the 
+consequences of the (common) case where these document objects come
+within an informational object, such as the text of the use of a
+Concept in a <nop>NaturalLanguageDescription. So I have just ignored
+them in [[%ATTACHURL%/NovitatesTreatment_1_0.xml][NovitatesTreatment_1_0.xml]]. By design, SDD has only a single
+top-level element (<nop>DescriptiveData) which might make it annoying
+to use SDD objects embedded in something other than an SDD document,
+which is what I have coded here.
+
+Less obscure is that I have omitted the (well-defined) use of
+mechanisms for describing special objects like tables, figures, and
+images. Normally in SDD these might be treated as part of the
+<nop>ExternalDataInterface except that they are embedded in the
+document in this case. So possibly they are just another kind of
+Concept, though I solicit SDD'ers opionion on whether that makes
+sense. This might be made moot by suitable mechanisms for embedding
+SDD elements in other kinds of documents. Possibly there is a
+difficult schema integration problem here.
+
+Finally note two things:
+
+1. [[%ATTACHURL%/NovitatesTreatment_1_0.xml][NovitatesTreatment_1_0.xml]] has had the debugRef tool applied so
+that it is easier to see in situ what the Concepts used in
+descriptions are since the descriptions just
+use references, much akin to foreign keys in a traditional
+database. The tool inserts a heuristically chosen text (usually a
+mandatory label) from the referenced object---here a Concept---at the
+point of its reference.
+
+2. My experience with SDD, both in the design and use, has
+been with <nop>CodedDescriptions. I hope someone who has attempted NLDs
+will comment on how to improve what I've done here.
+-- Main.BobMorris - 06 Jan 2005
+
+
+-- Main.BobMorris - 06 Jan 2005
+	
+
+%META:FILEATTACHMENT{name="NovitatesTreatment_1_0.xml" attr="" comment="Natural Language Coding of a taxonomic treatment in the AMNH legacy literature project" date="1105037309" path="NovitatesTreatment_1_0.xml" size="8744" user="DrewKoning" version="1.2"}%

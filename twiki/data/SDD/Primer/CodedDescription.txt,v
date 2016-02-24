@@ -1,0 +1,393 @@
+head	1.10;
+access	;
+symbols;
+locks; strict;
+comment	@@;
+
+1.10
+date	2006.07.18.04.08.54;	author DonovanSharp;	state Exp;
+branches;	
+next	1.9;
+1.9
+date	2006.07.07.00.59.22;	author DonovanSharp;	state Exp;
+branches;	
+next	1.8;
+1.8
+date	2006.07.06.03.01.52;	author DonovanSharp;	state Exp;
+branches;	
+next	1.7;
+1.7
+date	2006.07.05.07.34.18;	author DonovanSharp;	state Exp;
+branches;	
+next	1.6;
+1.6
+date	2006.07.05.02.16.06;	author DonovanSharp;	state Exp;
+branches;	
+next	1.5;
+1.5
+date	2006.07.04.01.59.45;	author DonovanSharp;	state Exp;
+branches;	
+next	1.4;
+1.4
+date	2006.06.21.06.57.16;	author DonovanSharp;	state Exp;
+branches;	
+next	1.3;
+1.3
+date	2006.06.08.02.06.45;	author DonovanSharp;	state Exp;
+branches;	
+next	1.2;
+1.2
+date	2006.06.07.07.40.25;	author DonovanSharp;	state Exp;
+branches;	
+next	1.1;
+1.1
+date	2006.06.02.04.06.47;	author DonovanSharp;	state Exp;
+branches;	
+next	;
+
+
+desc
+@@
+
+
+1.10
+log
+@@
+text
+@%META:TOPICINFO{author="DonovanSharp" date="1153195734" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++4.1 Coded Descriptions
+
+The &lt;CodedDescription&gt; element contains the actual data associated with each dataset.
+
+SDD deals with two distinct subtypes of coded data, summary data and raw observational data. Summary data is data representative of recognised taxonomic entities (family, genus, species), while raw observation data is that representative of a single specimen or occurence.
+
+The [[CodedDescription][&lt;CodedDescription&gt;]] element also contains a [[SddScope][&lt;Scope&gt;]] element, where the entities covered by the description may be defined.
+
+%ATTACHURL%/codeddescription.gif
+
+---++++4.1.1 SDD for summary data
+
+Summary data records occurence for a related group of individuals (i.e. species, genus). Data may be aggregated from sample data using statistical measures, state distributions, etc. The element is optional to support descriptions containing only sample data or media objects. Characters are NOT required to have unique ref attributes! Data for one character may be recorded with different modifications (in spring/autumn, at tip/base).
+
+%ATTACHURL%/summarydata.gif
+
+---+++++Example 4.1.1.1 - A simple summary data description
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+    <CodedDescriptions>
+      <CodedDescription id="cd1">
+        <Representation>
+          <Label>Korthalsella</Label>
+        </Representation>
+        <Scope>
+          <TaxonName ref="t2"/>
+        </Scope>
+        <SummaryData>
+          <Categorical ref="c3">
+            <State ref="s7"/>
+          </Categorical>
+          <Categorical ref="c1">
+            <State ref="s2"/>
+          </Categorical>
+          <Quantitative ref="c4">
+            <Measure type="Min" value="5.0"/>
+            <Measure type="UMethLower" value="10.0"/>
+            <Measure type="UMethUpper" value="20.0"/>
+            <Measure type="Max" value="25.0"/>
+          </Quantitative>
+        </SummaryData>
+      </CodedDescription>
+    </CodedDescriptions>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+In this example the taxon Korthalsella (taxon t2) is scored present for character c3 state s7, present for character c1 state s2 and (5-)10-20(-25) for the quantitative character c4. The names assigned to these character and state names can be found within the [[SddCharacters][&lt;Characters&gt;]] element.
+
+---++++4.1.2 SDD for [[SampleData][&lt;SampleData&gt;]]
+
+Raw sample data are recorded here. The analysed and generalized (e. g. using statistical measures) results are normally also reflected under [[SummaryData][&lt;SummaryData&gt;]] (with origin = 'calculated' and &lt;BasedOnSample&gt; referring to a sample ID.
+
+%ATTACHURL%/sampledata.gif
+
+---++++Example 4.1.2.1 - A simple raw data description
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+
+    
+<verbatim>
+<CodedDescriptions>
+  <CodedDescription id="cd1">
+   <Representation>
+    <Label>Korthalsella </Label>
+   </Representation>
+   <Scope>
+    <TaxonName ref="t2"/>
+   </Scope>
+   <SampleData>
+    <SamplingEvent id="sev1000">
+     <DateTime/>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s2"/>
+      </Categorical>
+      <Quantitative ref="c2" value="110"/>
+     </SamplingUnit>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s1"/>
+      </Categorical>
+      <Quantitative ref="c2" value="112"/>
+     </SamplingUnit>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s1"/>
+      </Categorical>
+      <Quantitative ref="c2" value="110"/>
+     </SamplingUnit>
+     <SamplingUnit>
+      <Categorical ref="c1">
+       <State ref="s1"/>
+      </Categorical>
+      <Quantitative ref="c2" value="118"/>
+     </SamplingUnit>
+    </SamplingEvent>
+   </SampleData>
+  </CodedDescription>
+ </CodedDescriptions>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+	
+
+This example records the results of five sampling events for a categorical and a quantitative character. The names assigned to these character and state names can be found within the [[SddCharacters][&lt;Characters&gt;]] element.
+
+
+-- Main.DonovanSharp - 02 Jun 2006
+
+%META:FILEATTACHMENT{name="summarydata.gif" attr="" autoattached="1" comment="" date="1152233873" path="summarydata.gif" size="9204" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="codeddescription.gif" attr="" autoattached="1" comment="" date="1152233779" path="codeddescription.gif" size="16060" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="sampledata.gif" attr="" autoattached="1" comment="" date="1152233672" path="sampledata.gif" size="3342" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.9
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152233962" format="1.1" reprev="1.9" version="1.9"}%
+d7 1
+a7 1
+The [[CodedDescription][&lt;CodedDescription&gt;]] element contains the actual data associated with each dataset.
+@
+
+
+1.8
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152154912" format="1.1" reprev="1.8" version="1.8"}%
+d13 1
+a13 1
+%ATTACHURL%/codeddescription.jpg
+d19 1
+a19 1
+%ATTACHURL%/summarydata.jpg
+d66 1
+a66 1
+%ATTACHURL%/sampledata.jpg
+d130 3
+a132 3
+%META:FILEATTACHMENT{name="codeddescription.jpg" attr="" autoattached="1" comment="" date="1149730710" path="codeddescription.jpg" size="21615" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="sampledata.jpg" attr="" autoattached="1" comment="" date="1149732404" path="sampledata.jpg" size="21457" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="summarydata.jpg" attr="" autoattached="1" comment="" date="1149731744" path="summarydata.jpg" size="14449" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.7
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152084858" format="1.1" version="1.7"}%
+d23 4
+d55 2
+a56 1
+	
+d58 2
+d70 6
+d119 2
+d122 1
+@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152065766" format="1.1" reprev="1.6" version="1.6"}%
+d10 2
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1151978385" format="1.1" version="1.5"}%
+d7 1
+a7 1
+The CodedDescription element contains the actual data associated with each dataset.
+d40 1
+a40 1
+            <Measure type="UMethUpper" value="10.0"/>
+d53 1
+a53 1
+---++++4.1.2 SDD for SampleData
+d55 1
+a55 1
+Raw sample data are recorded here. The analysed and generalized (e. g. using statistical measures) results are normally also reflected under SummaryData (with origin = 'calculated' and BasedOnSample referring to a sample ID.
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150873036" format="1.1" reprev="1.4" version="1.4"}%
+d5 1
+a5 1
+---+++3.6 Coded Descriptions
+d13 1
+a13 1
+---++++2.1.2 SDD for summary data
+d15 2
+d19 1
+a19 1
+---+++++Example 3.3.1 - A simple summary data description
+d53 1
+a53 1
+---++++2.1.3 SDD for SampleData
+d55 2
+d59 1
+a59 1
+---++++Example 3.3.2 - A simple raw data description
+@
+
+
+1.3
+log
+@@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="DonovanSharp" date="1149732405" format="1.1" reprev="1.3" version="1.3"}%
+%META:TOPICPARENT{name="WebTopicList"}%
+d51 1
+a51 1
+---++++2.1.3 SDD for sample data
+d109 1
+a109 1
+%META:FILEATTACHMENT{name="sampledata.jpg" attachment="sampledata.jpg" attr="" comment="" date="1149732404" path="sampledata.jpg" size="21457" stream="sampledata.jpg" user="Main.DonovanSharp" version="2"}%
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149666025" format="1.1" reprev="1.2" version="1.2"}%
+d11 1
+a11 1
+---++++Example 3.3.1 - A simple summary data description
+d13 6
+d20 1
+a20 1
+d41 1
+d24 1
+a24 1
+          <Label xml:lang="en-us">Korthalsella</Label>
+a46 1
+d45 1
+a49 1
+In this example the taxon Korthalsella (taxon t2) is scored present for character c3 state s7, present for character c1 state s2 and (5-)10-20(-25) for the quantitative character c4. The names assigned to these character and state names can be found within the <Characters> element.
+d51 4
+d58 1
+a58 1
+d90 1
+d62 1
+a62 1
+    <Label xml:lang="en-us">Korthalsella </Label>
+a100 1
+d99 2
+d103 1
+a103 1
+This example records the results of five sampling events for a categorical and a quantitative character. The names assigned to these character and state names can be found within the &lt;Characters&gt; element.
+d108 3
+a110 1
+%META:FILEATTACHMENT{name="codeddescription.jpg" attachment="codeddescription.jpg" attr="" comment="" date="1149728949" path="codeddescription.jpg" size="12404" stream="codeddescription.jpg" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149221207" format="1.1" version="1.1"}%
+d3 1
+d5 1
+a5 1
+SDD Part 0: Introduction and Primer to the SDD Standard 
+a6 1
+3.6 Coded Descriptions
+d11 1
+a11 1
+Example 3.3.1 - A simple summary data description
+d45 1
+a45 1
+Example 3.3.2 - A simple raw data description
+d93 1
+a93 1
+This example records the results of five sampling events for a categorical and a quantitative character. The names assigned to these character and state names can be found within the <Characters> element.
+d96 1
+a96 1
+last edit: 02 Jun 2006 
+a97 3
+
+
+-- Main.DonovanSharp - 02 Jun 2006
+@
+

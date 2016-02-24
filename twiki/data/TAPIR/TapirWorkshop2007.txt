@@ -1,0 +1,146 @@
+%META:TOPICINFO{author="RicardoPereira" date="1173122934" format="1.1" version="1.20"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+++ TAPIR Developers Workshop 2007
+
+Dates: 12th to 15th of February 2007
+
+Venue: GBIF, Copenhagen
+
+Times: 9AM to 5PM  (lunch from 12:30PM to 1:30PM)
+
+The aim of the workshop is to advance the deployment of the TAPIR protocol and augment its community.
+
+The workshop will start with a training session and will be followed by hands-on development sessions in separate work groups. 
+
+---++++ Agenda
+
+*Monday*
+
+9:00 - 9:10 Welcome<br/>
+9:10 - 10:00 History and overview of TAPIR<br/>
+10:00 - 10:45 Conceptual schemas, output models and query templates<br/>
+Break<br/>
+11:00 - 11:30 Demonstration<br/>
+11:30 - 12:30 Building TAPIR Networks<br/>
+
+Lunch
+
+13:30 - 15:15 Discussions, individual presentations, planning<br/>
+Break<br/>
+15:30 - 17:00 Work groups & General discussions<br/>
+
+-----------------------------------------------
+
+*Tuesday* - Work groups & General discussions
+
+-----------------------------------------------
+
+*Wednesday* - Work groups & General discussions
+
+-----------------------------------------------
+
+*Thursday* - Work groups & General discussions & Conclusions
+
+-----------------------------------------------
+
+---++++ Outcomes
+
+   * Explanation of the main features and concepts of TAPIR to new developers
+      * History and overview of TAPIR (Renato).
+      * Main concepts about TAPIR: conceptual schemas, output models, query templates, concept name servers (Markus).
+      * Demonstration (Javier).
+      * Guidelines for building TAPIR networks (Renato).
+   * Amendments to the existing TAPIR documentation/specification
+      * Search envelopes are turned on by default.
+      * Global parameter "xslt" may be subject to restrictions on the allowed hosting domains.
+      * Need to include notes about the fact that a provider is not forced to guarantee the entire validity of search responses according to the XML Schema defined in the response structure, except to the extent of its own declared XML Schema capabilities.
+      * Include a new attribute "required" at the concept level of output model mapping (defaults to false). Should raise an error when concept is unmapped or the corresponding value is null.
+      * Node paths in output model mapping are not considering namespaces. When the response structure needs to make use of different namespaces, they now need to be declared in the outputmodel element and used in the xpaths.
+      * XML Schema "include" construct should be added to the possible XML Schema capabilities.
+      * When a provider finds an unsupported XML Schema construct it should prefer to raise warnings insrtead of errors.
+      * Include new search parameter to instruct providers to omit or not namespaces. Name of the new search parameter: "omitNs".
+      * *Should providers handle "elementFormDefault" and "attributeFormDefault" schema attributes, or should we restrict this?*
+   * TapirClientDesign: development (at least partially) of new TAPIR client software including libraries and specific data harvesters to be used by biodiversity data networks. 
+      * Use RSS, DC model, OAI template?
+      * TapirHarvester: Library for threaded querying. Extract records automatically from aggregated threads. Manage paging across all providers (remove the ones already full, provide paging interface with fixed page sizes).
+   * LsidResolutionWithTapir: discussion, implementation and documentation of LSID resolution service in existing TAPIR provider software.
+      * RDF output models in consistency with TDWG ontology.
+   * Creation of a generic TapirQueryTool to interact with TAPIR providers.
+   * UsingTapirWithExistingConceptualSchemas: discussion and proposals involving DarwinCore, ABCD and other schemas.
+   * Creation of new output models and query templates to be used by TAPIR networks.
+      * KML output model for DarwinCore providers: http://rs.tdwg.org/tapir/cs/dwc2/model/kml_simple.xml
+      * PlinianCore, TCS, NCD.
+      * GBIF/ETI REST WS as TAPIR templates.
+   * ProviderServiceTests: planning and implementation of interoperability regression tests for TAPIR providers.
+   * ComparingTapirAndOai.
+   * Other specific developments related to TAPIR
+      * GbifTapirIndexer
+      * Enhanced ConceptNameServer: specify central service methods, Tonto, multi-language description, definition of what is a conceptual schema (list of concepts only, nothing more), concept synonyms, model+template+xslt repository (how to discover appropiate models).
+   * Additional development proposals related to TAPIR.
+
+---++++ Demo services
+
+http://search.biocase.org/tapir/pywrapper?dsa=training
+
+http://test.cria.org.br/tapirlink/tapir.php/test
+
+---++++ Comments
+
+Main.JavierTorre: I am planning to have fun with Flex (http://www.adobe.com/products/flex/) to create a RIA to test data providers and to be used as a generic TapirQueryTool. Maybe a simple software for ProviderServiceTests could also be implemented.
+
+Main.RogerHyam: I am prepared to talk through the TAG.LsidVocs (a.k.a. RDF with TAPIR) that I have been working on. Basically just work through the directory structure and explain how I think/hope this relates to out put models. If you are looking for background on this you could read TAG.LsidVocs, TAG.LsidVocsUsage and TAG.LsidVocsExploring - but this is not required as you may leave me nothing to say. I'd like to spend some time looking at getting these things working.
+
+Main.RogerHyam: I have one question that relates to building TAPIR networks. If output models can be remote from wrapper instances then  they can be less stable than the concepts that map to them. From the point of view of managing a network it is therefore important to think of stable, agreed concept mapping at each data source but conceptual schema structure is far less important - in fact doesn't have to be agreed on much at all.  This radically changes the modeling requirements in a direction I like. Would it be possible for us to put some time exploring this issue and come up with some recommendations or actions? 
+
+Main.JohnWieczorek: Berkeley has development plans to work on redesigning existing DiGIR portals for TAPIR, including cache management, and to further develop the DiGIR statistics tracking on the provider side to work with TapirLink. The hope is to make a large-scale switch from DiGIR/MaNIS DarwinCore to TAPIR/new DarwinCore plus extensions in the coming year for the 70+providers connected to the vertebrate thematic networks. It's a tall order, so simplicity will be key for the transition.
+
+The following notes were taken while each participant talked about general plans related to TAPIR:
+
+Main.WouterAddink: 
+   * Toolkit to share NCD data using TAPIR.
+   * Toolkit to share TCS data using TAPIR.
+   * Using MySQL & PHP5.
+   * Need to define output models, templates.
+   * Need also output in json and serialized PHP.
+   * Web Services for NLBIF could use TAPIR (all kinds of biodiversity data).
+
+Main.JoseCuadra:
+   * IABIN Species and Specimen Thematic Network will be based on TAPIR.
+   * Using Java, Hibernate, Tomcat, AXIS, PostgreSQL.
+   * Using Plinian Core as canonical schema (Javier says that there are already output models for PlinianCore).
+   * Requirements:
+      * Avoid having to change code when protocol changes.
+      * Users need to be able to select output models.
+      * Handle structured and unstructured data.
+   * More interested in the harvesting part.
+
+Main.KevinRichards:
+   * Update NZ DiGIR providers to use TAPIR.
+   * LSID resolution with TAPIR.
+   * Plans to use TAPIR for web services.
+
+Main.PatrickLeary:
+   * Harvesting name data using TAPIR.
+   * Set up a TAPIR service on top of Ubio name database.
+   * CustomTapirOperators or maybe CascadingTapirServices to provide taxonomic intelligence.
+
+Main.GregWhitbread:
+   * AVH is planning to use TAPIR for different types of data (specimen, taxon concept, molecular).
+   * Also interested in TapirSpatialOperators.
+
+Main.DonaldHobern:
+   * GbifTapirIndexer.
+   * Plans to use TAPIR for GBIF web services.
+
+Main.MilkoSkofic:
+   * Interest in deploying TAPIR providers.
+   * Need a harvesting solution.
+   * Documenting Conceptual Schemas (concept name servers). 
+   * Repository for output models.
+
+Main.JoergHoletschek:
+   * Synthesis will need to update client software to work with TAPIR.
+   * Plans to upgrade BioCASe providers to TAPIR.
+
+Main.YoujunGuo:
+   * Integration between Biogeomancer and TAPIR.

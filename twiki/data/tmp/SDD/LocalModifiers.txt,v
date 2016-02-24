@@ -1,0 +1,189 @@
+head	1.7;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.7
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.05.04.11.26.31;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.21.11.30.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.28.17.31.38;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.24.09.43.17;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.03.23.17.52.31;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.23.16.47.52;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741991" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+At the moment, modifiers are only global. In our data on the clearwing butterflies of Costa Rica, we have a character "wing density" with states Translucent, Transparent, and Opaque. The former two are sometimes modified by "shaded yellow to orange" or "clear with black veins"
+
+These would seem well-modeled as a modifier on the states Translucent, Transparent, and (less so) Opaque. It does not seem reasonable to me to make these global modifiers as they would not normally be applicable to a large number of different states and characters, as the second one especially shows.
+
+It doesn't seem very deep to allow <nop>GeneralModifiers to be local to both a character and a state, depending on the designer's intent. For example, "shaded yellow to orange" could apply to all three states, but "clear with black veins" should not be allowed to modify Opaque.
+
+Other things that come to mind that might be a little more complicated but still might need to be local are those using the taxonomic idiom "sensu".
+
+-- Main.BobMorris and Main.JacobAsiedu - 23 Mar 2004
+
+---
+
+It may be worth considering modeling modifiers and states completely in parallel, so that everything you can do with a state you can do with modifiers. However, I see the advantage more in structural parallelism, than that the case raised above is a problem.
+
+Modifiers are globally defined, but they are a) organized into sets, b) these sets must be referenced in the character to make the modifier available to the character. Thus "local modifiers" are modifiers in a single set, referenced only by a single character.
+
+Without wanting to bend the topic away, I think decision has to be postponed until a much larger issue is resolved, regarding the relationship between global state sets, global modifiers sets, characters and concepts (= character trees).
+
+The more or less analogous global/generic state sets have moved from separate mechanisms into the concept tree and are now called concept states. The currently perceived disadvantage is that people don't expect them there. The major advantage that I see is that the separate state sets would have needed unique labels to allow terminology designers to associate them with characters. These labels will either be structure names (as for inflorescence types) or property names (2D shapes, all colors, basic colors, metallic colors, earthen colors, etc.) and will usually already be present as concepts in the concept tree. My reason to propose moving them was that reusing the existing objects and their labels seems to make sense; if a character tree exists, the careful organization of the tree will immediately pay off in the design of the reusable state sets.
+
+I am pretty sure that the modifier sets should also be moved. Some modifier set will be 1:1 with a single character, some will be associated with a set of concept states (e.g. all color modifiers). However, many modifier sets are used for a large number of characters. What currently keeps me from proposing a new solution for modifiers is the question whether there should be some kind of data inheritance there, i.e. a modifier set defined at a high level node should automatically apply to all character below that node. My feeling is that this MAY be possible for modifiers and PROBABLY not wise for states, but I find it hard to visualize/analyze the consequences of introducing such a rule.
+
+Any ideas concering this?
+
+-- Gregor Hagedorn - 24 Mar 2004	
+---
+
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 29
+a29 28
+%META:TOPICINFO{author="GregorHagedorn" date="1087817400" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+At the moment, modifiers are only global. In our data on the clearwing butterflies of Costa Rica, we have a character "wing density" with states Translucent, Transparent, and Opaque. The former two are sometimes modified by "shaded yellow to orange" or "clear with black veins"
+
+These would seem well-modeled as a modifier on the states Translucent, Transparent, and (less so) Opaque. It does not seem reasonable to me to make these global modifiers as they would not normally be applicable to a large number of different states and characters, as the second one especially shows.
+
+It doesn't seem very deep to allow <nop>GeneralModifiers to be local to both a character and a state, depending on the designer's intent. For example, "shaded yellow to orange" could apply to all three states, but "clear with black veins" should not be allowed to modify Opaque.
+
+Other things that come to mind that might be a little more complicated but still might need to be local are those using the taxonomic idiom "sensu".
+
+-- Main.BobMorris and Main.JacobAsiedu - 23 Mar 2004
+
+---
+
+It may be worth considering modeling modifiers and states completely in parallel, so that everything you can do with a state you can do with modifiers. However, I see the advantage more in structural parallelism, than that the case raised above is a problem.
+
+Modifiers are globally defined, but they are a) organized into sets, b) these sets must be referenced in the character to make the modifier available to the character. Thus "local modifiers" are modifiers in a single set, referenced only by a single character.
+
+Without wanting to bend the topic away, I think decision has to be postponed until a much larger issue is resolved, regarding the relationship between global state sets, global modifiers sets, characters and concepts (= character trees).
+
+The more or less analogous global/generic state sets have moved from separate mechanisms into the concept tree and are now called concept states. The currently perceived disadvantage is that people don't expect them there. The major advantage that I see is that the separate state sets would have needed unique labels to allow terminology designers to associate them with characters. These labels will either be structure names (as for inflorescence types) or property names (2D shapes, all colors, basic colors, metallic colors, earthen colors, etc.) and will usually already be present as concepts in the concept tree. My reason to propose moving them was that reusing the existing objects and their labels seems to make sense; if a character tree exists, the careful organization of the tree will immediately pay off in the design of the reusable state sets.
+
+I am pretty sure that the modifier sets should also be moved. Some modifier set will be 1:1 with a single character, some will be associated with a set of concept states (e.g. all color modifiers). However, many modifier sets are used for a large number of characters. What currently keeps me from proposing a new solution for modifiers is the question whether there should be some kind of data inheritance there, i.e. a modifier set defined at a high level node should automatically apply to all character below that node. My feeling is that this MAY be possible for modifiers and PROBABLY not wise for states, but I find it hard to visualize/analyze the consequences of introducing such a rule.
+
+Any ideas concering this?
+
+-- Gregor Hagedorn - 24 Mar 2004	
+---
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085765498" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1080121396" format="1.0" version="1.3"}%
+d28 1
+a28 3
+
+---
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1080064351" format="1.0" version="1.2"}%
+d9 2
+a10 1
+Other things that come to mind that might be a little more complicated but still might need to be local are those using the taxonomic idiom "sensu". 
+d12 19
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1080060472" format="1.0" version="1.1"}%
+d3 1
+a3 1
+At the moment, modifiers are only global. In our data on the clearwing butterflies of Costa Rica, we have a state "wing density" with states Translucent, Transparent, and Opaque. The former two are sometimes modified by "shaded yellow to orange" or "clear with black veins"
+@

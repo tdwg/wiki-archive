@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TaxonX Version 1.0
+  
+  Editors: Terry Catapano
+           Donat Agosti
+           
+  Prepared as part of NSF Funded Project:
+  
+  Collaborative Research: Development of New Digital Library Applications
+  in the Context of a Basic Ontology for Biosystematics Information Using the 
+  Literature of Entomology (Ants)
+  NSF #241229, 4/1/2004 - 2/28/2007
+  Chrise Stephenson (PI)
+ 
+--> 
+<!-- REVISION HISTORY -->
+
+<!-- 2005-08-01
+  TaxonX version 1.0
+  Drew Koning & TC
+-->
+<!-- TC 
+  2006-01-02:
+  add rank attribute to treatment
+  remove rank attribute from div
+  add figure to div and treatment
+  add optional head as first child of div
+	2006-01-12
+  treatment now recursive
+-->
+<!-- TC
+  2006-01-17
+  added xid (external identifier) to name to include identifiers for taxa in external systems such as ITIS or HNS
+  added name to p
+-->
+<!-- TC
+  2006-02-13
+  added head, figure, note, and pb to content model of ref_group
+-->
+<!-- TC
+  2006-06-06
+  added statement
+-->
+<!-- TC
+  2006-06-08
+  added name attribute to character
+-->
+<!-- TC 
+  2007-01-07
+  added pb to cite; xid to cite, character, state.
+-->
+<!-- TC
+  2007-01-11
+  added figure and pb to content model of figures
+  created standardAttrs (id and n) group included in all content models.
+  Added to pb and figure to most elements
+-->
+
+<!-- TC
+  2007-01-21
+  added head to treatment
+-->
+<!-- TC
+  2007-01-24
+  changed namespace of schema to http://www.taxonx.org/schema/v1
+  added othertype attribute to div; added othertype as value of type attribute of div.
+  created element bibref to replace citation in ref_group
+-->
+<!-- TC
+  2007-01-28
+  added elements to content model of citation
+  made type and type_loc global elements (temporarily)
+-->
+<!-- TC
+  2007-01-31
+  added bibref to nomenclature
+-->
+<!-- TC
+  2007-04-24
+  added treatment to note
+  -->
+<xs:schema targetNamespace="http://www.taxonx.org/schema/v1" elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.taxonx.org/schema/v1"
+  xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3">
+  <xs:import namespace="http://www.loc.gov/mods/v3" schemaLocation="http://www.loc.gov/standards/mods/v3/mods-3-1.xsd"/>
+  <xs:import namespace="http://digir.net/schema/conceptual/darwin/2003/1.0"
+    schemaLocation="http://digir.net/schema/conceptual/darwin/2003/1.0/darwin2.xsd"/>
+  <xs:element name="taxonx">
+    <xs:annotation>
+      <xs:documentation>Contains a single taxonX document, including a taxonxHeader and taxonxBody</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="taxonxHeader"/>
+        <xs:element ref="taxonxBody"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="taxonxHeader">
+    <xs:annotation>
+      <xs:documentation>Contains identification and description of the taxonx document and its source, expressed in the
+        Metadata Object Description Standard (MODS).</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice>
+        <xs:any namespace="http://www.loc.gov/mods/v3"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="taxonxBody">
+    <xs:annotation>
+      <xs:documentation>Contains a single text including at least one taxonomic treatment.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="div"/>
+        <xs:element ref="head"/>
+        <xs:element ref="treatment"/>
+        <xs:element ref="note"/>
+        <xs:element ref="ref_group"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="author" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>The author of the original description of a taxon in a nomenclature or synonymy section of a
+        taxonomic treatment.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="citation">
+    <xs:annotation>
+      <xs:documentation>A citation.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xmldata"/>
+        <xs:element ref="xid"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="nomenclature"/>
+        <xs:element ref="collection_event"/>
+        <xs:element ref="locality"/>
+        <xs:element ref="note"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="type" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="div">
+    <xs:annotation>
+      <xs:documentation>A block level textual division of a text. Attributes: n, number or name of division; type: type
+        of division. If div occurs inside a treatment, suggested values are: abstract, acknowledgments, biology_ecology,
+        description, diagnosis, discussion, distribution, etymology, introduction, materials_examined,
+        materials_methods, multiple, synopsis.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="1">
+        <xs:element ref="head" maxOccurs="1" minOccurs="0"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="p"/>
+          <xs:element ref="div"/>
+          <xs:element ref="pb"/>
+          <xs:element ref="figure"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="type" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="abstract"/>
+            <xs:enumeration value="acknowledgments"/>
+            <xs:enumeration value="biology_ecology"/>
+            <xs:enumeration value="description"/>
+            <xs:enumeration value="diagnosis"/>
+            <xs:enumeration value="discussion"/>
+            <xs:enumeration value="distribution"/>
+            <xs:enumeration value="etymology"/>
+            <xs:enumeration value="key"/>
+            <xs:enumeration value="introduction"/>
+            <xs:enumeration value="materials_examined"/>
+            <xs:enumeration value="materials_methods"/>
+            <xs:enumeration value="multiple"/>
+            <xs:enumeration value="synopsis"/>
+            <xs:enumeration value=""/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="head">
+    <xs:annotation>
+      <xs:documentation>A heading, such as the title of a section, etc...</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="author"/>
+        <xs:element ref="note"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+        <xs:element name="title" type="xs:string"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="type" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name">
+    <xs:annotation>
+      <xs:documentation>A scientific name of a taxon as it appears in the source text.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xmldata"/>
+        <xs:element ref="xid"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="note">
+    <xs:annotation>
+      <xs:documentation>A note, such as a footnote or endnote, in the source text. Use the place attribute to indicate
+        the placement of the note in the source document (e.g., "foot", "end"). Use the n attribute to contain the
+        number or symbol used to label the note in the source text.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="treatment"/>
+        <xs:element ref="note"/>
+        <xs:element ref="figure"/>
+        <xs:element ref="p"/>
+        <xs:element ref="pb"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="place" type="xs:string"/>
+      <xs:attribute name="resp" type="xs:string"/>
+
+      <xs:attribute name="type" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="p">
+    <xs:annotation>
+      <xs:documentation>A paragraph or other textual block.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="collection_event"/>
+        <xs:element ref="locality"/>
+        <xs:element ref="xmldata"/>
+        <xs:element ref="character"/>
+        <xs:element ref="name"/>
+        <xs:element ref="figure"/>
+        <xs:element ref="note"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="seg"/>
+        <xs:element ref="nomenclature"/>
+        <!-- <xs:element ref="xmldata"/> -->
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ref_group">
+    <xs:annotation>
+      <xs:documentation>A group of bibliographic references.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="1">
+        <xs:element ref="head" maxOccurs="1" minOccurs="0"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="bibref"/>
+          <xs:element ref="ref_group"/>
+          <xs:element ref="figure"/>
+          <xs:element ref="note"/>
+          <xs:element ref="pb"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+
+  </xs:element>
+  <xs:element name="nomenclature">
+    <xs:annotation>
+      <xs:documentation>The heading of a taxonomic treatment containing the scientific name of the taxon
+      described.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="author"/>
+        <xs:element ref="citation"/>
+        <xs:element ref="figures"/>
+        <xs:element ref="name"/>
+        <xs:element ref="bibref"/>
+        <xs:element ref="pb"/>
+        <xs:element name="status" type="xs:string"/>
+        <xs:element name="synonomy">
+          <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+              <xs:element ref="name"/>
+              <xs:element ref="author" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element ref="year" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element ref="citation" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element ref="note" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="type"/>
+        <xs:element ref="type_loc"/>
+        <xs:element ref="xmldata"/>
+        <xs:element ref="year"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="type">
+    <xs:annotation>
+      <xs:documentation>Taxonomic type</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="author"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="type_loc" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Location of Taxonomic Type</xs:documentation>
+    </xs:annotation>
+    </xs:element>
+
+  <xs:element name="year">
+    <xs:annotation>
+      <xs:documentation>A year in a citation of a document, a scientfic name, or a specimen.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="seg">
+    <xs:annotation>
+      <xs:documentation>Segment. A phrase-level segment of text.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="character"/>
+        <xs:element ref="collection_event"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attribute name="type" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="biology_ecology"/>
+            <xs:enumeration value="collection_data"/>
+            <xs:enumeration value="description"/>
+            <xs:enumeration value="diagnosis"/>
+            <xs:enumeration value="discussion"/>
+            <xs:enumeration value="distribution"/>
+            <xs:enumeration value="etymology"/>
+            <xs:enumeration value="key"/>
+            <xs:enumeration value="materials_examined"/>
+            <xs:enumeration value="synopsis"/>
+            <xs:enumeration value=""/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="sub_type" type="xs:string" use="optional"/>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="xmldata">
+    <xs:annotation>
+      <xs:documentation>A wrapper element used to include data from an external schema.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:any namespace="http://digir.net/schema/conceptual/darwin/2003/1.0"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="treatment">
+    <xs:annotation>
+      <xs:documentation>A taxonomic treatment</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="1">
+        <xs:element ref="head" maxOccurs="1" minOccurs="0"/>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element ref="nomenclature"/>
+          <xs:element ref="div"/>
+          <xs:element ref="ref_group"/>
+          <xs:element ref="pb"/>
+          <xs:element ref="figure"/>
+          <xs:element ref="treatment"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="rank" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="order"/>
+            <xs:enumeration value="family"/>
+            <xs:enumeration value="species"/>
+            <xs:enumeration value="genus"/>
+            <xs:enumeration value="subspecies"/>
+            <xs:enumeration value="superfamily"/>
+            <xs:enumeration value="suborder"/>
+            <xs:enumeration value="subfamily"/>
+            <xs:enumeration value="infrasubspecific"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="character">
+    <xs:annotation>
+      <xs:documentation>A morphological character.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xid"/>
+        <xs:element ref="xmldata"/>
+        <xs:element ref="character"/>
+        <xs:element ref="state"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string"/>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="collection_event">
+    <xs:annotation>
+      <xs:documentation>Contains information regarding the collection of a specimen.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="locality"/>
+        <xs:element ref="type"/>
+        <xs:element ref="type_loc"/>
+        <xs:element ref="xid"/>
+        <xs:element ref="xmldata"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="state">
+    <xs:annotation>
+      <xs:documentation>A character state.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xid"/>
+        <xs:element ref="xmldata"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="locality">
+    <xs:annotation>
+      <xs:documentation>A geographical location.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xid"/>
+        <xs:element ref="xmldata"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="xid">
+    <xs:annotation>
+      <xs:documentation>External identifier. A pointer to an indentifer assigned to the parent object in an external can
+        be found; has attributes "identifier", the identifier being related to the content marked up by the xid's parent
+        element, "source" the source of the identifer (e.g., database), "type", and "uri" a uniform resource.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="identifier"/>
+      <xs:attribute name="source"/>
+      <xs:attribute name="type"/>
+      <xs:attribute name="uri" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="statement">
+    <xs:annotation>
+      <xs:documentation>Descriptive statement</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="character"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="figures">
+    <xs:annotation>
+      <xs:documentation>Figures: A statement indicating figures associated with a treatment.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="figure"/>
+        <xs:element ref="pb"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="pb">
+    <xs:annotation>
+      <xs:documentation>Page break. Indicates the point in the source text where a new page begins. Use the n attribute
+        to record number of the new page; use the url attribute to lnk to an electronic graphical representation of the
+        page. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="url" type="xs:anyURI" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="figure">
+    <xs:annotation>
+      <xs:documentation>A figure or graphic</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="figDesc">
+          <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="note"/>
+              <xs:element ref="figure"/>
+              <xs:element ref="pb"/>
+            </xs:choice>
+            <xs:attribute name="id" type="xs:ID"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="head"/>
+        <xs:element ref="p"/>
+        <xs:element ref="pb"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="url" type="xs:anyURI" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bibref">
+    <xs:annotation>
+      <xs:documentation>A bibliographic reference.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xmldata"/>
+        <xs:element ref="xid"/>
+        <xs:element ref="pb"/>
+        <xs:element ref="figure"/>
+      </xs:choice>
+      <xs:attributeGroup ref="standardAttrs"/>
+      <xs:attribute name="type" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="standardAttrs">
+    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="n" type="xs:string"/>
+  </xs:attributeGroup>
+</xs:schema>

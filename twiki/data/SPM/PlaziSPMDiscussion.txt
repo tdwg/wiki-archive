@@ -1,0 +1,102 @@
+%META:TOPICINFO{author="BobMorris" date="1232684200" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="PlaziEOLProject"}%
+This was extracted from PlaziEOLProject on January 23, 2009. by BobMorris. It is only of historical interest. It documents discussion leading to the design of the service described on PlaziEOLProject
+
+---++Why SPM at all?
+Patrick asked: Since a !TaxonConcept supports hasInformation, why wrap anything in a !SpeciesProfileModel?
+
+We don't have an answer to this. Indeed it seems as though 
+<verbatim>
+<spm:SpeciesProfileModel rdf:ID="_spm_1">
+        <spm:aboutTaxon>
+            <tc:TaxonConcept rdf:about="urn:lsid:biosci.ohio-state.edu:osuc_concepts:135414">
+                ....
+            </tc:TaxonConcept>
+        </spm:aboutTaxon>
+        <spm:hasInformation>
+             blah, blah, blah
+        </spm:hasInformation>
+
+</spm:SpeciesProfileModel>
+
+</verbatim>
+have exactly the same information content and semantics as 
+
+<verbatim>
+<tc:TaxonConcept rdf:about="urn:lsid:biosci.ohio-state.edu:osuc_concepts:135414">
+                ....
+       <spm:hasInformation>
+             blah, blah, blah
+        </spm:hasInformation>
+ </tc:TaxonConcept>
+</verbatim>
+
+        
+       
+---++Where to put citation?
+
+!TaxonConcept has a property accordingTo, with value Actor. Actor has !CommonProperties.  !CommonProperties has a data property !PublishedIn and object property !PublishedInCitation which has range !PublicationCitation. That is where we put it. This seems cumbersome to us, but for our application, in a given document, every described !TaxonConcept  arises from extraction from a single journal publication, so we only need one such  Actor and !PublicationCitation. We refer to it in each !TaxonConcept.accordingTo if there is more than one.
+
+Is there something better to do?
+
+
+---++Where to put LSID?
+
+Answer, as Main.RogerHyam patiently pointed out: In an rdf:about on any object that needs one, especially !TaxonConcept and perhaps !PublishedInCitation when people start issuing LSIDs for journal articles. This seems to have two minor costs, mentioned next.
+
+---++External references
+A realistic use case for plazi involves external documents whose creators wish to make assertions that stuff in an SPM document is wrong. That is   because plazi is extracting data from published literature, often originating in printed media, which may go through several processes subject to error. These include, imaging, OCR, semi-automated markup, and various transformations of the marked up data. Any of these might introduce errors that client applications may be able to detect and signal. Local IDs, especially with care about the xml:base, explicitly reify the RDF/XML object that they ID in a way that makes it easy to refer to them externally. But it doesn't look like absolute URIs such as required by rdf:about do so, so we don't presently know how to address support for external documents commenting upon the data in objects which have been given an rdf:about.  A small example will be forthcoming here. 
+
+---++Other GUIDS
+Journal publications, and perhaps other resources (e.g. people), may have other GUID schemes besides LSID in use to identify them  Thus  a resource may have several GUIDS (even several LSIDs).  It therefore might be convenient if several GUIDs could be attached to a single object, e.g. the same !PublishedInCitation or the same !TaxonConcept.  
+
+As of 10 October 2008, we haven't thought of a good way to handle this.
+
+---++More use of controlled vocabulary
+One thing that I would like to see included is the use of tn:rank in addition to tn:rankString. It is always good as a consumer to get content in the form of a controlled vocabulary rather than trying to reconcile varying rankStrings which mean the same thing. -- Main.PatrickLeary - 30 Sep 2008
+
+%GREEN%
+In email to Terry I raised that  point as follows:
+
+I wonder how much effort it would be in the XSLT to embed the rank
+terms from http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm
+into the XSLT style sheet and if the tn:rankString you construct
+matches one of the controlled strings, then also construct a tn:rank
+object as well as a tn:rankString. I'm not entirely sure what is
+gained from this, except that machine processing becomes more robust
+and less dependent on string parsing.  Issues that would arise in that
+case include:
+   * What should a happen if there is no match?
+   * What breaks if the controlled tn:rank vocabulary changes?
+-- Main.BobMorris - 01 Oct 2008 %ENDCOLOR%
+
+
+---++ Where to put IPR and how to represent it?
+
+%BLUE%
+In RDF everything that is not a literal is a resource that is identified by a local id (possibly implied by the serialization) or a URI. It is therefore possible to assert licensing about any resource in an RDF graph simply by adding a dc:license or dc:rights property to it. The problem is with thinking in terms of XML serializations where it doesn't appear there is space for adding extra attributes.
+-- RogerHyam - 6 Oct 2008 %ENDCOLOR%
+
+My concern is whether this remains valid OWL-DL -- Main.BobMorris - 10 Oct 2008
+
+Exactly how to represent it is really about the TDWG ontology in general, not something special to SPM or even citations.  There was extensive discussion of what is and isn't copyrighted, what licenses apply, etc. That can be seen in an earlier version of this page and/or in such page as someone cares to link here. -- Main.BobMorris - 10 Oct 2008
+
+---++ Line breaks and other document formatting
+Patrick notes that there are no line breaks in the Descriptions plazi extracts and asks: 
+
+Is there some way to include line breaks - either using embedded escaped html or ensuring that newlines represent line breaks? -- Main.PatrickLeary - 30 Sep 2008
+
+%GREEN% I am somewhere between nervous about,  and opposed to,  putting spurious (or any) html inside rdf.  Most formatting  chas no semantic content. In an extracted taxonomic description, formatting artefacts, especially from scanned documents, are just about the original rendition layout.  A description might even have a page break in it, and in principle could even be interrupted by a figure (though I doubt any journal publisher would actually do that). Also, I think we don't even preserve any line breaks in !TaxonX, whence we are grabbing descriptions whose boundaries are determined by a !GoldenGate plugin. (Am I right Terry?). I guess that if there is escaped HTML in the text, then it remains as a string literal, but then it is going to be the client's responsibility to scan, parse, and interpret it.  I don't have a full comprehension of http://www.w3.org/TR/rdf-concepts/#section-XMLLiteral but I think it may apply if you want some more robust XHTML in the text, rather than an uninterpreted escape sequence.
+
+There _are_ some structural divisions identified by !GoldenGate within a description, but pending more sophisticated automatic markup than anybody does to date, it is not yet possible to put any semantics automatically on those divisions, and using them seems ugly and confusing.  See the Sep 23 example, which we abandoned.  -- Main.BobMorris - 01 Oct 2008 %ENDCOLOR%
+
+GoldenGate currently marks up subsections within the treatment such as nomenclature (required for the taxonx output), ref-groups that include earlier citations of the taxon and as well nomenclatorial changes such as "new syn", Stat.nov." which relate the refs to the name of the treatment), description, discussion, materials_examined (the observation records listed), distribution (a summary of distribution records and its interpretation). Some of the elements are not always clear and can include several elements. But we do this mark-up routinely, and the GoldenGate editor is getting pretty efficient to figure out what section belongs to what item above.-- Main.DonatAgosti - 02 Oct 2008
+
+---++ Namespace termination
+It is pretty important to terminate namespace values with either '/' or '#'.  Although failing to do so is valid  RDF/XML serialization, it can result in ambiguity in the triple form of the RDF, wherein local name is concatenated with namespace to form resource names. Here's a good NamespaceTermination example from Adobe's XMP manual.
+
+---+ Examples
+
+---++ ObsoletePlaziExamples
+
+

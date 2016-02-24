@@ -1,0 +1,259 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@---+ ThesaurusApi
+
+---+ public API Methods
+See ThesaurusApiSql for the SQl behind these methods.
+
+fixed:
+<verbatim>
+ (Vector subjectObj) getSubjects()
+ (Vector domainObj) getDomains()
+ (Vector domainObj) getDomains( (string)subjectID )
+ (Vector localDomainObj) getLocalDomains()
+ (Vector localDomainObj) getLocalDomains( (string)ID, (char)type )
+   -- with ID = key of subject/domain and type = 'S' or 'D'
+ (Vector conceptGroupObj) getConceptGroups()
+ (Vector conceptGroupObj) getConceptGroups( (string)ID, (char)type )
+   -- with ID = key of subject/domain/localdomain and type = 'S', 'D' or 'L'
+ (Vector languageObj) getLanguages()
+ (Vector languageObj) getLanguages( (string)conceptGroupID )
+ (Vector termObj) getStopWords()
+ (Vector termObj) getStopWords( (string)languageID )
+ (Vector termObj) getRootTerms( (string)conceptGroupID )
+
+methods if you only have terms as a string and can restrict its meaning to subjects/domains/etc:
+ (Vector termObj) getSynonymTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList)
+ (Vector termObj) getParentTerms(  (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+ (Vector termObj) getChildTerms(   (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+
+overloaded methods if you have already term objects:
+ (Vector termObj) getSynonymTerms( (termObj)termObj )
+ (Vector termObj) getSynonymTerms( (termObj)termObj, (int)relationId )
+ (Vector termObj) getParentTerms(  (termObj)termObj, (int)level )
+ (Vector termObj) getParentTerms(  (termObj)termObj, (int)level, (int)relationId )
+ (Vector termObj) getChildTerms(   (termObj)termObj, (int)level )
+ (Vector termObj) getChildTerms(   (termObj)termObj, (int)level, (int)relationId )
+</verbatim>
+optional additional methods:
+<verbatim>
+ (Vector termObj) getPotentialSynonymTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList)
+ (termObj) getPreferredTerm( (termObjVector)termObjects )
+</verbatim>
+---+ Classes
+---+++++ term Class
+   * inherits conceptGroup Class
+   * properties
+   * tId
+   * tTerm
+   * tPlaintext
+   * tLlanguageId
+   * tLanguage
+   * tListPreferred
+   * tAuthorString
+   * tRank
+   * tTermType
+   * tListCode
+   * tSortCode
+   * methods
+   * get/set properties
+
+---+++++ conceptGroup Class
+   * inherits localDomain Class
+   * properties
+   * cgId (string) <--  (concept_group.concept_group_key)
+   * cgName (string) <--  (concept_group.item_name)
+   * cgAuthority (string) <--  (concept_group.authority)
+   * cgUrl (string) <--  (concept_group.url)
+   * methods
+   * get/set properties
+
+---+++++ localDomain Class
+   * inherits domain Class
+   * properties
+   * ldId
+   * ldName
+   * ldLanguage
+   * methods
+   * get/set properties
+
+---+++++ domain Class
+   * inherits subject Class
+   * properties
+   * dId
+   * dName
+   * methods
+   * get/set properties
+
+---+++++ subject Class
+   * properties
+   * sId
+   * sName
+   * methods
+   * get/set properties
+
+---+++++ language Class
+   * properties
+   * lId
+   * lName
+   * methods
+   * get/set properties
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@a2 7
+---+++++ CVS
+Not yet inserted...
+
+---+++++ Thesaurus database structure changes
+ALTER TABLE public.concept_lineage
+  ADD CONSTRAINT pk_concept_lineage PRIMARY KEY(concept_key, lineage_id);
+
+d25 2
+a26 2
+ (Vector termObj) getParentTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+ (Vector termObj) getChildTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+d29 6
+a34 3
+ (Vector termObj) getSynonymTerms( (termObjVector)termObjects )
+ (Vector termObj) getParentTerms( (termObjVector)termObjects, (int)level )
+ (Vector termObj) getChildTerms( (termObjVector)termObjects, (int)level )
+a53 2
+   * tConceptGroup
+   * tConceptGroupId
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d4 1
+a4 1
+???
+d7 2
+a8 3
+   * Additional Indices
+   * term.plaintext
+   * concept.term_key
+d11 2
+d29 1
+a29 3
+</verbatim>
+still unclear:
+<verbatim>
+d35 1
+a35 1
+methods if you have already term objects:
+d40 5
+d46 2
+a47 1
+---+++++ termObj
+d49 13
+a61 1
+   * ???
+d63 1
+a63 1
+   * ???
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d31 1
+d35 5
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d19 1
+d22 1
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d31 1
+a31 1
+ (Vector termObj) getChildrenTerms( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d29 3
+a31 3
+ (Vector termObj) getSynonymTermList( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList)
+ (Vector termObj) getParentTermList( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+ (Vector termObj) getChildrenTermList( (stringArray)termList, (stringArray)subjectList, (stringArray)domainList, (stringArray)localDomainList, (stringArray)languageList, (int)level )
+@

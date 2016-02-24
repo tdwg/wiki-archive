@@ -1,0 +1,40 @@
+---+ Package =TWiki::Access=
+
+A singleton object of this class manages the access control database.
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>()</tt>
+
+Construct a new singleton object to manage the permissions
+database.
+
+
+
+---++ ObjectMethod *permissionsSet* <tt>($web) -> $boolean</tt>
+
+Are there any security restrictions for this Web
+(ignoring settings on individual pages).
+
+
+
+---++ ObjectMethod *getReason* <tt>() -> $string</tt>
+
+Return a string describing the reason why the last access control failure
+occurred.
+
+
+
+---++ ObjectMethod *checkAccessPermission* <tt>($action,$user,$text,$meta,$topic,$web) -> $boolean</tt>
+
+Check if user is allowed to access topic
+   * =$action=  - 'VIEW', 'CHANGE', 'CREATE', etc.
+   * =$user=    - User object
+   * =$text=    - If undef or '': Read '$theWebName.$theTopicName' to check permissions
+   * =$meta=    - If undef, but =$text= is defined, then metadata will be parsed from =$text=. If defined, then metadata embedded in =$text= will be ignored. Always ignored if =$text= is undefined. Settings in =$meta= override * Set settings in plain text.
+   * =$topic=   - Topic name to check, e.g. 'SomeTopic' *undef to check web perms only)
+   * =$web=     - Web, e.g. 'Know'
+If the check fails, the reason can be recoveered using getReason.
+
+

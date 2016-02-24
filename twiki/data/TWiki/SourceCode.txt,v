@@ -1,0 +1,1055 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.5
+date	2007.01.16.04.11.57;	author TWikiContributor;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.10.25.00.21.55;	author TWikiContributor;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.06.25.16.26.33;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.01.05.55.44;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.26;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.5
+log
+@buildrelease
+@
+text
+@---+!! TWiki Source Code Packages
+
+%X% This documentation is automatically generated from the =pod=, so it always matches the running code
+
+%TOC%
+
+---++ [[TWikiAccessControlExceptionDotPm][TWiki::AccessControlException]] 
+
+Exception used raise an access control violation.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiAccessDotPm][TWiki::Access]] 
+
+A singleton object of this class manages the access control database.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiAttachDotPm][TWiki::Attach]] 
+
+A singleton object of this class is used to deal with attachments to topics.
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiAttrsDotPm][TWiki::Attrs]] 
+
+Class of attribute sets, designed for parsing and storing attribute values
+from a TWiki tag e.g. =%TAG{fred='bad' "sad" joe="mad"}%=
+
+An attribute set is a map containing an entry for each parameter. The
+default parameter (unnamed quoted string) is named <code>_<nop>DEFAULT</code> in the map.
+
+Attributes declared later in the string will override those of the same
+name defined earlier. The one exception to this is the _DEFAULT key, where
+the _first_ instance of a setting is always taken.
+
+As well as standard TWiki syntax (parameter values double-quoted)
+it also parses single-quoted values, unquoted spaceless
+values, spaces around the =, and commas as well as spaces separating values,
+though none of these alternatives is advertised in documentation and
+the extended syntax can be turned off by passing the 'strict' parameter
+to =new=.
+
+This class replaces the old TWiki::extractNameValuePair and
+TWiki::extractParameters.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiClientApacheLoginDotPm][TWiki::Client::ApacheLogin]] 
+
+This is login manager that you can specify in the security setup section of
+[[%SCRIPTURL{"configure"}%][configure]]. It instructs TWiki to
+cooperate with your web server (typically Apache) to require authentication
+information (username & password) from users. It requires that you configure
+your web server to demand authentication for scripts named "login" and anything
+ending in "auth". The latter should be symlinks to existing scripts; e.g.,
+=viewauth -> view=, =editauth -> edit=, and so on.
+
+See also TWikiUserAuthentication.
+
+Subclass of TWiki::Client; see that class for documentation of the
+methods of this class.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiClientDotPm][TWiki::Client]] 
+
+The package is also a Factory for login managers and also the base class
+for all login managers.
+
+On it's own, an object of this class is used when you specify 'none' in
+the security setup section of
+[[%SCRIPTURL{"configure"}%][configure]]. When it is used,
+logins are not supported. If you want to authenticate users then you should
+consider TemplateLogin or ApacheLogin, which are subclasses of this class.
+
+If you are building a new login manager, then you should write a new subclass
+of this class, implementing the methods marked as *VIRTUAL*. There are already
+examples in the =lib/TWiki/Client= directory.
+
+The class has extensive tracing, which is enabled by
+$TWiki::cfg{Trace}{Client.pm}. The tracing is done in such a way as to
+let the perl optimiser optimise out the trace function as a no-op if tracing
+is disabled.
+
+Here's an overview of how it works:
+
+Early in TWiki::new, the login manager is created. The creation of the login manager does two things:
+   1 If sessions are in use, it loads CGI::Session but doesn't initialise the session yet.
+   1 Creates the login manager object
+Slightly later in TWiki::new, loginManager->loadSession is called.
+   1 Calls loginManager->getUser to get the username *before* the session is created
+      * TWiki::Client::ApacheLogin looks at REMOTE_USER
+      * TWiki::Client::TemplateLogin just returns undef
+   1 reads the TWIKISID cookie to get the SID (or the TWIKISID parameters in the CGI query if cookies aren't available, or IP2SID mapping if that's enabled).
+   1 Creates the CGI::Session object, and the session is thereby read.
+   1 If the username still isn't known, reads it from the cookie. Thus TWiki::Client::ApacheLogin overrides the cookie using REMOTE_USER, and TWiki::Client::TemplateLogin *always* uses the session.
+
+Later again in TWiki::new, plugins are given a chance to *override* the username found from the loginManager.
+
+The last step in TWiki::new is to find the user, using whatever user mapping manager is in place.
+
+---++ ObjectData =twiki=
+
+The TWiki object this login manager is attached to.
+
+
+
+This package has smell factor of *3*
+
+---++ [[TWikiClientTemplateLoginDotPm][TWiki::Client::TemplateLogin]] 
+
+This is a login manager that you can specify in the security setup section of
+[[%SCRIPTURL{"configure"}%][configure]]. It provides users with a
+template-based form to enter usernames and passwords, and works with the
+PasswordManager that you specify to verify those passwords.
+
+Subclass of TWiki::Client; see that class for documentation of the
+methods of this class.
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiCompatibilityDotPm][TWiki::Compatibility]] 
+
+Support for compatibility with old TWiki versions. Packaged
+separately because 99.999999% of the time this won't be needed.
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiConfigureLoadDotPm][TWiki::Configure::Load]] 
+
+---++ Purpose
+
+This module consists of just a single subroutine =readConfig=.  It allows to
+safely modify configuration variables _for one single run_ without affecting
+normal TWiki operation.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiConfigureUIsEXTENDDotPm][]] 
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiDotPm][TWiki]] 
+
+TWiki operates by creating a singleton object (known as the Session
+object) that acts as a point of reference for all the different
+modules in the system. This package is the class for this singleton,
+and also contains the vast bulk of the basic constants and the per-
+site configuration mechanisms.
+
+Global variables are avoided wherever possible to avoid problems
+with CGI accelerators such as mod_perl.
+
+
+
+This package has smell factor of *25*
+
+---++ [[TWikiFormDotPm][TWiki::Form]] 
+
+Object representing a single form definition.
+
+
+
+This package has smell factor of *9*
+
+---++ [[TWikiFuncDotPm][TWiki::Func]] 
+
+<!-- STARTINCLUDE required for huge TWikiDocumentation topic -->
+%STARTINCLUDE%
+
+_Official list of stable TWiki functions for Plugin developers_
+
+This module defines official functions that [[%TWIKIWEB%.TWikiPlugins][Plugins]]
+can use to interact with the TWiki engine and content.
+
+Refer to TWiki.EmptyPlugin and lib/TWiki/Plugins/EmptyPlugin.pm for a template Plugin and documentation on how to write a Plugin.
+
+Plugins should *only* use functions published in this module. If you use
+functions in other TWiki libraries you might create a security hole and
+you will probably need to change your Plugin when you upgrade TWiki.
+
+Deprecated functions will still work in older code, though they should
+_not_ be called in new Plugins and should be replaced in older Plugins
+as soon as possible.
+
+The version of the TWiki::Func module is defined by the VERSION number of the
+TWiki::Plugins module, currently %PLUGINVERSION%. This can be shown
+by the =%<nop>PLUGINVERSION%= variable. The 'Since' field in the function
+documentation refers to the VERSION number and the date that the function
+was addded.
+
+__Note:__ Beware! These methods should only ever be called
+from the context of a TWiki Plugin. They require a Plugins SESSION context to be
+established before they are called, and will not work if simply called from
+another TWiki module. For example,
+<verbatim>
+use TWiki;
+print TWiki::Func::getSkin(),"\n";
+</verbatim>
+will fail with =Can't call method "getSkin" on an undefined value at TWiki/Func.pm line 83=.
+
+If you want to call the methods outside the context of a plugin, you can create a Plugins SESSION object. For example,
+the script:
+<verbatim>
+use TWiki:
+$TWiki::Plugins::SESSION = new TWiki();
+print TWiki::Func::getSkin(),"\n";
+</verbatim>
+will work happily.
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiI18NDotPm][TWiki::I18N]] 
+
+Support for strings translation and language detection.
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiI18NExtractDotPm][TWiki::I18N::Extract]] 
+
+Support translatable strings extraction from TWiki topics and templates.
+Depends on Locale::Maketext::Extract (part of CPAN::Locale::Maketext::Lexicon).
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiIfDotPm][TWiki::If]] 
+
+Support for the conditions in %IF{} statements. Basically a simple
+stack-based parser for infix expressions that generates a parse
+tree that can subsequently be evaluated.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiMergeDotPm][TWiki::Merge]] 
+
+Support for merging strings
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiMetaDotPm][TWiki::Meta]] 
+
+Meta-data handling.
+
+A meta-data object is a hash of different types of meta-data (keyed on
+the type, such as 'FIELD' and 'TOPICINFO').
+
+Each entry in the hash is an array, where each entry in the array
+contains another hash of the key=value pairs, corresponding to a
+single meta-datum.
+
+If there may be multiple entries of the same top-level type (i.e. for FIELD
+and FILEATTACHMENT) then the array hash multiple entries. These types
+are referred to as "keyed" types. The array entries are keyed with the
+attribute 'name' which must be in each entry in the array.
+
+For unkeyed types, the array has only one entry.
+
+The module knows nothing about how meta-data is stored. That is entirely the
+responsibility of the Store module.
+
+Meta-data objects are created by the Store engine when topics are read. They
+are populated using the =put= method.
+
+
+
+This package has smell factor of *3*
+
+---++ [[TWikiNetDotPm][TWiki::Net]] 
+
+Object that brokers access to network resources.
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiOopsExceptionDotPm][TWiki::OopsException]] 
+
+Exception used to raise a request to redirect to an Oops URL.
+An OopsException thrown anywhere in the code will redirect the
+browser to a url based on the =oops= script. =oops= requires a
+=template= parameter, that is the name of a template file from
+the =templates= directory. This file will be expanded and the
+parameter values passed to the exception instantiated. The
+result will be shown in the browser.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiPluginDotPm][]] 
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiPluginsDotPm][TWiki::Plugins]] 
+
+This module defines the singleton object that handles Plugins
+loading, initialization and execution.
+
+This class uses Chain of Responsibility (GOF) pattern to dispatch
+handler calls to registered plugins.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiPluralsDotPm][TWiki::Plurals]] 
+
+Handle conversion of plural topic names to singular form.
+
+
+
+This package has smell factor of *3*
+
+---++ [[TWikiPrefsDotPm][TWiki::Prefs]] 
+
+The Prefs class is a singleton that implements management of preferences.
+It uses a stack of TWiki::Prefs::PrefsCache objects to store the
+preferences for global, web, user and topic contexts, and provides
+the means to look up preferences in these.
+
+Preferences from different places stack on top of each other, so there
+are global preferences, then site, then web (and subweb and subsubweb),
+then topic, included topic and so on. Each level of the stack is tagged with
+a type identifier.
+
+The module also maintains a separate of the preferences found in every topic
+and web it reads. This supports the lookup of preferences for webs and topics
+that are not on the stack, and must not be chained in (you can't allow
+a user to override protections from their home topic!)
+
+
+
+This package doesn't smell
+
+---++ [[TWikiPrefsParserDotPm][TWiki::Prefs::Parser]] 
+
+This Prefs-internal class is used to parse * Set and * Local statements
+from arbitrary text, and extract settings from meta objects.  It is used
+by TopicPrefs to parse preference settings from topics.
+
+This class does no validation or duplicate-checking on the settings; it
+simply returns the recognized settings in the order it sees them in.
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiPrefsPrefsCacheDotPm][TWiki::Prefs::PrefsCache]] 
+
+The PrefsCache package holds a cache of topics that have been read in, using
+the TopicPrefs class.  These functions manage that cache.
+
+We maintain 2 hashes of values:
+   * {locals} Contains all locals at this level. Locals are values that
+     only apply when the current topic is the topic where the local is
+     defined. The variable names are decorated with the locality where
+     they apply.
+   * {values} contains all sets, locals, and all values inherited from
+     the parent level
+
+As each cache level is built, the values are copied down from the parent
+cache level. This sounds monstrously inefficient, but in fact perl does
+this a lot better than doing a multi-level lookup when a value is referenced.
+This is especially important when many prefs lookups may be done in a
+session, for example when searching.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiRenderDotPm][TWiki::Render]] 
+
+This module provides most of the actual HTML rendering code in TWiki.
+
+
+
+This package has smell factor of *19*
+
+---++ [[TWikiSandboxDotPm][TWiki::Sandbox]] 
+
+This object provides an interface to the outside world. All calls to
+system functions, or handling of file names, should be brokered by
+this object.
+
+
+
+This package has smell factor of *3*
+
+---++ [[TWikiSearchDotPm][TWiki::Search]] 
+
+This module implements all the search functionality.
+
+
+
+This package has smell factor of *20*
+
+---++ [[TWikiStoreDotPm][TWiki::Store]] 
+
+This module hosts the generic storage backend. This module provides
+the interface layer between the "real" store provider - which is hidden
+behind a handler - and the rest of the system. it is responsible for
+checking for topic existance, access permissions, and all the other
+general admin tasks that are common to all store implementations.
+
+This module knows nothing about how the data is actually _stored_ -
+that knowledge is entirely encapsulated in the handlers.
+
+The general contract for methods in the class requires that errors
+are signalled using exceptions. TWiki::AccessControlException is
+used for access control exceptions, and Error::Simple for all other
+types of error.
+
+
+
+This package has smell factor of *18*
+
+---++ [[TWikiStoreRcsFileDotPm][TWiki::Store::RcsFile]] 
+
+This class is PACKAGE PRIVATE to Store, and should never be
+used from anywhere else. Base class of implementations of stores
+that manipulate RCS format files.
+
+The general contract of the methods on this class and its subclasses
+calls for errors to be signalled by Error::Simple exceptions.
+
+Refer to Store.pm for models of usage.
+
+
+
+This package has smell factor of *10*
+
+---++ [[TWikiStoreRcsLiteDotPm][TWiki::Store::RcsLite]] 
+
+This package does not publish any methods. It implements the virtual
+methods of the [[TWikiStoreRcsFileDotPm][TWiki::Store::RcsFile]] superclass.
+
+Simple replacement for RCS.  Doesn't support:
+   * branches
+   * locking
+Neither of which are used (or needed) by TWiki.
+
+This module doesn't know anything about the content of the topic
+
+There is one of these object for each file stored under RCSLite.
+
+This object is PACKAGE PRIVATE to Store, and should NEVER be
+used from anywhere else.
+
+FIXME:
+   * need to tidy up dealing with \n for differences
+   * still have difficulty on line ending at end of sequences, consequence of doing a line based diff
+
+---++ File format
+
+<verbatim>
+rcstext    ::=  admin {delta}* desc {deltatext}*
+admin      ::=  head {num};
+                { branch   {num}; }
+                access {id}*;
+                symbols {sym : num}*;
+                locks {id : num}*;  {strict  ;}
+                { comment  {string}; }
+                { expand   {string}; }
+                { newphrase }*
+delta      ::=  num
+                date num;
+                author id;
+                state {id};
+                branches {num}*;
+                next {num};
+                { newphrase }*
+desc       ::=  desc string
+deltatext  ::=  num
+                log string
+                { newphrase }*
+                text string
+num        ::=  {digit | .}+
+digit      ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+id         ::=  {num} idchar {idchar | num }*
+sym        ::=  {digit}* idchar {idchar | digit }*
+idchar     ::=  any visible graphic character except special
+special    ::=  $ | , | . | : | ; | @@
+string     ::=  @@{any character, with @@ doubled}*@@
+newphrase  ::=  id word* ;
+word       ::=  id | num | string | :
+</verbatim>
+Identifiers are case sensitive. Keywords are in lower case only. The
+sets of keywords and identifiers can overlap. In most environments RCS
+uses the ISO 8859/1 encoding: visible graphic characters are codes
+041-176 and 240-377, and white space characters are codes 010-015 and 040.
+
+Dates, which appear after the date keyword, are of the form Y.mm.dd.hh.mm.ss,
+where Y is the year, mm the month (01-12), dd the day (01-31), hh the hour
+(00-23), mm the minute (00-59), and ss the second (00-60). Y contains just
+the last two digits of the year for years from 1900 through 1999, and all
+the digits of years thereafter. Dates use the Gregorian calendar; times
+use UTC.
+
+The newphrase productions in the grammar are reserved for future extensions
+to the format of RCS files. No newphrase will begin with any keyword already
+in use.
+
+Revisions consist of a sequence of 'a' and 'd' edits that need to be
+applied to rev N+1 to get rev N. Each edit has an offset (number of lines
+from start) and length (number of lines). For 'a', the edit is followed by
+length lines (the lines to be inserted in the text). For example:
+
+d1 3     means "delete three lines starting with line 1
+a4 2     means "insert two lines at line 4'
+xxxxxx   is the new line 4
+yyyyyy   is the new line 5
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiStoreRcsWrapDotPm][TWiki::Store::RcsWrap]] 
+
+This package does not publish any methods. It implements the
+virtual methods of the [[TWikiStoreRcsFileDotPm][TWiki::Store::RcsFile]] superclass.
+
+Wrapper around the RCS commands required by TWiki.
+There is one of these object for each file stored under RCS.
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiTemplatesDotPm][TWiki::Templates]] 
+
+Support for the TWiki template language.
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiTimeDotPm][TWiki::Time]] 
+
+Time handling functions.
+
+
+
+This package has smell factor of *7*
+
+---++ [[TWikiUIChangeFormDotPm][TWiki::UI::ChangeForm]] 
+
+Service functions used by the UI packages
+
+
+
+This package doesn't smell
+
+---++ [[TWikiUIDotPm][TWiki::UI]] 
+
+Service functions used by the UI packages
+
+
+
+This package doesn't smell
+
+---++ [[TWikiUIEditDotPm][TWiki::UI::Edit]] 
+
+Edit command handler
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiUIManageDotPm][TWiki::UI::Manage]] 
+
+UI functions for web, topic and user management
+
+
+
+This package has smell factor of *5*
+
+---++ [[TWikiUIOopsDotPm][TWiki::UI::Oops]] 
+
+UI delegate for oops function
+
+
+
+This package doesn't smell
+
+---++ [[TWikiUIRDiffDotPm][TWiki::UI::RDiff]] 
+
+UI functions for diffing.
+
+
+
+This package has smell factor of *12*
+
+---++ [[TWikiUIRegisterDotPm][TWiki::UI::Register]] 
+
+User registration handling.
+
+
+
+This package has smell factor of *19*
+
+---++ [[TWikiUISaveDotPm][TWiki::UI::Save]] 
+
+UI delegate for save function
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiUISearchDotPm][TWiki::UI::Search]] 
+
+UI functions for searching.
+
+
+
+This package has smell factor of *3*
+
+---++ [[TWikiUIStatisticsDotPm][TWiki::UI::Statistics]] 
+
+Statistics extraction and presentation
+
+
+
+This package has smell factor of *4*
+
+---++ [[TWikiUIUploadDotPm][TWiki::UI::Upload]] 
+
+UI delegate for attachment management functions
+
+
+
+This package has smell factor of *3*
+
+---++ [[TWikiUIViewDotPm][TWiki::UI::View]] 
+
+UI delegate for view function
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiUserDotPm][TWiki::User]] 
+
+A User object is an internal representation of a user in the real world.
+The object knows about users having login names, wiki names, personal
+topics, and email addresses.
+
+
+
+This package has smell factor of *4*
+
+---++ [[TWikiUsersApacheHtpasswdUserDotPm][TWiki::Users::ApacheHtpasswdUser]] 
+
+Password manager that uses Apache::HtPasswd to manage users and passwords.
+
+Subclass of [[TWikiUsersPasswordDotPm][ =TWiki::Users::Password= ]].
+See documentation of that class for descriptions of the methods of this class.
+
+Duplicates functionality of
+[[TWikiUsersHtPasswdUserDotPm][ =TWiki::Users::HtPasswdUser=]];
+provided mainly as an example of how to write a new password manager.
+
+
+
+This package doesn't smell
+
+---++ [[TWikiUsersDotPm][TWiki::Users]] 
+
+Singleton object that handles mapping of users to wikinames and
+vice versa, and user authentication checking.
+
+
+
+This package has smell factor of *2*
+
+---++ [[TWikiUsersPasswordDotPm][TWiki::Users::Password]] 
+
+Base class of all password handlers. Default behaviour is no passwords,
+so anyone can be anyone they like.
+
+The methods of this class should be overridded by subclasses that want
+to implement other password handling methods.
+
+
+
+This package has smell factor of *1*
+
+---++ [[TWikiUsersTWikiUserMappingDotPm][TWiki::Users::TWikiUserMapping]] 
+
+User mapping is the process by which TWiki maps from a username (a login name) to a wikiname and back. It is also
+where groups are maintained.
+
+By default TWiki maintains user topics and group topics in the %MAINWEB% that
+define users and group. These topics are
+   * !TWikiUsers - stores a mapping from usernames to TWiki names
+   * !WikiName - for each user, stores info about the user
+   * !GroupNameGroup - for each group, a topic ending with "Group" stores a list of users who are part of that group.
+
+Many sites will want to override this behaviour, for example to get users and groups from a corporate database.
+
+This class implements the basic TWiki behaviour using topics to store users, but is also designed to be subclassed
+so that other services can be used.
+
+Subclasses should be named 'XxxxUserMapping' so that configure can find them.
+
+*All* methods in this class should be implemented by subclasses.
+
+
+
+This package has smell factor of *3*
+
+
+ There were a total of *201* smells
+@
+
+
+1.4
+log
+@buildrelease
+@
+text
+@d29 1
+a29 1
+This package has smell factor of *2*
+d32 1
+d59 7
+a65 1
+This is login manager that you can specify in the security setup section of [[%SCRIPTURL%/configure%SCRIPTSUFFIX%][configure]]. It instructs TWiki to cooperate with your web server (typically Apache) to require authentication information (username & password) from users. It requires that you configure your web server to demand authentication for scripts named "login" and anything ending in "auth". The latter should be symlinks to existing scripts; e.g., =viewauth -> view=, =editauth -> edit=, and so on.
+d83 1
+a83 1
+[[%SCRIPTURL%/configure%SCRIPTSUFFIX%][configure]]. When it is used,
+d96 17
+d114 1
+d123 4
+a126 1
+This is a login manager that you can specify in the security setup section of [[%SCRIPTURL%/configure%SCRIPTSUFFIX%][configure]]. It provides users with a template-based form to enter usernames and passwords, and works with the PasswordManager that you specify to verify those passwords.
+d133 1
+a133 1
+This package has smell factor of *2*
+a139 1
+=end
+a140 78
+sub _upgradeCategoryItem {
+    my ( $catitems, $ctext ) = @@_;
+    my $catname = '';
+    my $scatname = '';
+    my $catmodifier = '';
+    my $catvalue = '';
+    my @@cmd = split( /\|/, $catitems );
+    my $src = '';
+    my $len = @@cmd;
+    if( $len < '2' ) {
+        # FIXME
+        return ( $catname, $catmodifier, $catvalue )
+    }
+    my $svalue = '';
+
+    my $i;
+    my $itemsPerLine;
+
+    # check for CategoryName=CategoryValue parameter
+    my $paramCmd = '';
+    my $cvalue = ''; # was$query->param( $cmd[1] );
+    if( $cvalue ) {
+        $src = "<!---->$cvalue<!---->";
+    } elsif( $ctext ) {
+        foreach( split( /\r?\n/, $ctext ) ) {
+            if( /$cmd[1]/ ) {
+                $src = $_;
+                last;
+            }
+        }
+    }
+
+    if( $cmd[0] eq 'select' || $cmd[0] eq 'radio') {
+        $catname = $cmd[1];
+        $scatname = $catname;
+        #$scatname =~ s/[^a-zA-Z0-9]//g;
+        my $size = $cmd[2];
+        for( $i = 3; $i < $len; $i++ ) {
+            my $value = $cmd[$i];
+            $svalue = $value;
+            if( $src =~ /$value/ ) {
+               $catvalue = $svalue;
+            }
+        }
+
+    } elsif( $cmd[0] eq 'checkbox' ) {
+        $catname = $cmd[1];
+        $scatname = $catname;
+        #$scatname =~ s/[^a-zA-Z0-9]//g;
+        if( $cmd[2] eq 'true' || $cmd[2] eq '1' ) {
+            $i = $len - 4;
+            $catmodifier = 1;
+        }
+        $itemsPerLine = $cmd[3];
+        for( $i = 4; $i < $len; $i++ ) {
+            my $value = $cmd[$i];
+            $svalue = $value;
+            # I18N: FIXME - need to look at this, but since it's upgrading
+            # old forms that probably didn't use I18N, it's not a high
+            # priority.
+            if( $src =~ /$value[^a-zA-Z0-9\.]/ ) {
+                $catvalue .= ", " if( $catvalue );
+                $catvalue .= $svalue;
+            }
+        }
+
+    } elsif( $cmd[0] eq 'text' ) {
+        $catname = $cmd[1];
+        $scatname = $catname;
+        #$scatname =~ s/[^a-zA-Z0-9]//g;
+        $src =~ /<!---->(.*)<!---->/;
+        if( $1 ) {
+            $src = $1;
+        } else {
+            $src = '';
+        }
+        $catvalue = $src;
+    }
+d142 3
+a144 2
+    return ( $catname, $catmodifier, $catvalue )
+}
+d146 1
+d148 3
+d153 7
+a159 1
+This package has smell factor of *2*
+d174 1
+a174 1
+This package has smell factor of *29*
+d182 1
+a182 1
+This package has smell factor of *10*
+d294 1
+a294 1
+This package has smell factor of *6*
+d375 1
+a375 1
+This package has smell factor of *2*
+d398 1
+a398 1
+This package has smell factor of *1*
+d406 1
+a406 1
+This package has smell factor of *22*
+d409 1
+d424 1
+a424 1
+This package has smell factor of *22*
+d483 1
+d572 1
+a572 1
+This package has smell factor of *10*
+d591 1
+d612 1
+a612 1
+This package has smell factor of *1*
+d628 1
+a628 9
+This package has smell factor of *20*
+
+---++ [[TWikiUIRestDotPm][TWiki::UI::Rest]] 
+
+Rest delegate for view function
+
+
+
+This package doesn't smell
+d636 1
+a636 1
+This package doesn't smell
+d647 1
+d668 1
+a668 1
+This package has smell factor of *1*
+d696 1
+d741 1
+a741 1
+ There were a total of *220* smells
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@d21 1
+a21 1
+This package has smell factor of *1*
+d214 1
+a214 1
+This package has smell factor of *30*
+d402 1
+a402 1
+This package has smell factor of *1*
+d704 1
+a704 1
+This package has smell factor of *6*
+d781 1
+a781 1
+This package has smell factor of *4*
+d784 1
+a784 1
+ There were a total of *227* smells
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d84 8
+d214 1
+a214 1
+This package has smell factor of *29*
+d415 1
+a415 1
+This package has smell factor of *1*
+d446 1
+a446 1
+This package has smell factor of *23*
+d665 1
+a665 1
+This package has smell factor of *28*
+d681 1
+a681 1
+This package has smell factor of *1*
+d704 1
+a704 1
+This package has smell factor of *5*
+d722 1
+a722 1
+This package has smell factor of *5*
+d745 1
+a745 1
+This package has smell factor of *4*
+d757 25
+a781 1
+This package doesn't smell
+d784 1
+a784 1
+ There were a total of *232* smells
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d214 1
+a214 1
+This package has smell factor of *11*
+d271 1
+a271 1
+This package has smell factor of *1*
+a291 10
+---++ [[TWikiMerge3DotPm][TWiki::Merge]] 
+
+Support for 3-way merging of strings. Similar to Merge.pm, except that:
+  a) it's considers the ancestor revision of the string, and
+  b) it works. :-P
+
+
+
+This package doesn't smell
+
+d298 1
+a298 1
+This package doesn't smell
+d438 1
+a438 1
+This package has smell factor of *24*
+d475 1
+a475 1
+This package has smell factor of *17*
+d752 1
+a752 1
+ There were a total of *231* smells
+@

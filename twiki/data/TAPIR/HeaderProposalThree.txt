@@ -1,0 +1,49 @@
+---+ HeaderProposalThree
+
+The header is used in both requests and responses to communicate directly with a single resource (datasource). Examples:
+
+---+++++ Header from a "manual" request sent directly to a resource
+<verbatim>
+<header>
+   <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" HeaderProposalThree>
+</header>
+</verbatim>
+
+Note: in this case no software has been specified, and there's only a single source element.
+
+---+++++ Header from a response to the previous request
+<verbatim>
+<header>
+   <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PHP Provider" version="1.1.4" HeaderProposalThree>
+        </source>
+</header>
+</verbatim>
+
+Note: the source address in resource responses must be the exact accesspoint of the resource, otherwise clients won't be able to easily identify which response belongs to each resource.
+
+---+++++ Header from a client software request that has been dispatched by a portal
+<verbatim>
+<header>
+   <source accesspoint="11.12.13.14" sendtime="2001-12-17T09:30:47-05:00">
+     <software name="GBIF Website" HeaderProposalThree>
+   </source>
+   <source accesspoint="15.16.17.18" sendtime="2001-12-17T09:30:49-05:00">
+     <software name="Portal Engine" version="0.95" HeaderProposalThree>
+   </source>
+</header>
+</verbatim>
+
+Note: Intermediaries such as portals (MessageBrokers) are not obliged to include a source element in the header, although that's a recommended behavior.
+
+---+++++ Header from a more detailed response to the previous request
+<verbatim>
+<header>
+   <source accesspoint="http://mydomain.org/myresource/wrapper.py" sendtime="2001-12-17T09:30:50-05:00">
+     <software name="PyWrapper" version="1.3.6" HeaderProposalThree>
+     <software name="Python" version="2.3" HeaderProposalThree>
+        </source>
+</header>
+</verbatim>
+
+Note: each "source" has the freedom to specify other related software.

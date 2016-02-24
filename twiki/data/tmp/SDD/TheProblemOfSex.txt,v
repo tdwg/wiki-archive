@@ -1,0 +1,406 @@
+head	1.15;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.15
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2006.05.04.11.26.27;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2006.04.25.08.36.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.06.21.11.30.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.05.01.23.20.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.04.30.11.52.53;	author BobMorris;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.04.27.17.06.00;	author BobMorris;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.04.26.18.01.37;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.04.21.15.44.33;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.03.10.15.35.31;	author TrevorPaterson;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.03.10.13.56.19;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.03.10.12.07.57;	author TrevorPaterson;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.10.06.15.56;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.03.10.04.56.12;	author KevinThiele;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.02.20.44.00;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.15
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741987" format="1.0" version="1.14"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+Sometimes different sexes have radically different descriptions. Are they different classes? Or do we have two Descriptions of the same class? In the latter case, where do we indicate which sex? (For that matter, same question in the former case).
+
+Is there a similar problem for life stages?
+
+-- Main.BobMorris - 02 Mar 2004
+
+---
+
+As a more general question, can we have two descriptions for one entity under any circumstance?
+
+-- Main.KevinThiele - 10 Mar 2004
+
+---
+
+In the Main.PrometheusII project we can have multiple descriptions of the same specimen (equivalent to your entity?) by different authors (or even the same author at different times). The specimen has an identity based on its provenance (barcode, institution, collector etc) and each description has a (database) identity, and author etc. In our _proposed_ model a description can be composed either of description statements, or (and ?) other descriptions. So that someone may perhaps create a species level description that is composed of several specimen descriptions, or create a new specimen description that contains the descriptions of several previous authors. This would allow people to reuse existing descriptions. 
+
+-- Main.TrevorPaterson - 10 Mar 2004  
+
+SDD has a very similar model. Yes, you can have many descriptions both for a specimen = SDD.Object and a taxon = SDD.Class. What we don't have is an explicit mechanism to collect descriptions together, that sounds very interesting. We have the automatic mechanism based on the class name, but we are still unfinished how to contradict false information in that case. Explicitly selecting may be an alternative.
+
+However, would you not also need to select a subset of descriptors from a description? After all I cannot change the granularity of your descriptions, so the description container may inadequate.
+
+-- Gregor Hagedorn - 10 Mar 2004
+
+Yes, our ideas are still somewhat theoretical - we have concentrated on implementing tools for specimen description so far. But our Main.PrometheusI model of taxonomy uses specimens to circumbscribe species (and higher taxa) - so that is why we are interested in merging descriptions, and possibly generating taxon level descriptions automatically. As the basic unit of our descriptions is a Description Element (roughly an atomic character state: with structure/property/score or state) we could allow descriptions to be created by one author from a mixture of description elements recorded previously by others. One deficiency in current practice is that descriptions tend not to be reused - because they only record details on a few characters of interest and a later author may want to look at different characters (even if he can interpret the previous descriptions.....) - we have been focussing on how descriptions can be reused - which would includetaking a subset of the DEs for the new later description. As we have modelled and implemented from a relational database point of view - the data is all stored granularly as DEs anyway. At the moment these reference an owning description, but an alternative mechanism would be for a  description to reference a list of composite DEs. Obviously we could generate an XML format/view of a description corresponding to SDD Schema (but dont ask me... ;-) ) from our relational data - but if your store your descriptions in an XML repository there must be ways to shred the individual characters and join them into new descriptions.... (I think)
+
+-- Main.TrevorPaterson - 10 Mar 2004 
+---
+
+By the way, don't some people just address this problem by saying that sex is a subspecific rank? For SDD 0.9 it would then come out rather oddly that _Mechanitis polymnia male_ is a class whose rank is male.
+
+-- Main.BobMorris - 10 Mar 2004
+
+Some people may do that because the model does not support anything better, but I think treating sex or stage as a taxonomic rank is a bad idea. I have not seen any argument in favor of it. I argued against it when raised in BestPractices and ResolvedTopicRankLevelBogosity. Please, if nobody starts arguing why it makes sense to treat sex as a class, please let us close this option. 
+
+Which leaves us to decide how to deal with sex otherwise... Please see SecondaryClassifiersWithinClasses!
+
+-- Gregor Hagedorn - 10 Mar 2004
+---
+
+*A proposed solution to <nop>TheProblemOfSex*:
+
+Please see the new subtopic SecondaryClassifiersProposal of SecondaryClassifiersWithinClasses!
+
+-- Main.BobMorris - 30 Apr 2004
+
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1145954210" format="1.0" version="1.13"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087817403" format="1.0" version="1.12"}%
+d3 44
+a46 44
+Sometimes different sexes have radically different descriptions. Are they different classes? Or do we have two Descriptions of the same class? In the latter case, where do we indicate which sex? (For that matter, same question in the former case).
+
+Is there a similar problem for life stages?
+
+-- Main.BobMorris - 02 Mar 2004
+
+---
+
+As a more general question, can we have two descriptions for one entity under any circumstance?
+
+-- Main.KevinThiele - 10 Mar 2004
+
+---
+
+In the Main.PrometheusII project we can have multiple descriptions of the same specimen (equivalent to your entity?) by different authors (or even the same author at different times). The specimen has an identity based on its provenance (barcode, institution, collector etc) and each description has a (database) identity, and author etc. In our _proposed_ model a description can be composed either of description statements, or (and ?) other descriptions. So that someone may perhaps create a species level description that is composed of several specimen descriptions, or create a new specimen description that contains the descriptions of several previous authors. This would allow people to reuse existing descriptions. 
+
+-- Main.TrevorPaterson - 10 Mar 2004  
+
+SDD has a very similar model. Yes, you can have many descriptions both for a specimen = SDD.Object and a taxon = SDD.Class. What we don't have is an explicit mechanism to collect descriptions together, that sounds very interesting. We have the automatic mechanism based on the class name, but we are still unfinished how to contradict false information in that case. Explicitly selecting may be an alternative.
+
+However, would you not also need to select a subset of descriptors from a description? After all I cannot change the granularity of your descriptions, so the description container may inadequate.
+
+-- Gregor Hagedorn - 10 Mar 2004
+
+Yes, our ideas are still somewhat theoretical - we have concentrated on implementing tools for specimen description so far. But our Main.PrometheusI model of taxonomy uses specimens to circumbscribe species (and higher taxa) - so that is why we are interested in merging descriptions, and possibly generating taxon level descriptions automatically. As the basic unit of our descriptions is a Description Element (roughly an atomic character state: with structure/property/score or state) we could allow descriptions to be created by one author from a mixture of description elements recorded previously by others. One deficiency in current practice is that descriptions tend not to be reused - because they only record details on a few characters of interest and a later author may want to look at different characters (even if he can interpret the previous descriptions.....) - we have been focussing on how descriptions can be reused - which would includetaking a subset of the DEs for the new later description. As we have modelled and implemented from a relational database point of view - the data is all stored granularly as DEs anyway. At the moment these reference an owning description, but an alternative mechanism would be for a  description to reference a list of composite DEs. Obviously we could generate an XML format/view of a description corresponding to SDD Schema (but dont ask me... ;-) ) from our relational data - but if your store your descriptions in an XML repository there must be ways to shred the individual characters and join them into new descriptions.... (I think)
+
+-- Main.TrevorPaterson - 10 Mar 2004 
+---
+
+By the way, don't some people just address this problem by saying that sex is a subspecific rank? For SDD 0.9 it would then come out rather oddly that _Mechanitis polymnia male_ is a class whose rank is male.
+
+-- Main.BobMorris - 10 Mar 2004
+
+Some people may do that because the model does not support anything better, but I think treating sex or stage as a taxonomic rank is a bad idea. I have not seen any argument in favor of it. I argued against it when raised in BestPractices and RankLevelBogosity. Please, if nobody starts arguing why it makes sense to treat sex as a class, please let us close this option. 
+
+Which leaves us to decide how to deal with sex otherwise... Please see SecondaryClassifiersWithinClasses!
+
+-- Gregor Hagedorn - 10 Mar 2004
+---
+
+*A proposed solution to <nop>TheProblemOfSex*:
+
+Please see the new subtopic SecondaryClassifiersProposal of SecondaryClassifiersWithinClasses!
+
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1083453600" format="1.0" version="1.11"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1083325973" format="1.0" version="1.10"}%
+d21 1
+a21 1
+SDD has a very similar model. Yes, you can have many descriptions both for a specimen = SDD.Object and a taxon = SDD.Class. What we don't have is an explicit mechanism to collect descriptions together, that sounds very interesting. We have the automatic mechanism based on the class name, but we are still unfinished how to controdict false information in that case. Explicitly selecting may be an alternative.
+d42 1
+d45 1
+a45 13
+In both Coded and <nop>NaturalLanguage Description types, there is a tentatively proposed element &lt;__OtherScope>. I suggest two things:
+
+1. Extend this to a list as in <nop>GeographicalScope. This is trivial.
+
+2. Add to Terminology a new kind of thing called a <nop>ScopeName. It's like a Character in that it has State values (enumerated at least, maybe range of numerical also. For example <nop>ScopeName Sex, values 'male' and 'female'. Each of the &lt;ScopeName> and the states gets a key. In a Description, keyrefs on the &lt;<nop>OtherScope> and &lt;Scope> objects tell the non-geographic scope of this Description. Example:
+
+	* [[%ATTACHURL%/ScopeExample.xml][ScopeExample.xml]]
+
+Probably there is so much in common with Characters/States that this and those are derivable from common base types.
+
+-- Main.BobMorris - 27 Apr 2004
+
+Hoping that this proposal will be criticzed, I am replicating it as a new subtopic SecondaryClassifiersProposal of SecondaryClassifiersWithinClasses -- Main.BobMorris - 30 Apr 2004
+d47 2
+a48 1
+%META:FILEATTACHMENT{name="ScopeExample.xml" attr="" comment="Example of a scoped description" date="1083085153" path="C:\cvscheckout\efgSchemas\ScopeExample.xml" size="1535" user="BobMorris" version="1.1"}%
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1083085560" format="1.0" version="1.9"}%
+d54 4
+a57 2
+-- Main.BobMorris - 27 Apr 2004
+
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083002497" format="1.0" version="1.8"}%
+d42 15
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082562272" format="1.0" version="1.7"}%
+d38 1
+a38 1
+Which leaves us to decide how to deal with sex otherwise...
+d41 1
+a41 2
+---
+
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1078932931" format="1.0" version="1.6"}%
+d17 1
+a17 1
+In the Main.PrometheusII project we can have multiple descriptions of the same specimen (equivalent to your entity?) by different authors ( or even the same author at different times). The specimen has an identity based on its provenance ( barcode, institution, collector etc) and each description has a (database) identity, and author etc. In our _proposed_ model a description can be composed either of description statements, or ( and ?) other descriptions. So that someone may perhaps create a species level description that is composed of several specimen descriptions, or creat a new specimen description that contains the descriptions of several previous authors. This would allow people to reuse existing descriptions. 
+d25 1
+a25 1
+-- Gregor - 10 Mar 2004
+d27 1
+a27 1
+Yes, our ideas are still somewhat theoretical - we have concentrated on implementing tools for specimen description so far. But our Main.PrometheusI model of taxonomy uses specimens to circumbscribe species ( and higher taxa) - so that is why we are interested in merging descriptions, and possibly generating taxon level descriptions automatically. As the basic unit of our descriptions is a Description Element (roughly an atomic character state: with structure/property/score or state) we could allow descriptions to be created by one author from a mixture of description elements recorded previously by others. One deficiency in current practice is that descriptions tend not to be reused - because they only record details on a few characters of interest and a later author may want to look at different characters (even if he can interpret the previous descriptions.....) - we have been focussing on how descriptions can be reused - which would includetaking a subset of the DEs for the new later description. As we have modelled and implemented from a relational database point of view - the data is all stored granularly as DEs anyway. At the moment these reference an owning description, but an alternative mechanism would be for a  description to reference a list of composite DEs. Obviously we could generate an XML format/view of a description corresponding to SDD Schema ( but dont ask me... ;-) ) from our relational data - but if your store your descriptions in an XML repository there must be ways to shred the individual characters and join them into new descriptions.... ( i think)
+d40 3
+a42 1
+-- Gregor - 10 Mar 2004
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1078926979" format="1.0" version="1.5"}%
+d27 1
+d29 1
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1078920477" format="1.0" version="1.4"}%
+d15 2
+d21 7
+d29 1
+d33 6
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1078899356" format="1.0" version="1.3"}%
+d15 4
+d22 1
+a22 2
+-- Main.BobMorris - 10 Mar 2004
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1078894571" format="1.0" version="1.2"}%
+d14 6
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1078260240" format="1.0" version="1.1"}%
+d7 3
+d11 3
+a13 1
+-- Main.BobMorris - 02 Mar 2004
+@

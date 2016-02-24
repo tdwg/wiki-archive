@@ -1,0 +1,153 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@---++ Datasource Metadata Proposal Two
+
+One of the outcomes from the BerlinProtocolMeeting was to define a "provider" only as the software installation that could serve as an umbrella for one or more datasources. This definition is of little, or no value, if we are not addressing the ProviderService anymore. However, there's a more important definition for that term if we want to give proper credits to institutions that are somehow involved with the existing networks:
+
+"A provider is an entity (institution or person) responsible for running one or more instances of a data sharing service."
+
+Therefore, a provider in this case is a role associated to a person or an institution. We could easily think about other roles that would deserve credit as well: host and data owner for example.
+
+For now on let's consider two different concepts: provider entities and provider software.
+
+To correctly support the provider entity definition and other possible roles in metadata responses there are some challenges that we need to consider:
+
+   * The same provider entity could be associated with one or more provider software (remember the [[http://splink.cria.org.br/architecture?criaLANG=en][speciesLink]] case with the regional servers approach).
+   * The same entity could play more than one role (usually a provider entity is also the host) in a service instance.
+   * The same service instance could be "provided" by more than one entity (although that's not usual, we could think about a joint between institutions that would be co-responsible for setting up and maintaining one or more services).
+   * Other networks could need different roles that we're not being able to anticipate.
+
+Another missing point from the meeting was how to deal with multi-lingual metadata elements.
+
+To address all these issues we have a new metadata proposal where:
+
+   * Each datasource service could have a list of related entities.
+   * Each related entity could play one or more role at the same time.
+   * Role values would not be defined by the protocol (networks would need to agree on the values and rely on software configurators to enforce their content).
+   * Each entity would have an associated Global Unique Identifier (GUID). Such identifier could be any type of string, although we would recommend it to be also a URL address pointing to an XML representation of the entity metadata. GUIDs would enable identification of entities across different service instances.
+   * Language aware elements would carry an xml:lang attribute.
+
+Open issues:
+
+   * Metadata structure could be an extension from [[http://dublincore.org/documents/dcmi-terms/][DublinCore]].
+   * Should we include physical address for the entities?
+
+---+++++ Sample request
+<verbatim>
+<request>
+   <header>
+      <source accesspoint="13.14.15.16" sendtime="2001-12-17T09:30:47-05:00" DatasourceMetadataProposalOne>
+   </header>
+   <metadata/>
+</request>
+</verbatim>
+
+
+---+++++ Sample response
+<verbatim>
+
+<response>
+   <header>
+      <source accesspoint="http://mydomain.org/provider/wrapper.php" sendtime="2001-12-17T09:30:50-05:00">
+         <software name="PHP Provider" version="1.1.4" DatasourceMetadataProposalOne>
+      </source>
+   </header>
+   <metadata>
+      <label xml:lang="en">Birds Specimen Collection</label>
+      <label xml:lang="pt_br">Coleção de Espécimes de Pássaros</label>
+      <accesspoint>http://www.myorganization.org/provider/wrapper.php?res=ORG</accesspoint>
+      <typeOfContent>specimen</typeOfContent>
+      <abstract xml:lang="en">This resource contains specimen records of birds from all over the world</abstract>
+      <keywords xml:lang="en">bird, specimen</keywords>
+      <language>pt_BR</language>
+      <citation xml:lang="en">how to reference and give credits</citation>
+      <rights xml:lang="en">IPR stuff</rights>
+      <numberOfRecords>100</numberOfRecords>
+      <dateLastUpdated>2004-08-01T20:00:00-03</dateLastUpdated>
+      <conceptualSchema ns="http://www.tdwg.org/dwc/2.0">http://www.tdwg.org/dwc/2.0/darwincore.xsd</conceptualSchema>
+      <conceptualSchema ns="http://www.tdwg.org/dwc/ext/curatorial/0.1">http://www.tdwg.org/ext/curatorial/0.1/c.xsd</conceptualSchema>
+      <relatedEntities>
+         <entity>
+            <guid>http://www.someorganization.org/mydata.xml</guid>
+            <name xml:lang="en">Biodiversity Informatics Institute</name>
+            <name xml:lang="pt_br">Instituto de Informática para Biodiversidade</name>
+            <relatedInformation>http://www.someorganization.org/</relatedInformation>
+            <acronym>ORG</acronym>
+            <logo url="http://www.someorganization.org/mylogo.gif"/>
+            <role>provider</role>
+            <role>host</role>
+            <description xml:lang="en">Cool organization</description>
+            <contact type="administrative">
+               <name>Someone</name>
+               <title xml:lang="en">Boss</title>
+               <email>person1@@someorganization.org</email>
+               <phone>+111 11 111111</phone>
+            </contact>
+            <contact type="technical">
+               <name>Someone else</name>
+               <title xml:lang="en">Sysadmin</title>
+               <email>person2@@someorganization.org</email>
+               <phone>+111 11 111112</phone>
+            </contact>
+         </entity>
+         <entity>
+            <guid>http://dept.ins.org/mydata.xml</guid>
+            <name xml:lang="en">Department of Zoology - Institute X</name>
+            <name xml:lang="pt_br">Departamento de Zoologia - Instituto X</name>
+            <relatedInformation>http://dept.ins.org/</relatedInformation>
+            <acronym>XZ</acronym>
+            <logo url="http://www.ins.org/dept.gif"/>
+            <role>owner</role>
+            <description xml:lang="en">Cool department</description>
+            <contact type="administrative">
+               <name>Someone</name>
+               <title xml:lang="en">Curator</title>
+               <email>person1@@dept.ins.org</email>
+               <phone>+111 11 333333</phone>
+            </contact>
+         </entity>
+      </relatedEntities>
+   </metadata>
+</response>
+</verbatim>
+
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 1
+a1 1
+---++ Datasource Metadata Proposal One
+d33 80
+@

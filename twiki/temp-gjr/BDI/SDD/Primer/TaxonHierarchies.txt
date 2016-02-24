@@ -1,0 +1,94 @@
+%META:TOPICINFO{author="DonovanSharp" date="1156902287" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.7 Taxon heirarchies
+
+Taxon hierarchies allow one or more hierarchical structures to be set for the coded entities. Hierarchies may tbe taxonomic (order/family/genus etc.) or non-taxonomic (weed/species/diseases, herb/shrub/tree).
+
+---++++Example 3.7.1 - A simple taxon hierarchy
+
+
+%ATTACHURL%/taxon_hierarchy_example.gif
+
+A taxon hierarchy requires two essential items within SDD: the names of the taxa being described, and the hierarchy itself.
+
+A simple SDD instance document for a taxon hierarchy has the basic structure shown below and in Example 3.7.2.
+
+%ATTACHURL%/taxonhierarchy.gif
+
+---++++Example 3.7.2 - A simple taxon hierarchy, SDD representation
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+    
+<verbatim>
+    <TaxonHierarchies>
+      <TaxonHierarchy id="th1">
+        <Representation>
+          <Label>Default Entity Tree</Label>
+        </Representation>
+        <TaxonHierarchyType>UnspecifiedTaxonomy</TaxonHierarchyType>
+        <Nodes>
+          <Node id="tn1">
+            <TaxonName ref="t1"/>
+          </Node>
+          <Node id="tn2">
+            <Parent ref="tn1"/>
+            <TaxonName ref="t2"/>
+          </Node>
+          <Node id="tn3">
+            <Parent ref="tn2"/>
+            <TaxonName ref="t3"/>
+          </Node>
+          <Node id="tn4">
+            <Parent ref="tn2"/>
+            <TaxonName ref="t4"/>
+          </Node>
+          <Node id="tn5">
+            <Parent ref="tn1"/>
+            <TaxonName ref="t5"/>
+          </Node>
+          <Node id="tn6">
+            <Parent ref="tn5"/>
+            <TaxonName ref="t6"/>
+          </Node>
+          <Node id="tn7">
+            <Parent ref="tn5"/>
+            <TaxonName ref="t7"/>
+          </Node>
+        </Nodes>
+      </TaxonHierarchy>
+    </TaxonHierarchies>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+The &lt;Representation&gt; element provides a label for the description. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic [[SddLanguage][Language support in SDD]].
+
+[[SddScope][&lt;Scope&gt;]] defines the group of taxa for which this <noautolink>TaxonHierarchy</noautolink> is relevant, currently only taxonomic scope is supported. Records taxon names and citation for the source of the information.
+
+The taxon hierarchy supports taxonomic (order/family/genus etc.) and non-taxonomic (weed species, diseases, herb/shrub/tree) hierarchies. For many analytical purposes it is relevant whether a hierarchy is based on phylogenetic (= evolutionary) relatedness or whether it is an operational categorization. This is defined in the &lt;TaxonHierarchyType&gt; element. Currently content is restricted to "NonphylogeneticTaxonomy", "PhylogeneticTaxonomy", "SubsetFilter" or "UnspecifiedTaxonomy".
+
+---++++3.7.2 The structure of &lt;Nodes&gt; in &lt;TaxonHierarchy&gt;
+
+The tree structure of the taxon hierarchy is presented as an ordered list of nodes together with edges pointing to parent nodes. Inner nodes may have taxon name references or may be anonymous (esp. for phylogenetic analyses). The &lt;Node&gt; element has the basic structure shown below.
+
+%ATTACHURL%/taxonhierarchynodes.gif
+
+&lt;Parent&gt; Refers to an inner node of the current tree. Omitting this is interpreted as a reference to the root of the tree.
+
+&lt;TaxonName&gt; is a reference to a taxon name. Inner nodes may be anonymous or identified as a higher taxon; terminal nodes should always point to a taxon name (requires external validation).
+
+&lt;Synonyms&gt; The expression of synonyms may be essential for reports and to convey the concept of a taxon to information consumers. Synonyms must refer to an entity previously defined in teh element &lt;TaxonNames&gt;, for more information refer to the topic [[TaxonNames][Defining taxon names]].
+
+-- Main.DonovanSharp - 01 Jun 2006
+
+%META:FILEATTACHMENT{name="taxonhierarchynodes.gif" attr="" autoattached="1" comment="" date="1152670093" path="taxonhierarchynodes.gif" size="7963" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="taxon_hierarchy_example.gif" attr="" autoattached="1" comment="" date="1152602944" path="taxon_hierarchy_example.gif" size="2098" user="Main.DonovanSharp" version="2"}%
+%META:FILEATTACHMENT{name="taxonhierarchy.gif" attr="" autoattached="1" comment="" date="1152600721" path="taxonhierarchy.gif" size="6012" user="Main.DonovanSharp" version="2"}%

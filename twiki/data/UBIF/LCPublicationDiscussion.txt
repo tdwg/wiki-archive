@@ -1,0 +1,61 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1099997479" format="1.0" version="1.16"}%
+%META:TOPICPARENT{name="Trash.LinneanCoreDefinitionsDiscussion"}%
+Discussion on [[LinneanCoreDefinitions#PublicationDefinition][Publication]]
+	* Gregor: I do not think a Publication is a subclass of References. A Reference *refers* to an entire Publication (or Unpublished Documentation) or a fragment therein. -- 30. Oct. 2004
+		* Richard:  I don't follow -- if [[LinneanCoreDefinitions#ReferenceDefinition][Reference]] = [[LinneanCoreDefinitions#PublicationDefinition][Publication]] + [[LinneanCoreDefinitions#UnpublishedDocumentation][Unpublished Documentation]] + Documented Pers. Comm., then why is not a [[LinneanCoreDefinitions#PublicationDefinition][Publication]] a subtype (subclass?) of [[LinneanCoreDefinitions#ReferenceDefinition][Reference]]; and [[LinneanCoreDefinitions#UnpublishedDocumentation][Unpublished Documentation]] also a subtype (subclass?) of [[LinneanCoreDefinitions#ReferenceDefinition][Reference]]? -- 31 Oct 2004
+		* Gregor: I think there is a difference between the instance of an object, and a reference to it. -- 31 Oct 2004
+		* JMS: Is it similar to distinction between named-object and name-string (or naming-relationship)?  Do you mean that reference is a relationship between referrer and publications? -- 01 Nov 2004
+		* Gregor: Yes similar. But perhaps it is not really relevant here: We will in LC not deal with the objects that *are* the publication. However, I think, the definition (which confused me, because I do tend to read them as general statements) gains clarity if we say: We have have Publication, Unpublished Documentation, and Undocumented Assertion (like "personal comm.") classes, and references to any of these. So Reference is superclass of Publication Reference, Unpublished Documentation Reference, etc. Does this fulfill your purpose, Rich?-- 01 Nov 2004
+		* Richard: I'm not sure I like "Undocumented Assertion" as a concept.  I think that even Pers. Comms. need to be "documented" in some way (even if as an email message, or a scribbling on a piece of paper fide someone else). As for terminology, I have added my own proposed tree below. -- 07 November 2004 
+		* JMS: I suggest to use <nop>NameSource as superclass of  publication-ish data objects because Reference as super class can't be something "references to"; the latter usage of 'reference' is meta-reference.  Why do we need subclasses of References?  If we have a superclass for publication-ish objects, Reference can refere to subclass instances via the superclass as type (not nomenclatural type; type in CS/IT sense).  It would be unnecessary to provide sublcasses; we can give a status published or unpublished etc.  -- 02 Nov 2004
+		* Gregor: I vote against "NameSource" because I would prefer this to go beyond taxonomic names. It would be nice to have definitions for terms usable outside of the context of Linnean Core (e. g. including descriptive data). The rest confuses me. What is a metareference? What is CS/IT? Why, if you have a superclass reference, does it NOT make sense to (also) have references typed (restricted) to subclasses? (I quite understand that Reference can already refer to all derived objects. However, in programming terms you says if all types are derived from object, it never makes sense to have a pointer that is any more specific than object?) I propose (and the exact terms are can certainly be improved upon):
+<verbatim>
+Object types:
+-------------
+ base-class:						  information source
+										 /		 |			\				
+ derived classes:	publication	unpublished	undocumented
+											 documentation  statement
+
+Reference types:
+----------------
+ base-class:						Reference or citation
+										 /		 |			\				
+ derived classes:	publication	unpublished	personal 
+							reference	documentation  communication
+											  reference
+</verbatim>
+-- 03 Nov 2004
+		* JMS: 'Name' of <nop>NameSource is not restricted to taxonomic name.  It covers anything named, including Agent.  How about <nop>DataSource ?  CS/IT means computer sciencs and/or information technology.  Meta-reference is reference to reference.	The above diagram cleary shows subcalsses of reference type is redundant.  When you have new subtype of source object, then you need to create subtype of reference type also.  It is useful for static type cheking, but it results in too many types which wouldn't be accepted by TCS. -- 03 Nov 2004
+		* Richard: Like Gregor, I am not comfortable with <nop>NameSource.  Even if "Name" means more than taxonomic name, the last thing we need in our vocabulary is yet another flavor of "Name".  I prefer "Documentation", as I discussed on the Discussion page for "Reference". I have drawn my own diagram below:
+<verbatim>
+Object types:
+-------------
+														information source
+														/					 \
+ base-class:						 Documentation					Undocumented Assertion
+										 /			 \								  |
+ derived classes:	  Publication			Unpublished documentation  |
+							 |						 |								  |
+ examples:				- Article			  - Unpubl. Report			  - oral pers. comm. 
+							 - Book				  - Field Notebooks			 - ### any other example?
+							 - Publ. Report		- Specimen Labels			 - etc.
+							 - etc.				  - Written personal communication 
+														- etc.
+</verbatim>
+
+		* JMS: Rich, do you allow undocumented assertion?  I prefer to data source rather than information source. -- 07 Nov 2004
+		* Richard: My data model allows for it, but I generally prefer that some physical evidence exists for the assertion. There is really no fundamental reason why it *must* be documented physically (physically can include a sequence of 1s & 0s stored on electronic media), except I like to think of it that way. I suppose the mear addition of a record in a database for an oral assertion thereby creates a physical manifestation of it.  I have no problem with "data source" -- either one is fine with me. Why do you prefer "data" source?-- 09 Nov 04
+		* JMS: Becaus I'd like to say "information extracted (or, any similer words) from these data".  Information is more abstracted thing than data, for me.  -- 09 Nov 2004
+	* Gregor: Rich's diagram is fine with me, and the examples are very helpful. However, I do not understand why a personal communication has to be documented. I tentatively added "- oral pers. comm." as example of undocumented. -- 8 Nov 2004
+	* Richard: It really doesn't have to be "documented" beyond the database record instance -- but I just generally prefer to think of it that way.  I guess one of the reasons I like "documented" is that with oral assertions, one can then drift into mere thought assertion (i.e., only in the mind of the person entering the record into the database).  That just seems to me to be too intangible.  My main concern was that we accomodate documented forms of information transmission beyond "Publications". 
+	* Gregor: I agree with Rich and prefer information source to data source, but can live with data source. - 8 Nov 2004
+	* Gregor: I wonder why you leave away now the references = citation references (as opposed to citation text, the material that is being cited). I think these are more important than terms for the objects that are being referenced (with which we are not at all concerned). -- 8 Nov 2004
+	* Richard: I don't follow.  I still like "Reference" as I defined it in the Taxonomer article, but am willing to abandon that meaning if it can be too easily confused with "Citation".  In my mind, the "Reference" is the physical manifestation of the documentation object, and the "Citation details" are the "metadata" (AC elements) whose primary function is to allow another person to (more or less unambiguously) locate and view a copy of the documentation object. But I don't have a strong feeling either way, so I am willing to use a different term. -- 09 Nov 2004
+	* Gregor: So you would call the journal article or book you have in your hand a "reference"? And the pdf file containing your Taxonomer article is a reference as well? This is very unintuitive for me. For me the reference section (= bibliographie) is the stuff that contains sufficient metadata of the referenced objects to serve as an unambiguous pointer (= reference) to it. That is identical to how reference is used in programming languages: it is not the object instance itself, but a reference to it. -- However, probably some native speakers need to chime in here - I am not a native speaker. -- My point above is we need to talk about the types that reference / cite these objects. -- Other point I tried to make: citation is perhaps also ambiguous: it may refer to the citation reference = pointer to source object, and it may refer to cited content (extract of source object). - 9. Nov 2004
+
+
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1099216468" from="UBIF.Publication" to="UBIF.LCPublicationDiscussion"}%

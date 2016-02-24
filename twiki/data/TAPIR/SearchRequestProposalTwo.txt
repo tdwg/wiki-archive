@@ -1,0 +1,99 @@
+All three types of searches would still be possible according to the parameters used, and the custom search would use XML schema instead of a simplified structure representation.
+
+A full document search would look like:
+
+<verbatim>
+
+<search>
+
+  <responseStructrure ns="http://www.tdwg.org/schemas/abcd/1.0"></responseStructrure>
+
+</search>
+
+</verbatim>
+
+Implying that the responseStructure schema is a conceptual schema accepted by the provider.
+
+A partial document search would look like:
+
+<verbatim>
+
+<search>
+
+   <responseStructrure ns="http://www.tdwg.org/schemas/abcd/1.0"></responseStructrure>
+
+  <concepts>
+
+    <concept path="/datasets/dataset/units/unit/identification"/>
+
+  </concepts>
+
+</search>
+
+</verbatim>
+
+Also implying that the responseStructure schema is a conceptual schema accepted by the provider. In this case all mandatory elements from the response schema would be returned, including the additional concepts specified.
+
+The custom search would also use an XML schema to specify the response structure, but now this schema would not be a conceptual schema accepted by the provider:
+
+<verbatim>
+
+<search>
+
+  <responseStructrure ns="http://www.mydomain.org/myschema/1.0">http://www.mydomain.org/myschema/1.0/myschema.xsd</responseStructrure>
+
+  <mapping xmlns:abcd="http://www.tdwg.org/schemas/abcd/1.0">
+
+    <concept>
+     <from path="Taxon/@FullName" SearchRequestProposalTwo>
+     <to path="abcd:/datasets/dataset/units/unit/identification/scientificname" SearchRequestProposalTwo>
+    </concept>
+    <concept>
+     <from path="Taxon/@HigherTaxon" SearchRequestProposalTwo>
+     <to path="abcd:/datasets/dataset/units/unit/highertaxon" SearchRequestProposalTwo>
+    </concept>
+    <concept>
+     <from path="Taxon/Coordinates/@lat" SearchRequestProposalTwo>
+     <to path="abcd:/datasets/dataset/units/unit/latitude" SearchRequestProposalTwo>
+    </concept>
+    <concept>
+     <from path="Taxon/Coordinates/@long" SearchRequestProposalTwo>
+     <to path="abcd:/datasets/dataset/units/unit/longitude" SearchRequestProposalTwo>
+    </concept>
+
+  </mapping>
+
+</search>
+
+</verbatim>
+
+
+However it would give the provider the necessary mappings to produce the results.
+
+A custom search could also accept a list of concepts (as the partial search).
+
+Providers could cache the mappings to speed up responses (should we also include a "useCache" attribute?)
+
+Note: The recordDefinition elements would still be necessary here!
+
+The custom schema above could look like:
+
+<verbatim>
+
+<element name="Taxon" maxOccurs="unbounded">
+  <complexType>
+    <attribute name="FullName" type="xsd:string" use="required"/>
+    <attribute name="HigherTaxon" type="xsd:string"/>
+    <sequence>
+      <element name="Coordinates" maxOccurs="unbounded">
+        <complexType>
+          <sequence>
+            <element name="lat" type="xsd:string" use="required" SearchRequestProposalTwo>
+            <element name="long" type="xsd:string" use="required" SearchRequestProposalTwo>
+          </sequence>
+        </complexType>
+    </sequence>
+  </complexType>
+</element>
+
+</verbatim>

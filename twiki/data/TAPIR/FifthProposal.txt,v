@@ -1,0 +1,423 @@
+head	1.18;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.18
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.18
+log
+@Revision 18
+@
+text
+@---+ FifthProposal
+
+---+ General strategy
+Based on the FourthProposal this proposal tries to solve all inconsistencies discovered since the BerlinProtocolMeeting in the FourthProposal.
+
+Mainly concentrate on a FifthProposalDatasourceServiceProposal (see below).
+
+---+++++ Service Types
+
+   * FifthProposalDatasourceServiceProposal
+   * FifthProposalProviderServiceProposal
+   * FifthProposalBrokerServiceProposal
+
+Using the same specification to describe the all services would probably lack the desired clarity and simplicity. Ideally we would need 3 separate specifications and 3 separate protocols, but at the present moment it may not be possible to produce all of them.
+
+During all discussions, it became clear that we were always talking about at least 3 different types of services: DatasourceServices, ProviderServices and MessageBrokerServices. Even being similar in many aspects, they are not the same. Using the same protocol schema to validate messages from all services would certainly make the schema more complicated and probably less restrictive (allowing many unreal combinations of elements). Considering that there are 5 types of requests, a single specification for the 3 types of services would likely lack the desirable clarity. 
+
+Therefore we think the protocol specification should be more specific and define a separate protocol with its own namespace for each of the respective service types. These protocols are very similar to each other and are therefore based on a common core protocol schema.
+
+In this protocol proposal we are only considering DatasourceServices and ProviderServices as a limited form of MessageBrokerServices only. All efforts concentrate on the FifthProposalDatasourceServiceProposal first.
+
+Reasons for NOT addressing the ProviderService immediately:
+   * The capability to query more than one datasource at the same time is a new feature (not directly related to the integration of DiGIR and BioCASE, and not necessarily easy to implement).
+   * The capability of being a discovery service for local datasources is only being used by DiGIR and could be easily substituted by a UDDI service (either by creating new themes in the GBIF UDDI repository, or by installing a  free and open source repository like [[http://ws.apache.org/juddi/][jUDDI]]).
+
+Reasons for NOT addressing the MessageBrokerService now:
+   * Although the DiGIR protocol has some elements especifically related to that service (e.g. "responseWrapper" element and multiple destinations), it is not validating all messages exchanged between clients and "portal" engine, and it seems the protocol is not officialy supposed to specify these types of messages. BioCASE on its turn uses a java API for that purpose. Making the protocol compliant with MessageBrokers would not be a trivial task, and probably other more generic protocols would better support query distribution.
+
+
+---+++++ Record FifthProposal Document Based Approach
+A very essential discussion is whether the protocol is record/object based or document based.
+Please see the RecordVsDocumentApproach discussion for this.
+
+   * Until we can decide for one of them - which may take some time and even a test implementation - we propose to include both approaches as 2 different request types in a common protocol.
+   * The RecordBasedApproach will simply be called "search" as in the proposals before.
+   * Additionally there is now a search request called "docsearch" that serves the DocumentBasedApproach.
+
+---+++++ Header
+   * remove <type> element from the header and make the element following the header specify the kind of request. This allows validation of a request and response in contrast to NO validation using values in the header element.
+
+
+<a name="files"></a>
+---+ Files
+The schema for this proposal includes all the additional suggestions giving below unless otherwise stated.
+It contains seperate schemas for the different service types explained below.
+
+   * *Shared Core Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolCore.xsd
+   * *Datasource Service Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolDatasource.xsd
+   * *Provider Service Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolProvider.xsd
+
+
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@d9 5
+a41 9
+---+ Detailed Service Proposals
+
+   * FifthProposalDatasourceServiceProposal
+   * FifthProposalProviderServiceProposal
+   * FifthProposalBrokerServiceProposal
+
+However, due to time constraints and since the provider capability to query more than one datasource at the same time is a new feature (not directly related to the integration of DiGIR and BioCASE), and since its datasource discovery capability could be easily substituted by UDDI services, there's a possibility to end up with only a DatasourceService specification.
+
+
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d9 1
+a9 1
+ Using the same specification to describe the all services would probably lack the desired clarity and simplicity. Ideally we would need 3 separate specifications and 3 separate protocols, but at the present moment it may not be possible to produce all of them.
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d9 3
+a11 9
+During all discussions, it became clear that we were always talking
+about at least 3 different types of services: DatasourceServices,
+ProviderServices and MessageBrokerServices. Even being similar in
+many aspects, they are not the same. Using the same protocol schema
+to validate messages from all services would certainly make the
+schema more complicated and probably less restrictive (allowing many
+unreal combinations of elements). Considering that there are 5 types
+of requests, a single specification for the 3 types of services
+would likely lack the desirable clarity. 
+d15 9
+a23 2
+In the protocol specification and [[#files][schema files]] above we are considering DatasourceServices and ProviderServices as a limited form of MessageBrokerServices only. 
+Following are some special features for each of them:
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d6 1
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d49 5
+a53 1
+   * http://ww3.bgbm.org/moin/protocol/documents/protocol.zip
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d37 3
+a39 4
+---+++++ FifthProposalDatasourceServiceProposal
+   * No destination in the header
+   * A response to a CapabilitiesRequest specific for the single datasource only as given in the DatasourceCapabilitiesProposal
+   * The MetadataRequest is returning only metadata about the datasource and its "bussiness" entity in the UDDI sense. Nothing about a provider service, just about the business entity in the sense of a real world organisation. See the DatasourceMetadataProposal for an example.
+d41 1
+a41 7
+---+++++ FifthProposalProviderServiceProposal
+   * optionally listing addressed datasources in the header. If none is mentioned the request should by default be passed on to all available local datasources.
+   * All requests are passed on to the requested datasources. EXCEPT:
+      * A PingRequest is never relayed to other services and will always be answered directly by the ProviderService.
+   * The MetadataRequest is only pooling the metadata responses from the datasources. A ProviderService does not have its own metadata or capabilities.
+
+However, due to time constraints and since the provider capability to query more than one datasource at the same time is a new feature (not directly related to the integration of DiGIR and BioCASE), and since its datasource discovery capability could be easily substituted by UDDI services, there's a possibility to end up with only a DatasourceService specification. That possibility is being documented in DatasourceServiceProposal.
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d28 2
+a29 2
+   * The RecordBasedApproach will simply be called "search" as in the proposals before. See the SearchProposalTwo and the SearchResponseTopStructure for details.
+   * Additionally there is now a search request called "docsearch" that works on a document basis. See the DocSearchProposal for more details.
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d3 1
+a3 1
+---+++++ General strategy
+a5 8
+<a name="files"></a>
+---+++++ Files
+The schema for this proposal includes all the additional suggestions giving below unless otherwise stated.
+
+   * *Latest protocol schemas based on all additional suggestions below* :
+   http://ww3.bgbm.org/moin/protocol/documents/protocol.zip
+
+---++ Additional Ideas Already Incorporated
+d7 1
+a7 2
+
+---+++++ Webservice Types
+d23 15
+a37 1
+*DatasourceService specific*
+d42 1
+a42 1
+*ProviderService specific*
+a49 3
+---+++++ Record FifthProposal Document Based Approach
+A very essential discussion is whether the protocol is record/object based or document based.
+Please see the RecordVsDocumentApproach discussion for this.
+d51 4
+a54 6
+   * Until we can decide for one of them - which may take some time and even a test implementation - we propose to include both approaches as 2 different request types in a common protocol.
+   * The RecordBasedApproach will simply be called "search" as in the proposals before. See the SearchProposalTwo and the SearchResponseTopStructure for details.
+   * Additionally there is now a search request called "docsearch" that works on a document basis. See the DocSearchProposal for more details.
+
+---+++++ Header
+   * remove <type> element from the header and make the element following the header specify the kind of request. This allows validation of a request and response in contrast to NO validation using values in the header element.
+d56 1
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d24 1
+a24 1
+of requests, a complete specification for the 3 types of services
+d27 1
+a27 1
+Therefore we think the protocol specification should be more specific and define a seperate protocol with its own namespace for each of the respective service types. These protocols are very similar to each other and are therefore based on a common core protocol schema.
+d43 2
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d29 1
+a29 1
+In the protocol specification and [[files][schema files]] above we are considering DatasourceServices and ProviderServices as a limited form of MessageBrokerServices only. 
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d6 1
+d17 9
+a25 1
+We think the protocol is in its present form serving different kind of services which forces us to laxly define the protocol to accomodate requests and responses of DatasourceServices, ProviderServices and what we would like to call MessageBrokerServices. To have a more specific protocol we are defining a seperate protocol with its own namespace for each of the respective service types. These protocols are very similar to each other and are therefore based on a common core protocol schema.
+d27 4
+a30 1
+In the protocol specification we are considering DatasourceServices and ProviderServices as a limited form of MessageBrokerServices only. Following are some special features for each of them:
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@a13 2
+---+++++ Header
+   * remove <type> element from the header and make the element following the header specify the kind of request. This allows validation of a request and response in contrast to NO validation using values in the header element.
+d38 4
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d38 1
+a38 1
+   * The RecordBasedApproach will simply be called "search" as in the proposals before. See SearchProposalTwo for this.
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d38 1
+a38 1
+   * The RecordBasedSearch will simply be called "search" as in the proposals before. See SearchProposalTwo for this.
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d14 1
+d17 1
+a17 1
+---+++++ Webservice Entities
+d33 1
+a33 1
+---+++++ Record FifthProposal Document based approach
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d4 1
+a4 1
+Based on the FourthProposal this proposal tries to solve all inconsistencies discovered since the BerlinMeeting in the ForthProposal.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d4 1
+a4 1
+Based on the ForthProposal this proposal tries to solve all inconsistencies discovered since the BerlinMeeting in the ForthProposal.
+@

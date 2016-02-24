@@ -1,0 +1,69 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1094986860" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="AgentRoleEnum"}%
+The agent role enumerations are structured into three fundamental enumerations:
+	* Creator roles
+	* Contributor roles
+	* Owner roles
+
+Unions of these are defined as: 
+	* Agent roles (= all roles)
+		* Creator/Contributor roles
+			* Creator roles
+			* Contributor roles
+		* Owner roles
+
+This can be modeled as:
+	* Agent roles = union of all three
+	* Creator/Contributor roles = union of Creator and Contributor 
+or as
+	* Agent roles = union of all Owner and Creator/Contributor 
+	* Creator/Contributor roles = union of Creator and Contributor 
+
+However, neither model was accepted by Java Xerxes 2.6.2 (problem detected by detected by Jacob Asiedu). The error message was (astonishingly in both cases!) that <nop>AgentCreatorContributorRole is not a valid restriction of the <nop>AgentRole.
+
+As a workaround, starting with UBIF 1.0 beta 19, the <nop>AgentCreatorContributorRoleEnum was therefore modeled as an explicit restriction of the <nop>AgentRoleEnum itself, which is way more cumbersome and unintuitive than the original model using simple unions. Original definition:
+
+<verbatim>
+  <xs:simpleType name="AgentCreatorContribRoleEnum">
+	 <xs:union memberTypes="AgentCreatorRoleEnum AgentContributorRoleEnum"/>
+  </xs:simpleType>
+</verbatim>
+
+New definition (workaround):
+<verbatim>
+  <xs:simpleType name="AgentCreatorContribRoleEnum">
+	 <xs:restriction base="AgentRoleEnum">
+		<xs:enumeration value="aut"/>
+		<xs:enumeration value="edt"/>
+		<xs:enumeration value="cre"/>
+		<xs:enumeration value="ill"/>
+		<xs:enumeration value="pht"/>
+		<xs:enumeration value="ctb"/>
+		<xs:enumeration value="trl"/>
+		<xs:enumeration value="trc"/>
+		<xs:enumeration value="clb"/>
+		<xs:enumeration value="col"/>
+		<xs:enumeration value="crp"/>
+		<xs:enumeration value="prg"/>
+		<xs:enumeration value="rth"/>
+		<xs:enumeration value="rtm"/>
+		<xs:enumeration value="res"/>
+		<xs:enumeration value="sad"/>
+		<xs:enumeration value="pfr"/>
+		<xs:enumeration value="mrk"/>
+		<xs:enumeration value="cmm"/>
+		<xs:enumeration value="rev"/>
+		<xs:enumeration value="csl"/>
+	 </xs:restriction>
+  </xs:simpleType>
+</verbatim>
+
+Note that the workaround does NOT change the enumeration lists and semantics and it should be possible to change to the more straightforward model later, without changing existing software. 
+
+See the [[%ATTACHURL%/UBIF-AgentRoleProblem_XerxesWorkaround.zip][attached zip file]] for example files (xml instance and xsd schmemata) in which the problem has been isolated.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 12 Sept 2004
+
+%META:FILEATTACHMENT{name="UBIF-AgentRoleProblem_XerxesWorkaround.zip" attr="h" comment="" date="1094986721" path="C:\Data\Desktop\DESCR\SDD\efgXerxesValidator\UBIF-AgentRoleProblem_XerxesWorkaround.zip" size="11164" user="GregorHagedorn" version="1.1"}%

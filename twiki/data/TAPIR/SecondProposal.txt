@@ -1,0 +1,88 @@
+---+ Second proposal
+
+---+++++ General strategy
+
+To eliminate all DifferencesBetweenProtocols, by either adopting the approach used by one of them, or by suggesting a new approach. This should be mainly a straightforward and conservative proposal, although new features could be added.
+
+---+++++ Files
+   * *Protocol Schema* : http://www.bgbm.org/biodivinf/Schema/protocol2.xsd
+
+---+++++ Details
+
+   * Use the same approach regarding AccessPoints:
+   * Each provider and each resource will have its own access point.
+   * Providers will only accept metadata and capabilities requests. (*open issue*)
+   * Resources will accept all kind of requests.
+   * Providers will answer metadata requests including metadata about themselves and about all its resources.
+   * Resources will answer metadata requests including metadata about themselves and about their providers.
+
+   * Eliminate DifferencesInHeaderInformation by (see HeaderProposalOne):
+
+   * removing the optional attribute "resource" in both "source" and "destination" elements (affects DiGIR). (*open issue*)
+   * changing the "version" element to multiple "software" elements (with attributes "name" and "version"). "Software" could have multiple occurrences (related to provider, portal, indexer, client, etc), and each "software" could have "components" as subelements (also with name and version). This could be important not only for debugging and logging, but mainly for determining which protocols are supported by a provider (affects both - related to new BioCASE proposal). (*move this to capabilities SecondProposal diagnostics in case of error)*
+   * allowing multiple "source" elements to be able to track each address in the process, and incorporating the "sendTime" element as an attribute of "source" (affects both - related to new BioCASE proposal).
+   * *Pending issue: *should we remove the "type" element and only use the immediate element after "header" to determine the type of requests/responses? 
+
+   * Eliminate DifferencesInRequestTypes by:
+   * Including a MetadataRequest SecondProposal Response (affects BioCASE).
+   * Defining the metadata elements in a separate schema (affects both).
+   * Including a CapabilitiesRequest SecondProposal Response (affects DiGIR).
+   * Including a PingRequest SecondProposal Response (affects both).
+
+   * Use the same metadata response based on DiGIR with a few changes: (see MetadataProposalOne)
+   * Removing the implementation element (duplicated).
+   * Moving the elements conceptualSchema, minQueryTermLength, maxSearchResponseRecords, maxInventoryResponseRecords to the CapabilitiesRequest. 
+   * Removing recordBasis and recordIdentifier elements.
+   * Including accessPoint in the resource.
+   * Moving code and contact from host to provider.
+   * Removing host element.
+   * Changing useRestrictions to IPR. *Pending issue: *is IPR broader than useRestrictions?
+   * *Pending issue: *do we need to keep numberOfRecords? (could be retrieved through count).
+
+   * Use the same CapabilitiesRequest and Response: (see CapabilitiesProposalOne)
+   * Including a list of conceptual schemas being used (and all mapped concepts).
+   * Including a list of request methods supported.
+   * Including a list of local configurations (minQueryTermLength, maxSearchResponseRecords, maxInventoryResponseRecords). *Pending issue: *should the possible configuration names be defined inside the protocol or should we use a generic element for that?
+
+   * Eliminate DifferencesInConceptualBinding by: (see ConceptualBindingProposalOne)
+   * Referencing concepts through simple xpaths (affects DiGIR).
+   * Allowing concepts from different conceptual schemas to be present in the same request by prefixing the path (affects mainly BioCASE).
+
+   * Use the same SearchRequest by:
+   * Allowing 3 subtypes of searches (which could be supported or not by the providers):
+    * A FullDocumentSearch that just references an XML schema defining the concepts involved, how they should be structured in the response, and what are the mandatory concepts (affects DiGIR).
+    * A PartialDocumentSearch that references one or more concepts from a generic XML schema. The schema specifies the structure, and all mandatory concepts from the schema should be returned too (affects DiGIR and BioCASE).
+    * A CustomDocumentSearch based on a ResponseStructure (affects BioCASE).
+   * Alternative proposal: SearchRequestProposalTwo
+
+   * Use the same ResponseStructure specification for a CustomSearch by: (see CustomSearchProposalOne)
+   * Allowing values to be returned as attributes.
+   * Allowing element/attribute name specification to appear in responses (including prefix).
+   * Allowing use of concepts from different schemas in the same structure.
+   * Allowing record definitions in the record structure (for count and paging purposes).
+   * *Pending issue: *could we somehow deal with recursive relationships between concepts, i.e. unlimited depth nesting? (SDD seems to use that)
+   * *Pending issue: *should we try to allow the specification of data dictionaries so that elements in the response could reference entries in thess dictionaries and avoid value repetition? (SDD seems to use this approach)
+
+   * Use the same InventoryRequest and Response: (see InventoryProposalOne)
+   * Allowing filters (affects BioCASE).
+   * Allowing counts, both partial and total (affects BioCASE).
+   * Using the name "inventory" for this type of request (affects BioCASE).
+
+   * Eliminate DifferencesWithOperators by:
+   * adding a new unary logical operator called "not" (affects DiGIR).
+   * adding a new unary comparative operator called "isNull" (affects DiGIR).
+   * dropping the operators "orNot", "andNot" and "notEquals" (affects both).
+   * dropping the operator "isNotNull" (affects BioCASE).
+
+   * Use the same way to call providers:
+   * Using a single POST or GET parameter called "request" which contains either the XML message or an URL pointing to the XML message. 
+
+   * *Pending issue: *How should we deal with NULL values when producing responses?
+
+   * Extra suggestions (not directly related to protocol integration):
+   * agree on common ErrorCodes and use a standard prefix for classification of codes.
+   * allow search requests without filters (affects both).
+   * change maxOccurs of LOPs to unbounded (affects both).
+   * include a new operator "isMapped" (affects both).
+   * allow more than one concept in inventory/scan requests (affects both). (see InventoryProposalTwo)
+   * include a PingRequest (affects both).

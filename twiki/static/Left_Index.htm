@@ -1,0 +1,308 @@
+<html>
+
+<head>
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+<meta http-equiv="Content-Language" content="en-au">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Primer Home</title>
+<base target="main">
+<link rel="stylesheet" type="text/css" href="sdd1.css">
+
+<style type="text/css">
+
+#dropmenudiv{
+position:absolute;
+border:1px solid black;
+font:normal 12px Arial;
+line-height:18px;
+z-index:100;
+}
+
+#dropmenudiv a{
+width: 100%;
+display: block;
+text-indent: 3px;
+}
+
+#dropmenudiv a:hover{ /*hover background color*/
+background-color: lightblue;
+}
+</style>
+
+
+<script type="text/javascript">
+
+/***********************************************
+* AnyLink Drop Down Menu- © Dynamic Drive (www.dynamicdrive.com)
+* This notice MUST stay intact for legal use
+* Visit http://www.dynamicdrive.com/ for full source code
+***********************************************/
+
+//Contents for menu 1
+<!-- streams -->
+var menu1=new Array()
+menu1[0]='<a target="main" href="codeddata.html">Using SDD for coded summary descriptions</a>'
+menu1[1]='<a target="main" href="codedsampledescription.html">Using SDD for coded sample descriptions</a>'
+menu1[2]='<a target="main" href="naturallanguagedescriptions.html">Using SDD for natural language descriptions</a>'
+menu1[3]='<a target="main" href="dichotomouskeys.html">Using SDD for dichotomous keys</a>'
+
+//Contents for menu 2, and so on
+<!-- basics -->
+var menu2=new Array()
+menu2[0]='<a target="main" href="sdddatasets.html">Datasets in SDD documents</a>'
+menu2[1]='<a target="main" href="technicalmetadata.html">Technical metadata</a>'
+menu2[2]='<a target="main" href="datasetmetadata.html">Dataset metadata</a>'
+menu2[3]='<a target="main" href="taxonnames.html">Defining taxon names</a>'
+menu2[4]='<a target="main" href="specimennames.html">Defining specimen names</a>'
+menu2[5]='<a target="main" href="sddcharacters.html">Characters</a>'
+menu2[6]='<a target="main" href="taxonhierarchies.html">Taxon hierarchies</a>'
+menu2[7]='<a target="main" href="characterhierarchies.html">Character hierarchies</a>'
+
+
+<!-- elements -->
+var menu3=new Array()
+menu3[0]='<a target="main" href="sddaudiences.html">Defining intended audience in SDD</a>'
+menu3[1]='<a target="main" href="sddlanguage.html">Language support in SDD</a>'
+menu3[2]='<a target="main" href="sdddependencies.html">Dependencies in SDD</a>'
+menu3[3]='<a target="main" href="sddmedia.html">Attaching Media to SDD Items</a>'
+menu3[4]='<a target="main" href="sddmapping.html">Mapping one character onto another</a>'
+menu3[5]='<a target="main" href="sddagents.html">Referencing contributors and sources</a>'
+menu3[6]='<a target="main" href="descriptiveconcepts.html">Using modifiers with SDD data</a>'
+menu3[7]='<a target="main" href="descriptiveconcepts.html">Use of grouping concept within SDD</a>'
+menu3[8]='<a target="main" href="descriptiveconcepts.html">Applying descriptive concepts across SDD datasets</a>'
+menu3[9]='<a target="main" href="sddpublications.html">Referencing publications</a>'
+menu3[10]='<a target="main" href="sddscope.html">Defining the scope of SDD output</a>'
+
+<!-- miscellaneous -->
+var menu4=new Array()
+menu4[0]='<a target="main" href="SDD_Publications.htm">Defining publications</a>'
+menu4[1]='<a target="main" href="SDD_Agents.htm">Defining agents</a>'
+menu4[2]='<a target="main" href="not_done_yet.htm">Defining localities</a>'
+menu4[3]='<a target="main" href="not_done_yet.htm">Defining measurement units</a>'
+menu4[4]='<a target="main" href="not_done_yet.htm">Specimens in SDD documents</a>'
+menu4[5]='<a target="main" href="not_done_yet.htm">Media resources in SDD documents</a>'
+
+<!-- faqs -->
+var menu5=new Array()
+menu5[0]='<a target="main" href="SDD_FAQ.htm#FAQ_DELTA">Why not use DELTA as a standard?</a>'
+menu5[1]='<a target="main" href="SDD_FAQ.htm#FAQ_Verbosity">Why are SDD documents so verbose?</a>'
+menu5[2]='<a target="main" href="SDD_FAQ.htm#FAQ_numbers">Why are ther so many numbers within an SDD instance document and to what do they relate</a>'
+
+var menuwidth='165px' //default menu width
+var menubgcolor='lightyellow'  //menu bgcolor
+var disappeardelay=100  //menu disappear speed onMouseout (in miliseconds)
+var hidemenu_onclick="yes" //hide menu when user clicks within menu?
+var xMenuOffset=30  //right offset for menu
+
+/////No further editing needed
+
+var ie4=document.all
+var ns6=document.getElementById&&!document.all
+
+if (ie4||ns6)
+document.write('<div id="dropmenudiv" style="visibility:hidden;width:'+menuwidth+';background-color:'+menubgcolor+'" onMouseover="clearhidemenu()" onMouseout="dynamichide(event)"></div>')
+
+function getposOffset(what, offsettype){
+var totaloffset=(offsettype=="left")? what.offsetLeft : what.offsetTop;
+var parentEl=what.offsetParent;
+while (parentEl!=null){
+totaloffset=(offsettype=="left")? totaloffset+parentEl.offsetLeft : totaloffset+parentEl.offsetTop;
+parentEl=parentEl.offsetParent;
+}
+return totaloffset;
+}
+
+
+function showhide(obj, e, visible, hidden, menuwidth){
+if (ie4||ns6)
+dropmenuobj.style.left=dropmenuobj.style.top=-500
+if (menuwidth!=""){
+dropmenuobj.widthobj=dropmenuobj.style
+dropmenuobj.widthobj.width=menuwidth
+}
+if (e.type=="click" && obj.visibility==hidden || e.type=="mouseover")
+obj.visibility=visible
+else if (e.type=="click")
+obj.visibility=hidden
+}
+
+function iecompattest(){
+return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+function clearbrowseredge(obj, whichedge){
+var edgeoffset=0
+if (whichedge=="rightedge"){
+var windowedge=ie4 && !window.opera? iecompattest().scrollLeft+iecompattest().clientWidth-15 : window.pageXOffset+window.innerWidth-15
+dropmenuobj.contentmeasure=dropmenuobj.offsetWidth
+if (windowedge-dropmenuobj.x < dropmenuobj.contentmeasure)
+edgeoffset=dropmenuobj.contentmeasure-obj.offsetWidth
+}
+else{
+var windowedge=ie4 && !window.opera? iecompattest().scrollTop+iecompattest().clientHeight-15 : window.pageYOffset+window.innerHeight-18
+dropmenuobj.contentmeasure=dropmenuobj.offsetHeight
+if (windowedge-dropmenuobj.y < dropmenuobj.contentmeasure)
+edgeoffset=dropmenuobj.contentmeasure+obj.offsetHeight
+}
+return edgeoffset
+}
+
+function populatemenu(what){
+if (ie4||ns6)
+dropmenuobj.innerHTML=what.join("")
+}
+
+
+function dropdownmenu(obj, e, menucontents, menuwidth){
+if (window.event) event.cancelBubble=true
+else if (e.stopPropagation) e.stopPropagation()
+clearhidemenu()
+dropmenuobj=document.getElementById? document.getElementById("dropmenudiv") : dropmenudiv
+populatemenu(menucontents)
+
+if (ie4||ns6){
+showhide(dropmenuobj.style, e, "visible", "hidden", menuwidth)
+dropmenuobj.x=getposOffset(obj, "left")
+dropmenuobj.y=getposOffset(obj, "top")
+dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "rightedge")+xMenuOffset+"px"
+dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+}
+
+return clickreturnvalue()
+}
+
+function clickreturnvalue(){
+if (ie4||ns6) return false
+else return true
+}
+
+function contains_ns6(a, b) {
+while (b.parentNode)
+if ((b = b.parentNode) == a)
+return true;
+return false;
+}
+
+function dynamichide(e){
+if (ie4&&!dropmenuobj.contains(e.toElement))
+delayhidemenu()
+else if (ns6&&e.currentTarget!= e.relatedTarget&& !contains_ns6(e.currentTarget, e.relatedTarget))
+delayhidemenu()
+}
+
+function hidemenu(e){
+if (typeof dropmenuobj!="undefined"){
+if (ie4||ns6)
+dropmenuobj.style.visibility="hidden"
+}
+}
+
+function delayhidemenu(){
+if (ie4||ns6)
+delayhide=setTimeout("hidemenu()",disappeardelay)
+}
+
+function clearhidemenu(){
+if (typeof delayhide!="undefined")
+clearTimeout(delayhide)
+}
+
+if (hidemenu_onclick=="yes")
+document.onclick=hidemenu
+
+</script>
+
+
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+
+<body>
+
+<p><img src="TDWG_Logo.jpg" alt="TDWG Logo" border="0"></p>
+<table border="0" width="90%" id="table1">
+	<tr>
+		<td><hr></td>
+	</tr>
+	<tr>
+		<td>
+		<h3 align="left"><b>Contents</b></h3>
+		</td>
+	</tr>
+	<tr>
+		<td>
+<a target="main" href="sddintroduction.html">Primer Home</a></td>
+	</tr>
+		<tr>
+		<td>
+<a target="main" href="sddcontents.html">Table of Contents</a></td>
+	</tr>
+	<tr>
+		<td>
+<a href="default.htm" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu1, '190px')" onMouseout="delayhidemenu()">SDD Streams</a></td>
+	</tr>
+	<tr>
+		<td>
+<a href="default.htm" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu2, '190px')" onMouseout="delayhidemenu()">SDD Basics</a></td>
+	</tr>
+	<tr>
+		<td>
+<a href="default.htm" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu3, '190px')" onMouseout="delayhidemenu()">Miscellaneous</a></td>
+	</tr>
+	<tr>
+		<td>
+<a href="default.htm" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu5, '190px')" onMouseout="delayhidemenu()">FAQs</a></td>
+	</tr>
+	<tr>
+		<td><hr></td>
+	</tr>
+	<tr>
+		<td>
+		<h3 align="left"><b>Links</b></h3>
+		</td>
+	</tr>
+	<tr>
+		<td>Schema Documentation</td>
+	</tr>
+	<tr>
+		<td>SDD Wiki</td>
+	</tr>
+	<tr>
+		<td><hr></td>
+	</tr>
+	<tr>
+
+	</tr>
+</table>
+
+<font size="1">
+<script type="text/javascript">
+<!--
+	// last modified script by Bernhard Friedrich; should work in all browsers
+	var a;
+	a=new Date(document.lastModified);
+	lm_year=a.getYear();lm_year=((lm_year<1000)?((lm_year<70)?2000:1900):0)+lm_year;
+	lm_month=a.getMonth()+1;lm_month=((lm_month<10)?'0':'')+lm_month;
+	lm_day=a.getDate();lm_day=((lm_day<10)?'0':'')+lm_day;
+	monthName = new Array(12)
+	monthName[0] = 'Jan'
+	monthName[1] = 'Feb'
+	monthName[2] = 'Mar'
+	monthName[3] = 'Apr'
+	monthName[4] = 'May'
+	monthName[5] = 'Jun'
+	monthName[6] = 'Jul'
+	monthName[7] = 'Aug'
+	monthName[8] = 'Sep'
+	monthName[9] = 'Oct'
+	monthName[10] = 'Nov'
+	monthName[11] = 'Dec'
+	document.write("last edit: " + lm_day+' '+monthName[lm_month-1]+' '+lm_year);
+// -->
+</script>
+
+</font>
+
+
+</body>
+
+</html>

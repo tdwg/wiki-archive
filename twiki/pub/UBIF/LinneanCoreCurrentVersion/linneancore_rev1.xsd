@@ -1,0 +1,2076 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Gregor Hagedorn (Biologische Bundesanstalt) -->
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="NameRecord">
+    <xs:annotation>
+      <xs:documentation>Container for all elements of a name record</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="NameRecordType"/>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="NameRecordType">
+    <xs:sequence>
+      <xs:element name="FullName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The full name at any rank ##excluding##? the authors. Where available, this should be generated from the canonical name.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Rank" type="TaxonomicRankEnum">
+        <xs:annotation>
+          <xs:documentation>It would be desirable to have this controlled by a vocabulary together with a sort code. Not sure that is achievable in an open system?  ranks are included.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="CanonicalName" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>As of 10/2004 ABCD and 
+TCS use different models
+for bact., bot., zool, and 
+viral names. The Linn. Core 
+group agreed that for the 
+exchange of nomenclatural
+data this is not desirable</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice>
+              <xs:annotation>
+                <xs:documentation>Choice 
+of:</xs:documentation>
+              </xs:annotation>
+              <xs:element name="Monomial" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The single name where rank is genus or higher. This includes intergeneric hybrid names under the ICBN, ##without the leading multiplication sign??##,  or the name of an intergeneric graft hybrid or graft chimaera, published under the Cultivated Code.</xs:documentation></xs:annotation>
+              </xs:element>
+              <xs:sequence>
+                <xs:annotation>
+                  <xs:documentation>Compound names 
+(infrageneric, 
+species, etc.) 
+require multiple 
+data items:</xs:documentation>
+                </xs:annotation>
+                <xs:element name="Genus" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>Genus or higher taxon name. This is the only name item for names of genus and higher rank. For infrageneric or species names it contains the genus part.</xs:documentation>
+                    <xs:appinfo>
+                      <sea:FullName>Genus</sea:FullName>
+                      <sea:Audience>BioCASE</sea:Audience>
+                      <sea:Audience>CODATA TDWG</sea:Audience>
+                      <sea:Reviewer>Berendsohn</sea:Reviewer>
+                      <sea:ExistingStandard>HISPID: Genus Name (gen) as to content, not all rules.</sea:ExistingStandard>
+                      <sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+                      <sea:Content>A generic name as a botancal scientific name or as part of it. A generic name under one of the established nomenclatural codes, or a manuscript name, or an intergeneric hybrid name under the ICBN, without the leading multiplication sign,  or the name of an intergeneric graft hybrid or graft chimaera, published under the Cultivated Code.</sea:Content>
+                      <sea:Example>Abies</sea:Example>
+                      <sea:Example>Halimiocistus</sea:Example>
+                      <sea:Example>Crataegomespilus</sea:Example>
+                      <sea:Comment/>
+                      <sea:Rule>First letter capitalised</sea:Rule>
+                      <sea:Rule>No spaces included.</sea:Rule>
+                      <sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+                    </xs:appinfo>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="InfragenericName" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>Used only for subgenus, series, or section rank (together with the genus they belong to). Preferably not to be used for species, since in this case it indicates taxonomic opinion.</xs:documentation>
+                    <xs:appinfo>
+                      <sea:FullName>Species epithet</sea:FullName>
+                      <sea:Audience>BioCASE</sea:Audience>
+                      <sea:Audience>CODATA TDWG</sea:Audience>
+                      <sea:Reviewer>Berendsohn</sea:Reviewer>
+                      <sea:ExistingStandard>Darwin Core 2: Species.</sea:ExistingStandard>
+                      <sea:Content>The first epithet occurring in a bacterial name (after genus and, optionally, subgenus names)</sea:Content>
+                      <sea:Example>liquefaciens</sea:Example>
+                      <sea:Comment/>
+                      <sea:Rule/>
+                      <sea:EditorialNote/>
+                    </xs:appinfo>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="SpeciesEpithet" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>Species epithet</xs:documentation>
+                    <xs:appinfo>
+                      <sea:FullName>Species epithet</sea:FullName>
+                      <sea:Audience>BioCASE</sea:Audience>
+                      <sea:Audience>CODATA TDWG</sea:Audience>
+                      <sea:Reviewer>Berendsohn</sea:Reviewer>
+                      <sea:ExistingStandard>Darwin Core 2: Species.</sea:ExistingStandard>
+                      <sea:Content>The first epithet occurring in a bacterial name (after genus and, optionally, subgenus names)</sea:Content>
+                      <sea:Example>liquefaciens</sea:Example>
+                      <sea:Comment/>
+                      <sea:Rule/>
+                      <sea:EditorialNote/>
+                    </xs:appinfo>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="GenusLink" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>For infrageneric names: ID of the genus (local id, LSID, etc.) to disambiguate the relation in the case of homonyms. Not intended to express concept-hierarchy!</xs:documentation>
+                    <xs:appinfo>
+                      <sea:FullName>Genus</sea:FullName>
+                      <sea:Audience>BioCASE</sea:Audience>
+                      <sea:Audience>CODATA TDWG</sea:Audience>
+                      <sea:Reviewer>Berendsohn</sea:Reviewer>
+                      <sea:ExistingStandard>HISPID: Genus Name (gen) as to content, not all rules.</sea:ExistingStandard>
+                      <sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+                      <sea:Content>A generic name as a botancal scientific name or as part of it. A generic name under one of the established nomenclatural codes, or a manuscript name, or an intergeneric hybrid name under the ICBN, without the leading multiplication sign,  or the name of an intergeneric graft hybrid or graft chimaera, published under the Cultivated Code.</sea:Content>
+                      <sea:Example>Abies</sea:Example>
+                      <sea:Example>Halimiocistus</sea:Example>
+                      <sea:Example>Crataegomespilus</sea:Example>
+                      <sea:Comment/>
+                      <sea:Rule>First letter capitalised</sea:Rule>
+                      <sea:Rule>No spaces included.</sea:Rule>
+                      <sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+                    </xs:appinfo>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="SpeciesLink" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>For infraspecific: ID of the species (local id, LSID, etc.) to disambiguate the relation in the case of homonyms. Not intended to express concept-hierarchy!</xs:documentation>
+                    <xs:appinfo>
+                      <sea:FullName>Genus</sea:FullName>
+                      <sea:Audience>BioCASE</sea:Audience>
+                      <sea:Audience>CODATA TDWG</sea:Audience>
+                      <sea:Reviewer>Berendsohn</sea:Reviewer>
+                      <sea:ExistingStandard>HISPID: Genus Name (gen) as to content, not all rules.</sea:ExistingStandard>
+                      <sea:ExistingStandard>Darwin Core 2: Genus.</sea:ExistingStandard>
+                      <sea:Content>A generic name as a botancal scientific name or as part of it. A generic name under one of the established nomenclatural codes, or a manuscript name, or an intergeneric hybrid name under the ICBN, without the leading multiplication sign,  or the name of an intergeneric graft hybrid or graft chimaera, published under the Cultivated Code.</sea:Content>
+                      <sea:Example>Abies</sea:Example>
+                      <sea:Example>Halimiocistus</sea:Example>
+                      <sea:Example>Crataegomespilus</sea:Example>
+                      <sea:Comment/>
+                      <sea:Rule>First letter capitalised</sea:Rule>
+                      <sea:Rule>No spaces included.</sea:Rule>
+                      <sea:EditorialNote>Generic names are essentially the same under the different codes; however, to avoid having to place the essential parts of a name on different levels of the hierarchy, all name elements recognized under a specific code are listed in the respective section.</sea:EditorialNote>
+                    </xs:appinfo>
+                  </xs:annotation>
+                </xs:element>
+              </xs:sequence>
+            </xs:choice>
+            <xs:element name="HybridFlag" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Flag indicating that this is a named hybrid or a graft chimaera.</xs:documentation>
+                <xs:appinfo>
+                  <sea:FullName/>
+                  <sea:Audience>BioCASE</sea:Audience>
+                  <sea:Audience>CODATA TDWG</sea:Audience>
+                  <sea:Reviewer>Berendsohn</sea:Reviewer>
+                  <sea:ExistingStandard>HISPID: Hybrid Flag (hyb) .</sea:ExistingStandard>
+                  <sea:Content>Flag indicating that this is a named hybrid or a graft chimaera. Attribute Rank defines if this applies to the generic, species, or infraspecific level.</sea:Content>
+                  <sea:Example/>
+                  <sea:Comment/>
+                  <sea:Rule/>
+                  <sea:EditorialNote/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+            <xs:sequence>
+              <xs:annotation>
+                <xs:documentation>Z. Authors</xs:documentation>
+              </xs:annotation>
+              <xs:element name="AuthorTeamOriginalAndYear" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The first person(s) who validly published a species-group name and the year of publication.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName>Original authors and year of publication.</sea:FullName>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard/>
+                    <sea:Content>The first person(s) who validly published a species-group name and the year of publication.</sea:Content>
+                    <sea:Example>L.</sea:Example>
+                    <sea:Comment/>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="AuthorTeamParenthesisAndYear" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The parenthetical citation of the original author when a species-group was transferred to another genus and the year of the original publication.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName/>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard/>
+                    <sea:Content>Author(s) of the original name for a taxon which has subsequently been revised but retains the same stem or epithet and the year of the original publication.</sea:Content>
+                    <sea:Example>L.</sea:Example>
+                    <sea:Comment/>
+                    <sea:Rule>Set in parenthesis upon output</sea:Rule>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="CombinationAuthorTeamAndYear" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The citation of the authors responsible for the new combination and the year of its publication.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName/>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard/>
+                    <sea:Content>The citation of the authors responsible for the new combination when a species-group is transferred to another genus and the year of publication of  the transfer.</sea:Content>
+                    <sea:Example>L.</sea:Example>
+                    <sea:Comment>Purely optional under the zoological code.</sea:Comment>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence>
+              <xs:annotation>
+                <xs:documentation>B. Authors</xs:documentation>
+              </xs:annotation>
+              <xs:element name="AuthorTeamParenthesis" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Author team of the basionym of a combination.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName/>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard>HISPID4: has Basionym (basnam) as an element but not the author team.</sea:ExistingStandard>
+                    <sea:Content>Author(s) of the original name for a taxon which has subsequently been revised but retains the same stem or epithet. May be preceded by a sanctioning author. If possible, preceding "ex" authors should be avoided.</sea:Content>
+                    <sea:Example>L.</sea:Example>
+                    <sea:Example>Ames and Correll</sea:Example>
+                    <sea:Comment/>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="AuthorTeam" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The author(s) who published the full name as it stands.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName>Author team</sea:FullName>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard/>
+                    <sea:Content>Author(s) for the taxonomic name combination (i.e. the author team of the new combination where there is a basionym, and the name author  team where there is none).  May be preceded by a sanctioning author. If possible, preceding "ex" authors should be avoided.</sea:Content>
+                    <sea:Example>DC.</sea:Example>
+                    <sea:Example>Ames and Correll</sea:Example>
+                    <sea:Comment/>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ParentheticalAuthorTeamAndYear" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Author team and Year of the basionym of a species or subspecies combination.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName>Author team and year</sea:FullName>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard>HISPID4: has Basionym (basnam) as an element but not the author team.</sea:ExistingStandard>
+                    <sea:Content>Author(s) of the original name for a taxon which has subsequently been revised but retains the same stem or epithet.</sea:Content>
+                    <sea:Example>Asai</sea:Example>
+                    <sea:Comment/>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="AuthorTeamAndYear" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The author(s) who published the full name as it stands and its year.</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName>Author team and year</sea:FullName>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer>Berendsohn</sea:Reviewer>
+                    <sea:ExistingStandard/>
+                    <sea:Content>Author(s) for the taxonomic name combination (i.e. the author team of the new combination where there is a basionym, and the name author  team where there is none).</sea:Content>
+                    <sea:Example>Yamada and Kondo</sea:Example>
+                    <sea:Example>Ames and Correll</sea:Example>
+                    <sea:Comment/>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence>
+              <xs:annotation>
+                <xs:documentation>Zool.
+Extensions</xs:documentation>
+              </xs:annotation>
+              <xs:element name="Breed" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Name of the breed of an animal</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="NamedIndividual" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+            <xs:sequence>
+              <xs:annotation>
+                <xs:documentation>Bact.
+Extensions</xs:documentation>
+              </xs:annotation>
+              <xs:element name="NameApprobation" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Approbation of name according to approved list, validation list,or validly published, paper in Int. J. Syst. Bact. after 1980.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence>
+              <xs:annotation>
+                <xs:documentation>Viral
+Extensions</xs:documentation>
+              </xs:annotation>
+              <xs:element name="ViralSpeciesDesignation" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The non-latinised designation of a formal viral name. This replaces the species epithet. Examples: vaccinia virus; human herpes virus 2 (herpes simplex virus 2); poliovirus 1; Saccharomyces cerevisiae virus L-A; enterobacteria phage PRD1 [Source: ICTV].</xs:documentation>
+                  <xs:appinfo>
+                    <sea:FullName/>
+                    <sea:Audience>BioCASE</sea:Audience>
+                    <sea:Audience>CODATA TDWG</sea:Audience>
+                    <sea:Reviewer/>
+                    <sea:ExistingStandard/>
+                    <sea:Content/>
+                    <sea:Example/>
+                    <sea:Comment/>
+                    <sea:Rule/>
+                    <sea:EditorialNote/>
+                  </xs:appinfo>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="NameExtensions" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>@@</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Race" type="xs:integer" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Races and possibly other ranks not governed by a code (patho/bio/serovar).</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="CultivarGroupName" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Cultivar group name</xs:documentation>
+                <xs:appinfo>
+                  <sea:FullName>Cultivar group name</sea:FullName>
+                  <sea:Audience>BioCASE</sea:Audience>
+                  <sea:Audience>CODATA TDWG</sea:Audience>
+                  <sea:Reviewer>Berendsohn</sea:Reviewer>
+                  <sea:ExistingStandard>HISPID4: culgnam</sea:ExistingStandard>
+                  <sea:ExistingStandard>ITF</sea:ExistingStandard>
+                  <sea:ExistingStandard>Trehane(1995)</sea:ExistingStandard>
+                  <sea:Content>The name of a cultivar group as specified in the ICNCP.</sea:Content>
+                  <sea:Example>Granny Smith Group</sea:Example>
+                  <sea:Comment/>
+                  <sea:Rule/>
+                  <sea:EditorialNote/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="CultivarName" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>The name of a cultivar as specified in the ICNCP. Examples: Firmgold, Granny Smith. Enter without quotes; single quotes should be added when creating the full name.
+
+Jerry: ###These can occur at any rank and are therefore treated as an extra 'label' attached at any rank. We should develop this more fully. Related issue: Trade Names. These are allocated by a registering authority on a country-basis and thus the same trade name can be applied to different taxa in different countries.</xs:documentation>
+
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="AuthorsTaxonOrthograpy" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The spelling given to the full taxon name by the author(s) originally creating the name, if not accepted under code. Reasons for later orthography changes include spelling, grammar, and gender corrections, interpretation of undefined ranks like "beta, gamma". Multinomials expressing original infrageneric taxonomic opinion (e. g., 'Saxifraga aizoon var. aizoon subvar. brevifolia f. multicaulis subf. surculosa Engl. &amp; Irmsch.' should also be noted here.
+AKA OriginalVerbatimOrthographyAsPublished.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AuthorsTaxonomicPlacement" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Free-form text expressing the original author(s) taxonomic placement above the level of genus (e. g. family, kingdom), by the author(s) originally creating the name. Intended to inform humans and may have </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymAuthors" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The authors of the original name, B-P abbreviated or not for plant names, without brackets. I am using Richard Pyle's term 'protonym' for cross-code basionym equivalent.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymYear" type="xs:integer" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Necessary duplication with data in citation if present. In an ideal world ...  @@GH: Note sure here. If FreeFormtext is optional, why could the year not be placed in true publication year of the publication reference as the only data item? This would probably have to be commented...</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymLocationInLit" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The page, plate, etc. on which the protologue starts (i. e. not the pagination  of the referenced publication).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymIsInCitation" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>name authors not same as lit authors @@GH: Unclear, please give example. Why would the Protonym not be in the citation?@@</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymCitation" type="SimpleCitationType" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Zoologists frequently have just original reference, and not combining reference. Will be duplicated if protonym reference given. Not sure how to handle this potential duplication?</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymURI" type="xs:anyURI" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>All these URI's need to be allocated by a central service. However, to be pragmatic, I suggest we use a semi-semantic URI of the form, say, provider.organization.country/localkey. Where localkey should itself preferably be non-semantic to the provider. Protonym URI Provides the link required to pull together MOST unambiguous synonyms. In the case of ICBN where Protonym equals Basionym there are some subtle rules for using nom. novs. 1) the original name is illegitimate in which case
+ the nom. nov. has itself as a basionym and the replaced name is the illegitimate name. 2) a combination would result in a homonym or tautonym, in which case the nom. nov. has itself as a basionym and the replaced name is the original valid name. 3) a combination would result in a homonym or tautonym and the author selects the next available epithet in the original circumscription. In this case the basionym is that later name (even though it is heterotypic!) and the replaced name is the original name. NB In this rare case linking names on the basionym INCLUDES AMBIGUOUS SYNONYMS.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProtonymLocalKey" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Local primary keys are probably the only thing most providers have (at least I hope they do!). This allows a data-set to be internally linked and checked for self-consistency. In the absence of a provider-driven URI, the central aggregator can issue appropriate URI's for return to the provider. I think this mechanism would also be appropriate for issuing TaxonConcept URI's where, again, most providers won't have them, but they can be generated automatically on aggregation.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IsNovum" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Name is a nom. nov.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ReplacedNameURI" type="xs:anyURI" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>In the case of nom. novs. a reference for the type bearing name - this required to fully group all objective synonyms</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ReplacedNameLocalKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="CombinationAuthors" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The authors of the original name, BP abbreviated or not for plant names, and without brackets</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="CombinationYear" type="xs:integer" minOccurs="0"/>
+      <xs:element name="CombinationPageInLit" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>May also be a plate/figure</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="CombinationIsInCitation" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>@@GH: I would need annotation here, not clear.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="CombinationCitation" type="SimpleCitationType" minOccurs="0"/>
+      <xs:element name="Nomenclature">
+        <xs:annotation>
+          <xs:documentation>The nomenclatural status of this name</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="NomenclaturalCode" type="NomenclaturalCodesEnum">
+              <xs:annotation>
+                <xs:documentation>The code to which name has been submitted for scrutiny. Names submitted to both botanical/zoological code are to be considered two name objects.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="NomenclaturalStatus">
+              <xs:annotation>
+                <xs:documentation>See attributes</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="Rejected"/>
+                  <xs:enumeration value="Fails"/>
+                  <xs:enumeration value="Conserved"/>
+                  <xs:enumeration value="Sanctioned"/>
+                  <xs:enumeration value="Accepted"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="RuleConsidered" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>The article in the code in question that is commented on below</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="StatusQualification" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>possibly need some vocabulary here, e.g. superfluous</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="CodeEdition" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Article numbering changes according to edition of the code</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="BlockingNames" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>The names having priority which block the use of this name</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence maxOccurs="unbounded">
+                  <xs:element name="NameURI" type="xs:anyURI"/>
+                  <xs:element name="NameLocalKey" type="xs:string"/>
+                  <xs:element name="BlockingString" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>placeholder for blocking name(s) if not referenced</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="NomenclaturalNote" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>nom. conf. etc</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="NomenclaturalSources" type="SimpleCitationType" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>The literature used to determine the nomenclatural status.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="EditorialStatus">
+        <xs:annotation>
+          <xs:documentation>The current status of the record from an editorial perspective</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="LiteratureSources" type="SimpleCitationType" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation>The sources of literature used to compile the record other than protologue and those mentioned against nomenclatural status</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Editors" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation>The people who compiled the data</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="EditorialNotes" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation>Notes on compilation</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Status">
+              <xs:annotation>
+                <xs:documentation>what sources were checked in compilation</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="PrimaryChecked"/>
+                  <xs:enumeration value="SecondaryAuthoritative"/>
+                  <xs:enumeration value="OtherSource"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="TypeCollection" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>not really nomenclatural - but useful. Should only be populated if this record is a protonym record. Not sure how to XML code that? </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="InstitutionCode" type="xs:string">
+              <xs:annotation>
+                <xs:documentation>The IndexHerbariorum or equivalent unique designation of the collection</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="AccessionNumber" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>The accession number of the type in the institute</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="TypeStatus" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>See attributes. Need to be careful here. We only need type designations that say something about nomenclatural status - any many don't, e.g. kleptotype etc.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="holotype"/>
+                  <xs:enumeration value="isotype"/>
+                  <xs:enumeration value="lectotype"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="CountryOfOrigin" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>ISO country. Where the type was collected. Strictly a job for collection databases but many name dbs hold this data so let's use it.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="IsProParte" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>This name is based on part of the same type as another name - possibly referenced below</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProParteOfNameURI" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation> NB pro-parte names have this nomenclatural type-linkage that needs storing in a nomenclatural record.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ProParteOfNameLocalKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="IsHybridGraft" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>@@Please add annotation</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="HybridGraftNames" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Plant hybrids and grafts may be referred to by a 'nothotaxon' name for the hybrid formula. there is a need to capture the grammar of this formula, i.e. to  specify the sex and order of component names which constitute the hybrid (effectively the 'partial' objective synonyms for the hybrid).</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="IsNothoTaxonName" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>This name is a nothotaxon name</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="HybridFormula" minOccurs="0">
+              <xs:complexType>
+                <xs:sequence maxOccurs="unbounded">
+                  <xs:element name="Sex" minOccurs="0">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="male"/>
+                        <xs:enumeration value="formula"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="NameURI" type="xs:anyURI"/>
+                  <xs:element name="Level" type="xs:integer" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>provides mechanisms of grouping inter-hybrid names</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="IsAnamorph" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Name applies to an anamorphic taxon: art 59 ICBN. Whilst the ICBN continues to allow two names for the same organism then we must provide a linking mechanism.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="TeleomorphNameURI" type="xs:anyURI" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Unambiguous link between anamorph/teleomorph names for same taxon currently allowed under ICBN</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="TeleomorphNameLocalKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="ThisNameURI" type="xs:anyURI" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>@@The "This" is atypical here and should  be removed. Else should also be ThisVernacularNames, etc. </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ThisNameLocalKey" type="xs:string"/>
+      <xs:element name="ThisNameProvider" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The nomenclator source of information. I suggest this reflects the non-semantic part of the providers URI. We need a mechanism for registering these.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DateCreated" type="xs:dateTime" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>(= DublinCore Date.Created)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DateModified" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>(= DublinCore Date.Modified)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="__CurrentFamilyPlacement" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>For GBIF: provide opinion on the placement of sub-family taxa</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SimpleCitationType">
+    <xs:sequence>
+      <xs:any namespace="##any">
+        <xs:annotation>
+          <xs:documentation>###Put Gutenberg/Alexandria Core in here</xs:documentation>
+        </xs:annotation>
+      </xs:any>
+    </xs:sequence>
+  </xs:complexType>
+  <!--==== Everything below has been TEMPORARILY copied from UBIF. -->
+  <xs:simpleType name="NomenclaturalTypeStatusOfUnitsEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">
+        <p>This list is a first version of a constrained vocabulary to express typifying relations between taxonomic names and units (specimens or objects preserved in collections). Beyond those type categories explicitly governed by nomenclatural codes (Zoology, Botany, Bacterioloy, Virology), the list also includes some additional type status terms. These categories may be helpful when interpreting the original circumscription (topotypes, ex-types), but do not have the same binding status as terms governed by the nomenclatural codes. The enumeration attempts to strike a balance between listing all possible terms, and remaining comprehensible. In general, including too many terms was considered less problematic than omitting terms. Applications may easily select a subset for presentation in their user interface.</p>
+        <p>This list is intended as a first version and it is hoped that in the review process through TDWG it will achieve sufficient maturity to be truly useful. It is expected that over time revisions will have to be made. Please use the WIKI (http://efgblade.cs.umb.edu/twiki/bin/view/UBIF/NomenclaturalTypeStatusOfUnitsDiscussion) to discuss the current list and the lists of synonymous, doubtful, or excluded type terms provided therein.</p>
+        <p>Some background information: A type provides the objective standard of reference to determine the application of a taxon name. The type status of a unit (specimen) is only meaningful in combination with the name that is being typified (a unit may have been designated type for multiple names in different publications). The type status of an object may be designated in the original description of a scientific name (original designation), or - under rules layed out in the respective nomenclatural codes - at a later time (subsequent designation). -- For taxa above species rank the type is always a lower rank taxon (e. g., species for genus, genus for family). The type terms for this situation are not included in the enumeration. Ultimately, typication of all taxa goes back to physical type units, but this should not be recorded as such in data sets. The indirect type reference in higher taxa means that typification changes to the lower taxon automatically affect the hi
+ gher
+	taxon.</p>
+        <p>The exact definitions of type status differ between nomenclatural codes (ICBN, ICZN, ICNP/ICNB, etc.). The term definitions are intended to be informative and generally applicable across the different codes. The should not be interpreted as authoritative; in nomenclatural work the exact definitions in the respective codes have to be consulted. A duplication of status codes (bot-holo, zoo-holo, bact-holo, etc.) is not considered desirable or necessary. Since the application of the type status terms is constrained by the relationship of the typified name with a specific code, the exact definition can always be unambiguously retrieved.</p>
+        <p>The following publications have been consulted to determine the number of type terms that should be included and to prepare the semantic definitions:</p>
+        <ul>
+          <li>Nomenclatural Glossary for Zoology (January 18 2000; ftp://ftp.york.biosis.org/sysgloss.txt; verified 17. June 2004)</li>
+          <li>ICBN St. Louis Code (http://www.bgbm.fu-berlin.de/iapt/nomenclature/code/SaintLouis/0013Ch2Sec2a009.htm; verified 17. June 2004)</li>
+          <li>Draft BioCode 4th version (Greuter et al., 1997; http://www.rom.on.ca/biodiversity/biocode/biocode1997.html)</li>
+          <li>Glossary of 'type' terminology (Ronald H. Petersen; http://fp.bio.utk.edu/mycology/Nomenclature/nom-type.htm)</li>
+          <li>Dictionary of Ichthyology (Brian W. Coad and Don E. McAllister, 2004; http://www.briancoad.com/Dictionary/introduction.htm)</li>
+          <li>A useful resource that was not available when writing this proposal might be: Hawksworth, D.L., W.G. Chaloner, O. Krauss, J. McNeill, M.A. Mayo, D.H. Nicolson, P.H.A. Sneath, R.P. Trehane and P.K. Tubbs. 1994. A draft Glossary of terms used in Bionomenclature. (IUBS Monogr. 9) International Union of Biological Sciences, Paris. 74 pp.</li>
+        </ul>
+        <p>Many thanks for review and help to Dr. Miguel A. Alonso-Zarazaga and Dr. Walter Gams. Gregor Hagedorn, 13.7.2004</p>
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="allo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Allotype -- A paratype specimen designated from the type series by the original author that is the opposite sex of the holotype. The term is not regulated by the ICZN. [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="allolecto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Allolectotype -- A paralectotype specimen that is the opposite sex of the lectotype. The term is not regulated by the ICZN. [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="alloneo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Alloneotype -- A paraneotype specimen that is the opposite sex of the neotype. The term is not regulated by the ICZN. [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="co">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Cotype -- A deprecated term no longer recognized in the ICZN; formerly used for either syntype or paratype [see ICZN Recommendation 73E]. [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="epi">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Epitype -- An epitype is a specimen or illustration selected to serve as an interpretative type when any kind of holotype, lectotype, etc. is demonstrably ambiguous and cannot be critically identified for purposes of the precise application of the name of a taxon (see Art. ICBN 9.7, 9.18). An epitype supplements, rather than replaces existing types. [Bot./Bio.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ex">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Type -- A strain or cultivation derived from some kind of type material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="exepi">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Epitype -- A strain or cultivation derived from epitype material. Ex-types are not regulated by the botanical or zoological code. [Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="exholo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Holotype -- A strain or cultivation derived from holotype material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="exiso">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Isotype -- A strain or cultivation derived from isotype material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="exlecto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Lectotype -- A strain or cultivation derived from lectotype material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="exneo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Neotype -- A strain or cultivation derived from neotype material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="expara">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Paratype -- A strain or cultivation derived from paratype material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="exsyn">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Ex-Syntype -- A strain or cultivation derived from neotype material. Ex-types are not regulated by the botanical or zoological code. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="hapanto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Hapantotype -- One or more preparations of directly related individuals representing distinct stages in the life cycle, which together form the type in an extant species of protistan [ICZN Article 72.5.4]. A hapantotype, while a series of individuals, is a holotype that must not be restricted by lectotype selection. If a hapantotype is found to contain individuals of more than one species, however, components may be excluded until it contains individuals of only one species [ICZN Article 73.3.2]. [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="holo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Holotype -- The one specimen or other element used or designated by the original author at the time of publication of the original description as the nomenclatural type of a species or infraspecific taxon. A holotype may be 'explicit' if it is clearly stated in the originating publication or 'implicit' if it is the single specimen proved to have been in the hands of the originating author when the description was published. [Zoo./Bot./Bio.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="icono">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Iconotype -- A drawing or photograph (also called 'phototype') of a type specimen. Note: the term "iconotype" is not used in the ICBN, but implicit in, e. g., ICBN Art. 7 and 38. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="iso">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Isotype -- An isotype is any duplicate of the holotype (i. e. part of a single gathering made by a collector at one time, from which the holotype was derived); it is always a specimen (ICBN Art. 7). [Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="isolecto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Isolectotype -- A duplicate of a neotype, compare lectotype. [Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="isoneo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Isoneotype -- A duplicate of a neotype, compare neotype. [Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="isosyn">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Isosyntype -- A duplicate of a syntype, compare isotype = duplicate of holotype. [Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="lecto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Lectotype -- A specimen or other element designated subsequent to the publication of the original description from the original material (syntypes or paratypes) to serve as nomenclatural type. Lectotype designation can occur only where no holotype was designated at the time of publication or if it is missing (ICBN Art. 7, ICZN Art. 74). [Zoo./Bot.] -- Note: the BioCode defines lectotype as selection from holotype material in cases where the holotype material contains more than one taxon [Bio.].</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="neo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Neotype -- A specimen designated as nomenclatural type subsequent to the publication of the original description in cases where the original holotype, lectotype, all paratypes and syntypes are lost or destroyed, or suppressed by the (botanical or zoological) commission on nomenclature. In zoology also called "Standard specimen" or "Representative specimen". [Zoo./Bot./Bio.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="para">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Paratype -- All of the specimens in the type series of a species or infraspecific taxon other than the holotype (and, in botany, isotypes). Paratypes must have been at the disposition of the author at the time when the original description was created and must have been designated and indicated in the publication. Judgment must be exercised on paratype status, for only rarely are specimens explicitly cited as paratypes, but usually as "specimens examined," "other material seen", etc. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="paralecto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Paralectotype -- All of the specimens in the syntype series of a species or infraspecific taxon other than the lectotype itself. Also called "lectoparatype". [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="paraneo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Paraneotype -- All of the specimens in the syntype series of a species or infraspecific taxon other than the neotype itself. Also called "neoparatype". [Zoo.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plasto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastotype -- A copy or cast of type material, esp. relevant for fossil types. Not regulated by the botanical or zoological code (?). [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plastoholo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastoholotype -- A copy or cast of holotype material (compare Plastotype).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plastoiso">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastoisotype -- A copy or cast of isotype material (compare Plastotype).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plastolecto">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastolectotype -- A copy or cast of lectotype material (compare Plastotype).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plastoneo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastoneotype -- A copy or cast of neotype material (compare Plastotype).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plastopara">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastoparatype -- A copy or cast of paratype material (compare Plastotype).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="plastosyn">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Plastosyntype -- A copy or cast of syntype material (compare Plastotype).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="sec">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Secondary type -- A referred, described, measured or figured specimen in the original publication (including a neo/lectotypification publication) that is not a primary type.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="supp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Supplementary type -- A referred, described, measured or figured specimen in a revision of a previously described taxon.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="syn">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Syntypes -- The series of specimens used to describe a species or infraspecific taxon when neither a single holotype by the original author, nor a lectotype in a subsequent publication has been designated. The syntypes collectively constitute the name-bearing type. [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="topo">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Topotype -- One or more specimens collected at the same location as the type series (type locality), regardless of whether they are part of the type series. Topotypes are not regulated by the botanical or zoological code. Also called "locotype". [Zoo./Bot.]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="type">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Type -- a) A specimen designated or indicated any kind of type of a species or infraspecific taxon. If possible more specific type terms (holotype, syntype, etc.) should be applied. b) the type name of a name of higher rank for taxa above the species rank. [General]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="not">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">not a type -- For specimens erroneously labelled as types an explicit negative statement may be desirable. [General]</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">
+        <p>Enumerated codes to express the rank of a taxon (scientific organism name) in a taxonomic hierarchy. The list is intended to be interoperable between name providers for bacteria, viruses, fungi, plants, and animals. It is not assumed that in each taxonomic group all ranks have to be used. Individual applications may select appropriate subsets (which may be based on information given inside the enumerated values, see Specifications/BioCode-, Botany-, Zoology-, and BacteriaStatus). The enumeration attempts to strike a balance between listing all possible rank terms, and remaining comprehensible. For example, the "infra-" ranks specifically mentioned in BioCode have been included (although very rarely used), but the additional intermediate zoological ranks (micro, nano, pico, etc.) are not included. Whether the selection of infraspecific ranks (some informal ranks, esp. from bacteriology, may be missing!) probably needs some discussion. However, it is believed that th
+ is list
+	may help to start developing data sets that can easily be integrated across the barriers of language and taxonomic traditions.</p>
+        <p>The following publications have been consulted to determine the number of type terms that should be included and to prepare the semantic definitions:</p>
+        <ul>
+          <li>The Berlin Taxonomic Information Model, MoReTax view (Berendsohn &amp; al., http://www.bgbm.org/scripts/ASP/BGBMModel/Catalogues.asp?Cat=MT</li>
+          <li>DiversityTaxonomy model version 0.7 (G. Hagedorn &amp; T. Gräfenhan 2002, http://160.45.63.11/Workbench/Taxonomy/Model/InformationModels.html)</li>
+          <li>ABCD version 1.44, types HigherTaxonRankType and RankAbbreviationType, by W. Berendsohn, reviewed by D. Hobern</li>
+          <li>TaxCat2 - Database of Botanical Taxonomic Categories by Jörg Ochsmann, IPK Gatersleben; http://mansfeld.ipk-gatersleben.de/TaxCat2/default.htm</li>
+        </ul>
+        <p>Many thanks for review and help go to Dr. Walter Gams.</p>
+        <p>Note: the list of all ranks is implemented as a union of all following rank subsets. Note that although BioCode has been used to define the partition into subsets, the ranks are not limited to BioCode but should be an interoperable superset of ranks used in Virology, Bacteriology, Botany and Zoology.</p>
+      </xs:documentation>
+    </xs:annotation>
+    <xs:union memberTypes="TaxonomicRankBelowSubspeciesEnum TaxonomicRankSpeciesGroupEnum TaxonomicRankGenusSubdivisionEnum TaxonomicRankGenusGroupEnum TaxonomicRankFamilySubdivisionEnum TaxonomicRankFamilyGroupEnum TaxonomicRankAboveSuperfamilyEnum"/>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankBelowSubspeciesEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode "infra-subspecfic", i.e. below the species group</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="cand">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[cand.] -- candidate -- Candidatus' rank is proposed in bacteriology for putative taxa, which could not yet be studied sufficiently to warrant the creation of a name with a known rank. (Murray, R.G.E. &amp; Schleifer, K.H.: Taxonomic notes: a proposal for recording the properties of putative taxa of procaryotes. Int. J. Syst. Bacteriol., 1994, 44, 174-176).</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>cand.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>Proposed</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="taxinfrasp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[tax. infrasp.] -- infraspecific tax. of undefined rank -- Undefined ranks (using either no rank identifier in botany, or using greek letters or symbols like stars, crosses) occur in very old publications. Most frequently these are to be interpreted as varieties, but occasionally they are forms or subspecies (see Stearn, W.T. 1957: Species plantarum (Facsimile); Introduction. 1. London, p. 90-95, 160-161, 163). The interpretation of these cases requires taxonomic knowledge that may not be available at the time when data are parsed. Such lack of knowledge can be expressed using this rank identifier.</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>tax. infrasp.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="fsp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[f. sp.] -- special form -- The ICBN does not formally cover formae specialis (art. 4, note 3). However, because of the economic importance of pathogenic f. sp., and since it is common practice to handle them as if the code would apply (i. e. priority usually observed, name quoted with author), they are included here.</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>f. sp.</PreferredAbbreviation>
+              <AdditionalAbbreviations>forma sp.; fsp.; fm. sp.; f. spec.; fm. spec.; forma spec.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks below subsp. are not covered by ICNP/ICNB, see Rules 5d and 14a. ##Check whether this rank is used indeed.</BacteriaStatus>
+              <BotanyStatus>none</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subsubfm">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subsubfm.] -- subsubform</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subsubfm.</PreferredAbbreviation>
+              <AdditionalAbbreviations>subsubf.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional(?)</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subfm">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subfm.] -- subform</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subfm.</PreferredAbbreviation>
+              <AdditionalAbbreviations>subf.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="fm">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[fm.] -- form -- Form, race, variety are not subject to regulation in zoology; see ICZN Article 1.3.4 </xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>fm.</PreferredAbbreviation>
+              <AdditionalAbbreviations>f.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>secondary</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subvar">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subvar.] -- sub-variety</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subvar.</PreferredAbbreviation>
+              <AdditionalAbbreviations>subv.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="var">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[var.] -- variety -- Form, race, variety are not subject to regulation in zoology; see ICZN Article 1.3.4 Examples: Pinus nigra var. caramanica (= "P. nigra subsp. nigra var. caramanica"; Taxus baccata var. variegata</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>var.</PreferredAbbreviation>
+              <AdditionalAbbreviations>v.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks below subsp. are not covered by ICNP/ICNB, see Rules 5d and 14a. ##Check whether this rank is used indeed.</BacteriaStatus>
+              <BotanyStatus>secondary</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="pv">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[pathovar.] -- patho-variety</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>pathovar.</PreferredAbbreviation>
+              <AdditionalAbbreviations>pv.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks below subsp. are not covered by ICNP/ICNB, see Rules 5d and 14a. ##Check whether this rank is used indeed.</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="bv">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[biovar.] -- bio-variety</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>biovar.</PreferredAbbreviation>
+              <AdditionalAbbreviations>bv.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks below subsp. are not covered by ICNP/ICNB, see Rules 5d and 14a. ##Check whether this rank is used indeed.</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="cv">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[cult.] -- cultivar -- The epithet is usually output in single quotes and may contain multiple words, see ICBN §28. Examples: Taxus baccata 'Variegata', Juniperus ×pfitzeriana 'Wilhelm Pfitzer'; Magnolia 'Elizabeth' (= a hybrid, no species epithet). </xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>cult.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>Reference to 'Internat. code of nomenclature for cultivated plants'</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="convar">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[convar.] -- convar -- Used in cultivated plants (ICNCP), but deprecated, see 'Some notes on problems of taxonomy and nomenclature of cultivated plants' by J. Ochsmann, http://www.genres.de/IGRREIHE/IGRREIHE/DDD/22-08.pdf</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>convar.</PreferredAbbreviation>
+              <AdditionalAbbreviations>cv.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="cvgroup">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[cultivar. group] -- cultivar-group</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>cultivar. group</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="graftchimaera">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[graft-chimaera] -- graft-chimaera</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>graft-chimaera</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="infrasp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infrasp.] -- infraspecies</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infrasp.</PreferredAbbreviation>
+              <AdditionalAbbreviations>infrasp.; infraspec.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankSpeciesGroupEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode "species group", i.e. only species and subspecies</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="subsp_aggr">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[aggr.] -- subspecific aggregate (= group, complex) -- A loosely defined group of subspecies. Zoology: "Aggregate - a group of  subspecies within a species. An aggregate may be denoted by a group name interpolated in parentheses."</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>aggr.</PreferredAbbreviation>
+              <AdditionalAbbreviations/>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ssp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[ssp.] -- subspecies -- Examples: Pinus nigra subsp. nigra Homo sapiens sapiens</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>ssp.</PreferredAbbreviation>
+              <AdditionalAbbreviations>subsp.; subspec.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="sp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[sp.] -- species -- Examples: Taxus baccata  Homo sapiens</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>sp.</PreferredAbbreviation>
+              <AdditionalAbbreviations>spec.</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>primary</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>principal</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankGenusSubdivisionEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode ""subdivision of a genus" ", i.e. all ranks between genus and species group (i.e. not including subgenus and species)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="aggr">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[aggr.] -- species aggregate (= species group, species complex) -- A loosely defined group of species. Zoology: "Aggregate - a group of species, other than a subgenus, within a genus. An aggregate may be denoted by a group name interpolated in parentheses." -- The Berlin/MoreTax model notes: "[these] aren't taxonomic ranks but cirumscriptions because on the one hand they are necessary for the concatenation of the fullname and on the other hand they are necessary for distinguishing the aggregate or species group from the microspecies." Compare subspecific aggregate for a group of subspecies within a species!</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>aggr.</PreferredAbbreviation>
+              <AdditionalAbbreviations/>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="taxinfragen">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[tax. infragen.] -- infrageneric tax. of undefined rank -- A name that appear between a genus name and a species epitheton and is not clearly marked as series or section, or other may be assigned to this rank until the true rank can be assigned by a taxonomic expert.</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>tax. infragen.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subser">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subser.] -- subseries</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subser.</PreferredAbbreviation>
+              <AdditionalAbbreviations>*</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ser">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[ser.] -- series</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>ser.</PreferredAbbreviation>
+              <AdditionalAbbreviations>*</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>secondary</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subsect">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subsect.] -- subsection</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subsect.</PreferredAbbreviation>
+              <AdditionalAbbreviations>*</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="sect">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[sect.] -- section</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>sect.</PreferredAbbreviation>
+              <AdditionalAbbreviations>*</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>secondary</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankGenusGroupEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode "genus group", i.e. infragenus to genus</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="infragen">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infragen.] -- infragenus</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infragen.</PreferredAbbreviation>
+              <AdditionalAbbreviations>*</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subgen">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subgen.] -- subgenus</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subgen.</PreferredAbbreviation>
+              <AdditionalAbbreviations>*</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="gen">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[gen.] -- genus -- Examples: Magnolia Homo</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>gen.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>primary</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>principal</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankFamilySubdivisionEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode "subdivision of a family", i.e. ranks between genus group and family group</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="infratrib">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infratrib.] -- infratribe</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infratrib.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subtrib">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subtrib.] -- subtribe</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subtrib.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-inae</SuffixBacteriae>
+              <SuffixPlantae>-inae</SuffixPlantae>
+              <SuffixAlgae>-inae</SuffixAlgae>
+              <SuffixFungi>-inae</SuffixFungi>
+              <SuffixAnimalia>-ina</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>covered (but probably not in current use)</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="trib">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[trib.] -- tribe</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>trib.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-eae</SuffixBacteriae>
+              <SuffixPlantae>-eae</SuffixPlantae>
+              <SuffixAlgae>-eae</SuffixAlgae>
+              <SuffixFungi>-eae</SuffixFungi>
+              <SuffixAnimalia>-ini</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>covered (but probably not in current use)</BacteriaStatus>
+              <BotanyStatus>secondary</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="supertrib">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[supertrib.] -- supertribe</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>supertrib.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankFamilyGroupEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode "family group", i.e. infrafamily to superfamily</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="infrafam">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infrafam.] -- infrafamily</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infrafam.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subfam">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subfam.] -- subfamily -- Examples: Magnolioideae</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subfam.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-oideae</SuffixBacteriae>
+              <SuffixPlantae>-oideae</SuffixPlantae>
+              <SuffixAlgae>-oideae</SuffixAlgae>
+              <SuffixFungi>-oideae</SuffixFungi>
+              <SuffixAnimalia>-inae</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="fam">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[fam.] -- family -- Examples: Magnoliaceae Hominidae</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>fam.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-aceae</SuffixBacteriae>
+              <SuffixPlantae>-aceae</SuffixPlantae>
+              <SuffixAlgae>-aceae</SuffixAlgae>
+              <SuffixFungi>-aceae</SuffixFungi>
+              <SuffixAnimalia>-idae</SuffixAnimalia>
+              <BioCodeStatus>principal</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>principal</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="superfam">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[superfam.] -- superfamily -- Examples: Magnoliacea</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>superfam.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-acea</SuffixPlantae>
+              <SuffixAlgae>-acea</SuffixAlgae>
+              <SuffixFungi>-acea</SuffixFungi>
+              <SuffixAnimalia>-oidea; -acea</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TaxonomicRankAboveSuperfamilyEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Subset of ranks; equivalent to BioCode "suprafamilial". This rank group includes all ranks higher than superfamily (class, phylum/division, kingdom, domain)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="infraord">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infraord.] -- infraorder</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infraord.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subord">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subord.] -- suborder -- Examples: Magnolineae Catarrhini</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subord.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-ineae</SuffixBacteriae>
+              <SuffixPlantae>-ineae</SuffixPlantae>
+              <SuffixAlgae>-ineae</SuffixAlgae>
+              <SuffixFungi>-ineae</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ord">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[ord.] -- order  -- Examples: Magnoliales Primates</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>ord.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-ales</SuffixBacteriae>
+              <SuffixPlantae>-ales</SuffixPlantae>
+              <SuffixAlgae>-ales</SuffixAlgae>
+              <SuffixFungi>-ales</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>principal</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>principal</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="superord">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[superord.] -- superorder -- Examples: Magnolianae</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>superord.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-anae</SuffixPlantae>
+              <SuffixAlgae>-anae</SuffixAlgae>
+              <SuffixFungi>-anae</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="infracl">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infracl.] -- infraclass</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infracl.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subcl">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subcl.] -- subclass  -- Examples: Magnoliidae Eutheria</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subcl.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-idae [proposed; Stackebrandt, E., Rainey, F.A. &amp; Ward-Rainey, N.L.: Proposal for a new hierarchic classification system, Actinobacteria classis nov. Int. J. Syst. Bacteriol., 1997, 47, 479-491.]</SuffixBacteriae>
+              <SuffixPlantae>-idae</SuffixPlantae>
+              <SuffixAlgae>-phycidae</SuffixAlgae>
+              <SuffixFungi>-mycetidae</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="cl">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[cl.] -- class  -- Examples: Magnoliopsida Mammalia</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>cl.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-ia [proposed; Stackebrandt, E., Rainey, F.A. &amp; Ward-Rainey, N.L.: Proposal for a new hierarchic classification system, Actinobacteria classis nov. Int. J. Syst. Bacteriol., 1997, 47, 479-491.]</SuffixBacteriae>
+              <SuffixPlantae>-opsida</SuffixPlantae>
+              <SuffixAlgae>-phyceae</SuffixAlgae>
+              <SuffixFungi>-mycetes</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>principal</BioCodeStatus>
+              <BacteriaStatus>covered</BacteriaStatus>
+              <BotanyStatus>principal</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="supercl">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[supercl.] -- superclass</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>supercl.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="infraphyl_div">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infraphyl./div.] -- infraphylum (= infradivision)</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infraphyl./div.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subphyl_div">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subphyl./div.] -- subphylum (= subdivision) -- Examples: Magnoliophytina Vertebrata</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subphyl./div.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-phytina</SuffixPlantae>
+              <SuffixAlgae>-phytina</SuffixAlgae>
+              <SuffixFungi>-mycotina</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="phyl_div">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[phyl./div.] -- phylum (= division) -- Examples: Magnoliophyta Chordata</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>phyl./div.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-phyta</SuffixPlantae>
+              <SuffixAlgae>-phyta</SuffixAlgae>
+              <SuffixFungi>-mycota</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>principal</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks above class are not covered by ICNP/ICNB</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="superphyl_div">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[superphyl./div.] -- superphylum (= superdivision)</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>superphyl./div.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="infrareg">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[infrareg.] -- infrakingdom</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>infrareg.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="subreg">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[subreg.] -- subkingdom</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>subreg.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="reg">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[reg.] -- kingdom -- Examples: Plantae Animalia</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>reg.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>principal</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks above class are not covered by ICNP/ICNB</BacteriaStatus>
+              <BotanyStatus>principal</BotanyStatus>
+              <ZoologyStatus>principal</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="superreg">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[superreg.] -- super kingdom -- Examples: Eucaryota</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>superreg.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>additional</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>additional</BotanyStatus>
+              <ZoologyStatus>additional</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="dom">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[dom.] -- domain (= empire) -- Examples: Archaea (= Archaeobacteria), Bacteria (= Eubacteria), Eukarya (= Eukaryota)</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>dom.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>secondary</BioCodeStatus>
+              <BacteriaStatus>used, but all ranks above class are not covered by ICNP/ICNB</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="taxsupragen">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">[tax. supragen.] -- suprageneric tax. of undefined rank -- This value indicates that the rank of a name is unknown. Compare "incertae sedis" which is commonly used as a replacement for a taxon to group all taxa whose position in the classification or phylogenetic tree is uncertain.</xs:documentation>
+          <xs:appinfo>
+            <Specification>
+              <PreferredAbbreviation>tax. supragen.</PreferredAbbreviation>
+              <AdditionalAbbreviations>-</AdditionalAbbreviations>
+              <SuffixBacteriae>-</SuffixBacteriae>
+              <SuffixPlantae>-</SuffixPlantae>
+              <SuffixAlgae>-</SuffixAlgae>
+              <SuffixFungi>-</SuffixFungi>
+              <SuffixAnimalia>-</SuffixAnimalia>
+              <BioCodeStatus>-</BioCodeStatus>
+              <BacteriaStatus>-</BacteriaStatus>
+              <BotanyStatus>-</BotanyStatus>
+              <ZoologyStatus>-</ZoologyStatus>
+            </Specification>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NomenclaturalCodesEnum">
+    <xs:annotation>
+      <xs:documentation xml:lang="en-us">Enumeration of the nomenclatural code under which a name is considered valid</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:Name">
+      <xs:enumeration value="Viral"/>
+      <xs:enumeration value="Bacteriological"/>
+      <xs:enumeration value="Botanical">
+        <xs:annotation>
+          <xs:documentation>International Code of Botanical Nomenclature, ICBN</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Zoological">
+        <xs:annotation>
+          <xs:documentation>International Code of Zoological Nomenclature, ICZN</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CultivatedPlant"/>
+      <xs:enumeration value="Indeterminate">
+        <xs:annotation>
+          <xs:documentation>Examples: ambiregnally named taxa can not be fixed to a code; to express the (pre-starting point) names on which the sanctioning mechanism of fungal names is based.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--==== END UBIF. -->
+</xs:schema>

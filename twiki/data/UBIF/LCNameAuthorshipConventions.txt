@@ -1,0 +1,136 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="FrankBungartz" date="1103728277" format="1.0" version="1.17"}%
+%META:TOPICPARENT{name="LinneanCoreCanonicalAuthorship"}%
+Here we need to document how authorships are used, and resolve some fundamental issues about authorships of names within the context of LC.
+
+I'm not sure how best to structure this page -- whether to create a top-level distinction between the different codes, or to list specific issues and note code differences as they exist on a case-by-case basis.  For now, I've started with the latter format.
+---
+<h3>Issues</h3>
+
+*1. Authors of Names, or Authors of Publication units?* </br>
+There are two separate, but fundamentally important questions we need to answer in order to design the best LC schema:
+	* 1. Are the authorship elements really attributes of the abstract *Name-object*, or are they technically authors of the *publication unit* or *subunit* (blurb of text in a publication) that formally establishes the Name in accordance with the relevant code.  More simply: are the authorship details attributes of a *Name* object, or a *Publication* (*Micro-publication*?) object?
+	* 2. If the answer to the previous question is that authors are attributes of a publication object (not a name object), then the next question is: How do we address this in the schema?  Specifically, should there be a set of Authorship elements embedded directly within an LC instance?  Or should the Authorship elements be inherited from a linked/embedded AlexandriaCore (AC) substructure?  One school of thought is that they should be treated as attributes of the LC instance via a <nop>CanonicalAuthors structure within LC.  Another school of thought is to force authorship details to be represented via a publication unit, and thereby left to the AC schema entirely (i.e., no <nop>CanonicalAuthors structure within LC).
+
+	* Main.SallyHinchcliffe - 11 Nov 2004 - I think one thing to bear in mind here is that we are designing a <strong>core</strong> - i.e. where possible the KISS rule should apply. And also the keep it fairly flat rule (Kiff?). So whatever the philosophical relationship between an author and a publication unit, in the LC I think the design should aim for discrete units: <nop>CanonicalName, <nop>CanonicalAuthors, plus some separate unit for the citation. With the same principle we've used with the first two - a required flat, text option, plus an optional parsed out one. So my vote is for, whatever the outcome of the discussion, the separation of authors from names from references ...
+	* Main.RichardPyle - 16 Nov 2004 - I understand and agree.  I think the current structure in v0.1.5 (essentially identical to Gregor's "Proposal 2" in 0.1.4 and very close to Sally's Proposal 1) meets the need adequately.  It separates "Name Authorship" and publication references into different layers, so taxon name authorship can be different from publication authorship, without defining a "subreference" to deal with the "in" authorships.  I'm more comfortable with this approach if (as in v0.1.5) publication details are referenced from, rather than embedded within, LC.
+
+Gregor and I (Richard) have debated this extensively via email during several days in early November 2004.  It is an issue that needs to be resolved here on the Wiki, with more participation from others.  It is a very complex question and involves questions about whether other disciplines besides taxonomy have a need to track "in" and "ex" authorships (thereby favoring a generalized solution within AC); and whether Author abbreviations (standardized or not) need to be accomodated within LC as distinct from their "<nop>AgentLastName" equivalents (if yes, then the need for an Authorship structure within LC is probably required).
+
+It also needs to be considered in the broader context of the LC structure.  For example, many people might feel a strong need to preserve author abbreviations within LC (particularly in botany, where they are used with greater consistency); but from a broader perspective, author abbreviations only exist to disambiguate homonyms among authors -- which becomes moot if authorships are provided via the context of a publication unit (AC instance). I would write more about this here, except my head is already spinning just thinking about it.  So I hope others will chime in.
+
+---
+Some notes by Gregor:
+	1. There is nothing wrong with Richard's proposal to use the publication system to deal with all aspects of publication of taxonomic names, including all authorship issues. However, I prefer a different model for the following reasons:
+		* Main.RichardPyle - 16 Nov 2004: As I mentioned above, I am now starting to prefer Gregor's and Sally's solution to this.  Perhaps 10 years from now we will be at the point where we can define appropriate authored publication units for each authored taxon name -- but for this "Core" approach, I agree that authorship should be represented as a different layer.
+	2. I view this as a balancing act rather than stringent logical necessity - and one depending on the wider picture. The core of my tendency against including taxon author abbreviations in the literature reference model (e. g. AlexandriaCore) is that I would like to separate knowledge domains in a more universal way. I believe that ideally all scientific reference management applications should be able to deal with LinneanCore data. By including (perhaps multiple!) author abbreviations in our model for the publication reference domain we force the development of taxonomy-specific reference management applications and will not be able to reuse existing code or applications.
+	3. The second problem besides the use of abbreviations are the "ex" authorship convention and ":" authorship requirement that have no relation to publication. Ultimately, there are additional publications behind these, but to my knowledge they are not normally recorded. Botanical authorship can consist of "(invalid-publication ex valid-publication) invalid-publication ex valid-publication 'in' publishing" or "(valid-publication : sanctioning) valid-publication : sanctioning 'in' publishing". When moving all taxon authorship questions into the publication/Reference domain, we would need to introduce _seven_ publication "placeholders" to record authorship. Of these only a single is normally recorded as a real publication, the others would be dummys containing only author information. This is a possible solution, but to me tips the balance (in addition to the abbreviation problem) to favor including taxonomic authorship explicitly as part of the taxon model LC rather than using the reference system to deal with it.
+	4. Richard and I also discussed the problem of multiple "in" citation. These are rare - compare table below. Example: "Naemospora atrovirens Jacz. in Tranzschel in Elenkin". I believe that probably the middle "in" author is dispensable, following a rule: "cite dependent publication in independent publication". However, treating authorship inside LC actually allows a data provider to export these cases to LC as they are, rather than resolving them.
+
+A comment by Frank Bungartz 22 Dec 2004: There is an entire section  in the Botanical Code that essentially addresses this question (section 3: http://www.bgbm.fu-berlin.de/iapt/nomenclature/code/SaintLouis/0050Ch4Sec3a046.htm). The code refers to the author name as "author citation". Thus, if most stringently applied, the author name would not be part of the taxon name but instead would have to be treated only as a reference to its publication. This, however, would be an almost dogmatic answer, ignoring the "Real World" where it is unfortunately quite common that the same taxon names were published seperately by different authors, often (but not always) referring to different types and thus in effect being different names.Thus, for example, Buellia alboatra (Hoffm.) Branth & Rostr. and Buellia alboatra (Hoffm.) Th. Fr. may or may not refer to the same species. Although the code theoretically provides rules that clearly govern, which name has priority, it is most often extremely cumbersome to deduct, which one of the two (or more) names is actually valid. In fact, taxonomists still spend huge amounts of their time trying to figure this out. As a consequence, even though slightly incorrect, I am a very strong advocate to treat the author name as integral part of a taxon name. 
+Please also see my comments about "ex" and "in" below. Also see my comment below about the incorrect use of "protonym" in this forum.
+---
+
+Some frequency information about authorship issues:
+<verbatim>
+ITIS names (256,664 animals, 97,749 plants, 4696 fungi).
+Code			"ex"	  "in"	 "double-in"
+------------------------------------------
+Botanical	4,311	  647			10
+Zoological	 162	3,780			 9
+Bacterial		67		 7			 -
+
+Index Fungorum, version from 2002 (363339 records)
+			"ex"	  "in"  "double-in"  sanctioning (= ":")
+------------------------------------------
+Fungi	 3703	 13144		19		  3039
+								 = 0.005% 
+</verbatim>
+
+(ITIS analyzed by Rich, IF by Gregor)
+---
+
+*2. Basic Authorship Citation Rules*
+	* *Zoology* is relatively straightforward.  There are no Combination authorships recorded by convention.  The only convention is to enclose the authorship in parentheses when a species-level name is presented in a different genus than the original creation of the terminal epithet. Infraspecific names never include authorship of the species, and moving an infraspecific epithet from one species to another within the same genus does not trigger parentheses around the author. Thus:
+		* <em>Originalgenus species</em> <nop>ProtonymAuthorTeam
+		* <em>Differentgenus species</em> (<nop>ProtonymAuthorTeam)
+		* <em>Originalgenus originalspecies</em> subsp. <em>subspecies</em> <nop>ProtonymAuthorTeam
+		* <em>Originalgenus differentspecies</em> subsp. <em>subspecies</em> <nop>ProtonymAuthorTeam
+		* <em>Differentgenus originalspecies</em> subsp. <em>subspecies</em> (<nop>ProtonymAuthorTeam)
+		* <em>Differentgenus differentspecies</em> subsp. <em>subspecies</em> (<nop>ProtonymAuthorTeam)
+		* <em>Originalgenus subspeciestreatedasfullspecies</em> <nop>ProtonymAuthorTeam
+		* <em>Differentgenus subspeciestreatedasfullspecies</em> (<nop>ProtonymAuthorTeam)
+		* Autonyms: If someone for a species: "<em>Genus originalspecies</em> Author1" creates a new subspecies "<em>Genus originalspecies</em> subsp. <em>alpina</em> Author2", then without any need for explicit publication, a Nominotypical name (autonym) arises for the "rest" of the original taxon, i.e. "<em>Genus originalspecies</em> subsp. <em>originalspecies</em> Author1". (So far this is identical with botany.) Unlike the case with botany, the author is placed after the terminal subspecies epithet, and is intended to apply to both species and subspecific epithets.
+		* Gregor: Change in rank (botany: stat. nov.) in zoology, e.g. a subspecies is elevated to species rank. () or not? * Richard: To my understanding, no parentheses.  See example above: <em>Originalgenus subspeciestreatedasfullspecies</em> <nop>ProtonymAuthorTeam
+		* Richard in email: I should point out that brackets are used if the *protonym* genus us different -- not just the name-string (sensu me) of the genus is different.  So, for example:<br/>- Aus Jones<br/>- Aus Smith [junior homonym *and* junior synonym of Aus Jones]<br/>- Aus bus Smith<br/>- Aus bus (Smith) (implies that bus is now placed within Jones' Aus)<br/>Not a very common situation, but it does happen.
+
+	* *Botany* is more complicated. I could present my best understanding of the rules and conventions here, but I think it would be better if a botany person would do it.
+		* Protonyms (= Original names, "fam./gen./sp./etc. nov.", and replacement names, "nom. nov.") are cited with the author alone, optionally with publication year or title. Never a parenthesis around them.
+		* Any combination of a species into a different genus (other than the protonym placement), or of an infraspecific rank into a different species or genus, or a change of rank ("stat. nov.", var. to subsp., var. to species, etc.) is reflected in the author citation, by enclosing the the protonym author team in parentheses and adding the author of the combintion or rank change after it.
+		* Is this complicated so far? -- Gregor
+		* Autonyms: If someone for a species: "Genus originalspecies Author1" creates a new variety "Genus originalspecies var. alpina Author2", then without any need for explicit publication, an autonym arises for the "rest" of the original taxon, i.e. "Genus originalspecies Author1 var. originalspecies". Makes sense, I think. One catch is that the author is placed after the species, and the autonym variety has no author - as it indeed does not have. Logical, but a bit confusing. (Gregor)
+		* Is this correct, fellow botanists? -- Gregor
+		* Richard: similar (but not identical) to zoology.  See above.
+		* Frank Bungartz 22 Dec 2004: I don´t believe the term *"protonym"* is accurate here. A protonym is a name *effectively but not validly published*. What you are talking about is the *basionym* (= original name)!!!
+
+---
+*3. "comb. nov." and "nom. nov." combined*
+	*  1. <em>Aus bus</em> Smith
+		2. <em>Aus bus</em> Jones (Homonym of Aus Bus Smith)
+		3. <em>Aus xus</em> Kirk (Nom. Nov. for Aus bus Jones created by Kirk)
+		4. <em>Dus xus</em> (Kirk) Pyle (new combination for Aus xus by Pyle)
+	* Paul (from email) see: [[http://82.43.123.182/IndexFungorum/Names/SynSpecies.asp?RecordID=104244][IF 104244]], [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=104244][IF 104244]] and [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=359017][IF 359017]] or [[http://82.43.123.182/IndexFungorum/Names/SynSpecies.asp?RecordID=414674][IF 414674]], [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=102112][IF 102112]] and [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=251485][IF 251485]]
+	* Gregor: some background about possibly different scenarious of nomen novum and combinatio novum can be found in LCNomenNovumDiscussion.
+
+---
+*4. "In" Authors*
+	* This seems to be the same or identical for Botany and Zoology (I *think*). It is not governed by the Code in either case [correct???], but has fairly strong conventional usage in taxonomy. "In" authorships take the form of "<nop>NameAuthorTeam in <nop>PublicationAuthorTeam", and exist when <nop>NameAuthorTeam represents the proper nomenclatural authorship of the name, but does not represent a unit of a publication that one would traditionally see listed in a bibliography. Instead, the name was created (with authorship <nop>NameAuthorTeam) within a unit of publication (with authorship <nop>PublicationAuthorTeam) that *is* traditionally listed in a bibliography. For example: "<em>Originalgenus species</em> Smith in Smith &amp; Jones". In this example, "Smith" is the <nop>NameAuthorTeam, and technically represents the author of the protologue/original description of the name itself; and "Smith &amp; Jones" is the <nop>PublicationAuthorTeam.  Use of the "in" citation implies that the "Smith" publication subunit would not appear in a bibliography, but instead one would look in the bibliography for "Smith &amp; Jones".
+	* I don't believe there is much confusion about what the "In" authorships mean -- rather, the discussion is on how best to represent them in the schema (see *Authors of Names, or Authors of Publication units?* section above). *Questions:*
+		* Richard: Is it true that "in" authorships only exist when the authorship before the "in" represents a publication unit that would not traditionally appear in a bibliography?  Or, does it apply in all cases where there is a dependent publication?  For example, suppose the book edited by Smith &amp; Jones contains a chapter auhored by Smith.  As such, the chapter could, by traditional standards, be listed in a bibliography as "Smith. 1999. Chapter Title. p. xxx-yyy <em>In:</em> Boot Title (Smith &amp; Jones, eds). Publisher. City. zzzz pp."  If that chapter includes the protologue/original description of <em>Originalgenus species</em>, then is the authorship cited as "<em>Originalgenus species</em> Smith", or <em>Originalgenus species</em> Smith in Smith &amp; Jones"?
+		* Richard: In botany, do you ever have a case of "(Smith) Jones in Pyle" -- where the Combination authorship involves an "in" authorship?
+		* Gregor: I think we _only_ have this case. I believe there is not tradition for "(Smith in Pyle) Jones", i. e. the "in" portion of the basionym author is not transferred to the new combination. Is this correct fellow botanists?
+		* Frank Bungartz 22 Dec 2004: The newest and currently valid Code of Botanical Nomenclature does regulate the usage of "in" in Article 46N1. (see http://www.bgbm.fu-berlin.de/iapt/nomenclature/code/SaintLouis/0050Ch4Sec3a046.htm) as follows:" 46N 1. When authorship of a name differs from authorship of the publication in which it was validly published, both are sometimes cited, connected by the word "in". In such a case, "in" and what follows are part of a bibliographic citation and are better omitted unless the place of publication is being cited." Because of this note it is no longer customary to use "in". The only reason when it might ever be necessary is if the same names were seperately described twice by the same author, in both instances referring to different types in two seperate publications that were both published within other, larger publications. This would be an extremely strange behaviour for a taxonomist and I do not personally know any such case.  Therefore I would advocate to follow the Botanical Code and abolish all "in" citations as literature references and not as part of a name. I am not a zoologist or bacteriologist, but I believe this practise would agree well with the other two codes of nomenclature.
+
+---
+*5. "Ex" Authors*
+	* Richard: I *believe* these are used in Botany and Zoology in a similar way.  The authorship "Smith (ex Jones)" translates roughly to "Published by Smith, based on the name of Jones". The use of parentheses is not consistent in zoology.
+	* Gregor: "ex-authors" are author(s) a name was ascribed to. No parentheses are used to separate the group of ex and non-ex authors. You can have in a combination "(invalid-protonym-author ex validating-author1) invalid-combining-author ex validating-author2" though it is rare. Actual example: "Zoophthora zabri (Rozsypal ex Ben Ze'ev & R.G. Kenneth) Ba&#322;azy ex Humber"
+	* Gregor: "ex-authors" are the name(s) preceding the "ex" which is reasonable *unintuitive* - I vote for a new term for this :-)! The names before the ex, having failed to validly publish a species are redundant but useful in practice, because the invalidatity according to the code may have gone unnoticed for considerable time, so that considerable usage refers to the older name.
+	* Gregor: *We need to check the examples!* To my knowledge, "Smith ex Jones" in botany (never any parentheses) indicates: "Published by Jones, based on the name of Smith", i.e. the reverse usage!
+	* FrankBungartz 22 Dec 2004: Gregor´s comment is correct. See the Botanical Code of Nomenclature Article 46.4-5+N.2. In contrast to "in", the code recommends not to abolish the "ex", because it refers to the one author that indeed provided the first valid description. For example, Henry A. Imshaug in his dissertation introduced the name Buellia lepidastroidea. The name B. lepidastroidea, was not validly published in this dissertation for several reasons: (1) The dissertation never appeard in print, but instead only appeared on microfilm. (2) Imshaug did not provide a Latin diagnosis (and no Latin description either). (3) Imshaugh did not clearly indicate a type for his species. Working on the genus Buellia, I decided to validate Imshaug´s name. I selected a type specimen, and wrote and published a Latin description in the journal Mycotaxon. Thus, the taxon is now correctly referred to as: Buellia lepidastroidea Imshaug ex Bungartz. If you like Buellia lepidastroidea Imshaug without the "ex Bungartz" could still be interpreted as a reference to an name that is not effectively published. Someone working in the group, stumbling accross the Buellia lepidastroidea Imshaug might find out that Imshaug did not effectively describe this species and decide, to provide a valide description himself. Overlooking the "ex Bungartz" can thus have the consequence that one more name becomes established: Buellia lepidastra Imshaug ex Mr. Somebody. Thus, the addition "ex" is indeed very important, much more important than "in".
+
+---
+*6. Author Abbreviations*
+	* Richard: Author abbreviations are not used consistently or in a standardized way in Zoology, so this is mostly an issue for botany.
+	* Gregor: But they are used - or? I believe all you say is that there is no canonicalization rule whether to use L., Linné, Linne, Linnaeus, etc. But a fundamental problem to deal with them exist, esp. in the context of taxon versus literature authorship.
+	* *Questions:*
+		* Richard: Do these abbreviations serve any other purpose than to disambiguate author name homonyms (and synonyms?)
+		* Gregor: To abbreviate and save publication space (and make names more readable). Probably this was very important once, but with reduced publication cost per line this has probably become less important in recent years.
+		* F. Bungartz 22 Dec 2004: The most important aspect of standardized abbreviations is indeed the necessity to be able to decide, which author a taxon name is attributed too. For example, the Botanical Code governs nomenclature of all fungi, whether lichenized or not. In the past, Mycologist and Lichenologists rarely worked on the same organisms. Abramo Bartolommeo Massalongo 1824-1860 was a lichenologist, who also sometimes worked on fungi. Caro Benigno Massalongo 1852-1928 worked mainly on fungi, bryophytes, and ferns, but not on lichens. As a result, lichenologists in the past typically used "Massal."  for "A. Massal." Mycologists always had to be a bit more careful. Similar cases and the necessity to standardize authors would probably arise for zoologists as well, if their names were stored in the same databases along with botanical names.
+
+---
+*7. Sanctioning*
+	* Occurs only in fungi. Originally, the starting point of nomenclature was different in mycology, and set to two publications by Fries and Persoon for different groups of fungi. Recently the starting point was moved to the common starting point, but all names used in Fries and Persoon are automatically conserved, for which the term "sanctioned" was introduced. The symbol is a colon, canonically with leading and trailing blank. By definition only "Author : Fr." and "Author : Pers." is possible - never "Author : <nop>SomeOtherAuthor". Unfortunately, some people get it wrong...
+	* Two solutions for implementing are possible: a) the ":" is an analog to the "ex" found both in zoology and botany. So if the ex-handling is extensible, and the mechanism can be applied with a different "token" - that would be a good solution. b) if this is not possible, since ONLY 2 authors exist after the ":", it is possible to treat these as special authors, i.e. to have Fries and Persoon once as normal author, and once as a author token ": Fr.", ": Pers.". This is cludge, but perhaps acceptable.
+		* F. Bungartz 22 Dec 2004:  The situation is only very, very vaguely similar because the ":" appears indeed between two author citations. However, function of the ":" is not at all similar to "ex", see the Botancal Code Article 15, 50E.2, and 13.1(d): According to the St. Louis Code, the starting date for taxonomic priority of all Fungi is now 1 May 1753 (i.e., the 1st edition of Linneus´species plantarum). In some previous codes this was not the case! However, if that starting date was indeed universally applied to all Fungi, many species names would have to be changed with rather undesirable consequences. Very familiar names would disappear as a result. Thus, the names listed in two important works on fungi, one by Persoon and another one by Fries, have been "sanctioned". That means: although these two publications violate the Linnean starting date, all names listed in these two publications nevertheless are automatically conserved against any other names, which otherwise might have had priority. Unlike "ex" and "in", the ":" has therefore not primarily the effect to link two citations! Instead the ":" has a qualitative character, it indicates that these particular names by Persoon or Fries have to be used, even against the Linnean starting date! They in effect violate the rule of priority, but nevertheless have to be accepted. In contrast, both "ex" and "in" allow now such qualitative statement, i.e.,  wether a name is valid, has priority or any other taxonomic quality.
+
+---
+*8. Inclusion of year as part of authorship*
+	* Zoology traditionally (though inconsistently) includes the year as well as the authorship.  Usually, in a case where the authorship appears in parentheses, the parentheses are outside of the year: "(<nop>AuthorTeam, Year)".  Sometimes there is a comma between author names and year; sometimes not. Probably should come up with a canonical form.
+	* Botany does cite the year (or other publication details) although this is less common in name-usage context. However, whether in parentheses or not, the year is always the effective publication year (and the "year-on-publication" may be given in "[]"), not the protonym year. This differs from zoology. -- Gregor
+	* Now this awkward: both botany and zoology cite only a single publication - but all LC models have two alternative places in authorship to cite a publication reference - and therewith a year.
+		* If we separate Authorship into Protonym/Combination, then _Zoology_ always uses the publication in Protonym, and _Botany_ uses the publication in protonym for non-combined original names and nom. nov. replacement names, and the publication in Combination for comb. nov./stat.nov. names.
+		* If we separate Authorship into a Parenthetical/Publishing authorship model, as discussed in previous LC versions, then _Zoology_ uses the publication in Publishing for non-combined original names and nom. nov. replacement names, and the publication in Parenthetical for comb. nov./stat.nov. names, and _Botany_ would always use the publication in Publishing.
+		* In fact, from what I remember from different models it occurs to me that zoology models prefer the first and botany models the second mode of splitting the authorship components...
+		* It seems to be desirable to have one authorship container including a publication, and one without. However, I cannot think of a way to explain how to use this model... -- Gregor
+
+---
+*9. hort./hortulanorum in botany*
+	* This refers to a name used in the horticulture trade but whose authors are unknown. Example: Petunia × hybrida hort. ex E. Vilm. -- Could perhaps also be treated as a special token in the sequence of authors, like "ex" and ":"? -- Gregor
+
+*10. Other fundamental authorship issues?*
+
+
+-- Main.RichardPyle - 09 Nov 2004
+

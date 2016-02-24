@@ -1,0 +1,95 @@
+---++ Identifylife
+
+The Identifylife project has three main goals
+   * to allow the sharing of resources for building interactive keys
+   * to provide a platform for creating constrained vocabularies (standardized lists of characters) for groups of organisms, and
+   * to provide a method for combining, storing and serving data from existing and new taxonomic morphological data sets for the purpose of identification and data discovery.
+
+Identifylife is being built in several steps:
+
+1. A  database has been developed to hold character vocabularies (characters, states, and hierarchies of these) and associated resources (initially, images and text- and html-based help notes for characters and states) for any taxonomic group.
+
+2. Routines have been developed for I/O using the TDWG-SDD schema. Existing keys or data matrices (Lucid, DELTA, NEXUS, others?) can be contributed to Identifylife as SDD documents; keys (or parts thereof) on Identifylife can be downloaded as SDD documents.
+
+3. The database also holds a special type of character list - a Standard List - that provides a normative (controlled) vocabulary for a particular taxonomic group. Standard Lists will be used to provide mappings between characters in individual keys.
+
+4. The database and I/O routines will in the near future be extended to handle the score data associated with keys and other data matrices.
+
+Steps 1-3 comprise the first stage of Identifylife, the aim of which is to allow users to share character resources for keys, in the following scenario. 
+
+_Scenario A_: A user contributes a key (say, a key to the Solanaceae of Australia) to Identifylife as an SDD document. A second user, embarking on a project to build another key  (say, a key to the Solanaceae of South Africa), browses for and finds the illustrated character list from the first key, and downloads it (or a selection of characters from it) as the basis for making the new key.
+
+A community of users may also use Identifylife to collaboratively create a Standard List for Solanaceae. A Standard List will usually be a normative superset of characters from several existing keys. If a Standard List has been created, then a user may choose to download this as the starting point for a key, rather than the characters from another key.
+
+Note that once a user has received a set of characters, she will be free to change the character list in a variety of way (see below). 
+
+_Scenario B_: After these changes have been made, the user contributes the new, altered, key back to Identifylife.
+
+The second stage of Identifylife (handling score data) will allow more scenarios:
+
+_Scenario C_: The second in scenario A above downloads not only the character list from the key to Solanaceae of Australia, but also the score data for any taxa common to both Australia and South Africa. Note that the user may need to (or choose to) alter some scores in the downloaded key.
+
+_Scenario D_: A user plans to develop a third key which also includes some species of Solanaceae, along with members of other families. The user submits to Identifylife a list of taxa in their key; Identifylife responds by finding all characters that have been used to describe the taxa in all available keys, and provides an SDD file with those characters and whatever scores are available for those taxa. The user may then later contribute the new key back to Identifylife
+
+_Scenario E_: A user has independently developed another key. He submits this to Identifylife and asks for the score data to be verified against existing score data in Identifylife. Identifylife responds with a listing of all mismatches between the known and contributed score coding.
+
+_Scenario F_: A user plans to visit a National park in Borneo and has an interest in palms. She provides a list of palm species in Borneo (perhaps derived from a third party service); Identifylife responds with a key to the palms of Bormeo, perhaps created on-the-fly from data contributed from a variety of sources.
+
+For these latter scenarios to work, Identifylife will need to provide a means for mapping characters between keys (character strings cannot be used for mapping, as the wordings for identical characters will often differ). Standard Lists in Identifylife will be used for this mapping. When each contributor provides a key to Identifylife they will be asked to map their character states to the appropriate Standard List; if other keys are also mapped to the Standard List, then the keys are thus mapped to each other. This will enable Identifylife to extract, merge and compare score data between keys for scenarios D, E and F.
+
+Note that an important part of Identifylife will involve roundtripping of characters and character states, in which a character or state is provided by Identifylife and subsequently received back (e.g. scenarios B,C,D), possibly altered. Some potential changes will be straightforward, while others may be problematic as the concept of the state (or of other states) may be changed as a result of the roundtrip (homologous with changes of concept in a taxon). Possible changes (with problematic ones marked with an asterisk) are:
+
+   * a new character with states is added to the set
+   * a new state is added to an existing character*
+   * an existing character is removed from the set
+   * a state of an existing character is removed
+   * a state is moved from one character to another*
+   * a character is moved from one position in the hierarchy to another
+   * the wording of a character or state is changed*
+
+Examples of the last include correction of typographic errors; translation of a character or state to a different language; rewording for a different audience; and rewording to better suit the key in which the character is to be used.
+
+---+++ Identifylife requirements for GUIDs
+
+Identifylife will hold three main classes of data - taxon concepts, characters and states, and score data.
+
+Taxon concepts in Identifylife will be handled in a similar manner to other databases holding e.g. specimen information. GUID use cases for these databases will be sufficient to capture Identifylife needs. Ultimately, it will be sensible for Identifylife to outsource resolution of names from GUIDs to a third party.
+
+Characters and states will be the Identifylife "speciality", and this will be the main area where Identifylife has special GUID needs. In particular, GUIDs will be vital when roundtripping items from Identifylife, making the task of mapping the returned items simpler and more accurate. 
+
+---+++ Issues
+
+For characters and states that are not changed in any way, GUID assignment and roundtripping will be straightforward. Similarly, rearranging characters within the character tree should be straightforward - GUIDs will be assigned to items in the tree independent of their position.
+
+_Alteration of character wordings://
+
+e.g. I send out in a key from Identifylife a character list with the following:
+
+Leaves (phyllotaxy)
+   alternate
+   opposite
+
+and I get back after roundtripping two character lists with:
+
+PosiciÃ³n de hojas
+   alternas
+   opuestas
+
+and
+
+Arrangement of leaves on the stem
+   alternating
+   opposite each other
+
+SDD handles this very well within single documents, as characters have a unique ID and any number of alternate wordings can be defined. The main issue is that there is no service to ensure uniqueness of the character IDs - a GUID is needed for this.
+
+_Alteration of character concepts_
+
+If a roundtripped character when returned has changed its concept (meaning) it will be up to the user to alert Identifylife that the concept has changed so a new GUID can be assigned.
+
+_Addition of states//
+
+   If a roundtripped character has new states added, there can be no assurance that the added state does not change the concepts of other states in the original character. There is no current solution for this problem.
+
+---+++++ Categories
+CategoryUseCases

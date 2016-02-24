@@ -1,0 +1,41 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118873" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---+!! %TOPIC%
+
+[[%ATTACHURL%/SDD1.1b11.zip][SDD1.1b11.zip]] is ready for removal of double "_" elements. It is agreed that there will be no more substantive changes, other than those required by Tapir. It is expected that this will result in beta12, a generally public release. -- Main.BobMorris - 08 May 2006
+
+Markus Döring on TAPIR: any kind of anonymous complex types (collection-wrappers or other) are supported, no constraints. However, Markus notes that at the TAG-1 meeting a recommendation was given that for reasons of TDWG architecture, all complex types should be named. -- Main.GregorHagedorn - 09 May 2006
+
+Changes from this beta 11 to BDI.SDD_ 1.1 rc 1:
+   * On the basis of the TAG recommendation, all anonymous "Specification" elements (= inner classes, without reuse) removed. This simplifies BDI.SDD_ slightly. This affects, e.g., Audience, !TaxonHierarchy, !CharacterTree. The "Assumptions" inner classes have been maintained and changed to named complex types (with annotation explaining their use as inner classes).
+   * Yet more anonymous complex types named; in addition to "Assumptions" also the mechanism 
+   * !NatLangPhraseRoleEnum: comments updated, one value (Single) removed.
+   * !CharacterTreeRoleEnum: comments updated, one value (!BuildingStoredIdentificationKeys) removed.
+   * Sample files are updated or added.
+   * A few types are renamed, most notably the use of the prefix "Abstract" made more consistent, and  !StringLtd changed to !ShortString.
+   * Sorry, and finally one more (semi-)substantial change: In !URIRefRequired/Optional the attribute "uri" changed to more conventional "href" - this is corollary of earlier change to put uri attribute into main object. "uri" is now used only for the identifier, "href" for reference (apologies for forgetting this while we talked on the phone...). Several advantages result from this, including closer correspondence with xlink, xhtml, and RDF/A. This also resulted in minor changes in !MediaObjectCore, where the object data are referenced rather than being included in encoded form.
+
+*Currently release is put on hold for another day, Damian is about to report further problems/criticism*
+
+----
+
+Gregor: Trying to re-implement the Schema-enumeration-to-data tool, I found a problem I find hard to solve in xslt. I attach a zip file containing: "UBIF_EnumLib.xsd", the input file, "UBIF_EnumerationTool1_xsd2xml.xsl" the xslt, and "Resulting-Enum-data.xml" the output from that transformation. The issue is that in the input, the sequence of human readable elements is organized by language, then, Label, then detailed description. A straightforward output thus creates something like:
+<verbatim>
+<Representation>
+  <Label role="Full" xml:lang="en-us">giga</Label>
+  <Label role="Abbrev" xml:lang="en-us">G</Label>
+  <Detail>Prefix of measurement units, denoting 10 to the power of 9. Example: GV, gigavolt.</Detail>
+  <Label role="Full" xml:lang="de">Giga</Label>
+  <Label role="Abbrev" xml:lang="de">G</Label>
+  <Detail>Prefix wissenschaftlicher Maßeinheiten, entspricht einem Faktor von 10 hoch 9.</Detail>
+</Representation>
+</verbatim>
+which is invalid under 1.1 beta 12, because first ALL Label, then ALL Detail (and then all MediaObject) must come in sequence.
+
+Consequences: a) Remove the sequence constraint and let the Representation elements come in any sequence (using a repeated choice). Personally I believe this is a good idea, we are using choices for similar reasons to allow subtypes of characters (Categorical, Quantitative) come in any sequence. b) Keep current design - Jacob can modify xslt to make it sort it properly? If this is fairly simple, then the current sequence constraint is not cost to developers.
+
+----
+See also previous DiscussionFor1dot1beta10 and *next  DiscussionFor1dot1RC1*
+
+
+%META:FILEATTACHMENT{name="SDD1.1b11.zip" attachment="SDD1.1b11.zip" attr="h" comment="" date="1147114623" path="SDD1.1b11.zip" size="163065" stream="SDD1.1b11.zip" user="Main.BobMorris" version="1"}%

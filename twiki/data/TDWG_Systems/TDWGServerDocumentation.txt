@@ -1,0 +1,41 @@
+%META:TOPICINFO{author="PiersHiggs" date="1241514466" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="WebHome"}%
+This page details issues to do with the servers and the processes that run on them.
+
+---+BEFORE YOU START
+
+Directions from Cip:
+One last thing: on each of the machines we have a very useful admin-log....txt file in  /root. Everybody who does something to the box is supposed to write there so that the rest of us can trace what happened. I trust you to put the essential stuff (e.g. we list the updates so if any compat problem shows up we know "what we did last summer"). If you rebuild something for example just say "rebuilt XWZ into /var/www/typo3 with the following options --with-foobazor=/usr/sbin/perl  ; carefull, it depends on XMN lib". 
+
+---++Server Listing
+
+All are .tdwg.org.  Passwords are not here, you have to get them from someone "in the know" (i.e. Cip or Piers)
+
+*Through pinging the domain names Tim was able to guess what a few of the following machines might be serving - it is not known what server side redirects are running though to be 100% sure.*
+
+*It would be really helpful to have this section filled out with more information about the servers running (mysql etc) on each machine and their purpose.*
+
+tdwgbox (192.38.28.102)
+
+condor (192.38.28.104)
+
+falcon (192.38.28.103)
+   * www.tdwg.org - the Typ03 (PHP) system 
+   * mysql - the Typ03 database appears to be  running here
+   * OJS appears to also run here, unless server side redirects are happening
+
+harpy (192.38.28.109)
+
+owl (192.38.28.106)
+   * mail lists and distribution listings.  See below for Email Alias information
+   * wiki.tdwg.org - runs TWiki (PHP wiki)
+   * rs.tdwg.org - I *think* this is just a running SVN
+
+---++DNS Issues
+
+---+++DNS Down
+The Domain Name Server (DNS) has gone down in the recent past due to 0% free errors.  This has been caused by Ricardo's daily backup routines, which have now been switched off as the GBIF ones are more comprehensive, with the exception of the database backup (which "extracts the database data in a consistent state so it can be later stored on GBIF's backup later").
+
+_Ricardo's Cure_
+
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.

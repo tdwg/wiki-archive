@@ -1,0 +1,91 @@
+%META:TOPICINFO{author="RogerHyam" date="1181560763" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="LsidVocs"}%
+---+ <nop>%TOPIC%
+-----
+%ICON{"warning"}% This needs to be updated to take into account the new TaxonOccurrenceLsidVoc vocabulary that replaces SpecimenLsidVoc and OccurrenceRecordLsidVoc. The mapping is more or less trivial as most or the properties retain their current names or become more like the DarwinCore equivalents.
+-----
+
+
+This is an attempt to reconcile the DarwinCore.DarwinCoreDraftStandard with the LSIDVocs in a human readable fashion. Much of the OccurrenceRecord and Specimen objects is base on DarwinCore.DarwinCoreDraftStandard anyhow so they should match. More about how the OccurrenceRecord has been modeled is in OccurrenceRecordLsidVoc.
+ 
+| *DwC Extension* |  *DwC Element*  |  *LsidVoc Property* | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.GlobalUniqueIdentifier | @rdf:about The about attribute in either Specimen or OccurrenceRecord. |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.DateLastModified | dc:modified property. Additional information may be given in dc:source, dcterms:replace, dcterms:provenance, dcterms:hasVersion, dcterms:isVersionOf and owl:versionInfo properties |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.BasisOfRecord | n/a If the object is a specimen the BasisOfRecord is given by the specimen type. If it is an OccurrenceRecord without an associated specimen then it is implied from the procedure property and others. |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.InstitutionCode | [[http://rs.tdwg.org/ontology/voc/Specimen#hostCollectionString][Specimen.hostCollectionString]]  But may also be normalized out in the hostCollection property.|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.CollectionCode | [[http://rs.tdwg.org/ontology/voc/Specimen#hostCollectionString][Specimen.hostCollectionString]] But may also be normalized out in the hostCollection property. |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.CatalogNumber | [[http://rs.tdwg.org/ontology/voc/Specimen#specimenID][Specimen.SpecimenID]]  Other identifiers, such as barcodes, can be included using dc:indentifier |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.InformationWithheld |[[http://rs.tdwg.org/ontology/voc/Common#isRestricted][isRestricted]] | |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Remarks]] | [[http://rs.tdwg.org/ontology/voc/Common#note][note]]| |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.ScientificName | [[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxonName]] The TaxonConcept may be further broken down in the 'taxon' property.|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.HigherTaxon |Either [[http://rs.tdwg.org/ontology/voc/Common#taxonomicPlacementFormal][taxonomicPlacementFormal]] or [[http://rs.tdwg.org/ontology/voc/Common#taxonomicPlacementInformal][taxonomicPlacementInformal]]|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Kingdom]] | as HigherTaxon | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Phylum]] |as HigherTaxon| 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Class]] |as HigherTaxon| 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Order]] |as HigherTaxon|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Family]] |as HigherTaxon|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Genus]] | [[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxon/TaxonName/genusPart]] | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.SpecificEpithet | [[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxon/TaxonName/specificEpithet]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.InfraspecificRank |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxon/TaxonName/rankString]]  Could also use 'rank' property with controlled vocabulary. Use for all ranks |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.InfraSpecificEpithet |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxon/TaxonName/infraspecificEpithet]]| 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.AuthorYearOfScientificName |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxon/TaxonName/authorship]]| 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.NomenclaturalCode |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#taxonName][OccurrenceRecord/identifiedTo/ Identification/taxon/TaxonName/nomenclaturalCode]] Controlled vocabulary of URIs |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.IdentificationQualifer |[[http://rs.tdwg.org/ontology/voc/Common#note][OccurrenceRecord/identifiedTo/ Identification/note]] | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.HigherGeography | [[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#higherGeography][OccurrenceRecord/higherGeography]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Continent]]|[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#continent][OccurrenceRecord/continent]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.WaterBody |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#waterBody][OccurrenceRecord/waterBody]]  |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.IslandGroup |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#islandGroup][OccurrenceRecord/islandGroup]]  |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Island]] |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#island][OccurrenceRecord/island]] | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Country]] |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#country][OccurrenceRecord/country]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.StateProvince |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#stateProvince][OccurrenceRecord/stateProvince]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.County]] |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#county][OccurrenceRecord/county]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Locality]]|[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#locality][OccurrenceRecord/locality]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.MinimumElevationInMeters |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#minimumElevationMeters][OccurrenceRecord/minimumElevationMeters]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.MaximumElevationInMeters |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#maximumElevationMeters][OccurrenceRecord/maximumElevationMeters]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.MinimumDepthInMeters |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#minimumDepthInMeters][OccurrenceRecord/minimumDepthInMeters]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.MaximumDepthInMeters |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#maximumDepthInMeters][OccurrenceRecord/maximumDepthInMeters]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.CollectingMethod |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#procedureDescriptor][OccurrenceRecord/procedureDescriptor]] This is for the method of deriving the OccurrenceRecord rather than the Specimen. More details can be put in the procedure property.|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.ValidDistributionFlag |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#validDistributionFlag][OccurrenceRecord/validDistributionFlag]] | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.EarliestDateCollected |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#earliestDateCollected][OccurrenceRecord/earliestDateCollected]] | 
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.LatestDateCollected |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#latestDateCollected][OccurrenceRecord/latestDateCollected]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.DayOfYear |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#dayOfYear][OccurrenceRecord/dayOfYear]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Collector]] | [[http://rs.tdwg.org/ontology/voc/Specimen#collector][Specimen/collector]] See also [[http://rs.tdwg.org/ontology/voc/Specimen#collectorTeam][collectorTeam]]|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Sex]] | [[http://rs.tdwg.org/ontology/voc/Specimen#sex][Specimen/sex]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.LifeStage |[[http://rs.tdwg.org/ontology/voc/Specimen#lifeStage][Specimen/lifeStage]] |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| [[DarwinCore.Attributes]] | Not Supported. dcterm:description could be used in its place. Use of SDD subset or TaxonDescriptionModel in the future. |
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.ImageURL | [[http://rs.tdwg.org/ontology/voc/Common#hasDigitalImage][hasDigitalImage]] if the image is of a physical specimen or [[http://rs.tdwg.org/ontology/voc/Specimen#digitalRepresentation][digitalRepresentation]] if the specimen itself is a digital object such as a sound recording.|
+|[[DarwinCore.DarwinCoreDraftStandard][Core]]| DarwinCore.RelatedInformation | dc:relation |
+| DarwinCore.CuratorialExtension | DarwinCore.CatalogNumberNumeric | [[http://rs.tdwg.org/ontology/voc/Specimen#specimenID][Specimen/specimenID]] |
+| DarwinCore.CuratorialExtension | DarwinCore.IdentifiedBy | [[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#expertName][Identification/expertName]] May also be normalized in the expert property|
+| DarwinCore.CuratorialExtension | DarwinCore.DateIdentified | [[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#date][Identification/date]]|
+| DarwinCore.CuratorialExtension | DarwinCore.CollectorNumber |[[http://rs.tdwg.org/ontology/voc/Specimen#collectorsFieldNumber][Specimen/collectorsFieldNumber]] |
+| DarwinCore.CuratorialExtension | DarwinCore.FieldNumber |[[http://rs.tdwg.org/ontology/voc/Specimen#collectorsBatchNumber][Specimen/collectorsBatchNumber]] |
+| DarwinCore.CuratorialExtension | DarwinCore.FieldNotes |[[http://rs.tdwg.org/ontology/voc/Specimen#fieldNotes][Specimen/fieldNotes]] |
+| DarwinCore.CuratorialExtension | DarwinCore.VerbatimCollectingDate | [[http://rs.tdwg.org/ontology/voc/Specimen#verbatimCollectingDate][Specimen/verbatimCollectingDate]]  |
+| DarwinCore.CuratorialExtension | DarwinCore.VerbatimElevation |[[http://rs.tdwg.org/ontology/voc/Specimen#verbatimElevation][Specimen/verbatimElevation]] |
+| DarwinCore.CuratorialExtension | DarwinCore.VerbatimDepth |[[http://rs.tdwg.org/ontology/voc/Specimen#verbatimDepth][Specimen/verbatimDepth]] |
+| DarwinCore.CuratorialExtension | [[DarwinCore.Preparations]] |[[http://rs.tdwg.org/ontology/voc/Specimen#kindOfSpecimenString][Specimen/kindOfSpecimenString]] but it would be clearer to use the [[http://rs.tdwg.org/ontology/voc/Specimen#kindOfSpecimen][Specimen/kindOfSpecimen]] and values from a controlled vocabulary. To represent a series of specimens that have gone through some preparation/separation process the [[http://rs.tdwg.org/ontology/voc/Specimen#derivedFrom][Specimen/derivedFrom]] and [[http://rs.tdwg.org/ontology/voc/Specimen#procedure][Specimen/procedure]] properties should be employed. |
+| DarwinCore.CuratorialExtension | DarwinCore.TypeStatus |[[http://rs.tdwg.org/ontology/voc/Specimen#typeStatusString][Specimen/typeStatusString]] It is also possible to indicated type status using a controlled vocabulary in the [[http://rs.tdwg.org/ontology/voc/Specimen#typeStatus][typeStatus]] field and to indicate the name for which this is a type specimen using the [[http://rs.tdwg.org/ontology/voc/Specimen#typeForName][typeForName]] property |
+| DarwinCore.CuratorialExtension | DarwinCore.GenBankNumber | Not currently supported |
+| DarwinCore.CuratorialExtension | DarwinCore.OtherCatalogNumbers | dcterm:identifier should be used for all other identifiers. |
+| DarwinCore.CuratorialExtension | DarwinCore.RelatedCatalogedItems | dc:relation |
+| DarwinCore.CuratorialExtension | [[DarwinCore.Disposition]]|[[http://rs.tdwg.org/ontology/voc/Specimen#disposition][Specimen/disposition]]|
+| DarwinCore.CuratorialExtension | DarwinCore.IndividualCount |[[http://rs.tdwg.org/ontology/voc/Specimen#individualCount][Specimen/individualCount]]|
+|DarwinCore.GeospatialExtension | DarwinCore.DecimalLatitude |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#decimalLatitude][OccurrenceRecord/decimalLatitude]] |
+| DarwinCore.GeospatialExtension | DarwinCore.DecimalLongitude |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#decimalLongitude][OccurrenceRecord/decimalLongitude]] |
+| DarwinCore.GeospatialExtension | DarwinCore.GeodeticDatum |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#geodeticDatum][OccurrenceRecord/geodeticDatum]] |
+| DarwinCore.GeospatialExtension | DarwinCore.CoordinateUncertaintyInMeters |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#coordinateUncertaintyInMeters][OccurrenceRecord/coordinateUncertaintyInMeters]] |
+| DarwinCore.GeospatialExtension | DarwinCore.PointRadiusSpatialFit |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#pointRadiusSpatialFit][OccurrenceRecord/pointRadiusSpatialFit]]|
+| DarwinCore.GeospatialExtension | DarwinCore.VerbatimCoordinates |[[http://rs.tdwg.org/ontology/voc/Specimen#verbatimCoordinates][Specimen/verbatimCoordinates]]|
+| DarwinCore.GeospatialExtension | DarwinCore.VerbatimLatitude |[[http://rs.tdwg.org/ontology/voc/Specimen#verbatimLatitude][Specimen/verbatimLatitude]]|
+| DarwinCore.GeospatialExtension | DarwinCore.VerbatimLongitude |[[http://rs.tdwg.org/ontology/voc/Specimen#verbatimLongitude][Specimen/verbatimLongitude]]|
+| DarwinCore.GeospatialExtension | DarwinCore.VerbatimCoordinateSystem |[[http://rs.tdwg.org/ontology/voc/Specimen#verbatimCoordinateSystem][Specimen/verbatimCoordinateSystem]]|
+| DarwinCore.GeospatialExtension |DarwinCore.GeoreferenceProtocol|[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#georeferenceProtocol][OccurrenceRecord/georeferenceProtocol]]|
+| DarwinCore.GeospatialExtension | DarwinCore.GeoreferenceSources |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#georeferenceSources][OccurrenceRecord/georeferenceSources]]|
+| DarwinCore.GeospatialExtension | DarwinCore.GeoreferenceVerificationStatus |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#georeferenceVerificationStatus][OccurrenceRecord/georeferenceVerificationStatus]]|
+| DarwinCore.GeospatialExtension | DarwinCore.GeoreferenceRemarks |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#georeferenceRemarks][OccurrenceRecord/georeferenceRemarks]]|
+| DarwinCore.GeospatialExtension | [[DarwinCore.WKTFootprint]]|[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#wktFootprint][OccurrenceRecord/wktFootprint]]|
+| DarwinCore.GeospatialExtension | DarwinCore.FootprintSpatialFit |[[http://rs.tdwg.org/ontology/voc/OccurrenceRecord#footprintSpatialFit][OccurrenceRecord/footprintSpatialFit]]|
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%

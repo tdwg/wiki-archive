@@ -1,0 +1,2079 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.11.13.16.49.40;	author AnnaWeitzman;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@NZ Floras schema, received Oct 2004
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Aaron Wilton (Landcare Research NZ Ltd) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="TaxonomicPublication">
+		<xs:annotation>
+			<xs:documentation>Any taxonomic publicaton</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FileHeader" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TeiHeader">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="FileDescription">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="TitleDescription">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Title" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:complexContent>
+																			<xs:extension base="paragraphs">
+																				<xs:attribute name="level">
+																					<xs:annotation>
+																						<xs:documentation>TEI: indicates whether this is the title of an article, book, journal, series, or unpublished material</xs:documentation>
+																					</xs:annotation>
+																				</xs:attribute>
+																			</xs:extension>
+																		</xs:complexContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element ref="Responsibility" minOccurs="0" maxOccurs="unbounded"/>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="author" use="required">
+																<xs:annotation>
+																	<xs:documentation>TEI: Name of the author(s) of the work</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="principal" use="required">
+																<xs:annotation>
+																	<xs:documentation>TEI: Principal researcher responsible for the creation of an eletronic text</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="sponsor" use="optional">
+																<xs:annotation>
+																	<xs:documentation>TEI:  name of a sponsoring organisation</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="funder" use="optional">
+																<xs:annotation>
+																	<xs:documentation>TEI: name of sponsoring organisation responsible for funding project or text</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="EditionStatement" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>TEI: groups information relating to one edition of a text.</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Edition" type="paragraphs">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  describes the particularities of one edition of a text</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element ref="Responsibility" minOccurs="0" maxOccurs="unbounded"/>
+															</xs:sequence>
+															<xs:attribute name="version">
+																<xs:annotation>
+																	<xs:documentation>TEI (edition):  describes the particularities of one edition (version) of a text</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="date"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Extent" type="paragraphs" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>TEI: approximate size of the electronic text</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="Publication">
+														<xs:annotation>
+															<xs:documentation>TEI:  groups information concerning the publication or distribution of an electronic or other text</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:attribute name="publisher" use="required">
+																<xs:annotation>
+																	<xs:documentation>TEI: name of organisation responsible for the publication or distribution of a blibliographic item</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="distributor" use="optional">
+																<xs:annotation>
+																	<xs:documentation>TEI: name of agency responsible for distribution of a text</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="authority" use="optional">
+																<xs:annotation>
+																	<xs:documentation>TEI: name of a person or agency repsonsible for making an electronic file available, other than a publisher or distributor</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="place" use="optional">
+																<xs:annotation>
+																	<xs:documentation>TEI: contains the name of the place where a bibliographic item was published</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="address" use="optional"/>
+															<xs:attribute name="idNo" use="optional">
+																<xs:annotation>
+																	<xs:documentation>eg. ISBN</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+															<xs:attribute name="idType" use="optional"/>
+															<xs:attribute name="availability" use="optional"/>
+															<xs:attribute name="date" use="required"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="volume"/>
+															<xs:attribute name="edition"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Series">
+														<xs:annotation>
+															<xs:documentation>TEI:  information about the series to which the publication belongs</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="SeriesTitle" type="paragraphs" maxOccurs="unbounded"/>
+																<xs:element ref="Responsibility" minOccurs="0" maxOccurs="unbounded"/>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="idNo" use="optional"/>
+															<xs:attribute name="idType" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Notes" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>TEI:  collects together any notes providing information about a text additional to that recorded in other parts of the bibliographic description</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Note" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="type"/>
+																		<xs:attribute name="responsible"/>
+																		<xs:attribute name="place">
+																			<xs:annotation>
+																				<xs:documentation>indicates where the note appears in the source text</xs:documentation>
+																			</xs:annotation>
+																		</xs:attribute>
+																		<xs:attribute name="anchored"/>
+																		<xs:attribute name="targetID" type="xs:IDREF" use="optional"/>
+																		<xs:attribute name="targetEnd" type="xs:IDREF" use="optional"/>
+																		<xs:attribute name="text"/>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Source" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>TEI:  supplies a bibliographic description of the copy text(s) from which an electronic text was derived or generated</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Bibliography" maxOccurs="unbounded">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  contains a loosely strucutred bibliographic citation of which the sub-components may or may not be explicitly tagged</xs:documentation>
+																	</xs:annotation>
+																	<xs:complexType>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																		<xs:attribute name="format"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="EncodingDescription" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>TEI:  documents the relationship between and electronic text and the source from which derived</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="ProjectDescription" type="paragraphs">
+														<xs:annotation>
+															<xs:documentation>TEI: detail the aim for which file was encoded, together with processes by which it was assembled</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="SamplingDeclarations" type="paragraphs" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>TEI: description of the rationale and methods used in creation of text</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="EditorialDeclarations">
+														<xs:annotation>
+															<xs:documentation>TEI: details of editorial principles and practices applied during encoding</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Correction" type="paragraphs">
+																	<xs:annotation>
+																		<xs:documentation>TEI: states how and under what ciircumstances corrections have been made in the text</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="Normalization" type="paragraphs" minOccurs="0">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  indicates the extent of normalization or regularization of the orginal source correied out in converting it to electronic form</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="Quotation" type="paragraphs" minOccurs="0">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  specifies editorial practice adopted with respect to quotation marks in the original</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="Hyphenation" type="paragraphs" minOccurs="0">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  summarizes the way in which hyphenation in a source text has been treated in an encoded version of it</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="Segmentation" type="paragraphs" minOccurs="0">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  describes the principles according to which the text has been segmented</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="Interpretation" type="paragraphs" minOccurs="0">
+																	<xs:annotation>
+																		<xs:documentation>TEI:  describes the scope of any analytic or interpretive information aded to the text in addition to the transcription</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="TagsDeclarations" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>TEI: detalied information about the tagging applied to an SGML or XML document</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Tag" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="rendition">
+																			<xs:annotation>
+																				<xs:documentation>TEI: information about the intended rendition of one or more elements</xs:documentation>
+																			</xs:annotation>
+																		</xs:attribute>
+																		<xs:attribute name="useage">
+																			<xs:annotation>
+																				<xs:documentation>TEI: suupplies information about the useage of this element within the text</xs:documentation>
+																			</xs:annotation>
+																		</xs:attribute>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ProfileDescription" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>TEI: detailed description of non-blibliographic apsects of a text</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Creation" type="paragraphs">
+														<xs:annotation>
+															<xs:documentation>TEI:  information about the creation of a text</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="LanguageUsage" minOccurs="0" maxOccurs="unbounded">
+														<xs:annotation>
+															<xs:documentation>TEI:  describes the languages represented within a text</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:attribute name="usage"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="TextClassification">
+														<xs:annotation>
+															<xs:documentation>TEI:  groups information that describes the nature or topic of a text in terms of a standard classification scheme</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Keywords">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="keyword" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:attribute name="id" type="xs:ID" use="optional"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="scheme"/>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="ClassificationCode" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="scheme"/>
+																		<xs:attribute name="code"/>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="RevisionDescription" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>TEI:  summarizes the revision history for a file</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Change" maxOccurs="unbounded">
+														<xs:annotation>
+															<xs:documentation>TEI (item):  statement of changes</xs:documentation>
+														</xs:annotation>
+														<xs:complexType mixed="true">
+															<xs:complexContent mixed="true">
+																<xs:extension base="paragraphType">
+																	<xs:attribute name="date"/>
+																	<xs:attribute name="author"/>
+																</xs:extension>
+															</xs:complexContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="eIntroduction" minOccurs="0">
+								<xs:complexType mixed="true">
+									<xs:complexContent mixed="true">
+										<xs:extension base="paragraphs">
+											<xs:attribute name="author"/>
+											<xs:attribute name="date"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="eAcknowledgements" type="paragraphs" minOccurs="0"/>
+							<xs:element name="EditorsNotes" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>LCR:  any notes including corrections, cross referenced to the section in the file.  These may be printed on the internet (set as a boolean against each note)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EditorNote" maxOccurs="unbounded">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphs">
+														<xs:attribute name="author"/>
+														<xs:attribute name="date"/>
+														<xs:attribute name="isPublished" type="xs:boolean"/>
+														<xs:attribute name="type">
+															<xs:annotation>
+																<xs:documentation>correct, insert, delete, transfer</xs:documentation>
+															</xs:annotation>
+														</xs:attribute>
+														<xs:attribute name="sectionId" type="xs:IDREF" use="optional">
+															<xs:annotation>
+																<xs:documentation>a cross-reference to the piece of text to which the editor's note refers, in the form of a guid.</xs:documentation>
+															</xs:annotation>
+														</xs:attribute>
+														<xs:attribute name="page">
+															<xs:annotation>
+																<xs:documentation>the page in the printed text to which the editor's note refers</xs:documentation>
+															</xs:annotation>
+														</xs:attribute>
+														<xs:attribute name="line">
+															<xs:annotation>
+																<xs:documentation>The line on the page in the printed text to which the editor's note refers. recommended format: e.g. 5 down= 5th line from top, whereas 5 up = 5th line from the bottom.</xs:documentation>
+															</xs:annotation>
+														</xs:attribute>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:ID" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Section" maxOccurs="unbounded">
+					<xs:complexType mixed="true">
+						<xs:choice>
+							<xs:element name="CoverPage">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="Author" maxOccurs="unbounded"/>
+										<xs:element name="CoverImage" type="imageType" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="seriesEnglishTitle"/>
+									<xs:attribute name="seriesMaoriTitle" use="optional"/>
+									<xs:attribute name="volumeNumber"/>
+									<xs:attribute name="volumeMainTitle"/>
+									<xs:attribute name="volumeSecondTitle"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="publisher" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="FrontPaper" type="imageType"/>
+							<xs:element name="InsideCover">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="InsideCoverImage" type="imageType" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="titleEnglish"/>
+									<xs:attribute name="titleMaori"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="FrontPiece">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="FrontPieceImage" type="imageType"/>
+										<xs:element name="FrontPieceText" type="paragraphs"/>
+									</xs:choice>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AdvisoryGroups">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="AdvisoryGroup" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Representatives" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:choice maxOccurs="unbounded">
+																<xs:element name="RepAddress" type="paragraphs"/>
+																<xs:element name="Representative">
+																	<xs:complexType>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																		<xs:attribute name="name"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="SubGroup">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Advisor" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:attribute name="id" type="xs:ID" use="optional"/>
+																					<xs:attribute name="name"/>
+																					<xs:attribute name="position"/>
+																					<xs:attribute name="affiliation"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																		<xs:attribute name="title"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:choice>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="title"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+												<xs:attribute name="title"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="SeriesEditor">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EditorAddress" type="paragraphs"/>
+												</xs:sequence>
+												<xs:attribute name="editor"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="title"/>
+									<xs:attribute name="note"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TitlePage">
+								<xs:complexType mixed="true">
+									<xs:sequence>
+										<xs:element name="Authors" minOccurs="0">
+											<xs:complexType mixed="true">
+												<xs:sequence>
+													<xs:element ref="Author" maxOccurs="unbounded"/>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Publisher" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Logo" type="imageType" minOccurs="0"/>
+												</xs:sequence>
+												<xs:attribute name="place"/>
+												<xs:attribute name="date"/>
+												<xs:attribute name="name"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="titleEnglish"/>
+									<xs:attribute name="titleMaori"/>
+									<xs:attribute name="volumeNumber"/>
+									<xs:attribute name="volumeMainTitle"/>
+									<xs:attribute name="volumeSecondTitle"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="contributions" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CataloguePage">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="Copyright">
+											<xs:complexType>
+												<xs:attribute name="statement"/>
+												<xs:attribute name="advisory"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="CataloguingDetails">
+											<xs:complexType>
+												<xs:attribute name="title"/>
+												<xs:attribute name="firstAuthor"/>
+												<xs:attribute name="publicationTitle"/>
+												<xs:attribute name="publicationAuthors"/>
+												<xs:attribute name="publisher"/>
+												<xs:attribute name="ISBN"/>
+												<xs:attribute name="publicationDate"/>
+												<xs:attribute name="publicationPlace"/>
+												<xs:attribute name="udc"/>
+												<xs:attribute name="issn"/>
+												<xs:attribute name="suggestedCitation"/>
+												<xs:attribute name="seriesName"/>
+												<xs:attribute name="issueNumber"/>
+												<xs:attribute name="addedEntries"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="FrontcoverCaption">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphs"/>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Acknowledgement" type="paragraphType"/>
+										<xs:element name="OtherInfo" type="paragraphType"/>
+									</xs:choice>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="printer" use="optional"/>
+									<xs:attribute name="typeset" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Foreword">
+								<xs:complexType>
+									<xs:complexContent>
+										<xs:extension base="chapterType">
+											<xs:attribute name="authors"/>
+											<xs:attribute name="date"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PopularSummaries">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PopularIllustration" type="imageType" minOccurs="0"/>
+										<xs:element name="Hierarchy">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Level" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:attribute name="nameLcrId"/>
+															<xs:attribute name="rank"/>
+															<xs:attribute name="name"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="SummaryAuthors" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SummaryAuthor" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="AuthorName" minOccurs="0">
+																	<xs:complexType>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																		<xs:attribute name="authorName"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="AuthorAddress" type="paragraphs" minOccurs="0"/>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Summaries">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Summary" maxOccurs="unbounded">
+														<xs:complexType mixed="true">
+															<xs:complexContent mixed="true">
+																<xs:extension base="paragraphs">
+																	<xs:attribute name="title"/>
+																	<xs:attribute name="language"/>
+																</xs:extension>
+															</xs:complexContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="LanguageDictionary" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="LanguageDictionaryItem" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:attribute name="english"/>
+															<xs:attribute name="maori"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="titleMaori"/>
+												<xs:attribute name="titleEnglish"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="titleMaori"/>
+									<xs:attribute name="titleEnglish"/>
+									<xs:attribute name="translationCredit"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AuthorBiographies">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="AuthorBiography" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Biography" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:complexContent>
+																<xs:extension base="paragraphs">
+																	<xs:attribute name="language"/>
+																</xs:extension>
+															</xs:complexContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="AuthorsImage" type="imageType" minOccurs="0"/>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="title"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Dedication">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="DedicationText" type="paragraphs"/>
+										<xs:element name="DedicationBiography" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="paragraphs">
+														<xs:attribute name="language"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Abstract">
+								<xs:complexType mixed="true">
+									<xs:complexContent mixed="true">
+										<xs:extension base="paragraphs">
+											<xs:attribute name="title"/>
+											<xs:attribute name="dateReceived"/>
+											<xs:attribute name="dateAccepted"/>
+											<xs:attribute name="keywords"/>
+											<xs:attribute name="citation"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Checklist">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="CheckListEntry" type="checklistEntryType"/>
+										<xs:element name="CheckListNotes" type="paragraphs"/>
+									</xs:choice>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Contents">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="Content" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EntryText" type="paragraphType"/>
+												</xs:sequence>
+												<xs:attribute name="number"/>
+												<xs:attribute name="text"/>
+												<xs:attribute name="page"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+												<xs:attribute name="author"/>
+												<xs:attribute name="checklist"/>
+												<xs:attribute name="refId" type="xs:IDREF" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ContentNote" type="paragraphs" minOccurs="0"/>
+									</xs:choice>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Acknowledgements">
+								<xs:complexType mixed="true">
+									<xs:complexContent mixed="true">
+										<xs:extension base="paragraphs">
+											<xs:attribute name="title"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Introduction" type="chapterType"/>
+							<xs:element name="Systematics" type="chapterType"/>
+							<xs:element name="Classification" type="chapterType"/>
+							<xs:element name="Morphology" type="chapterType"/>
+							<xs:element name="Characters" type="chapterType"/>
+							<xs:element name="Biology" type="chapterType"/>
+							<xs:element name="Biogeography" type="chapterType"/>
+							<xs:element name="Composition" type="chapterType"/>
+							<xs:element name="Phylogeny" type="chapterType"/>
+							<xs:element name="Methods" type="chapterType"/>
+							<xs:element name="CollectionPreparation" type="chapterType"/>
+							<xs:element name="History" type="chapterType"/>
+							<xs:element name="Diagnoses">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="DiagnosesText" type="paragraphs"/>
+										<xs:element name="TaxonDiagnosis">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DiagnosisText" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:complexContent>
+																<xs:extension base="paragraphs">
+																	<xs:attribute name="lifeHistory"/>
+																	<xs:attribute name="language"/>
+																</xs:extension>
+															</xs:complexContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="DiagnosisNotes" type="paragraphs"/>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+												<xs:attribute name="taxonLcrId"/>
+												<xs:attribute name="taxonInternalId" type="xs:IDREF" use="optional"/>
+												<xs:attribute name="taxonNameUnformatted" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="title"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TextConventions" type="chapterType"/>
+							<xs:element name="Chapter" type="chapterType"/>
+							<xs:element name="Abbreviations">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="AbbreviationExplanation" type="paragraphs" minOccurs="0"/>
+										<xs:element name="AbbreviationEntry" maxOccurs="unbounded">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphType">
+														<xs:attribute name="abbreviation"/>
+														<xs:attribute name="italicsOn" type="xs:boolean" use="optional"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="title">
+										<xs:annotation>
+											<xs:documentation>verbatim section title</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="SignsMeasures">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SignMeasureEntry" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>attribribute records sign, the element records the meaning of the sign</xs:documentation>
+											</xs:annotation>
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphType">
+														<xs:attribute name="sign">
+															<xs:annotation>
+																<xs:documentation>the sign or measure entry text</xs:documentation>
+															</xs:annotation>
+														</xs:attribute>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="SignsMeasuresExplanation" type="paragraphs" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>any explainatory text in the section</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="NamesAuthors">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="NamesAuthorsExplanation" type="paragraphs"/>
+										<xs:element name="NamesAuthorsEntry" maxOccurs="unbounded">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphType">
+														<xs:attribute name="authorAbbreviation"/>
+														<xs:attribute name="authorFullName"/>
+														<xs:attribute name="authorYearsActive"/>
+														<xs:attribute name="authorNZFlag"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MainKey" type="keyType"/>
+							<xs:element name="MainSynopsis" type="SynopsisType"/>
+							<xs:element name="Taxa" type="taxaType"/>
+							<xs:element name="ReferenceList" type="referenceListType"/>
+							<xs:element name="SubjectReferenceIndex">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SubjectNote" type="paragraphs" minOccurs="0"/>
+										<xs:element name="MajorTaxonGroup" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="GroupNote" type="paragraphs" minOccurs="0"/>
+													<xs:element name="MinorTaxonGroup" maxOccurs="unbounded">
+														<xs:complexType mixed="true">
+															<xs:sequence>
+																<xs:element name="Year" maxOccurs="unbounded">
+																	<xs:complexType mixed="true">
+																		<xs:sequence minOccurs="0">
+																			<xs:element name="Literature" maxOccurs="unbounded">
+																				<xs:complexType mixed="true">
+																					<xs:complexContent mixed="true">
+																						<xs:extension base="referenceType"/>
+																					</xs:complexContent>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="year"/>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="taxonName"/>
+															<xs:attribute name="taxonLcrId"/>
+															<xs:attribute name="taxonInternalId" type="xs:IDREF" use="optional"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="taxonName"/>
+												<xs:attribute name="taxonLcrId"/>
+												<xs:attribute name="taxonInternalId" type="xs:IDREF" use="optional"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Appendices">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Appendix" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="ScopeText" type="paragraphs" minOccurs="0"/>
+													<xs:element name="AppendixContent">
+														<xs:complexType>
+															<xs:choice>
+																<xs:element name="Glossary" type="glossaryType"/>
+																<xs:element name="GeographicCoordinates">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="GeographicCoordinate" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:attribute name="locality"/>
+																					<xs:attribute name="latitude"/>
+																					<xs:attribute name="longitude"/>
+																					<xs:attribute name="id" type="xs:ID" use="optional"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="ChecklistHostPlants">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="HostTaxon" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:complexContent>
+																						<xs:extension base="taxonNameType">
+																							<xs:sequence>
+																								<xs:element name="HostedTaxon" type="taxonNameType" minOccurs="0" maxOccurs="unbounded"/>
+																							</xs:sequence>
+																						</xs:extension>
+																					</xs:complexContent>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="TabularData">
+																	<xs:complexType>
+																		<xs:complexContent>
+																			<xs:extension base="tableType">
+																				<xs:attribute name="id" type="xs:ID" use="optional"/>
+																			</xs:extension>
+																		</xs:complexContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="NominaNuda">
+																	<xs:complexType>
+																		<xs:complexContent>
+																			<xs:extension base="taxaListType"/>
+																		</xs:complexContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Associations">
+																	<xs:complexType>
+																		<xs:complexContent>
+																			<xs:extension base="taxaListType"/>
+																		</xs:complexContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="UnjustifiedEmendations">
+																	<xs:complexType>
+																		<xs:complexContent>
+																			<xs:extension base="taxaListType"/>
+																		</xs:complexContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="IncorrectRecords" type="taxaListType"/>
+																<xs:element name="AppendixSynopsis">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="SynopsisItem" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element ref="TaxonName"/>
+																						<xs:element name="Information" type="paragraphType"/>
+																					</xs:sequence>
+																					<xs:attribute name="id" type="xs:ID" use="optional"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="ValidTaxa" type="taxaListType"/>
+																<xs:element name="ValidTaxaRegional">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="MajorRegion" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="Region" maxOccurs="unbounded">
+																							<xs:complexType>
+																								<xs:complexContent>
+																									<xs:extension base="taxaListType">
+																										<xs:attribute name="total_taxa"/>
+																										<xs:attribute name="number_endemic"/>
+																										<xs:attribute name="region_code"/>
+																										<xs:attribute name="number_native"/>
+																										<xs:attribute name="number_adventive"/>
+																										<xs:attribute name="number_restricted"/>
+																									</xs:extension>
+																								</xs:complexContent>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attribute name="region"/>
+																					<xs:attribute name="id" type="xs:ID" use="optional"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="TypeLocalities">
+																	<xs:annotation>
+																		<xs:documentation>fauna volume 43</xs:documentation>
+																	</xs:annotation>
+																	<xs:complexType>
+																		<xs:sequence maxOccurs="unbounded">
+																			<xs:element name="LocalityRegion">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="Locality" maxOccurs="unbounded">
+																							<xs:complexType>
+																								<xs:complexContent>
+																									<xs:extension base="taxaListType">
+																										<xs:attribute name="name"/>
+																									</xs:extension>
+																								</xs:complexContent>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attribute name="name"/>
+																					<xs:attribute name="code"/>
+																					<xs:attribute name="id" type="xs:ID" use="optional"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:choice>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="title"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+												<xs:attribute name="number"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="title"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Illustrations">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Illustration" type="imageType" maxOccurs="unbounded"/>
+									</xs:sequence>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Maps">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Map" type="imageType" maxOccurs="unbounded"/>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TaxonIndex">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="Explanation" type="paragraphType"/>
+										<xs:element name="SubIndex" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="TaxonItem" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:choice>
+																	<xs:element ref="TaxonName"/>
+																	<xs:element ref="Vernacular"/>
+																</xs:choice>
+																<xs:element name="Page" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="value"/>
+																		<xs:attribute name="internalId" type="xs:IDREF" use="optional"/>
+																		<xs:attribute name="isBold"/>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="indent" type="xs:integer" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="title"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MainGlossary" type="glossaryType"/>
+							<xs:element name="ChromosomeNumbers">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="ChromosomeNotes" type="paragraphs"/>
+										<xs:element name="List">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="ColumnHeadings">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ColumnHeading" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="text"/>
+																		<xs:attribute name="id"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="ListPart">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ListEntry" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element ref="TaxonName"/>
+																			<xs:element name="References" type="referenceListType"/>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																		<xs:attribute name="haploidN"/>
+																		<xs:attribute name="diploidN"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="headerTaxonName"/>
+															<xs:attribute name="headerTaxonLcrId"/>
+															<xs:attribute name="headerTaxonInternalId" type="xs:IDREF" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ChromosomeReferences" type="referenceListType"/>
+									</xs:choice>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="VernacularNames">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="VernacularNotes" type="paragraphs"/>
+										<xs:element name="NameList">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="NameEntry" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="VernacularName" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="id" type="xs:ID" use="optional"/>
+																		<xs:attribute name="vernacularNameLcrId"/>
+																		<xs:attribute name="language"/>
+																		<xs:attribute name="text"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="TaxonomicName" type="taxonNameType"/>
+															</xs:sequence>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+									<xs:attribute name="title"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="InPrint">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="InPrintPublication" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="number"/>
+												<xs:attribute name="titlePrimary"/>
+												<xs:attribute name="titleSecond"/>
+												<xs:attribute name="authors"/>
+												<xs:attribute name="isbn"/>
+												<xs:attribute name="date"/>
+												<xs:attribute name="pages"/>
+												<xs:attribute name="price"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="footer"/>
+									<xs:attribute name="titleMaori"/>
+									<xs:attribute name="titleEnglish"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="InPreparation">
+								<xs:complexType mixed="true">
+									<xs:complexContent mixed="true">
+										<xs:extension base="paragraphs">
+											<xs:attribute name="title"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="GroupsCovered">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Group" maxOccurs="unbounded">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphs">
+														<xs:attribute name="title"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Notices">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="English">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphs">
+														<xs:attribute name="title"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Maori" minOccurs="0">
+											<xs:complexType mixed="true">
+												<xs:complexContent mixed="true">
+													<xs:extension base="paragraphs">
+														<xs:attribute name="title"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Corrigenda">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="CorrigendaNote" type="paragraphs" minOccurs="0"/>
+										<xs:element name="Corrections">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="CorrigendaCorrection" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:choice maxOccurs="unbounded">
+																<xs:element name="CorrectionText" type="paragraphs"/>
+																<xs:element name="CorrectTable">
+																	<xs:complexType>
+																		<xs:complexContent>
+																			<xs:extension base="tableType">
+																				<xs:attribute name="id" type="xs:ID" use="optional"/>
+																			</xs:extension>
+																		</xs:complexContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="CorrectSynopsis" type="SynopsisType"/>
+																<xs:element name="CorrectKey" type="keyType"/>
+															</xs:choice>
+															<xs:attribute name="page"/>
+															<xs:attribute name="line"/>
+															<xs:attribute name="id" type="xs:ID" use="optional"/>
+															<xs:attribute name="errorId" type="xs:IDREF" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="volume"/>
+												<xs:attribute name="id" type="xs:ID" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+									<xs:attribute name="title"/>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="EndPaper" type="imageType"/>
+							<xs:element name="BackCover">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CoverText" type="paragraphs"/>
+										<xs:element name="CoverImageBack" type="imageType"/>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="pageStart" type="xs:string" use="optional"/>
+						<xs:attribute name="pageEnd" type="xs:string" use="optional"/>
+						<xs:attribute name="id" type="xs:ID" use="optional"/>
+						<xs:attribute name="sectionAuthor" type="xs:string" use="optional"/>
+						<xs:attribute name="navigationTitle"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="isbn"/>
+			<xs:attribute name="title"/>
+			<xs:attribute name="author"/>
+			<xs:attribute name="keywords"/>
+			<xs:attribute name="publisher"/>
+			<xs:attribute name="publicationDate"/>
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+			<xs:attribute name="publicationLcrId"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="paragraphs" mixed="true">
+		<xs:sequence>
+			<xs:element name="Paragraph" maxOccurs="unbounded">
+				<xs:complexType mixed="true">
+					<xs:complexContent mixed="true">
+						<xs:extension base="paragraphType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:element name="Italics">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Vernacular">
+		<xs:complexType>
+			<xs:attribute name="vernacularNameLcrId"/>
+			<xs:attribute name="name"/>
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Bold">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="tableType">
+		<xs:sequence>
+			<xs:element name="TableInfo">
+				<xs:complexType>
+					<xs:attribute name="number"/>
+					<xs:attribute name="caption"/>
+					<xs:attribute name="footnote"/>
+					<xs:attribute name="id" type="xs:ID"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="table" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="thead">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element ref="tr" maxOccurs="unbounded"/>
+								</xs:sequence>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="tbody">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element ref="tr" maxOccurs="unbounded"/>
+								</xs:sequence>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TableImage" type="imageType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="chapterType">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element ref="Text"/>
+			<xs:element name="TableData">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="tableType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="title"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="keyType">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="Key">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Couplet" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coupletType">
+										<xs:attribute name="id" type="xs:ID" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="title"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="KeyNote" type="paragraphs" minOccurs="0"/>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="title"/>
+	</xs:complexType>
+	<xs:complexType name="lineType">
+		<xs:sequence>
+			<xs:element name="Characteristics">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="Italics"/>
+					</xs:choice>
+					<xs:attribute name="id" type="xs:ID"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Result">
+				<xs:annotation>
+					<xs:documentation>the result text.  May include bold and italic sections</xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="Bold"/>
+						<xs:element ref="Italics"/>
+					</xs:choice>
+					<xs:attribute name="id" type="xs:anySimpleType"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SubKey" type="keyType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="resultId" type="xs:IDREF" use="optional"/>
+		<xs:attribute name="lineNumber"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="coupletType">
+		<xs:sequence>
+			<xs:element name="Line" type="lineType" minOccurs="2" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="number"/>
+		<xs:attribute name="from_number"/>
+	</xs:complexType>
+	<xs:complexType name="paragraphType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="ParagraphTitle">
+				<xs:annotation>
+					<xs:documentation>implicitly bold for Fauna</xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed="true">
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="TaxonName"/>
+			<xs:element name="CitedPublication">
+				<xs:complexType mixed="true">
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="Italics"/>
+					</xs:sequence>
+					<xs:attribute name="referenceInternalId" type="xs:IDREF" use="optional"/>
+					<xs:attribute name="referenceLcrId"/>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="ImageReference"/>
+			<xs:element name="CollectionCode">
+				<xs:complexType mixed="true">
+					<xs:attribute name="collectionId" use="optional"/>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="Italics"/>
+			<xs:element ref="Bold"/>
+			<xs:element name="SectionReference">
+				<xs:annotation>
+					<xs:documentation>cross reference to a secton orin the publication</xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed="true">
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="sectionId" type="xs:IDREF" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GlossaryTerm">
+				<xs:annotation>
+					<xs:documentation>cross reference to a glossary entry</xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed="true">
+					<xs:attribute name="glossaryEntryId" type="xs:IDREF" use="optional"/>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="taxonNameType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Name" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="name"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NameAuthor" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AuthorNameYear" minOccurs="0">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="year"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="author"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NameStatus" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="status"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NameProtologue" minOccurs="0">
+				<xs:complexType mixed="true">
+					<xs:choice maxOccurs="unbounded">
+						<xs:element name="NameSource">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="source"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Volume">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="volume"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="NameYear">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="yearOf"/>
+								<xs:attribute name="yearOn"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="ProtologuePage">
+							<xs:complexType>
+								<xs:attribute name="value"/>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+					<xs:attribute name="referenceLcrId"/>
+					<xs:attribute name="referenceInternalId" type="xs:IDREF" use="optional"/>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NameRankAbbreviation" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="abbreviation"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="taxonInternalId" type="xs:IDREF" use="optional"/>
+		<xs:attribute name="nameUnformatted"/>
+		<xs:attribute name="taxonLcrId"/>
+		<xs:attribute name="isBold" use="optional"/>
+		<xs:attribute name="suppressItalic" use="optional"/>
+		<xs:attribute name="lifeHistory" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="taxaType">
+		<xs:sequence>
+			<xs:element name="Taxon" type="taxonType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="title"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:element name="ImageReference">
+		<xs:complexType mixed="true">
+			<xs:attribute name="isBold"/>
+			<xs:attribute name="imageId"/>
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="imageType" mixed="true">
+		<xs:sequence>
+			<xs:element name="Caption" minOccurs="0">
+				<xs:complexType mixed="true">
+					<xs:complexContent mixed="true">
+						<xs:extension base="paragraphType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="fileName"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="imageID"/>
+		<xs:attribute name="photographer"/>
+	</xs:complexType>
+	<xs:complexType name="taxaListType">
+		<xs:sequence>
+			<xs:element name="TaxonEntry" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="TaxonName"/>
+						<xs:element name="Remark" type="paragraphType" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="family"/>
+					<xs:attribute name="biostatus"/>
+					<xs:attribute name="isBold"/>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="SynopsisEntryType">
+		<xs:sequence>
+			<xs:element ref="TaxonName" minOccurs="0"/>
+			<xs:element name="SynopsisDiagnosis" type="paragraphType" minOccurs="0"/>
+			<xs:element name="SynopsisChildren" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SynopsisChild" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="taxonNameType">
+										<xs:sequence>
+											<xs:element name="SynopsisNote" type="paragraphType" minOccurs="0"/>
+										</xs:sequence>
+										<xs:attribute name="childEntryNumber" use="optional"/>
+										<xs:attribute name="childNumberOfTaxa" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SubEntry" type="SynopsisEntryType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="number"/>
+		<xs:attribute name="rank"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="SynopsisType">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="Synopsis">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SynopsisEntry" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="SynopsisEntryType"/>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:anySimpleType"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SynopsisNotes" type="paragraphs"/>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="title"/>
+	</xs:complexType>
+	<xs:complexType name="personType">
+		<xs:attribute name="title"/>
+		<xs:attribute name="name"/>
+		<xs:attribute name="address"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="checklistEntryType">
+		<xs:sequence>
+			<xs:element name="CheckListName" type="taxonNameType"/>
+			<xs:element name="SynonymEntry" type="taxonNameType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="SubCheckListEntry" type="checklistEntryType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="page"/>
+		<xs:attribute name="id"/>
+	</xs:complexType>
+	<xs:element name="Responsibility">
+		<xs:annotation>
+			<xs:documentation>TEI (respStmt): statement of responsibility for somone responsible for the intellectual content of a text where the specialised elements of authors, editor etc do not suffice</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+			<xs:attribute name="name"/>
+			<xs:attribute name="responsibility">
+				<xs:annotation>
+					<xs:documentation>TEI: phrase describing the nature of a presons's intellectual responsibility</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TaxonName">
+		<xs:complexType mixed="true">
+			<xs:complexContent mixed="true">
+				<xs:extension base="taxonNameType"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tr">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="td" maxOccurs="unbounded">
+					<xs:complexType mixed="true">
+						<xs:complexContent mixed="true">
+							<xs:extension base="paragraphs"/>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="TaxonParagraphs" mixed="true">
+		<xs:complexContent mixed="true">
+			<xs:extension base="paragraphs">
+				<xs:attribute name="lifeHistory"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Author" type="personType"/>
+	<xs:element name="Text" type="paragraphs"/>
+	<xs:complexType name="glossaryType">
+		<xs:sequence>
+			<xs:element name="GlossaryItem" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Meaning" type="paragraphs"/>
+					</xs:sequence>
+					<xs:attribute name="term"/>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id"/>
+		<xs:attribute name="title"/>
+	</xs:complexType>
+	<xs:complexType name="referenceType">
+		<xs:sequence minOccurs="0">
+			<xs:element name="ReferenceTitle" type="paragraphType" minOccurs="0"/>
+			<xs:element name="ReferenceSource" type="paragraphType"/>
+			<xs:element name="ReferenceNote" type="paragraphs" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="number" use="optional"/>
+		<xs:attribute name="author"/>
+		<xs:attribute name="year"/>
+		<xs:attribute name="referenceLcrId"/>
+	</xs:complexType>
+	<xs:complexType name="referenceListType">
+		<xs:sequence>
+			<xs:element name="Reference" type="referenceType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="title"/>
+		<xs:attribute name="subtitle"/>
+		<xs:attribute name="note"/>
+		<xs:attribute name="lifeHistory" use="optional"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="taxonType" mixed="true">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element ref="TaxonName"/>
+			<xs:element name="TypeData" type="TaxonParagraphs"/>
+			<xs:element name="TypeTaxon" type="TaxonParagraphs"/>
+			<xs:element name="Figures">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Figure" maxOccurs="unbounded">
+							<xs:complexType mixed="true">
+								<xs:complexContent mixed="true">
+									<xs:extension base="imageType">
+										<xs:attribute name="isBold"/>
+										<xs:attribute name="figureText"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="lifeHistory"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Synonyms">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Synonym" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="SynonymName" type="taxonNameType" minOccurs="0"/>
+									<xs:element name="SynonymTypeData" type="paragraphs" minOccurs="0"/>
+								</xs:sequence>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="lifeHistory"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Etymology" type="TaxonParagraphs"/>
+			<xs:element name="TaxonVernacularNames">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="Vernacular" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="lifeHistory"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Diagnosis" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="paragraphs">
+							<xs:attribute name="lifeHistory"/>
+							<xs:attribute name="language"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Description" maxOccurs="unbounded">
+				<xs:complexType mixed="true">
+					<xs:complexContent mixed="true">
+						<xs:extension base="paragraphs">
+							<xs:attribute name="DescriptionLanguage"/>
+							<xs:attribute name="lifeHistory"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Dimensions" type="TaxonParagraphs"/>
+			<xs:element name="Phenology" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="flowering"/>
+					<xs:attribute name="fruiting"/>
+					<xs:attribute name="id" type="xs:ID"/>
+					<xs:attribute name="lifeHistory"/>
+					<xs:attribute name="flowerFruit"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Origin">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="OriginParagraph" type="paragraphType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="sourceRegion"/>
+					<xs:attribute name="arrivalDate"/>
+					<xs:attribute name="biostatusOrigin"/>
+					<xs:attribute name="biostatusOccurrence"/>
+					<xs:attribute name="lifeHistory"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FirstRecord" type="TaxonParagraphs" minOccurs="0"/>
+			<xs:element name="FirstCollection" minOccurs="0">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="FirstCollector">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="collector"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="FirstDate">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="date"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="AccessionNumber">
+							<xs:complexType>
+								<xs:attribute name="id" type="xs:ID" use="optional"/>
+								<xs:attribute name="specimenExternalId" type="xs:IDREF"/>
+								<xs:attribute name="number"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+					<xs:attribute name="id" type="xs:ID" use="optional"/>
+					<xs:attribute name="lifeHistory"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Distribution" type="TaxonParagraphs"/>
+			<xs:element name="Habitat" type="TaxonParagraphs"/>
+			<xs:element name="Dispersal" type="TaxonParagraphs" minOccurs="0"/>
+			<xs:element name="AdditionalTaxa" type="TaxonParagraphs" minOccurs="0"/>
+			<xs:element name="MaterialExamined" type="TaxonParagraphs"/>
+			<xs:element name="TaxonHistory" type="TaxonParagraphs"/>
+			<xs:element name="TaxonBiology" type="TaxonParagraphs"/>
+			<xs:element name="HostPlant" type="TaxonParagraphs"/>
+			<xs:element name="Remarks" type="TaxonParagraphs"/>
+			<xs:element name="Polymorphy">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="chapterType">
+							<xs:attribute name="lifeHistory"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TaxonSynopsis">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="SynopsisType">
+							<xs:attribute name="lifeHistory"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TaxonKey" minOccurs="0">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="keyType">
+							<xs:attribute name="lifeHistory"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TaxonNote" type="TaxonParagraphs" minOccurs="0"/>
+			<xs:element name="Hybridism" type="TaxonParagraphs" minOccurs="0"/>
+			<xs:element name="Dubium" minOccurs="0">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="taxaType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="IncertaeSedis" type="paragraphs"/>
+			<xs:element name="IncludedTaxa" type="paragraphs"/>
+			<xs:element name="ExcludedTaxa" type="paragraphs"/>
+			<xs:element name="Zeta">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="taxonType">
+							<xs:attribute name="title"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TaxonReferences">
+				<xs:complexType mixed="true">
+					<xs:complexContent mixed="true">
+						<xs:extension base="referenceListType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TaxonTable">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="tableType">
+							<xs:attribute name="id" type="xs:ID" use="optional"/>
+							<xs:attribute name="lifeHistory"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ChildTaxa" type="taxaType" minOccurs="0"/>
+		</xs:choice>
+		<xs:attribute name="rank"/>
+		<xs:attribute name="number">
+			<xs:annotation>
+				<xs:documentation>optional - the entry numer assigned to the taxon within the publication</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="pageStart"/>
+		<xs:attribute name="pageEnd"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="taxonSectionAuthor" use="optional">
+			<xs:annotation>
+				<xs:documentation>name of the author for this taxon entry in the publication.  If different to the book or section authors.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="parentTaxonId" type="xs:IDREF" use="optional"/>
+		<xs:attribute name="parentTaxonName" use="optional"/>
+	</xs:complexType>
+</xs:schema>
+@

@@ -1,0 +1,399 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2009.11.25.03.14.31;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2009.11.20.02.45.22;	author LeeBelbin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.05.04.11.26.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.21.11.30.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.28.15.10.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.16.10.11.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.11.25.12.48.59;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.11.20.09.49.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118871" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+How would BDI.SDD_ look in a federated situation? The scenario that an BDI.SDD_ project may not reside on a single server in a single application (like DELTA applications), but that multiple organisations could collaborate, use shared terminology and serve descriptions, keys, and resources from multiple servers all over the world is one of the key design guidelines of BDI.SDD_. 
+
+I believe that federated projects will still be projects in some sense. BDI.SDD_ does not work without agreeing on a common terminology. Therefore project definition information are probably as appropriate in a federated project as they are in single source projects.
+
+However, the instance document root is also named "Project". To me it is unclear whether that should be changed or not. The question is: how should multiple documents that together form a federated document look like?
+
+If we have:
+<verbatim>
+<root>
+  <section1>
+    <data/>
+  </section1>
+  <section2>
+    <data/>
+  </section2>
+</root>
+</verbatim>
+
+and section 1 and 2 are served from different servers, together they form a complete document (i. e. one where all information to interpret it is available)
+
+Does this work best with 3 documents like:
+<verbatim>
+<root>  
+  <xInclude url-to-section1>
+  <xInclude url-to-section2>
+</root>
+</verbatim>
+
+<verbatim>
+<section1>
+  <data/>
+</section1>
+</verbatim>
+
+<verbatim>
+<section2>
+  <data/>
+</section2>
+</verbatim>
+
+i.e. all documents are simply included? Or is it better to have the 3 documents look like:
+
+<verbatim>
+<root>  
+  <xInclude url-to-section1>
+  <xInclude url-to-section2>
+</root>
+</verbatim>
+
+<verbatim>
+<root>  
+  <section1>
+    <data/>
+  </section1>
+</root>
+</verbatim>
+
+<verbatim>
+<root>  
+  <section1>
+    <data/>
+  </section1>
+</root>
+</verbatim>
+
+The latter case would not allow direct inclusion and would require some xsl to combine the fragment information into a complete document. However, the latter case could support additional information on <em>each</em> fragment document, e. g. who generated it a which time.
+
+I know that changing things through xslt is trivial. However, can anybody with experience in federated data case give some guidelines, so that we don't overlook anything?
+
+---
+
+<p>Some necessary decisions are:</p>
+<ul>
+<li>what is an appropriate and intuitive name for the main root element?</li>
+<li>should we allow multiple root elements in the schema (i. e. use global elements with element references instead of complex types. Currently we don't!).</li>
+<li>do we need some extra mechanisms for the head document, rather than simply relying on a future xInclude?</li>
+</ul>
+
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 20 Nov 2003
+---
+
+We discussed only the topic of root element in a telephone conference between Bob, Kevin and Gregor, and decided to return to Document for the time being.
+
+The general federation issues remain open. Probably better than allowing multiple root elements would be a solution to recast BDI.SDD_ schema into a type library without a namespace, and then provide multiple namespace schemata calling specific types from the type library.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 Nov 2003
+---
+
+On agreeing upon an overarching structure for GBIF/TDWG standards, we decided to adopt the ABCD root structure of Datasets/Dataset. A Dataset is equivalent to our previous Document.
+
+See also the topic ModularizationOfSchema!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 Mar 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085756981" from="SDD.FederationAndRootElementName" to="SDD.ClosedTopicFederationAndRootElementName"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685122" format="1.1" reprev="1.8" version="1.8"}%
+d5 1
+a5 1
+How would BDI.SDD look in a federated situation? The scenario that an BDI.SDD project may not reside on a single server in a single application (like DELTA applications), but that multiple organisations could collaborate, use shared terminology and serve descriptions, keys, and resources from multiple servers all over the world is one of the key design guidelines of BDI.SDD. 
+d7 1
+a7 1
+I believe that federated projects will still be projects in some sense. BDI.SDD does not work without agreeing on a common terminology. Therefore project definition information are probably as appropriate in a federated project as they are in single source projects.
+d89 1
+a89 1
+The general federation issues remain open. Probably better than allowing multiple root elements would be a solution to recast BDI.SDD schema into a type library without a namespace, and then provide multiple namespace schemata calling specific types from the type library.
+@
+
+
+1.7
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1146741989" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+How would SDD look in a federated situation? The scenario that an SDD project may not reside on a single server in a single application (like DELTA applications), but that multiple organisations could collaborate, use shared terminology and serve descriptions, keys, and resources from multiple servers all over the world is one of the key design guidelines of SDD. 
+d7 1
+a7 1
+I believe that federated projects will still be projects in some sense. SDD does not work without agreeing on a common terminology. Therefore project definition information are probably as appropriate in a federated project as they are in single source projects.
+d15 1
+a15 1
+	 <data/>
+d18 1
+a18 1
+	 <data/>
+d57 1
+a57 1
+	 <data/>
+d65 1
+a65 1
+	 <data/>
+d89 1
+a89 1
+The general federation issues remain open. Probably better than allowing multiple root elements would be a solution to recast SDD schema into a type library without a namespace, and then provide multiple namespace schemata calling specific types from the type library.
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 95
+a95 95
+%META:TOPICINFO{author="GregorHagedorn" date="1087817402" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+How would SDD look in a federated situation? The scenario that an SDD project may not reside on a single server in a single application (like DELTA applications), but that multiple organisations could collaborate, use shared terminology and serve descriptions, keys, and resources from multiple servers all over the world is one of the key design guidelines of SDD. 
+
+I believe that federated projects will still be projects in some sense. SDD does not work without agreeing on a common terminology. Therefore project definition information are probably as appropriate in a federated project as they are in single source projects.
+
+However, the instance document root is also named "Project". To me it is unclear whether that should be changed or not. The question is: how should multiple documents that together form a federated document look like?
+
+If we have:
+<verbatim>
+<root>
+  <section1>
+	 <data/>
+  </section1>
+  <section2>
+	 <data/>
+  </section2>
+</root>
+</verbatim>
+
+and section 1 and 2 are served from different servers, together they form a complete document (i. e. one where all information to interpret it is available)
+
+Does this work best with 3 documents like:
+<verbatim>
+<root>  
+  <xInclude url-to-section1>
+  <xInclude url-to-section2>
+</root>
+</verbatim>
+
+<verbatim>
+<section1>
+  <data/>
+</section1>
+</verbatim>
+
+<verbatim>
+<section2>
+  <data/>
+</section2>
+</verbatim>
+
+i.e. all documents are simply included? Or is it better to have the 3 documents look like:
+
+<verbatim>
+<root>  
+  <xInclude url-to-section1>
+  <xInclude url-to-section2>
+</root>
+</verbatim>
+
+<verbatim>
+<root>  
+  <section1>
+	 <data/>
+  </section1>
+</root>
+</verbatim>
+
+<verbatim>
+<root>  
+  <section1>
+	 <data/>
+  </section1>
+</root>
+</verbatim>
+
+The latter case would not allow direct inclusion and would require some xsl to combine the fragment information into a complete document. However, the latter case could support additional information on <em>each</em> fragment document, e. g. who generated it a which time.
+
+I know that changing things through xslt is trivial. However, can anybody with experience in federated data case give some guidelines, so that we don't overlook anything?
+
+---
+
+<p>Some necessary decisions are:</p>
+<ul>
+<li>what is an appropriate and intuitive name for the main root element?</li>
+<li>should we allow multiple root elements in the schema (i. e. use global elements with element references instead of complex types. Currently we don't!).</li>
+<li>do we need some extra mechanisms for the head document, rather than simply relying on a future xInclude?</li>
+</ul>
+
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 20 Nov 2003
+---
+
+We discussed only the topic of root element in a telephone conference between Bob, Kevin and Gregor, and decided to return to Document for the time being.
+
+The general federation issues remain open. Probably better than allowing multiple root elements would be a solution to recast SDD schema into a type library without a namespace, and then provide multiple namespace schemata calling specific types from the type library.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 Nov 2003
+---
+
+On agreeing upon an overarching structure for GBIF/TDWG standards, we decided to adopt the ABCD root structure of Datasets/Dataset. A Dataset is equivalent to our previous Document.
+
+See also the topic ModularizationOfSchema!
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085757000" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1079431860" format="1.0" version="1.3"}%
+d74 1
+a74 2
+Some necessary decisions are:
+
+d82 1
+a82 1
+Gregor Hagedorn - 20 Nov 2003
+d85 1
+a85 1
+We discussed only the topic of root element in a telephone conference between Bob, Kevin and Gregor, and decided to return to Document for the time being. 
+d89 1
+a89 1
+Gregor Hagedorn - 25 Nov 2003
+d92 2
+d96 3
+a98 1
+Gregor Hagedorn - 16 Mar 2004
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1069764539" format="1.0" version="1.2"}%
+d3 1
+a3 3
+This topic sprung from a discussion whether the information contained in the Generator element is appropriate (see MoveTimestampAttribute).
+
+In that discussion we started to think how would SDD look in a federated situation. The scenario that an SDD project may not reside on a single server in a single application (like DELTA applications), but that multiple organisations could collaborate, use shared terminology and serve descriptions, keys, and resources from multiple servers all over the world is one of the key design guidelines of SDD. 
+d92 4
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1069321740" format="1.0" version="1.1"}%
+d86 8
+@

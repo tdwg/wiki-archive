@@ -1,0 +1,145 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.12.00;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Attrs=
+
+Class of attribute sets, designed for parsing and storing attribute values
+from a TWiki tag e.g. =%TAG{fred='bad' "sad" joe="mad"}%=
+
+An attribute set is a map containing an entry for each parameter. The
+default parameter (unnamed quoted string) is named <code>_<nop>DEFAULT</code> in the map.
+
+Attributes declared later in the string will override those of the same
+name defined earlier. The one exception to this is the _DEFAULT key, where
+the _first_ instance of a setting is always taken.
+
+As well as standard TWiki syntax (parameter values double-quoted)
+it also parses single-quoted values, unquoted spaceless
+values, spaces around the =, and commas as well as spaces separating values,
+though none of these alternatives is advertised in documentation and
+the extended syntax can be turned off by passing the 'strict' parameter
+to =new=.
+
+This class replaces the old TWiki::extractNameValuePair and
+TWiki::extractParameters.
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($string,$friendly)=>\%attrsObjectRef</tt>
+
+   * =$string= - String containing attribute specification
+   * =$friendly= - if true, the parse will be according to the extended syntax pioneered by the original Contrib::Attrs. Otherwise it will be strict as per traditional TWiki syntax.
+
+Parse a standard attribute string containing name=value pairs and create a new
+attributes object. The value may be a word or a quoted string. If there is an
+error during parsing, the parse will complete but $attrs->{_ERROR} will be
+set in the new object. $attrs->{_RAW} will always contain the full unprocessed
+$string.
+
+Extended syntax example:
+<verbatim>
+my $attrs = new TWiki::Attrs('the="time \\"has come", "the walrus" said to=speak of=\'many \\'things\', 1);
+</verbatim>
+In this example:
+   * =the= will be =time "has come=
+   * <code>_<nop>_<nop>default__</code> will be =the walrus=
+   * =said= will be =on=
+   * =to= will be =speak=
+   * =of= will be =many 'things=
+
+Only " and ' are escaped.
+
+Traditional syntax is as old TWiki, except that the whole string is parsed
+(the old parser would only recognise default values in position 1, nowhere
+else)
+
+
+
+---++ ObjectMethod *isEmpty* <tt>() -> boolean</tt>
+
+Return false if attribute set is not empty.
+
+
+
+---++ ObjectMethod *remove* <tt>($key) -> $value</tt>
+
+| $key | Attribute to remove |
+Remove an attr value from the map, return old value. After a call to
+=remove= the attribute is no longer defined.
+
+
+
+---++ ObjectMethod *stringify* <tt>() -> $string</tt>
+
+Generate a printed form for the map, using standard
+attribute syntax, with only the single-quote extension
+syntax observed (no {} brackets, though).
+
+
+
+---++ StaticMethod *extractValue* <tt>() -> $string</tt>
+
+Legacy support, formerly known as extractNameValuePair. This
+static method uses context information to determine how a value
+string is to be parsed. For example, if you have an attribute string
+like this:
+
+"abc def="ghi" jkl" def="qqq"
+
+then call extractValue( "def" ), it will return "ghi".
+
+
+
+---++ ObjectMethod *get* <tt>($key) -> $value</tt>
+
+| $key | Attribute to get |
+Get an attr value from the map.
+
+Synonymous with $attrs->{$key}. Retained mainly for compatibility with
+the old AttrsContrib.
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d2 1
+d27 1
+d57 1
+d63 1
+d71 1
+d79 1
+d91 1
+a92 1
+---++ ObjectMethod *get* <tt>($key) -> $value</tt>
+@

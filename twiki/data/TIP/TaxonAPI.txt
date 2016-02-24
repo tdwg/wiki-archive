@@ -1,0 +1,50 @@
+%META:TOPICINFO{author="RogerHyam" date="1195125856" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ TaxonAPI
+
+This is kind of defunct - replaced by use of OAI and RDF I believe - RDH - 2007-11-15
+
+TaxonAPI is a Application Programming Interface for retrieving semantically rich taxonomic data from publishers. It is defined at a very high level so that it might be implemented in different ways e.g. as a Tapir service, SOAP service or via some other protocol and so that it integrates with any future TDWG architecture.
+
+The notions used by TaxonAPI are based on those used in the TaxonConceptSchema as this is now an accepted TDWG standard. It is presumed that responses will be in a format that validates against the TCS XML Schema but this may not be the case in the future if some other encoding is used to capture the semantics expressed in the TCS.
+
+TaxonNomenclatorAPI is a subset of TaxonAPI that just handles the retrieval of TaxonNames. Data publishers may choose to just implement this subset if they are only interested in publishing nomenclatural data.
+
+Several of the methods have common behaviours these are defined in TaxonAPIMatching and TaxonAPIPaging.
+
+The notion of an ID within TaxonAPI is described in TaxonAPIIdentifiers.
+
+---++ Method Calls
+   * [[TaxonAPIGetTNamesByID][GetTNamesByID()]]
+   * [[TaxonAPIGetReferringTNames][GetReferringTNames()]]
+   * [[TaxonAPIGetTNamesMatching][GetTNamesMatching()]]
+   * [[TaxonAPIGetTConceptsByID][GetTConceptsByID()]]
+   * [[TaxonAPIGetTConceptsByTNameID][GetTConceptsByTNameID()]]
+   * [[TaxonAPIGetTConceptsMatching][GetTConceptsMatching()]]
+   * [[TaxonAPIGetReferringTConcepts][GetReferringTConcepts()]]
+   * [[TaxonAPIGetRootTConcept][GetRootTConcepts()]]
+
+---++ Errors
+Rely on protocol for error handling.
+FIXME - could provide a series of suggested error codes and messages to be passed by host protocol. Suggest that these are based on standard http error codes.
+
+---++ Metadata
+TCS uses XML:any to include metadata. The TaxonAPI assumes that the schema used to include this metadata is DublinCore. It also assumes that DublinCore elements are included in the ProviderSpecificData elements of TaxonConcept and TaxonName.
+
+---++ Missing Functionality
+   * RelationshipsAssertions aren't yet covered.
+   * Iterative calls may be useful. It would be good  to call a single method that iterates over series of TaxonRelationships either to exhaustion or for a set number of steps and returns a tree of TaxonConcepts.
+   * There is no metadata call - relies on protocol for doing that?
+
+---++ Background Reading
+   * TCS Schema
+   * TCS User Guide
+   * SPICE protocol? 
+   * http://seek.ecoinformatics.org/Wiki.jsp?page=TOSAPISignatures - for the SEEK TCS SOAP API 
+
+
+
+
+
+
+-- Main.RogerHyam - 24 Nov 2005

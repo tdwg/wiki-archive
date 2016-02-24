@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+<body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<h2><a name="SDD_Part_0_Introduction_and_Prim"></a> SDD Part 0: Introduction and Primer to the SDD Standard </h2>
+<p />
+<h3><a name="3_13_Mapping_one_character_onto"></a><a name="3_13_Mapping_one_character_onto_"></a> 3.13 Mapping one character onto another </h3>
+<p />
+Mapping allows the definition of measurement units and the mapping of one character to another. Categorical states can be mapped onto other categorical states (i.e sub-ovate may be mapped onto ovate for identification purposes) and quantitative characters can be mapped onto categorical characters (i.e. 'length in mm' can be mapped onto the states 'small', 'medium' and 'large'.
+<p />
+<h4><a name="3_13_1_Mapping_a_categorical_cha"></a> 3.13.1 Mapping a categorical character state onto another </h4>
+<p />
+Character states which are designed for a particular role (i.e. natural language descriptions) may be ambiguous in another role (i.e. identification keys) or for a different audience. For example Mapping allows the categorical state "sub-ovate" (useful for <a href="naturallanguagedescriptions.html">natural language descriptions</a> to be mapped to the state "ovate" for the generation of <a href="dichotomouskeys.html">dichotomous keys</a>. In essence the state "ovate" becomes a parent state of a sub-state "sub-ovate". Multiple states can be mapped to a single state in this way, for example the states "yellowish" and "translucent" could be mapped to the state "white".
+<p />
+<img alt="categoricalmapping.gif" src="http://wiki.tdwg.org/twiki/static/_publish/categoricalmapping.gif" />
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<pre>
+         &#60;CategoricalCharacter id&#61;&#34;c4&#34;&#62;
+            &#60;Representation&#62;
+               &#60;Label&#62; Leaf shape&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;States&#62;
+               &#60;StateDefinition id&#61;&#34;s3&#34;&#62;
+                  &#60;Representation&#62;
+                     &#60;Label&#62;Round&#60;/Label&#62;
+                  &#60;/Representation&#62;
+               &#60;/StateDefinition&#62;
+               &#60;StateDefinition id&#61;&#34;s4&#34;&#62;
+                  &#60;Representation&#62;
+                     &#60;Label&#62;Ovate&#60;/Label&#62;
+                  &#60;/Representation&#62;
+               &#60;/StateDefinition&#62;
+               &#60;StateDefinition id&#61;&#34;s5&#34;&#62;
+                  &#60;Representation&#62;
+                     &#60;Label&#62;Sub-ovate&#60;/Label&#62;
+                  &#60;/Representation&#62;
+               &#60;/StateDefinition&#62;
+            &#60;/States&#62;
+            &#60;Mappings&#62;
+               &#60;Mapping&#62;
+                  &#60;From ref&#61;&#34;s5&#34;/&#62;
+                  &#60;To ref&#61;&#34;s4&#34;/&#62;
+               &#60;/Mapping&#62;
+            &#60;/Mappings&#62;
+         &#60;/CategoricalCharacter&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+<h4><a name="3_13_2_Mapping_a_quantitative_ch"></a> 3.13.2 Mapping a quantitative character onto a categorical character </h4>
+<p />
+<img alt="quantitativemapping.gif" src="http://wiki.tdwg.org/twiki/static/_publish/quantitativemapping.gif" />
+<p />
+Specific ranges of a quantitative character data can be mapped onto states of categorical characters, for example, to simplify the data for interactive key purposes. For example the data to populate the character "Leaf Area (Webb and Tracy Units)" with the four states "nanophyll", "microphyll", "mesophyll" and "macrophyll" would be automatically generated from the data in the quantitative character "Leaf Area".
+<p />
+<h5><a name="Example_3_13_2_1_Units_and_mappi"></a> Example 3.13.2.1 - Units and mapping within quantitative characters. </h5>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<pre>
+&#60;QuantitativeCharacter id&#61;&#34;c2&#34;&#62;
+  &#60;Representation&#62;
+    &#60;Label&#62;Leaf length&#60;/Label&#62;
+  &#60;/Representation&#62;
+  &#60;Assumptions&#62;
+    &#60;MeasurementScale&#62;Ratio&#60;/MeasurementScale&#62;
+  &#60;/Assumptions&#62;
+  &#60;Mappings&#62;
+    &#60;Mapping&#62;
+      &#60;From lower&#61;&#34;0&#34; upper&#61;&#34;3&#34;/&#62;
+      &#60;ToState ref&#61;&#34;s1&#34;/&#62;
+    &#60;/Mapping&#62;
+    &#60;Mapping&#62;
+      &#60;From lower&#61;&#34;3&#34; upper&#61;&#34;10&#34;/&#62;
+      &#60;ToState ref&#61;&#34;s2&#34;/&#62;
+    &#60;/Mapping&#62;
+    &#60;Mapping&#62;
+      &#60;From lower&#61;&#34;4&#34; upper&#61;&#34;10000000&#34;/&#62;
+      &#60;ToState ref&#61;&#34;s3&#34;/&#62;
+    &#60;/Mapping&#62;
+  &#60;/Mappings&#62;
+  &#60;MeasurementUnit&#62;
+    &#60;Label role&#61;&#34;Abbrev&#34;&#62;m&#60;/Label&#62;
+  &#60;/MeasurementUnit&#62;
+  &#60;Default&#62;
+    &#60;MeasurementUnitPrefix&#62;milli&#60;/MeasurementUnitPrefix&#62;
+  &#60;/Default&#62;
+&#60;/QuantitativeCharacter&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+&lt;From&gt; gives an inclusive range defined through the two attributes "lower" and "upper".
+<p />
+&lt;ToState&gt; specifies the categorical state corresponding to the range defined in &lt;From&gt;. If &lt;ToState&gt; is missing then &lt;From&gt; governs partitioning into range classes automatically generated from the "upper" and "lower" values.
+<p />
+<p />
+-- DonovanSharp - 06 Jun 2006
+<p />
+<p />
+</body></html> 

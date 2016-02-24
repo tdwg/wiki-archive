@@ -1,0 +1,210 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1097054117" format="1.0" version="1.2"}%
+%META:TOPICPARENT{name="SchemaChangeLog"}%
+<h1>Changes in SDD 1.0 beta 2, relative to the 0.9 Dec. 1. 2003 release)</h1>
+
+(SDD 1.0 beta 1 was released 11. August 2004, the slightly updated beta 2 on 16. August 2004.) 
+
+<strong>This is an updated version containing a list of the changes discussed at or in consequence of discussions at the [[SDD2004Berlin][meeting in Berlin]]. The current version of the SDD schema (and the underlying UBIF schema) can be found at CurrentSchemaVersion. Please do read through the report of changes. The notes here sometimes can only point to the problems; please take a look at the schema to verify that you agree with the changes and that they make sense to you.</strong>
+
+<strong>Note:</strong> I have tried to document changes, but I cannot guarantee that everything is properly documented.
+In fact, since <nop>GenerationMetadata (to UBIF Derivation) and <nop>ProjectDefinition (to UBIF Metadata) are heavily changed in an attempt to find common ground between the various GBIF standards (current discussion involves only ABCD so far), I have given up on documenting all detailed changes therein (some are commented nevertheless). Also some trivial early changes are only documented in 
+SchemaChangeLog091EarlyBetaVersions.
+
+Especially important to read is the list of OpenDiscussionPointsSDD10!
+
+---
+
+*General*
+	* Parts of SDD are drastically redesigned, separating general from specifically descriptive issues. All general features have been moved into UBIF, concentrating SDD on true descriptive elements. This required significant structural changes:
+		* Document root element changed to <nop>Datasets/<nop>Dataset collection. <nop>Dataset takes the place of the original Document. Multiple Datasets (= data collections, = "Projects" in the 0.9 sense) can now be transported in one file or data stream. This was a requirement of ABCD, but it does not hurt SDD.
+		* <nop>GenerationMetadata changed to <nop>Derivation, conceived as a list of at least one (the most recent), plus optionally multiple earlier Derivation elements, forming a history. Alternative names: "<nop>ConversionHistory", "<nop>TransformationHistory", "<nop>DerivationHistory", "<nop>HistoryMetadata", "<nop>ContentHistoryMetadata", or "<nop>DataHistoryMetadata", "Provenance" (this infers history and status of current document as well), "Origin", "Derivation" (this is currently used).
+		* All proxy data pointing to other biological (class names, units/specimens) or non-biological (publications, geography) knowledge domains are under UBIF control and collected in the root level "<nop>ExternalDataInterface" element.
+	* The key attribute was consistently renamed to "id". "key" was considered ambiguous (it has a biological sense). The Taxon Concept schema developed by J. Kennedy and coworkers also uses "id".
+	* Previously all complex type names had a suffix "Type". This is now removed, following the convention in object-oriented programming to NOT call all classes "class", or all entities "Entity". The issue has arisen in combination with the debate to use xsi:type mechanism...
+	* The xsi:type mechanism is at the moment not used, but wherever possible the schema already designs a polymorphic type model with abstract base types.
+		* Two major classes are defined this way: modifiers and characters.
+		* The design is present both on the side of defining and applying these terms in descriptions.
+		* On the application side, special application for <nop>CodedDescription/SummaryData, <nop>SampleData, and <nop>NaturalLanguageData have to be defined.
+		* The points where a type polymorphic design is recommended have been highlighted by moving them into special schema element groups, named "Polymorphic...".
+		* After some debate and testing, I decided not to use the xsi:type mechanism, but use choice groups instead. This has the following advantages:
+			* xsi:type is a new mechanism some users of the schema may not yet have encountered.
+			* choice allows to follow the structural design by simply clicking in the schema editor (xsi:type is not supported by any schema editor I know of).
+			* choice requires multiple element name (initially a disadvantage), but this allow better use of key/keyref identity constraints (the limited xpath supported in xs:key does not allow expressions of the form "/element[xsi:type="typename"]").
+		* In the development version of the schema, parallel groups starting with "__OOP_Polymorphic..." are provided, which would implement an xsi:type-based schema.
+		  Exchanging these with the groups without the "__OOP_" will create a schema that may be used as a basis when creating schema-driven class-code, although some specific code will then be required to correlated this with the element-name-based choice model actually used.
+		* If you have good arguments or your experience shows that xsi:type would be considerably more intuitive and easier to program than the choice model, please argue on the WIKI, see TypePolymorphismWithXsiType! 
+	* In the id (= previously "key") and ref attributes that perform the referencing between elements of the UBIF or SDD schema, the simple type names have been changed from "KeyValue", "<nop>CharacterKeyValue", etc. to "<nop>RelationID" etc. 
+	* Citation type: optional <nop>LastVerified and <nop>InvalidSince date elements added, important for volatile online publications.
+	* Creator and Contributor structures in <nop>RevisionData strongly changed to a role-type based model modeled closely after the MARC relator codes, see http://www.loc.gov/marc.relators/. Note that the <nop>DublinCore Agent subgroup at the time of this revision (June 2004) has not yet produced any results on which we could base our use. The original DC 1.1 codes (only creator and contributor) are too general for the purpose of expressing scientific IPR contributions.
+	* The application-specific data containers (= extension mechanism to store non-SDD data) has been renamed from <nop>ApplicationData/Application to <nop>CustomExtensions/CustomExtension. Several applications may agree on common extensions, in which case the old names would not have been appropriate. The mechanism itself remains unchanged.
+	* An additional container "<nop>VersionExtension" has been added to provide for forward and backward compatible standard extensions of SDD.
+	* Model groups like "<nop>EnablingGroup" containing only optional elements have been themselves made optional. This changes nothing in the validation and schema, but seems to help when using Castor data binding.
+	* The combination between <nop>EnablingGroup (formerly: "<nop>AnnotationGroup") and <nop>GlossaryEntry references has been removed. They are separate groups now, <nop>EnablingGroup being a UBIF, Glossary an SDD feature.
+	* In the <nop>LabelPlusAbbreviationRepr (used frequently in Label/Representation elements) the "Selectors" element containing media (usually images) was renamed to "<nop>MediaResources". This is the same element name used generically throughout the schema. 
+		* The name "Selectors" was intended to express that only certain media should be added here - those that are sufficiently informative and concise at the same time to be used as selectors instead of text labels. However, the use of Selector lead to more confusion than clarification, and the purpose of the media is expressed through the Label context, i.e. these are labeling images etc.
+		* The only other media resource is "Icon" which remains semantically labeled.
+	* Capitalization changes made, attributes now all-lowercase, see UBIF.ResolvedTopicAttributesLowerOrUpperCase.
+
+*<nop>ProjectDefinition / Metadata*
+	* Element name itself changed to <nop>Metadata
+	* <nop>AudienceSpecificData/Representation split into <nop>Description/Representation and <nop>IPRStatements/Representation.
+	* <nop>IPRStatements is a list of various copyright, terms of use, disclaimer, acknowledgment etc. statements (new type common to SDD and ABCD schema)!
+	* Former <nop>ProjectDefinition/HistoryWebAddress dropped. Annotation was: "@@ To be discussed. The idea is that a project may point to a web resource that informs about details about the history of the data (previous versions or a detailed log of changes)." Unless somebody needs it now, I propose that this should be an addition in a later version rather than included in the first release.
+	* <nop>ProjectDefinition/Icon moved to new <nop>Metadata/Description/Representation, thus making it audience specific. Although some Icons (or logos) are language independent, others may include text.
+	* <nop>ProjectDefinition/WebAddress moved as well, different audiences/languages may be referred to different URIs.
+	* _New_ after Berlin meeting: attempt to use across standards (see UBIF.WebHome), therefore audience-dependent project Description and IPR-Statements changed to depend only on language. Language should simplify the adoption of common framework elements for all TDWG/GBIF standards.
+	* _New_ after Berlin meeting: Version structure revised. 
+		* Version/PublicationDate changed to <nop>VersionReleaseDate to avoid possible confusion with <nop>LastRevision or data generation date in online situations.
+		* A version "Modifier" element added (for beta, rel. candidate, etc.). 
+		* Increment removed (now considered application-internal management mechanism, no need for interoperability).
+		* Major and Minor left as integers to improve interoperability and comparability. (Note: the proposal "change version to string" in previous version of the change log. before Berlin meeting received no comments.)
+	* _New_ after Berlin meeting: The narrative (unconstrained text) elements <nop>GeographicCoverage and <nop>TaxonomicCoverage in <nop>ProjectDefinition|Projectmetadata/Description/Representation combined to Coverage.
+		Constrained <nop>ClassScope added (referring to a proxy list), __OtherScope needs a proposal how to link it to other vocabularies. <nop>SourcePublication changed from a single to possibly several, and considered a scoping mechanism as well.	
+	* _QUESTION_: <nop>ProjectDefinition/RevisionData/InitiationDate is xml:dateTime and required, which may cause problems in legacy projects. 
+		* See discussion under InitiationDateForImportedLegacyData. 
+		* The proposal there makes sense in the context of project definition. However, <nop>RevisionData is also used in several other contexts (single descriptions, glossary, characters, etc.) and the proposal does not make sense there. Do we need two slightly derived types? Has anybody a better idea?
+
+*Terminology*
+	* In many places the "Generalization" element (containing the machine-readable partial semantics of an object) was renamed to Specification.
+	* *<nop>StatisticalMeasures* are completely reworked. This is the biggest point of redesign in the new version!
+		* Only univariate statistical measures (= statistical estimates and parameters) are handled. To clarify this, some names are changed to <nop>UnivariateStatisticalMeasures.
+		* The fundamental definitions, previously in an SDD-specific terminology list (similar to <nop>CodingStatus values) are now moved into an enumeration in the UBIF schema. The extensibility is only minimally reduced, and the clarity much increased. 
+		* Some implementers of the previous SDD version misunderstood <nop>StatisticalMeasures insofar as expecting more flexibility and specificity than was actually present.
+		* Since the old 0.9 design was largely limited by the statistical method enumeration (which is necessary so to communicate the semantics of the measures), extensions were really limited to adding labels in additional languages, or adding variants with new method values in those methods that support variable method values. The relationship between method code, method value, reporting class and dimensionless is relatively complicated and was (purposely!) not fully modeled to reduce complexity. The previous version 0.9 tried to provide the necessary information for users of ready-defined Measures.
+		* The design of 0.9 was thus based on the assumption that designers of terminology would use the example files provided with SDD to select the desired measures. The design did support extensions, but only in specific places and considerable understanding was required to create appropriately defined new measures.
+		* The new UBIF enumeration looks similar to the old method enumeration, but actually differs significantly.
+			* The measures enumeration (<nop>UnivarStatMeasureEnum) now embeds information about label, definition text and even specifications inside the schema. This makes clear which parts are not extensible except by a new version of the schema. The label and definition is subcoded into the annotations already present (and this method is used for all other enumerations as well), the specifications are now in the appinfo section in the schema. b) The usage of the method value has been reduced and is no longer used to distinguish between upper, central, and lower range (-1, 0, 1). This was considered unintuitive and difficult to understand. 
+			* As a consequence the number of method values is now increased (lower/central/upper unknown methods and observer estimates, for each range and extreme method a lower and upper measurement.
+			* Parameter values are now limited to true parameter values (as in confidence limits or percentiles). These measures are separated into a second enumeration "<nop>UnivarStatMeasureWithParamEnum". 
+			* Some elements added to Specification of measures, e. g., "Dimensionless" (answers whether the measurement unit apply to a statistic or not).
+			* <nop>ReportingClass and <nop>IsDimensionless are part of the Specification in the schema, so they are clearly marked as informative and part of the measure method (and not freely definable, as could be assumed in 0.9).
+			* The drawback of embedding information in the schema is that this is less accessible (or only be different methods). To remedy this for univariate statistical methods (and other enumerations as well) a xslt is provided that reads the schema and writes an xml data document that uses structures similar to those used elsewhere in SDD.
+			* See UBIF_Enumerations.xml for a special data UBIF document created in this way. In applications this can be used similar to a SDD instance data collection (e. g., <nop>CodingStatus values).
+		* One desired result is that measures are now fully global, and not character specific. In a quantitative character, any measure may be used. In the previous version, measures had to be explicitly defined in each character, and only these measures could validly be used in descriptions. No such character-specific measure list exists any longer! 
+		* One advantage of the new proposal is that it is considerably easier to minimize instance documents. Learning SDD by example become easier, and the rarely used statistical measures can be studied at a later time.
+		* Since it is not desirable to create user interfaces with lengthy pick lists with extremely rarely used measures, a separate mechanism is provided, however, to define recommended measures in the concept tree (Concept/<nop>InheritableDefinitions/<nop>RecommendedMeasures). The recommendation automatically applies to all characters in the nodes below the concept definition.
+		* This also addresses a separate problem repeatedly discussed on the WIKI, that while it was previously possible to define global sets of states at concept nodes, it was not possible to define a set of measures to make certain that the same set of measures is used for all length or width measurements in a project. The recommended measures now provide such sets and allow to specify such design guidelines in a single place. 
+		* A major remaining problem is that the language extensibility is no longer fully present. One option is to add additional languages to UBIF_Enumerations.xml. It is hoped that these additions will be returned into the SDD process, so that future SDD versions can incorporate additional languages.
+		* The alternative is, that all measures used are also defined in Concept/InheritableDefinitions/<nop>RecommendedMeasures. Here it is possible to provide a "measure elaboration", adding specific formatting guidelines and add labels in new languages.
+		* Finally, the <nop>RecommendedMeasures sets may also be used to define a display or reporting order of measures. It is, however, legal for a report generator to use a different sequence when reporting measures. 
+		
+	* New element "General" created to combine the relatively general concepts in SDD terminology, that are still not moved to UBIF. Alternative names for this element are: <nop>GeneralDeclarations, <nop>GeneralDefinitions, <nop>OverarchingIssues/Functions, <nop>CrosscuttingIssues/Functions, <nop>GeneralTerminology, <nop>GeneralTerms, <nop>GeneralVocabulary (the latter three do not cover the possible inclusion of "language rules"). The following elements moved there:
+		* <nop>ProjectDefinition/Audiences
+		* Terminology/<nop>CodingStatusValues
+		* Possibly <nop>LanguageRules in a future version.
+	* In intermediate SDD versions (0.91) also <nop>MeasurementUnits were placed there and provided a mechanism to specify the relationships between units (convert feet to m, mm to cm, etc.). However, <nop>MeasurementUnits is now a UBIF proxy. As a consequence:
+		* Character definition, Quantitative/<nop>MeasurementUnit changed to a proxy ref type.
+		* Measurements units may optionally be declared in individual description instances. If the unit is missing in a description, the measurement unit defined in the character definition applies. This is especially important for the markup variant, where different descriptions even from one source may use different units.
+	* The Audience definition data item expertiselevel, previously defined as attributes, have been reorganized to follow the pattern of Label plus Specification.
+	* The defaultaudience attribute present at Audience was only appropriately placed because all audience definitions were considered part of the project definition.
+	  Now it is separated and moved to <nop>ConfigurationData/PresentationDefaults/Audience.
+	* Audience semantics now changed strongly by removing language from it and specifying it in parallel to the optional audience. 
+		* The basic design requirements remain the same: Textual representations should be specific to enumerated languages and expertise levels, and to an unlimited role/register audiences (like "farmer", "government worker", "east-coast" versus "west coast"). 
+		* Previously, while considering only SDD, it was thought that the easiest way to fulfill these requirements was to _replace_ the language attribute with an audience attribute that combines these elements into a single value. Thus, in version 0.9 any Representation contains only a single audience attribute.
+		* Revising SDD under the aspect of cross-schema reusable patterns it soon became clear that the requirement for expertise level and role in addition to language was unique to descriptive data, where much more information has to be transferred in labels and free-form text definitions. So for all common elements, language instead of audience had to be used. 
+		* Already in SDD audience-specificity was not truly necessary for many labels (e. g. the labels for concept trees or identification keys).
+		* In 1.0 therefore the audience selection was moved into an optional audience element, that is used in addition to language itself. This allows the selection by language to use the same code and patterns across UBIF, ABCD, SDD, etc. while allowing an optional SDD-specific audience selection to be added as an extension. A representation element for a character may now look like &lt;Representation language="de"&gt; or &lt;Representation language="de" audience="1.2" &gt;
+	* Glossary (= ontology definitions) strongly changed
+		* Multiple new ontological relations between terms added and subsumed under a new  Ontology element. This urgently needs review!
+		* <nop>SensuLabel and <nop>KindOfTerm added. The first allows to distinguish between multiple definitions of a term (Term does not have to be unique, but Term + <nop>SensuLabel has to be!), the latter categorizes terms (is that doubtful??).
+		* With the introduction of <nop>SensuLabel, Term is no longer a keyref in the ontological definitions (synonym, antonym, etc.). Replaced with <nop>TermList = List of <nop>GlossaryEntryRef.
+		* Ontology now refers to <nop>GlossaryEntry keys rather than Term strings in a specific language. This is partly necessitated by the introduction of a <nop>SensuLabel.
+		* As a result, other parts of the <nop>GlossaryEntry (Citations, <nop>RevisionData) have now been made language/audience-independent as well. This also resolves some anomalies, e. g., that <nop>RevisionData were one the audience-specific part instead on the language-independent object as in all other cases in SDD.
+		* <nop>ExternalReference changed to <nop>ExternalDefinitionURI
+		* References to Glossary entries used to be elements named "GlossaryEntry". Now changed to "Definition" to convey the purpose of these references.
+	* *<nop>CharacterDef*
+		* Label changed from <nop>LabelPlusAbbreviation to <nop>SimpleLabel. This simplifies the model: Only a single label can be defined at the character level, all extended concepts (abbreviations, export tokens, images) are definable only in concept trees. Since concept trees require a terminal node for each character, the same expressiveness is maintained.
+		* Type changed to <nop>MeasurementScale, value list completed to include "ratio".
+		* Section Assumptions added to the character definition, <nop>MeasurementScale moved there
+		* The concept of characters has been changed back from being ontology oriented (SDD 0.9 is something measurable - then it may be expressed numerical and categorical) to
+		  data oriented, as it used to be in DELTA. Thus, categorical and numerical character types are exclusive.
+		* As a consequence, mapping categorical to categorical or numerical to categorical should now generally occur between characters. The mapping definitions have been changed, and the identity constraints present in 0.9 removed.
+		* Categorical and Numerical are now changed to use type polymorphism (see general comments above). That is, the <nop>AbstractCharacter is used in the schema, but derived non-abstract types must be used in instance documents. 
+		* <nop>PlausibilityRange added to numeric character definition. Applies to all values and statistics, except those that are dimensionless (like variance).
+
+	* *Terminology/Modifiers 1:* Modifier definition groups/sets
+		* "Modifiers/Sets" renamed to "<nop>Modifiers/ModifierSet"
+		* They were previously primarily intended to define reusable modifier sets which would then be associated with characters. This function has now been moved completely into the concept trees. 
+		* Some discussion and forth and back changes occurred whether modifier sets can be avoided. However, the requirement that modifiers are ranked (as discussed in Berlin) implies that the definition must occur in sets. 
+		* Modifiers of the same type are combined with "or", as in: ((char)"leaf tip" (mod)"strongly" or (mod)"very strongly" (state)"pointed"). Furthermore, modifiers within a set or group may have a semantic order or rank (weakly-moderately-strongly). Currently this is determined by the <nop>ModifiersAreOrdered element. This is similar to character definition assumptions, measurement scale = ordinal. Another related feature is the "Model" element that defines the ordering of states in descriptions. The three places are not very consistent, but they also have marked differences, so maybe that is ok...
+		* Previously, the modifier sets could contain mixtures of types. Now all modifiers in a <nop>ModifierSet must be of the same type, since ranking is not considered meaningful across modifier types. 
+	* *Terminology/Modifiers 2:* Modifier applicability
+		* <nop>CharacterDef/ModifierSets replaced with a new Concept/InheritableDefinitions/<nop>RecommendedModifiers in the concept trees. The concept label identifies the set of applicable or recommended modifiers, and the characters to which this applies are already defined (by all characters included in a concept branch). The disadvantage is, that some tree-walking is required to find which modifier is applicable to which character.
+		* Previously, individual modifiers could be made applicable/inapplicable to character. Since multiple sets for a given modifier category (certainty, frequency) can now be defined, it is further possible to base applicability on entire sets. Thus, the <nop>RecommendedModifiers collection in Concept trees refers to entire sets rather than individual modifiers.
+		* The character x modifier relation is no longer subject to validation (this is also expressed by changing "applicable" to "recommended"). Modifiers that are not recommended for a character by means of a concept tree may still be validly used. However, editing interfaces should not offer them in pick lists, and applications may provide routines to search for the use on non-recommended modifiers in descriptions.
+		* Another way to say this is that the modifier inapplicability is now a deprecation mechanism. No existing data are invalidated, but applications are expected not to offer inapplicable modifiers when editing descriptions.
+	* *Terminology/Modifiers 3:* Modifier types
+		* "Probability modifiers" have been renamed to "Certainty modifiers". As already discussed in Brazil (but later forgotten!), "Probability" is an ambiguous concept since low occurrence frequency of a state also results in a low probability that a given object has a given character state.
+		* The modifier system is principally changed to type polymorphic design with abstract base types. This enables SDD to add and specify additional modifiers in future versions, and well-written application using object-oriented-programming are expected to be able to implement these improvements with minimal effort.
+		* New modifier types are already introduced for spatial and temporal modifiers, although they contain no detailed specification elements yet (i.e. they only semantically but not syntactically differentiated)
+		* Two major subgroups of modifier types are now introduced: those applicable to any kind of character, and those restricted to categorical states.
+		* Frequency and the new (general) <nop>StateModifier are applicable to states. To simplify the model, only on of each can be applied to each state.
+		* Certainty, Spatial, Temporal, and (general) Other modifiers are character modifiers. 
+		* The cardinality of certainty modifiers was previously restricted to a single modifier per statement, whereas multiple general modifiers could occur. While moving to the type polymorphic design, keeping this restriction would have greatly complicated the schema. The requirement has therefore been dropped from the schema design. It may still be validated by non-schema validation, or application may issue warning when multiple certainty modifiers are present.
+		* Frequency and Certainty modifiers changed to now contain the Range definition inside a Specification element.
+		* <nop>ProbabilityRange with lower/upper estimate (used in frequency and certainty modifiers) now has optional attributes with default values of 0/1 respectively. This was already recommended in cases where the semantics of, e. g., rare where not obvious, it is now made more explicit in the schema - on the expense that the programmers must take more care, since validated and non-validated xml instance infosets will differ!
+
+	* *Concept trees:* 
+		* To the entire tree an organizing element "Specification" was added (similar to coding status, modifier etc. definitions). The types, roles, etc. inside were reorganized and the enumerations changed (e.&nbsp;g., <nop>MethodHierarchy to <nop>InstrumentationHierarchy, <nop>PartHierarchy split into <nop>PartOfHierarchy and <nop>PartGeneralizationHierarchy). Also please critizise the modified structure: "DesignedFor/Role (e. g. = Filtering)". Do these element and enumerated value names make sense to native speakers? Any better suggestions?
+		* <nop>GenericStates renamed to <nop>ConceptStates (= states that are present at nodes in the concept tree; this is the only place where <nop>GenericStates was present). "Generic" was considered to be confusing since for biologists it may be understood as referring to states describing a Genus.
+
+*Entities*
+	* The "connector" metaphor for the local objects connecting to external objects was not well received and not considered intuitive. As an attempt, I propose to use a proxy metaphor: The proxy object is a local object "standing-in" for the external, often asynchronously available resource object on the internet. In programming this is called the "proxy-pattern". Proxy objects may, however, also "stand-in" if no external object can be found and a local object (e. g. in biology: taxon name, specimen) has to be defined. Specific changes:
+		* <nop>ResourceConnectorBase changed to <nop>ProxyBase
+		* <nop>ClassNameConnector, <nop>ClassHierarchyConnector, <nop>DescribedObjectConnector, etc. all changed to <nop>...Proxy
+		* Within the <nop>ProxyBase, the <nop>FreeFormDescription was changed to Label. For all internal SDD object like characters or states, "Label" signifies a human readable representation, which is the intent of this data element as well.
+		* The ID/external object linking was strongly changed. The previous version (which was never really worked out so far) worked only if the object query could be embedded into a single URI query string, or if the old <nop>ServiceProvider referred to a web service wsdl with a single method and a single parameter. Now the <nop>Link rather than the old "ExternalID" points to the object in case of a single URI query string. 
+		* In addition to URL, tentative support for DOI (digital object identifiers) and <nop>LifeScience ID (LSID) was added (including an LSIDs defining a pattern constraint).
+		* In versions of UBIF up to 1.0 beta 14 a separate and rather complex definition method to define the use of webservices with or without UDDI involvement has been defined. Since in the ensuing discussion this was criticized as too complex, it has been dropped so it does not become a burden for acceptance. See UBIF.ProxyLinkByWebservice!
+		* ABCD does not plan to provide a single or unified ID for collection units, but uses three separate variables that together uniquely refer to a specimen object. This could only be supported through the multiparameter web service definition above. From the standpoint of SDD it would be more desirable to have a single ID to simplify ID comparison. Even when multiparameter web services are re-introduced, it remains an issue to distinguish the ID from other webservice parameter values that may be required to use a webservice method (but may be constant for different objects).
+		* _New_ after Berlin meeting: Sequence of Label (= <nop>FreeFormDescription in 0.9) and <nop>ObjectLink changed; Label is now first. This agrees with the use of Label throughout the other parts of the schema (characters, states, etc.).
+	* Entities/Classes changed to Entities/ClassNames, //Class to //<nop>ClassName. Note: in addition to the <nop>ClassName (taxon name) pointers present we may need alternative pointers into the class concepts (taxon concepts).
+		* These may already be present in the form of <nop>ClassHierarchy Nodes, which always encapsulate a taxon concept!
+		* This has not been further pursued, however, pending the development of the Napier Taxon Concept Schema.
+	* "<nop>TaxonNameInSource" renamed to "<nop>ClassNameInSource". Related open issue: Combine with Location? Else we need to have a <nop>CitationBase without <nop>ClassNameInSource used in Glossary and Keys, and a derived type used in Descriptions!
+	* _New_ after Berlin meeting: <nop>ClassIdentification changed to neutral <nop>ClassName. As Jessie pointed out, in many cases the underlying process will be an identification, but in the case of creating new taxa or revising taxa it may be the creation of a concept based on specimens. The term Identification caused confusion in the discussion.
+	* Bob pointed out the inconsistency of declaring the standard to be independent of the biodiversity domain (thus using class/object instead of taxon/specimen) and still having taxon, taxonauthor, etc. in UBIF.FormattedText. For the time being I have removed these (they are still preserved in an unused backup version of the type, so they can easily be put back).
+	* Similarly, the biology-specific elements Sex and Stage were removed from <nop>ClassNameProxy (= <nop>ClassNameConnector in 0.9; = the type of the proxy object defining links to external name databases). 
+		* SDD assumes that <nop>ClassNameProxy in the future will connect to nomenclators or species databases and these are unlikely to provide separate records for sex and stage.
+		* Both do belong to the specimen (Unit). They are defined in the <nop>DarwinCore list of concepts, and thus their use currently depends on developing the unit interface data elements. 
+		* It would have been possible to move Sex and Stage to <nop>DescriptionBase, but they are required at the end of the diagnostic keys as well (sexes or stages may be keyed out separately!). Thus, a new type <nop>ClassRefWithAdditionalClassifier has been derived from the <nop>ClassRef and used for <nop>DescriptionBase/Class (which is the basis for coded as well as natural language descriptions) and <nop>StoredKeyDef/Lead/Class. Furthermore the Object identifications may be sex/stage specific (but also many objects will have multiple stages in a single specimen...). 
+		* At the moment a new <nop>ClassRefWithAdditionalClassifier has been introduced as a dummy to keep the discussion going. 
+		* It does not actually define sex and stage, since these are considered to be part of a larger problem, see SecondaryClassifiersProposal (and earlier: TheProblemOfSex)! Is it possible to solve this problem in general, avoiding biology-specific concepts like sex and stage?
+	* <nop>ClassHierarchies was previously restricted to single hierarchy, now allows multiple <nop>ClassHierarchy objects. A <nop>ClassHierarchy is the only way available in SDD to define taxon subsets (character subsets are defined in the <nop>ConceptTrees).
+	* Class names (= taxon names referenced in descriptions or keys) may have to be language specific! See LanguageSpecificClassNames! The Label of all Proxies is now changed to be language-specific - making the whole thing more complicated, unfortunately...
+	* An Abbreviation element has been added to all Proxy labels, thus also to <nop>ClassNames. Would not likely be updated by service, but may be useful or even required for reports. Update problem is related to problem with updating the Caption of <nop>MediaResources.
+	* Agents and Publications proxy objects have new, much improved proposals for extensions beyond the proxy-base type.
+
+*Descriptions*
+	* In coded and natural language descriptions a Header element was introduced to improve the overview and organization of information. 
+	* In <nop>CodedDescriptions, character data the "Sequence" element with values "terminology" or "description" was considered difficult to understand. Bob proposed to replace it with a boolean "<nop>StatesAreOrdered" which was used in intermediate versions. Now a separate enumeration has been defined and used in categorical character data type in the "Model" element, please check this!
+	* <nop>CodedDescriptions/CodedDescription/CharacterData changed to .../<nop>SummaryData, <nop>NaturalLanguageDescriptions/NaturalLanguageDescription/DescriptionData to .../NaturalLanguageData
+	* In coded descriptions, the observation for raw data and samples (previously named "<nop>ObservationSet/Observation") have been renamed to "Sample/SamplingUnit" and moved up one level to a <nop>SampleData element in parallel to the <nop>SummaryData.
+	* Calculations (e. g. mean) in <nop>SummaryData based on <nop>SampleData can now be related back to the Sample using an id/ref mechanism. See the WIKI discussion RepeatedObservations. 
+	* The <nop>NaturalLanguageData and <nop>SummaryData/SampleData "payload" elements of descriptions are now both made optional. This allows the creation of dummy descriptions, and of descriptions containing ONLY media resources.
+	* The modifiers have been split into character (applicable to any character type) and state modifiers (applicable only to individual states). 
+	* Only a single state modifier can be applied. This restricted cardinality allows a simplified model and greatly simplifies user interfaces.
+	* Frequency modifiers are considered a special kind of state modifiers. Only a single frequency modifier can be applied to a state (in addition to the general state modifier).
+	* The special frequency value or range types have been removed. Instead, optional frequency range may be given in addition to a frequency modifier reference.
+	  Either the most appropriate frequency could be automatically chosen by the application, or a dummy frequency (0 to 1) could be introduced. This is less 
+	  expressive and accurate than the previous solution, but explicit frequencies are relatively rare, and this simplifies the model greatly.
+	* Character modifiers now form a single sequence. Multiple certainty etc. modifiers are allowed. This has been done to simplify the model. It still
+	  remains undesirable to attach multiple certainties to a character.
+
+*Keys*
+	* Keys/Key was changed to <nop>IdentificationKey/IdentificationKeys. The term "key" was perceived as too general, causing misunderstanding especially for non-biologists like programmers.
+	* Alternative terms (in addition to the deprecated "guided key") are "Pathway key" and "Stored key". "Dichotomous key" is considered inappropriate.
+	* <nop>CodedStatements in Keys (coded terminology equivalent to the natural language key statement) used to be a simple list of states. To accommodate the frequently occurring more complex statements in keys, e. g., "margin of fruit body yellow (or orange and hairy)" -> i. e. not if only orange, or "margin of fruit body yellow, never with denticles" -> other surface structures may be present, a boolean operator logic modeled after <nop>MathML has been added to <nop>CodedStatements inside Keys.  
+		* Related: Should Boolean logic (not, and, or) be added to any natural language markup?
+		* Should guided keys be marked up using the natural language markup method rather than using a separate section, as currently proposed? Currently, the key markup was thought to follow the coded description model, but now it has been extended. Problem: Boolean logic is frequently found in the lead statements of keys, but rarely in natural language taxon descriptions. However, if Boolean logic operators are introduced to both, it would be a strong argument to use the same method in NLD and Keys, rather than having three variants.
+		* Alternatively, we may want to extend the <nop>CodedDescriptions and provide Boolean logic operators there as well. This would be a heavy burden on database-oriented descriptive data processing, however. Or can someone provide a simple model how to handle arbitrary logical and/or combinations in a relatively simple database model?
+		* At the moment, the states in a single <nop>CodedDescriptions character may be declared And/Or/Between using the "Model" element mentioned above.
+		* The <nop>CodedStatements inside Keys has been made tentative and will not yet appear in version one. The question whether to unify it with the <nop>NaturalLanguageDescriptions markup model needs to be resolved first! 
+
+---
+
+Looking for the most recent schema file? See CurrentSchemaVersion!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 August 2004

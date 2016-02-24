@@ -1,0 +1,44 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118875" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+---+!! %TOPIC%
+
+In the EFG project we are using !TaxonHierarchies for a number of ecological relationships, e.g. _<nop>LarvalHostPlants_ and _<nop>NectarPlants_ for butterflies and _Herbivores_ for plants. In all cases thus far, these are lists of taxa together with, for each one, a list of taxa that are in the named relationship. Thus, in a butterfly dataset a !TaxonHierarchy labeled "Larval Food Plants" we have a list nodes which (contain a reference to) butterfly taxa and under each of which are nodes for references to the host plant. We use the same mechanism to associate with various taxa a list of taxa which, in an opinion expressed by the data provider, are morphologically similar and so easily confused with the given one.
+
+Currently (SDD 1.1) !TaxonHierarchyType has the following enumerated values:
+  "UnspecifiedTaxonomy", "PhylogeneticTaxonomy", "NonphylogeneticTaxonomy", "SubsetFilter".
+
+A problem we encounter is that for !TaxonHierarchies with "PhylogeneticTaxonomy" we would like to provide some hint to applications beyond the label what its nature is. We have decided to do this with an additional attribute on the hierachy, as permitted by the schema, which is some URI that identifies the Hierarchy. However, it seems to us that some of these could be agreed upon in the terminology in some way, or even possibly have some standard ones provided in some auxiliary way, e.g. registered, or fetched from registered external ontologies. It would be best if, at least, there were an SDD name for the attribute.
+
+Finally, we note that our use of these hierarchies _is_ related to the descriptions of the classes (i.e.) the taxa, in a set of descriptions. It would perhaps be better if such relationships could be hung directly on the taxon described, e.g. one might be able in a !CodedDescription to reference a node in one of these !TaxonHierarchies. 
+
+-- Main.BobMorris - 07 Jun 2005, Main.JacobAsiedu - 07 Jun 2005, updated for SDD 1.1 by Main.GregorHagedorn
+
+This is very interesting to me. In the GLOPP project dealing with host-parasite interactions, we consider the structure essentially an entity with attributes !InteractionType, Organism1, Organism2, !GeographicArea. !InteractionType is an extensive controlled vocabulary including pollinator etc.
+
+I am not sure why you represent it in a taxon hierarchy. Clearly, both the host plants and the butterlies have a taxonomic hierarchy. But from your description, you really seem to use "Hierarchy" for a list, where the first and second level of the hierarchy are semantically overloaded with being host plant or feeding caterpillar. We could add something to express that, but is it generally desirable to do something like this?
+
+SDD has indeed no solution for organism interaction data. I am not certain whether it is a good idea to offer lists of taxa in coded descriptions. One reason is, that as detected in the GLOPP project, the relevant information may be triples, i.e. in which area a butterfly feeds on which host plant. Should SDD provide for each coded description "InteractionType, !InteractingOrganism, "GeographicArea", or should this rather be considered information handled in a separate container (not in !CodedDescriptions, but perhaps in !OrganismInteractions)? I tend to think the latter, but I by no means certain. What do you think?
+
+-- Main.GregorHagedorn - 08 Jun 2005
+
+I need to think this through a little bit in terms of set theory (see below), but here is my current thinking:
+
+   * !InteractionType is perhaps the _name_ of the relation, not so much a member of it, so that on the surface, there is not a set of triples, but rather a set of relations.
+   * It is a little tempting to compare this to the SDD scoping mechanism, but I think that is wrong. What we want here is usually in the case where there is a single description having several relations but typically otherwise nothing else encodes any kind of "scope like" restrictions.
+
+Not that I presently know what to do with this, but the set theoretic description of what is going on here is this (Ignore if you eschew set theory... :
+
+We are looking at a function _s_ on a set _T_ of taxa, which assigns to each taxon _t_ in _T_ an (unordered) subset _s(t)_ of a set _S_ of taxa. In this representation, in the GLOPP (or other "scoped" cases) each geographic area gets its own function. If in fact it were desired to specify (at least in theory) that there is something for _every_ geographic area, then instead of functions on _T_, we are looking at functions on the set _T_ x _A_ of pairs (t,a) where t is a taxon and _a_ is a geographic area (or whatever the second "scope" is, e.g. some temporal constraint). The functions take values in a set of subsets of a second set T' of taxa.
+
+Examples:
+
+hostPlants("Lepus aus", "CostaRica") = {Plantus aus, Plantus bus, Plantus cus} <br>
+hostPlants("Lepus aus", "NorthAmerica") = {Plantus aus, Plantus dus}
+
+There are a few issues I need to think through including:
+
+   * Is anything gained by introducing a formalism
+   * Normally, a function must specify a value on every element of its domain, but maybe we don't quite mean that in which case the formalism really is sets of triples as Gregor proposes. (That's because these functions can also be thought of as sets of triples
+{ (t,a,S) | S = s(t,a) } ). The only difference is that in the function case we must provide an s(t,a) for _every_ "scope" _a_ under consideration.
+ 
+Main.BobMorris  but not the eschewer  Main.JacobAsiedu - 08 Jun 2005

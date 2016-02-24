@@ -1,0 +1,61 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.1
+date	2007.03.27.15.37.10;	author BartMeganck;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@PHP that makes a search on CoL, via cURL
+@
+text
+@<?php
+
+// curl_from_CoL
+
+// do a search on Catalogue of Life via Unix cURL command 
+
+$curl_string = curl_init("http://annual.sp2000.org/export_search_results2.php?"
+ . "kingdom=Plantae"
+ . "&phylum="
+ . "&tax_class="
+ . "&order="
+ . "&superfamily="
+ . "&family="
+ . "&genus="
+ . "&species="
+ . "&infraspecies="
+ . "&common_name="
+ . "&area="
+ . "&search_string=rosa"
+ . "&match_whole_words=on"
+ . "&sort_by_column=1"
+ . "&search_type=" );
+ 
+// at the given URL, CoL returns a tab-separated file, which we write to a 
+//  simple .txt outputfile
+ $outputfile = fopen("CoL_output.txt", "w");
+
+curl_setopt($curl_string, CURLOPT_FILE, $outputfile);
+curl_setopt($curl_string, CURLOPT_HEADER, 0);
+
+curl_exec($curl_string);
+curl_close($curl_string);
+
+fclose($outputfile);
+
+
+?> @

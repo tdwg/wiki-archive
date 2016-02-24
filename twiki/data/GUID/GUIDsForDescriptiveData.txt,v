@@ -1,0 +1,458 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2006.01.28.04.55.27;	author BobMorris;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2006.01.28.04.50.05;	author BobMorris;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2006.01.27.17.27.00;	author RogerHyam;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2006.01.27.09.12.41;	author DonaldHobern;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2006.01.27.08.51.20;	author KevinThiele;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2006.01.26.08.57.18;	author KevinThiele;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.01.26.08.52.19;	author KevinThiele;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.01.26.08.06.12;	author KevinThiele;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.01.26.06.28.48;	author KevinThiele;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.01.26.06.27.47;	author KevinThiele;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.01.26.05.53.33;	author KevinThiele;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.01.26.05.13.23;	author KevinThiele;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.01.26.04.58.03;	author KevinThiele;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.01.26.04.35.33;	author KevinThiele;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.01.26.01.59.05;	author KevinThiele;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.01.26.01.44.16;	author KevinThiele;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.01.26.01.42.33;	author KevinThiele;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.17
+log
+@
+.
+@
+text
+@---++ GUIDs for Descriptive Data
+
+This topic will explore the use of GUIDs for descriptive data. Descriptive data nominally include the following:
+
+Morphological Descriptions
+Ecological Data
+
+An initial assumption is that these have enough in common that they can be discussed together - if this proves to be false, the discussion will need to fork.
+
+Note that this discussion will frequently refer to the TDWG SDD (Structure of Descriptive Data) Standard. Much discussion about descriptive data (including the nature of descriptions and the nature of characters and states) has already taken place on the [[http://wiki.cs.umb.edu/twiki/bin/view/SDD/WebHome][SDD Wiki]]. SDD provides an XML schema (still somewhat untested, perhaps, but better than anything else available) for descriptive data. It would be preferable not to have to repeat too much of the SDD discussion here.
+
+[[DescriptiveDataSummaryToJan06][Click here for a dump]] of the first, very initial, discussion so far (from the list)
+
+----
+---+++ Definitions
+
+_1. Traditional characters and states_
+
+As normally used in morphological descriptive data, there are two main types of characters, called (in SDD) categorical and quantitative. 
+
+Categorical characters take the form of "characters" with "states", e.g.
+
+Leaf shape (a character)
+   ovate (a state)
+   elliptic (another state)
+   obovate (another state)
+
+Any given entity coded for a categorical character will be given a value for each state (usually "present" or "absent", but sometimes with modifiers e.g. "rarely present")
+
+e.g., for _Aus bus_
+Leaf shape
+   ovate: value= "present"
+   elliptic: value = "rarely present"
+   obovate: value = "absent"
+
+Quantitative characters take the form of "characters" without "states", e.g.
+
+Leaf length (a character)
+
+Any given entity coded for a quantitative character will be given one or more statistical values for the character
+
+e.g. for _Aus bus_
+Leaf length: minimum = 10 mm; maximum = 30 mm; mean = 15 mm
+
+Characters in turn may be arranged into hierarchies, e.g.
+
+Leaves
+   Shape
+      ovate
+      elliptic
+      obovate
+   Length
+...etc
+
+//2. The Diederich/Prometheus model_
+
+An alternative formulation of the character-state paradigm is provided by Diederich and Prometheus. In that model, any descriptive datum can be represented by a consistently tripartite "Descriptive Element" of the form:
+
+structure:property:value. So, the traditional
+Leaf shape
+   ovate
+   elliptic
+   obovate
+
+would be represented by three descriptive elements
+Leaf:shape:ovate
+Leaf:shape:elliptic
+Leaf:shape:obovate
+
+This model makes more explicit some elements of the descriptive process - e.g. statements with hidden context, like "Leaves ovate", would be required in Prometheus to be more explicitly formulated by requiring the property ("shape"). But I don't see that it has any different properties from the traditional formulation with respect to GUIDs
+
+----
+---+++ Issues
+
+_1. Closed vs Open Worlds//
+
+As pointed out by Roger Hyam, characters and states are usually used in Closed Worlds - e.g. the characters are defined in the context of a key or treatment for a closed group of taxa. 
+
+If the world is opened out, e.g. to more taxa, then the state set of a categorical character may no longer be adequate. E.g.
+
+Petal colour
+   red
+   white
+
+may do for one set of taxa, but open it out to a group that includes a pink-flowered taxon, and there's a problem. A poor solution is simply to add a new state 'pink', but then one can't be sure that the taxa previously scored red or white may not actually be (pale or dark) pink.
+
+So, a problem arises when one attempts to break descriptions (and keys) out of their contextual silos. See the IdentifyLifeUseCase for an example (perhaps quixotic) of such an attempt.
+
+The ultimate solution would be to have universally-adopted constrained terminologies for all groups of taxa (or better still, a single constrained terminology for Life). Unfortunately, every attempt at this so far has not been taken up by the taxonomic community (for perfectly understandable reasons). If we did have such a constrained terminology, presumably GUIDs could be applied easily and well. 
+
+The question is - can GUIDs be usefully applied to characters and/or states in our less-than-perfect world?
+
+_2. What can get a GUID 1?_
+
+An objection to using GUIDs for characters was raised by Bob Morris: "I think the most debilitating issue is that GUIDs could only go on categorical characters (= 'enumerated' to informaticists), and maybe not even all of those. Absent a compelling reason, I hate to see an abstraction that can only be applied to certain classes of what one needs to talk about"
+
+Bob is thinking (I think) that a GUID could be applied to a state ("ovate" or "blue") of a categorical character, but not to a value ("3" or "2.11482") of a quantitative one - hence there's a problem.
+
+Bob was mostly concerned, not on whether you can separate states ontologically, but about the application developer who has to write software in which different kinds of states get different treatment not based on their datatype but on something that has to be treated by mechanisms stronger than XML Schema to separate them. Admitting that there have already been identified several number of such in SDD, I hate to see them multiply. BobMorris
+
+This seems to me to be a trivial problem, and no reason not to put GUIDs on states. States of a categorical character by their nature are members of a finite set, and are the elements from which a description is constructed. States exist in an ontology independent of the scoring of a given taxon. A state is applied to a taxon by assigning it a score - usually "present" (1) or "absent" (0) (but see SDD for others). Quantitative values like 2.11482, by contrast, do not exist independently in the ontology, but only (in the same sense) when they are assigned to a taxon. Thus, 2.11482 is more like "present" (1) or "absent" (0) than they are like "ovate" or "blue" - they are different in kind and are handled differently (just as they are handled differently in a database).
+
+   DonaldHobern: I fully agree that this is not a major problem.  If we consider how we might use RDF/OWL to model this information, the characters can easily be seen as RDF properties and the states as the associated values.  In some cases these will be primitive data types (integers, floats, strings, etc.).  In other cases the values should be seen as objects which may receive identifiers.  Wherever we have enumerated values we can define them as objects, assign them identifiers and reference them through those identifiers.  I agree that there may be problems (as with adding pink to the prior set of states {red, white} noted above), but we may be able to address some of this through best practices for providing the definitions of the initial set of states and for adding new states (including some definition of when this is inappropriate).
+       RogerHyam: I tried to express this in my posting to the list. In N3 notation:
+       mytaxa:rose myterms:has _:att1 .
+       _:att1 rdf:type myterms:leaf .
+       _:att1 myterms:length _.att2
+       _:att2 rdf:value "22" .
+       _:att2 rdf:type myterms:oneMilPrecisionMeasurement . 
+       I believe this means that rose has a property of type leaf and that leaf has a property length which has a value of 22 and is of type oneMilPrecisionMeasurement (I am not yet an RDF guru so stand to be corrected). So we can have a vocabulary that we just string together in RDF to express these things. This vocabulary wouldn't have to be very big to be useful and it could be extended for any subdomain as desired without compromising existing applications. Note that there are no characters and states here. Just resources and properties. If I wanted I could express who took the measurement and their telephone number using concepts from the vCard and Dublin Core vocabularies etc etc.
+
+_3. What can get a GUID 2?_
+
+We need to make a careful distinction in this discussion between the elements that are used to construct statements and the statements themselves. Can we say that GUIDs would be applied to the elements, but not to the statements?
+
+thus:
+Leaves  _<- gets a GUID_
+   Shape _<- gets a GUID_
+      ovate _<- gets a GUID_
+         yes _<- doesn't get a GUID_
+      elliptic _<- gets a GUID_
+         no _<- doesn't get a GUID_
+   Length _<- gets a GUID_
+      3.5-6.0 _<- doesn't get a GUID_
+----
+BobMorris: I suspect state concepts, not States need guids The corresponding thing probably applies to ecological properties. This point seems independent of whether you express concepts in and RDF or some other ontology language. SDD addresses this in ways described, by way of example in StateConceptsNeedGuids
+
+---+++++ Categories
+CategoryTopics, CategoryHighlight@
+
+
+1.16
+log
+@
+.
+@
+text
+@d126 1
+a126 1
+
+@
+
+
+1.15
+log
+@
+.
+@
+text
+@d99 2
+@
+
+
+1.14
+log
+@
+.
+@
+text
+@d102 7
+@
+
+
+1.13
+log
+@
+.
+@
+text
+@d101 2
+@
+
+
+1.12
+log
+@
+.
+@
+text
+@d99 2
+d113 2
+a114 1
+      3-6 _<- doesn't get a GUID_
+a115 1
+----
+@
+
+
+1.11
+log
+@
+.
+@
+text
+@d23 1
+a23 1
+Leaf shape (the character)
+d26 1
+d32 3
+a34 2
+   ovate: score = "present"
+   elliptic: score = "absent"
+d38 1
+a38 1
+Leaf length (the character)
+d51 1
+a59 1
+
+d63 1
+d65 1
+a65 1
+would be represented by two descriptive elements
+d68 1
+@
+
+
+1.10
+log
+@
+.
+@
+text
+@d89 1
+a89 1
+_2. What can get a GUID?_
+d91 1
+a91 1
+An objection to using GUIDs for characters was raised by Bob Morris: "I think the most debilitating issue is that  GUIDs could only go on categorical characters (= 'enumerated' to informaticists), and maybe not even all of those. Absent a compelling reason, I hate to see an abstraction that can only be applied to certain classes of what one needs to talk about"
+d95 14
+@
+
+
+1.9
+log
+@
+.
+@
+text
+@d1 2
+d15 3
+a17 1
+_Definitions_
+d52 24
+a75 1
+As pointed out by Roger Hyam, traditionally characters and states have been used in Closed Worlds - e.g. the characters are defined in the context of a key or treatment for a closed group of taxa. If the world is opened out, e.g. to more taxa, then the state set of a categorical character may no longer be adequate. E.g.
+d81 7
+a87 1
+may do for one set of taxa, but open it out to a group that includes a pink-flowered taxon, and there's a problem. A poor solution is simply to add a new state 'pink', but one can't be sure that the taxa scored red or white may not actually be (pale or dark) pink.
+d89 1
+a89 1
+The problem arises when one attempts to open out the world - to break keys and descriptions out of their contextual silos. See the IdentifyLifeUseCase for an example (perhaps quixotic) of such an attempt.
+d91 1
+a91 1
+The ultimate solution would be to have universally-adopted constrained terminologies for all groups of taxa (or better still, a single constrained terminology for Life). Unfortunately, every attempt at this so far has not been taken up by the taxonomic community (for perfecly understandable reasons). If we did have such a constrained terminology, presumably GUIDs could be applied easily and well. 
+d93 1
+a93 1
+So the question is - can GUIDs be usefully applied to characters and/or states in our less-than-perfect world?
+@
+
+
+1.8
+log
+@
+.
+@
+text
+@d10 1
+a10 1
+[[DescriptiveDataSummaryToJan06][This is a dump]] of the first, very initial, discussion so far (from the list)
+@
+
+
+1.7
+log
+@
+.
+@
+text
+@d12 1
+a12 1
+
+d54 7
+a60 1
+may do for one set of taxa, but open it out to a group that includes a pink-flowered taxon, and there's a problem. A poor solution is simply to add a new state=pink, but one can't be sure that the taxa scored red or white may not actually be (pale or dark) pink.
+@
+
+
+1.6
+log
+@
+.
+@
+text
+@d12 44
+@
+
+
+1.5
+log
+@
+.
+@
+text
+@d10 1
+a10 1
+[[DescriptiveDataSummaryTo26-1-06][This is a dump of the discussion so far (from the list)]]
+@
+
+
+1.4
+log
+@
+.
+@
+text
+@d8 1
+a8 1
+   Note that this discussion will frequently refer to the TDWG SDD (Structure of Descriptive Data) Standard. Much discussion about descriptive data (including the nature of descriptions and the nature of characters and states) has already taken place on the [[http://wiki.cs.umb.edu/twiki/bin/view/SDD/WebHome][SDD Wiki]]. SDD provides an XML schema (still somewhat untested, perhaps, but better than anything else available) for descriptive data. It would be preferable not to have to repeat too much of the SDD discussion here.
+d10 3
+a12 1
+ 
+@
+
+
+1.3
+log
+@
+.
+@
+text
+@d8 1
+a8 1
+Note that this discussion will frequently refer to the TDWG SDD (Structure of Descriptive Data) Standard. Much discussion about descriptive data (including the nature of descriptions and the nature of characters and states) has already taken place on the SDD Wiki (at http://wiki.cs.umb.edu/twiki/bin/view/SDD/WebHome). SDD provides an XML schema (still somewhat untested, perhaps, but better than anything else available) for descriptive data. It would be preferable not to have to repeat too much of the SDD discussion here.
+@
+
+
+1.2
+log
+@
+.
+@
+text
+@d6 5
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d6 3
+@

@@ -1,0 +1,72 @@
+%TMPL:INCLUDE{"twiki.classic"}%
+
+
+
+%TMPL:DEF{"templatescript"}%<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_attach.js"></script>
+%TMPL:END%
+
+
+
+%TMPL:DEF{"bodystart"}%<body bgcolor="#ffffff">
+#PageTop
+%TMPL:END%
+
+%TMPL:DEF{"notes"}%__Notes:__
+
+   * *Help:* Please see <a target='TWikiVariables' onclick=\"return launchWindow('%TWIKIWEB%','FileAttachment')\" href='[_1]' rel='nofollow'>FileAttachment</a> for more information about attaching files.
+   * *File size:* You can upload files up to %ATTACHFILESIZELIMIT% KB in size.
+   * *Link checkbox:* If the attached file is a JPG, GIF or PNG image and you check the box, 
+     it will create an inline image (e.g. show the image) at the end of the topic.  For other
+     file types a simple link will be created.
+   * *Bug:* Internet Explorer 4.0 or earlier: If you get an "Internal Server Error"
+     message when you upload a file, you need to try again. It should work the second time.
+%TMPL:END%
+
+%TMPL:DEF{"existingattachments"}%---++ Existing attachments for <nop>%TOPIC%
+%META{"attachments" all="on"}%
+%TMPL:END%
+
+%TMPL:DEF{"content"}%<form name="main" enctype="multipart/form-data" action="%SCRIPTURLPATH{"upload"}%/%WEB%/%TOPIC%" method="post">
+%TMPL:P{"existingattachments"}%
+%TMPL:P{"previousdetails"}%
+<table width="100%">
+   %TMPL:P{"previous"}%
+ <tr>
+  <td align="right">
+   Local file:
+  </td><td>
+   <input type="hidden" name="filename" value="%FILENAME%" />
+   <input type="file" name="filepath" value="%FILEPATH%" size="50" />
+  </td>
+ </tr>
+ <tr>
+  <td align="right">
+   Comment:
+  </td><td>
+   <input type="text" name="filecomment" value="%FILECOMMENT%" maxlength="256" size="50" />
+  </td>
+ </tr>
+ <tr>
+  <td align="right">
+   Link:
+  </td><td>
+   <input type="checkbox" name="createlink" %ATTACHLINKBOX% /> Create a link to the attached file at the end of the topic.
+  </td>
+ </tr>
+ <tr>
+  <td align="right">
+   Hide file:
+  </td><td>
+   <input type="checkbox" name="hidefile" %HIDEFILE% /> Hide attachment in normal topic view.
+  </td>
+ </tr>
+</table>
+%TMPL:P{"notes"}%
+%TMPL:P{"extranotes"}%
+%TMPL:P{"topicinfo"}%</form>%TMPL:END%
+
+%TMPL:DEF{"attach"}%%TMPL:P{"htmldoctype"}%%TMPL:P{"head"}%
+%TMPL:P{"bodystart"}%
+%TMPL:P{"main"}%
+%TMPL:P{"bodyend"}%
+%TMPL:END%

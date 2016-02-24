@@ -1,0 +1,47 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.06.08.11.34.54;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GregorHagedorn" date="1181302494" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="WebHome"}%
+As discussed on WhyWeShouldNotUseLSIDs and LsidHttpProxyUsageRecommendation, the use of LSIDs, being a special community technology requires special custom software to be developed and deployed, and does not integrate easily into the semantic web. The alternative is to follow the lead of the semantic web community and use http-based GUIDs, like URLs, persistent URLs, etc., coupled with content negotiation [[http://www.w3.org/2003/01/xhtml-mimetype/content-negotiation][based on MIME types]] Any URL is a GUID and it is "actionable". Combined with [[http://www.w3.org/TR/swbp-vocab-pub/#negotiation][content negotiation that alternatively returns data or various forms of metadata]] when asked to, all requirements GUIDs collected on this Wiki are fulfilled by http-based URLs. 
+
+This document tries to establish which practices should be employed to fill our needs. Both for LSIDs and Http-based GUIDs we need a *social contract*:
+:
+   * A community agreement to use certain URLs as permanent GUIDs. All members agree that they will never *reuse* such a GUID once it has been assigned. 
+   * They will try to keep the GUID resolvable as long as possible.
+      * Although it is a management problem and not a problem of the technology, URLs are in practice subject to link rot. Persistent URLs, using http redirection features, are one possible method to make URLs persistent. Management of redirection does not necessarily require a central PURL resolver. A central redirection could be offered as a service, but it can easily be created locally in multiple places.
+   * They will try to install MIME type based content negotiation returning metadata instead of primary data that follows the TDWG standards.
+
+The major problem to me appears to be communication. Using LSIDs communicates to managers that different management techniques are desired. It communicates to machines that a different form of reliability may be expected (e.g. when harvesting information for GBIF). Can we perhaps achieve a similar communication by adding some label to GUID-URLs? Donald wrote "Personally I believe our chances of getting the community to consider, define and apply such practices are enhanced by the identifier technology being something a little more different and distinct than just a special URL".
+
+I believe one way is to make the special URL (after all, LSIDs are just special URIs as well) *visibly special to humans*. We need some branding or trademark. LSID is is taken, but we have plenty of options. Is *PGID* for "PermanentGlobalID" a good acronym? Or is a long name !PermanentBioID better?
+
+I propose to leave implementers the choice of either using the "trademark" as DNS name or as first part of the path. Can we forge a community agreement to use something like: http://pgid.institution.org/some/collection/1202398 *Or* http://x.institution.org/pgid/some/collection/1202398? (or 
+http://PermanentBioID.institution.org/some/collection/1202398 / http://x.institution.org/PermanentBioID/some/collection/1202398)
+
+Is PGID too short? We need something unique that can be well recognized and advertised, similar to LSIDs.
+
+-- Main.GregorHagedorn - 08 Jun 2007
+
+See also TechnologyComparison.
+@

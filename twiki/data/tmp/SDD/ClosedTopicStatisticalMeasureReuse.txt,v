@@ -1,0 +1,213 @@
+head	1.7;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.7
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.05.04.11.26.28;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.08.18.11.13.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.06.21.11.30.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.06.09.21.50.19;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.05.28.17.24.06;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.12.15.14.54.59;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741988" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+I do not like the current structure of Statistical measures.
+
+For categorical states, we can define local states directly at a character, or we can define generic concepts states at the concept tree nodes. A concept can be color, with red, green, ... in the property tree, or fruit with capsule, berry, ... in the structure/part tree. These generic states (should we call them concept states?) can be reused at multiple characters. This not only saves definition work, it also allows to define a shape once, and thus allow an identification processor to abstract from the structure. If a fungus has sexual and asexual spores, one may not know which ones are currently present during the identification. Knowing that there is a concept "Spore shapes" would allow to search in any characters using this concept.
+
+Importantly, categorical states only make sense as a set, and thus entire sets can be referenced.
+
+Back to numerical: 
+
+Here we have an extra dimension to define project wide information for any use of mean, max, etc. in Terminology/<nop>StatisticalMeasures. The <nop>StatisticalMeasure/Generalization can be used to make the measure concept fully interoperable. However, the project-wide definitions are necessary, otherwise we will not be able to add labels and wordings in other languages (German, Chinese, etc.)
+
+However, we have nowhere a set of these, and they are not reusable as a set. You can not specify that for spore measurements you would like to use min, lower range as mean - s.d., mean, upper range as mean + s.d., max, and sample size, whereas for hyphal wall measures you simply record extremes (min to max). 
+
+Instead, we would have to add each measure to each state. That makes it impossible to provide a similar functionality as above envisaged for categorical states, looking at the generic concept of spore measure and finding all characters using this concept.
+
+In previous schema versions we had the project wide ("global") measures defined in sets (1:n). However, this worked poorly since the mean or min/max will occur in many sets, as in the example above. The association between set and project-wide definition must be n:m. Currently it is removed completely.
+
+Now what shall we do:
+
+	* Everything different, including the ResolvedTopicGenericStates for categorical stuff?
+	* Mirror the categorical solution for numerical? Does that include having 
+		* Terminology/<nop>StatisticalMeasures, 
+		* Terminology/<nop>ConceptTrees/<nop>ConceptTree/Nodes/Concept/<nop>StatisticalMeasures, and 
+		* Terminology/<nop>Characters/<nop>Character/Numerical/<nop>StatisticalMeasures? 
+		* Or even also the auto-add-from contract?
+
+Or should we be more stringent here and say: We do away with Terminology/<nop>StatisticalMeasures and define them only at the (not yet existing!) Terminology/<nop>ConceptTrees/<nop>ConceptTree/Nodes/Concept/<nop>StatisticalMeasures? We would have to add the labels for min, max, mean several times, but the Generalization would allow applications to figure out that they are referring to the same concept.
+
+Then, should we allow only complete sets in this case, rather than partial as in the case of the ResolvedTopicGenericStates? 
+
+I currently tend to favor the stringent solution, but I urgently would need a good discussion on this...
+
+(return to SchemaDiscussionSDD09s)
+
+-- Gregor Hagedorn - 15 Dec 2003, 9. June 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1092827582" from="SDD.StatisticalMeasureReuse" to="SDD.ClosedTopicStatisticalMeasureReuse"}%
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 37
+a37 36
+%META:TOPICINFO{author="GregorHagedorn" date="1092827582" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+I do not like the current structure of Statistical measures.
+
+For categorical states, we can define local states directly at a character, or we can define generic concepts states at the concept tree nodes. A concept can be color, with red, green, ... in the property tree, or fruit with capsule, berry, ... in the structure/part tree. These generic states (should we call them concept states?) can be reused at multiple characters. This not only saves definition work, it also allows to define a shape once, and thus allow an identification processor to abstract from the structure. If a fungus has sexual and asexual spores, one may not know which ones are currently present during the identification. Knowing that there is a concept "Spore shapes" would allow to search in any characters using this concept.
+
+Importantly, categorical states only make sense as a set, and thus entire sets can be referenced.
+
+Back to numerical: 
+
+Here we have an extra dimension to define project wide information for any use of mean, max, etc. in Terminology/<nop>StatisticalMeasures. The <nop>StatisticalMeasure/Generalization can be used to make the measure concept fully interoperable. However, the project-wide definitions are necessary, otherwise we will not be able to add labels and wordings in other languages (German, Chinese, etc.)
+
+However, we have nowhere a set of these, and they are not reusable as a set. You can not specify that for spore measurements you would like to use min, lower range as mean - s.d., mean, upper range as mean + s.d., max, and sample size, whereas for hyphal wall measures you simply record extremes (min to max). 
+
+Instead, we would have to add each measure to each state. That makes it impossible to provide a similar functionality as above envisaged for categorical states, looking at the generic concept of spore measure and finding all characters using this concept.
+
+In previous schema versions we had the project wide ("global") measures defined in sets (1:n). However, this worked poorly since the mean or min/max will occur in many sets, as in the example above. The association between set and project-wide definition must be n:m. Currently it is removed completely.
+
+Now what shall we do:
+
+	* Everything different, including the ResolvedTopicGenericStates for categorical stuff?
+	* Mirror the categorical solution for numerical? Does that include having 
+		* Terminology/<nop>StatisticalMeasures, 
+		* Terminology/<nop>ConceptTrees/<nop>ConceptTree/Nodes/Concept/<nop>StatisticalMeasures, and 
+		* Terminology/<nop>Characters/<nop>Character/Numerical/<nop>StatisticalMeasures? 
+		* Or even also the auto-add-from contract?
+
+Or should we be more stringent here and say: We do away with Terminology/<nop>StatisticalMeasures and define them only at the (not yet existing!) Terminology/<nop>ConceptTrees/<nop>ConceptTree/Nodes/Concept/<nop>StatisticalMeasures? We would have to add the labels for min, max, mean several times, but the Generalization would allow applications to figure out that they are referring to the same concept.
+
+Then, should we allow only complete sets in this case, rather than partial as in the case of the ResolvedTopicGenericStates? 
+
+I currently tend to favor the stringent solution, but I urgently would need a good discussion on this...
+
+(return to SchemaDiscussionSDD09s)
+
+-- Gregor Hagedorn - 15 Dec 2003, 9. June 2004
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087817400" format="1.0" version="1.4"}%
+d37 1
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1086817819" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+d34 1
+a34 1
+(return to SchemaDiscussions)
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085765046" format="1.0" version="1.2"}%
+d21 6
+a26 2
+* Everything different, including the ResolvedTopicGenericStates for categorical stuff?
+* Mirror the categorical solution for numerical? Does that include having Terminology/<nop>StatisticalMeasures, Terminology/<nop>ConceptTrees/<nop>ConceptTree/Nodes/Concept/<nop>StatisticalMeasures, and Terminology/<nop>Characters/<nop>CCharacter/Numerical/<nop>StatisticalMeasures? Or even the auto-add-from contract?
+a33 1
+
+d36 1
+a36 1
+-- Gregor Hagedorn - 15 Dec 2003
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1071500099" format="1.0" version="1.1"}%
+d21 1
+a21 1
+* Everything different, including the GenericStates for categorical stuff?
+d26 1
+a26 1
+Then, should we allow only complete sets in this case, rather than partial as in the case of the GenericStates? 
+@

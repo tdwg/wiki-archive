@@ -1,0 +1,59 @@
+%TMPL:INCLUDE{"page"}%
+%TMPL:INCLUDE{"logo"}%
+%TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%TMPL:INCLUDE{"viewbottombar"}%
+
+
+
+%TMPL:DEF{"templatejavascript"}%<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_edit.js"></script>%TMPL:END%
+
+
+
+%TMPL:DEF{"bodyclassname"}%patternNoViewPage%TMPL:END%
+
+
+
+%TMPL:DEF{"titleaction"}%%MAKETEXT{"(set preferences)"}% %TMPL:END%
+
+
+
+%TMPL:DEF{"webaction"}%%MAKETEXT{"Preferences for"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"pagetitle"}%<h1 class="patternTemplateTitle">%TMPL:P{"webaction"}% %TOPIC%</h1>%TMPL:END%
+
+
+
+%TMPL:DEF{"topicactionbuttons"}%<input type="submit" class="twikiSubmit" value='%MAKETEXT{"Save"}%' /> %MAKETEXT{"or"}% %TMPL:P{"canceltopicaction"}%
+%TMPL:END%
+
+
+
+%TMPL:DEF{"help"}%<div class="twikiHelp">
+   * %MAKETEXT{"Get help on <a target='TWikiVariables' onclick=\"return launchWindow('[_1]','TWikiVariables')\" href='[_2]' rel='nofollow'>Setting topic preferences</a>." args="%TWIKIWEB%,%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/TWikiVariables"}%
+   * %MAKETEXT{"Each preference has the syntax"}% <br />
+     %MAKETEXT{"~[multiple of 3 spaces~] * ~[space~] Set ~[space~] VARIABLENAME ~[space~] = ~[value~]"}%
+</div><!--/twikiHelp-->
+%TMPL:END%
+
+
+
+%TMPL:DEF{"content"}%
+%TMPL:P{"pagetitle"}%
+<div class="patternFormHolder">
+<form method="post" name="main" action="%SCRIPTURLPATH{"manage"}%/%WEB%/%TOPIC%">
+<div class="twikiEditTextarea">
+<input type="hidden" name="action" value="saveSettings" />
+<input type="hidden" name="originalrev" value="%ORIGINALREV%" />
+<textarea id='topic' name='text' rows='%EDITBOXHEIGHT%' cols='%EDITBOXWIDTH%' style='%EDITBOXSTYLE%' onkeydown='handleKeyDown(event)'>
+%TEXT%
+</textarea>
+</div>
+
+%TMPL:P{"topicaction"}%
+
+%TMPL:P{"help"}%
+%TMPL:P{"hidden"}%
+</form></div>
+%TMPL:END%

@@ -1,0 +1,101 @@
+%META:TOPICINFO{author="JohnWieczorek" date="1269534495" format="1.1" version="1.20"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+!! Historical <noautolink>%WEB%</noautolink> wiki site. Deprecated.
+------
+
+*Note*: These Wiki pages are for historical purposes, they *do not* reflect the content of the current standard, which can be found at
+
+* http://rs.tdwg.org/dwc/index.htm
+
+
+---++Curatorial Extension Concept List
+
+This document contains a list of proposed elements of the Curatorial Extension of the Darwin Core. This schema is incorporated (imported) in the Darwin Record Application schema, which is ready for use with the Tapir protocol.
+
+This is not the normative representation of the draft standard. In the case of any conflict between representations, the protocol-independent [[http://rs.tdwg.org/dwc/tdwg_dw_curatorial.xsd][Curatorial Extension schema]] takes precedence.
+
+---++Status:
+
+   * Ready for review. 29 Jun 2005. JRW
+
+Submitted by:  !MaNIS/HerpNet/ORNIS Collaboration
+
+Submission Date:  11 Aug 2004
+
+Date Last Modified: 11 Aug 2004
+
+|  *Element*  |  *Description*  |  *Required*  |  *Type*  |  *Min Value*  |  *Max Value*  |
+|  |  *Record-level Elements*  |  |  |  |  |
+| *[[CatalogNumberNumeric]]* | The !CatalogNumber as a numeric value, if applicable. This element allows searching on numeric ranges of !CatalogNumbers.  Example: 145732. | no | double |  |  |
+| *[[IdentifiedBy]]* | The name(s) of the person(s) who applied the !ScientificName to the object or observation.  Example: James L. Patton. | no | string |  |  |
+| *[[DateIdentified]]* | The date-time in the Common Era calendar in which the object or observation was identified as being a member of the taxon given in the !ScientificName. | no | dateTime |  |  |
+| *[[CollectorNumber]]* | An identifying string applied to the object or observation at the time of collection. Serves as a link between field notes and the object or observation. | no | string |  |  |
+| *[[FieldNumber]]* | An identifying string applied to a set of objects or observations resulting from a single collecting event. | no | string |  |  |
+| *[[FieldNotes]]* | One of a) a flag indicating the existence of, b) a reference to (such as a URL or literature citation), or c) the actual free text content of notes taken in the field about the specimen or observation.  | no | string |  |  |
+| *[[VerbatimCollectingDate]]* | The verbatim original representation of the date (and time) information for the collecting event. Example: "spring 1910". | no | string |  |  |
+| *[[VerbatimElevation]]* | A text representation of the altitude in its original format in the source database.  Example: "1000+- meters". | no | string |  |  |
+| *[[VerbatimDepth]]* | A text representation of the depth in its original format in the source database.  Example: "100 to 200 ft below sea level". | no | string |  |  |
+| *[[Preparations]]* | A concatenated list of preparations and preservation methods for the object.  Examples: "skin", "skull", "skeleton", "whole animal (ETOH)", "tissue (EDTA)". | no | string |  |  |
+| *[[TypeStatus]]* | A list of one or more nomenclatural types (including type status and typified taxonomic name) represented by the object.  Example: "holotype of _Ctenomys sociabilis_. Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388". | no | string |  |  |
+| *[[GenBankNumber]]* | !GenBank Accession number(s) associated with the biological individual(s) referred to by the cataloged object. | no | string |  |  |
+| *[[OtherCatalogNumbers]]* | A list of previous or alternative fully qualified catalog numbers for the same object or observation, whether in the current collection or in any other. | no | string |  |  |
+| *[[RelatedCatalogedItems]]* | One or more GlobalUniqueIdentifiers (cf. http://wiki.tdwg.org/twiki/bin/view/DarwinCore/GlobalUniqueIdentifier ) of related objects or observations, optionally preceded by the nature of the relationship. Examples: "(sibling of) URN:catalog:MVZ:Mammal:1234", "(endoparasite of) URN:catalog:FMNH:Bird:41321", "(sheet 2 of 2) URN:WTU:VascularPlants:353087". | no | string |  |  |
+| *[[Disposition]]* | The current disposition of the cataloged item.  Examples: "in collection", "missing", "voucher elsewhere", "duplicates elsewhere". | no | string |  |  |
+| *[[IndividualCount]]* | The number of individuals present in the lot or container. Not to be used for observations. | no | nonNegativeInteger |  |  |
+
+---++ Comments 
+Use the space below to make comments about this page. -- Main.JohnWieczorek - 24 Aug 2006
+
+------
+
+%ICON{bubble}%  *Element Categories*
+Posted by: lapham at 2005-09-30   09:42 AM
+
+Currently all elements in this extension are assigned to the Record-level Elements category. The Element categories would probably be more helpful in deternining which !DwC element should receive a particular legacy data element, if the following reassingments were made:
+
+!IdentifiedBy--Taxonomic Elements
+
+!DateIdentified--Taxonomic Elements
+
+!CollectorNumber--Collecting Event Elements
+
+!FieldNumber--Collecting Event Elements
+
+!FeildNotes--Collecting Event Elements
+
+!VerbatimCollectingDate--Locality Elements !VerbatimElevation--Locallty Elements
+
+!VerbatimDepth--Locality Elements
+
+!Preparations--Collecting Event Elements
+
+!TypeStatus--Reference Elements
+
+!GenBankNumber--Reference Elements
+
+!OtherCalaogNumbers--Reference Elements
+
+!RelatedCatalogItems--Reference Elements
+
+!IndividualCount--Collecting Event Elements
+------
+%ICON{bubble}%  *!VerbatimCoordinates*
+Posted by: lapham at 2005-09-30   10:51 AM
+
+The problem with concatenated string fields like this is-- if you want to use the data in them in a batch program, it first has to be parsed out the concatentated string field. The are bacth programs for both UTM and TRS cordinates and a large amvount to legacy data that is not geoferenced in botany. We would be better served by individual elements.
+------
+%ICON{bubble}%  *!VerbatimDateIdentified -- Text data type*
+Posted by: lapham at 2005-10-01   10:51 AM
+
+A place to record date fragments that are incompatible with the !DateTime datatype in !DateIdentifed is needed.
+------
+%ICON{bubble}%  *!FromAcronym*
+Posted by: lapham at 2006-07-12   10:52 AM
+
+This is a proposed new element to indicate the acronym of the iststtution that sent the duplicate to the extent that the data is known. Often the lable will indicate the soruce.
+
+Charlie Lapham
+------
+%ICON{bubble}%
+
+%META:TOPICMOVED{by="JohnWieczorek" date="1157428458" from="DarwinCore.CuratorialElement" to="DarwinCore.CuratorialExtension"}%

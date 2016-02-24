@@ -1,0 +1,145 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.03.07.10.59.36;	author RichardPyle;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.03.07.09.13.52;	author RichardPyle;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.03.06.16.49.12;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RichardPyle" date="1173265176" format="1.1" reprev="1.3" version="1.3"}%
+%META:TOPICPARENT{name="GUIDsForZoologicalNames"}%
+---+ Why we Need Names as Objects
+
+Some of this is based on a presentation I gave at the EoL Nomina 1 meeting on Crete Spring '07. It is inspired as a rebuttal of UsageInstanceProposal. 
+
+[Note from Main.RichardPyle: I have interspersed a few comments below. -- Main.RichardPyle - 07 Mar 2007]
+
+---++ Three Basic Object Types
+
+<img src="%ATTACHURLPATH%/names_architecture.001.jpg" alt="names_architecture.001.jpg" width="350" />
+
+There are three types of object in our domain. Illustrated by the boxes above. 
+
+---++ Some Examples of <nop>NameStrings
+
+<img src="%ATTACHURLPATH%/names_architecture.002.jpg" alt="names_architecture.002.jpg" width='350'  />
+
+These could be considered to be Name Usages. 
+
+[Comment: Not by my definition of "Usage Instance".  These look more like NameBank-style NameStrings. -- Main.RichardPyle - 07 Mar 2007]
+
+---++ <nop>NameString or <nop>NameUsages Equivalence
+
+<img src="%ATTACHURLPATH%/names_architecture.003.jpg" alt="names_architecture.003.jpg" width='350'  />
+
+The "indexing approach" that could also be seen as "everything is a name usage" is to say that there is some level of equivalence between these strings and to build a graph that links them. This makes it possible to do query expansion and find material tagged with the different strings. It is a very *good thing* and forms an important part of the total names architecture  but it is *not* how taxonomists think or work for good reasons.
+
+This diagram is logically inconsistent if the arrows are interpreted to mean equality. One of the most basic rules of logic is that something can not be 'A' and not 'A' at the same time. If the arrows mean equality then we are saying 1 is 2 and not 2 at the same time. What we actually have to say is that 1 and 2 are both equivalent to something else...
+
+[Comment: I don't see how any of this section has any relationship to Usage Instances as I am defining them. -- Main.RichardPyle - 07 Mar 2007]
+
+---++ Use of a Nomenclatural Codes and <nop>TaxonName objects
+
+<img src="%ATTACHURLPATH%/names_architecture.004.jpg" alt="names_architecture.004.jpg" width='350'  />
+
+This is much more like people think and is more logically consistent. We are dealing with four versions of the same 'thing' here. The name object is abstract. If we don't model our world like this it is not possible to specify that something is a spelling mistake - for example. We have to have a root object that the other versions are variations of. Without that we have to find ways to prevent chaining etc.
+
+The network graph is what happened before the advent of the nomenclatural codes. The codes were invented to anchor names to a place in the literature and then on to a type specimen. In the digital world the nomenclators play the same role. They provide a hook to hang the variants of names and the TaxonConcepts on.
+
+Without the abstract notion of a name object we can't do this. 
+
+We could use fancy semantics and say that one name usage is more 'special' than all the others and that this roots the graph but that is just another way of describing exactly the same thing. The root usage can't have a fixed spelling or type specimen because spellings can be corrected and names lectotypified.
+
+[Comment: No fancy semantics needed.  We achieve the same goal, whether we think of the white box as an "abstract name object", or as a "name-bearing usage instance".  The root usage instance is unambiguous in all Codes (Basionym in botany, original description in zoology, registered name in bacteriology).  All of these things can be represented as a Name-Usage instance, because all of them involve the use of a name within the context of a specific publciation (i.e., the publication that gave birth, according to the relevant Code, of the would-be name-object).  You are correct -- they ultmately describe exactly the same thing, and have (at least in derrivable form) the exact same metadata, so for ow we don't need to get bogged down on it.  But eventually we *will* need to sort out a few technical details of how the metadata are structured and/or supplied.  For example, rather than treating things like "fixed spelling" and "typification" as attributes of some abstract name object, links are established to other usage instances that represent these things (i.e., the usage instance which, according to the relevant Code, harbors the corrected spelling or the leptotypification/neotypification event). -- Main.RichardPyle - 07 Mar 2007]
+
+---++ Comparing Taxonomies
+
+<img src="%ATTACHURLPATH%/names_architecture.005.jpg" alt="names_architecture.005.jpg" width='350'  />
+
+Looking at a practical example how do we compare two taxonomies. We could compare the name usages present directly (the line with a question mark in the diagram). Doing this each comparison is a unique string matching. Just the same as using vernacular names. Or we could compare them via a nomenclator where we make an estimate as to which TaxonName object they are referring - and therefore which type specimen. This is the way taxonomist actually (or should?) work.
+
+[Comment: Name Usages are not compared via string matching! They are compared via shared reference to a common "protonym" (sensu Taxonomer -- "basionym" not being quite the right word), which would be represented in the diagram by the blue rectangle. -- Main.RichardPyle - 07 Mar 2007]
+
+---++ Who Will Do It?
+
+<img src="%ATTACHURLPATH%/names_architecture.006.jpg" alt="names_architecture.006.jpg" width='350'  />
+
+IPNI and Index Fungorum are already doing it. ZooBank has agreement in principle to do it. Other providers would probably be interested.
+
+What stops other people issuing TaxonName data with LSIDs ( i.e. putting up other hooks and confusing the place)? Absolutely nothing! The only thing that holds it together is brand and trustworthiness. Just like there is nothing to stop me putting together my own nomenclatural code and trying to get people to follow it. 
+
+The upshot of this is that if the existing codes don't provide these virtual hooks some one else will - and they may not link it into the current names architecture. How about we just use an ID that resolves to the DNA fingerprint for an organism. A database can then do query expansion of the names that have been used in association with the fingerprint to link it back into the old literature. We don't bother with type specimens or original publications etc... This will happen if a names architecture with a backbone of name objects is not built.
+
+[Comment: As far as I can tell, we are in complete agreement on this point. -- Main.RichardPyle - 07 Mar 2007]
+
+-- Main.RogerHyam - 06 Mar 2007
+
+     
+Response from RichardPyle:
+I don't exactly understand why this is branded as a "rebuttal" to the UsageInstanceProposal, because I see virtually nothing in it that conflicts with the approach I have been advocating.  The four NameString examples you give are *not* what I would think of as usage instances. Where you refer to "Name Object" or "TaxonName Object", I would substitute the phrase "Name-Usage Instance that has been identified as having nomenclatural standing according to one of the Codes".  My version is only more of a mouthful because I haven't coined a catchy word for it yet.  Perhaps we can hybridize terminoligy and refer to them as "TaxonName Object-bearing Usage Instance".  Most of the rest of this we seem to be in full agreement on. -- Main.RichardPyle - 07 Mar 2007
+
+%META:FILEATTACHMENT{name="names_architecture.001.jpg" attachment="names_architecture.001.jpg" attr="" comment="Three basic objects" date="1173192309" path="names_architecture.001.jpg" size="23100" stream="names_architecture.001.jpg" user="Main.RogerHyam" version="3"}%
+%META:FILEATTACHMENT{name="names_architecture.002.jpg" attachment="names_architecture.002.jpg" attr="" comment="Some NameStrings" date="1173192532" path="names_architecture.002.jpg" size="29643" stream="names_architecture.002.jpg" user="Main.RogerHyam" version="1"}%
+%META:FILEATTACHMENT{name="names_architecture.003.jpg" attachment="names_architecture.003.jpg" attr="" comment="NameString Equivalence" date="1173192774" path="names_architecture.003.jpg" size="14970" stream="names_architecture.003.jpg" user="Main.RogerHyam" version="1"}%
+%META:FILEATTACHMENT{name="names_architecture.004.jpg" attachment="names_architecture.004.jpg" attr="" comment="Names related to a central object" date="1173195482" path="names_architecture.004.jpg" size="14466" stream="names_architecture.004.jpg" user="Main.RogerHyam" version="1"}%
+%META:FILEATTACHMENT{name="names_architecture.005.jpg" attachment="names_architecture.005.jpg" attr="" comment="Coparing taxonomies" date="1173196673" path="names_architecture.005.jpg" size="34890" stream="names_architecture.005.jpg" user="Main.RogerHyam" version="1"}%
+%META:FILEATTACHMENT{name="names_architecture.006.jpg" attachment="names_architecture.006.jpg" attr="" comment="Possible Nomenclators" date="1173197725" path="names_architecture.006.jpg" size="48260" stream="names_architecture.006.jpg" user="Main.RogerHyam" version="1"}%
+%META:TOPICMOVED{by="RogerHyam" date="1173199752" from="GUID.NameUsageRebutal" to="GUID.NameUsageRebuttal"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1173258832" format="1.1" version="1.2"}%
+d7 2
+d21 2
+d31 2
+d45 2
+d53 2
+d65 2
+d71 1
+a71 1
+I don't exactly understand why this is branded as a "rebuttal" to the UsageInstanceProposal, because I see virtually nothing in it that conflicts with the approach I have been advocating.  The four NameString examples you give are *not* what I would think of as usage instances. Where you refer to "TaxonName Object", I would substitute the phrase "Name-Usage Instance that has been identified as having nomenclatural standing according to one of the Codes".  My version is only more of a mouthful because I haven't coined a catchy word for it yet.  Perhaps we can hybridize terminoligy and refer to them as "TaxonName Object-bearing Usage Instance".  Most of the rest of this we seem to be in full agreement on. -- Main.RichardPyle - 07 Mar 2007
+@
+
+
+1.1
+log
+@rename
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1173199752" format="1.1" reprev="1.1" version="1.1"}%
+d58 2
+@

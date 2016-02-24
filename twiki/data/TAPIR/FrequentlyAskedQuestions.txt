@@ -1,0 +1,68 @@
+%META:TOPICINFO{author="RenatoDeGiovanni" date="1233070079" format="1.1" version="1.16"}%
+---+++ Frequently Asked Questions
+
+*What is TAPIR?*
+
+TAPIR is an XML-based protocol over HTTP to perform distributed queries on heterogeneous data sources. It was originally created within the Biodiversity Informatics community as an integration of the [[DigirProtocol][DiGIR]] and [[BiocaseProtocol][BioCASe]] protocols, and it stands for "TDWG Access Protocol for Information Retrieval". 
+
+*What is the current version of TAPIR?*
+
+The current version is 1.0.
+
+*Is there a specification available?*
+
+Yes: http://www.tdwg.org/activities/tapir/specification/
+
+*Is there an XML Schema for the protocol?*
+
+Yes: http://rs.tdwg.org/tapir/1.0/schema/tapir.xsd
+
+*Is there any software that implements TAPIR?*
+
+PyWrapper, TapirLink and TapirDotNet are full TAPIR data provider implementations. TapirChirp is a free and open source client library originally developed for the TapirTester service (which was developed to check data providers' compatibility with the protocol). A more complete list can be found in TapirSoftware.
+
+*How is the decision making process?*
+
+Please check the DecisionMakingProcess for TAPIR.
+
+*How can I participate in the discussions?*
+
+You can join the TapirMailingList, contribute with the wiki, or attend the meetings that usually take place during TDWG events. To contribute to this Wiki, please use your TDWG account credentials. If you don't have a TDWG account, [[http://www.tdwg.org/membership/][register with the TDWG website]]. 
+
+*What is TDWG and what is the relationship between TAPIR and TDWG?*
+
+[[http://www.tdwg.org/][TDWG]] is an international organization dedicated to the development of standards for the Biodiversity Informatics community, and is therefore interested in protocols that could be used to enable data exchange. Although TAPIR was originated from the DiGIR and BioCASe protocols, which are mainly used by networks of Biological Collections, it is expected that TAPIR can be used as a single query protocol to search across distributed databases and retrieve results according not only to ABCD and DarwinCore, but also according to other data standards like TCS and SDD. TAPIR is a TDWG Task Group which is part of the TDWG Architecture Group.
+
+*Is TAPIR a TDWG standard? Is it stable?*
+
+TAPIR is still not an official TDWG standard yet. Meanwhile it may still be subject to changes, although it is already considered stable.
+
+*What is GBIF and what is the relationship between TAPIR and GBIF?*
+
+[[http://www.gbif.org/][GBIF]] is the biggest existing network about biodiversity data, and therefore has great interest in having a single standard protocol to search and retrieve data from different data providers. The initial integration process of the DiGIR and BioCASe protocols that resulted in TAPIR has been funded by GBIF. GBIF is also an active participant in all TAPIR discussions.
+
+*When is the next version going to be released?*
+
+Please check the RoadMap for future plans.
+
+*Why did you choose to create TAPIR instead of using protocol x, y, z?*
+
+The original study that resulted in the recommendation to define a new protocol included preliminary research about other options. At that time (2004) the alternatives that have been considered were SOAP, WFS and XQuery. Other alternatives were not considered either because they were still not available (or maybe they were being developed simultaneously) or because they were largely unknown to our community at that moment. Although a few other options were quickly investigated, analyzing every single initiative similar to what was needed would be a major task beyond the available resources and timeframe (there are lists of data integration projects worldwide like [[http://www.ifi.unizh.ch/stff/pziegler/IntegrationProjects.html][this one]]).
+
+On the other hand, DiGIR and BioCASe were considered successful initiatives, so the main motivation of TAPIR was not to improve them, but simply to unify them and thus increase interoperability between the existing biodiversity networks. The fact that TAPIR contains some improvements was just a natural consequence of the work.
+
+Perhaps the decision could be different if we had identified another protocol that would suit all our needs and would already offer available tools (libraries, client software and server software). Since this did not happen, it seemed to make more sense to unify DiGIR and BioCASe, keeping the possibility of easily changing and adapting the protocol as needed, and finally making the necessary changes in the tools that have already been developed and were being used by the biodiversity informatics community.
+
+Note: The reasons for not choosing SOAP, WFS and XQuery are explained in more details in the [[http://www.cria.org.br/protocols/newprotocol.pdf][original integration document]].
+
+*How does TAPIR relate to OAI-PMH?*
+
+[[http://www.openarchives.org/OAI/openarchivesprotocol.html][OAI-PMH]] was designed purely for harvesting data so that data aggregators can provide value-added services on top of a cache. Although OAI-PMH allows for selective harvesting by means of "set" definitions, it does not include search capabilities like TAPIR. For TAPIR providers, it is possible to set up an OAI-PMH service on top of their service (see TapirOAIPMH).
+
+*How does TAPIR relate to OpenSearch?*
+
+[[http://www.opensearch.org/][OpenSearch]] allows clients to learn about the public interface of a search engine through description documents. Such documents basically contain parameterized URL templates indicating how clients should make search requests, and in which format and MIME type the responses will be returned. Responses will always come as web feeds (RSS 2.0 or Atom 1.0 augmented with OpenSearch elements). A TAPIR service is described in a more complex way through a capabilities response which may reference things like conceptual schemas, query templates and output models. This additional complexity is related to the fact that TAPIR providers may want to support more complex query options (filters using logical and comparison operators) and custom output formats.
+
+*How does TAPIR relate to SRU?*
+
+SRU and TAPIR have basically the same goal and are very similar to each other. SRU has been unknown to the TAPIR community until October 2007. Interestingly, SRU builds on the experience of the Z39.50 community (Z39.50 was the protocol used by one of the first biodiversity data networks - The Species Analyst - and was later replaced by DiGIR, which was mainly created by the participants of the same network). Both TAPIR and SRU have similar operations, ability to formulate complex queries, and possibility to return results in different response formats. One of the differences between them can also explain why TAPIR requests were not restricted to URLs: while SRU providers can return search results according to different response formats, these have to be previously declared in the provider capabilites, while full TAPIR providers can potentially return search results according to a new response format (output model) entirely defined in the request. This was the only reason for TAPIR to support requests in XML. A more complete comparison between the two protocols would need to reference specific details about them.

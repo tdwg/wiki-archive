@@ -1,0 +1,122 @@
+---++ Fundamental GUIDs: Conceptual as well as digital
+
+*Coordinator(s):* Richard Pyle
+
+*Participants:* Charles Hussey, AndrewCJones, BobMorris, YdeDeJong
+
+----
+---+++ Description
+GUIDs may be assigned to both "digital objects" (specific byte sequences), or to conceptual ("abstract") entities, and this group concluded that both play a role in biodiversity informatics.
+
+__Digital Byte Sequences__
+   * Permanent, unchanging sequences of digital bits (e.g., digital images, ASCII-rendered DNA sequences, locked PDF files, specific versions of a particular database record [e.g. XML or RDF serialization of a database record], etc.)
+
+__Conceptual ("Abstract") Entities__
+   * Conceptualized "notions" of an object or event
+   * No data content (null)
+   * Serve as "hubs" to cluster and relate other GUID-tagged objects
+   * Rarely exists without at least one Digital Byte Sequence GUID directly or indirectly linked
+
+This group agreed to take on the task of developing a series of Wiki Pages to clarify the distinction between these two fundamental kinds of GUIDs, and to illustrate how both would be used within the biodiversity informatics community.
+
+----
+---+++ Discussion
+   For images, I'm pretty sure this is a _very_ important distinction which will end up discussed in detail on http://wiki.cs.umb.edu/twiki/bin/view/TDWGImage/ImageLsidResolver. In passing, I note that the terminology "conceptual" vs. "Digital byte sequences" is meaningful here, but seems to have somewhat the opposite sense from taxonomic concepts. In that case, the things called concepts are the more concrete ones. Also, I am unclear what other kinds of byte sequences there might be than digital ones. Maybe ones written down on paper? I'm not even sure I want to exclude them. Any bitstream requires the specification of an encoding to make meaning of it, and black marks on paper, symbols carved on stone, or the like, are as good an encoding as charges on a capacitor or magnetic polarity. The ones carved on stone are even better vis-a-vis the "unchanging" requirement. BobMorris
+
+   Thanks, Bob.  I have been negligent in fleshing out this page, largely because I have been hardware-handicapped recently in the wake of two dead computers (primary desktop and primary laptop).  Both are now replaced and working.  My initial responses to Bob's comments as follows:
+   * I think it is a _very_ important distinction for many of our data domains: literature, specimens, taxon names & concepts -- and probably just about everything else we deal with.
+   * We should try to nail down the terminology at the beginning, so we're not plagued by it throughout the ensuing discussion. I agree that "concept" can be confusing with taxon concept, so let's follow the normal LSID term of "abstract" to refer to LSIDs that lack data (also known as "empty" LSIDs).  Here's what it says in the 04-05-01 LSID standards document (http://www.omg.org/cgi-bin/doc?dtc/04-05-01): "An LSID usually represents a piece of data, but it is allowed to have LSIDs representing <strike>an</strike>[sic] abstract entities or concepts. If an LSID represents real data, the LSID Resolution service (described elsewhere in this document) must resolve always the same set of bytes representing such data. If an LSID represents an abstract entity the LSID resolution service must always resolve an empty result." (Section 8.1, p. 8)
+   Thus, I suggest that we refer to "Data LSIDs" as LSIDs representing (containing) digital data, as oppsed to "Abstract LSIDs" (for LSIDs that do not represent data).
+   * Further on the issue of terminology, rather than "digital byte sequences", perhaps we should refer instead to "bitstreams".
+      [BobMorris 2006-03-21 03:15:07: JPEG2000 files have within them multiple encoded things, as well as the files themselves being encoded. The ones that represent media, of which there can be many within a single JPEG2K file, are called "codestreams", because they are encoded. They may have different encodings from one another, and the kind of encoding is indicated with yet another registered GUID, one per codestream. These are indicated in another kind of information container within the JPEG2000 files, but in a predefined encoding. This is an example of a structured data object, and barring  possible confusion with the internal thing in the JPEG2000 case, I would even suggest "codestream" for our use. That at least conveys that the stream is encoded and that somewhere the encoding must be resolvable.]
+         [RichardPyle 2006-04-11 17:26:30 Clearly we need to sort out how to record/document/embed the type of encoding, but I think that's a topic for another Wiki page (perhaps?).  The point here is that what I have been calling "Data LSIDs" must always resolve to the same sequence of 1's & 0s (bitstream); and what I have been calling "Abstract LSIDs" must always resolve to an empty result.  This is a point that may be difficult for many of us in this (biologist-dominated) community to get out heads around. I think we need to establish this basic notion (distinction) first, before we start chewing on the issue of decoding processes and related "meta-information".]
+   * As for encoding (deciphering) of the data bitstream referenced by a "Data LSID", isn't that the job of the metadata?
+      [BobMorris 2006-03-21 03:15:07: Since the data is persistent and the metadata need not be, it sounds fragile to have the metadata describe something about the data without which the data is not decodable. To me, a better idea might be to establish a required(?) RDF (?) syntax for bytestream data following somehow the general tenor of JPEG2000 in the LSID data itself: (a)some suitable mechanism to identify the part of the document which contains the "real" codestream (b)An indication of the encoding into the serliaization language, e.g. an indication that the indentified content is hexencoded bytes, (c)an indication of the encoding of the underlying set of bytes once deserialized, e.g. jpg]
+         [RichardPyle 2006-04-11 17:26:30 We should get Ben Szekely to comment on this issue, to find out how others in the LSID community have dealt with encoding instructions of this sort.]
+   * Another thing to clarify on the terminology side is the meaning of the word "Metadata". In the context of LSIDs, most of what we think of as "data" (e.g., DarwinCore fields for specimens) falls under the umbrella of "metadadata".  For LSIDs, "data" is limited in scope to a specific "set of bytes", not a set of data fields.  Thus, a specimen record in a database is "data" (sensu LSID-speak) only as a specific rendering (e.g., ASCII) of a specific version (i.e., unchanging snapshot) of a particular electronic (digital) database record. If you change the rendering (e.g., Unicode) or change any aspect of any field in the record, or even change the delimiter between fields, the "data" (=bitstream, =set of bytes) has changed, thus forcing the need for a new Data LSID.
+      [BobMorris 2006-03-21 03:15:07: I don't follow this, but in any case believe it may not belong in this topic. For LSID, the principal distinction between data and metadata is simply persistence as bytestreams. Exactly how this relates to databases does not seem a general question to me. (For example, there may not even be databases behind the resolution service: the LSID data and metadata could be computed by algorithms having nothing to do with a database. That possibly rare case makes an interesting foil against which to test ideas of what should be conceptual and what should be [whatever]. Or even more interesting, the LSID data, especially, could not be the result of an algorithm, it could _be_an algorithm, expressed in some agreed-upon algorithm serialization language. As a simple example, given any specific integer, it becomes easy to assign a conceptual LSID to that integer, e.g. urn:lsid:peano.org:sum_of_ones:integer_35723198 when resolved returns the string 1+1+1+...+1 with 35723198 '1's, generated at query time by the resolver as an indication of how to compute 35723198. TDWG's current name notwithstanding, I think it is pretty dangerous to think only about _databases_ when we are talking about LSID's for _data_.]
+         [RichardPyle 2006-04-11 17:26:30 The important relevance to this topic is to make sure participants in the LSID conversation understand the difference between "Data" and "Metadata" in the context of LSIDs -- which may be quite unlike the distinction between "data" and "metadata" in the mind of the average biological database manager (like me, and most of the others in our break-out group at the GUID-1 Workshop).]
+   This last point underscores the need in our community for "Abstract LSIDs".  An image is probably the closest thing we have to "data", but we still would probably like to assign Abstract LSIDs to the "image" as we humans visualize it, which may have many different digital renderings (TIFFs, JPEGS, crops, color-adjustments, etc.), each with their own Data LSID.  The function of the Abstract LSID in this case would be to serve the role of a "hub" or "umbrella" to which all of the various Data LSID-identified digital renderings can be connected to each other. PDF renderings of published works would be another good example where Data LSIDs are useful in our world. But we may still benefit from establishing Abstract LSIDs for the "idea" of a particular published work (independant of any particular rendering of the publication -- digital or otherwise). Not only would such Abstract publication LSIDs be useful to "hub" multiple digital renderings; but also would be a more logical link for the publication in which a particular taxon name was first established/described (i.e., we want to say that a new species was described in "this published work"; rather than in "this specific digital rendering of a copy of this published work").  The need for data-less (Abstract) LSIDs is even greater for things like specimens, collecting events, and taxon names & concepts -- things that clearly exist outside the scope of any particular digital rendering (like a database record version).
+      [BobMorris 2006-03-21 03:15:07: _Ah, here I differ substantially with you, and believe that this argument can't be addressed without some experience from the resolution proposals._ For example, for the infant LSIDResolverForImages, we presently believe it should be up to the resolver what is the relation between the "hub", in your terminology, and the other things. We leave it to two asserted relations "HasInstance" and "IsInstanceOf", with as yet unspecified semantics (possibly with semantics specified by some resolvable OWL ontology, possibly with no semantics ... still up in the air). I am pretty sure that people can't weigh in on this point until they start building resolvers for services whose underlying data has a wide variety of organizations. For example, our image store is organized classically into albums, and our next cut at a resolution service (the current one is basic simple handcrafting against a few image files) is likely to say that the album is the abstract thing and its contained things the concrete ones. Not sure how/if we will deal subalbums, but contemplating them suggests that an abstract thing can HasInstance another abstract thing... As a taxonomist, you should love this... :-) Likewise, I am pretty sure that, as with descriptive data, it will prove that for highly structured objects the answers will not look much like the answers for things as "simple" as taxon concepts or specimen data.]
+   My goal is to represent these somewhat esoteric distinctions with the aid of diagrams and images -- probably as a PowerPoint file that I will link here soon, and probably also cross-ref from the GUIDOutreach page. RichardPyle
+   [BobMorris 2006-03-21 03:15:07: In some TIG/TAG discussion or other, I recommended this be done in a relatively formal language. UML is probably suitable.]
+
+----   
+DonaldHobern 2006-04-12: I'd just like to repeat something I've mentioned before.  I think that the simple division between Digital Byte Sequences and Conceptual ("Abstract") Entities needs some examination.  We should probably not just assume that this classification (from the LSID documentation) is a good description of what we need, at least as expressed.  We will have some objects which are Digital Byte Sequences.  We will have many more objects which should probably be considered as having only metadata and no data (no unchanging digital byte sequence).  Many of these will naturally be the leaf nodes in our web.  They may then be connected through "hub" identifiers of various kinds, but many of them are better regarded as really being our real objects of interest.  I would prefer us to recognise the existence of Conceptual Entities which act as hubs and also of other entities which do not act this way.  An alternative classification could be:
+   * Primary entities with (unchanging data) and metadata
+   * Primary entities with all information expressed as metadata
+   * Secondary entities with metadata relating a set of primary entities (e.g. multiple image versions, multiple resources' versions of the same nomenclatural record
+I'm not sure how useful the distinction between the second and third of these is (because I believe that the two cases will often blur), but I think the second of these classes of entities is excluded by your definition of Conceptual ("Abstract") Entities.
+
+I've just noticed that the section on *LSID Metadata* on the IBM *LSID Best Practices* page is relevant (http://www-128.ibm.com/developerworks/opensource/library/os-lsidbp/#N1011E): _"A key benefit of using LSID as a naming convention is the clear separation of data and metadata. This also gives the implementer of an LSID authority the task of determining what is data and what is metadata. The first thing to realize is that while most every LSID will have associated metadata, many LSIDs may not be associated with data."_  It makes the distinction between entities with data and metadata and those with only metadata without making it the same issue as whether or not an LSID serves as a "hub" - although it does go on to make some useful comments on the metadata graph associated with an LSID.
+----
+RichardPyle 2006-06-06: First, sincerst apologies for my long hiatus, mandated by an unfortunate series of travel, deadlines, and family illnesses (just now battling a nasty bug myself).  I will be catching up on all the issues in the next few days before the workshop, but I wanted to respond to Donald's comments here.
+
+I'm not sure I understand the need for, or advantage of, the trichotomy Donald has outlined.  I don't see the association of Conceptual=Hub as being a concrete equivalency.  Rather, I see the distinction, as specified in the "Best Practices", as being between LSID with Data+Metadata, vs. those with only Metadata (Donald's 1 & 2).  Data-less LSID-tagged objects *can* serve as hubs; but I'm not sure that describing them as such helps clarify the LSID Data/Data-less distinction.
+
+I think the thing that makes it confusing for us is that we are used to the dichotomy of "physical" vs. "abstract" objects, in the sense that a specimen, or a 35mm colour slide are "physical" objects, whereas the idea of a collection event is an abstract notion.  As I understand it, the LSID Data/Data-less (Digital/"Abstract") distinction doesn't care about whether there is a "physical" object -- it only cares whether there is a persistent and unchanging bitstream that the LSID would identify.  In our universe, I think the sorts of things to which we would apply Data-containing LSIDs include:
+   * Particular renderings of digital images (RAW would get one LSID, TIFF another, JPEG another, cropped/resized JPEG another, etc...)
+   * A digital "snapshopt" of a particular database record (e.g., as a series of ASCII or Unicode characters)
+   * A specific text blob -- like a DNA sequence as submitted to GenBank
+   * PDF (or other specified imaging format) files of scanned literature pages.
+
+However, as Donald says, most of our data objects will not be inherently digital (specimens, taxon names and concepts, Collecting Events, Agents, etc.), and will thus be identified with LSIDs containing no Data; only Metadata. Some of these might be thought of as "hubs" to aggregate duplicate representations of the "same thing" rendered in different digital forms (e.g., the RAW, TIFF and various JPEG renderings of the "same" photograph image; or multiple PDF/scans of the "same" pages of literature); but others will merely serve as identifiers of non-digital "things" like specimens, which have Metadata but no Data.
+
+So I guess I don't quite understand the value in establishing a trichotomy, when the fundamental distinction is really about whether the identified object is inherently digitial, or inherently non-digital.
+
+To follow on with an example, suppose that on April 15th, 2001, at 10:42:28am, 300 feet down a reef Drop-off in Fiji, I pressed the shutter-release of my underwater camera -- causing the flashes to fire, and light to reflect off the side of a fish and through the camera lense to a frame of 35-mm film.  I send the film in for processing, and I get back 36 mounted 35-mm transparencies, one of which was the one described in the previous sentence.
+
+I now have a physical object (mounted 35-mm colour transparency), which has absolutely no digital manifestation (yet), but is nevertheless an object that represents useful information that I want to record in my database, and moreover it is a physical object that needs to be cared for in a curatorial sense.  Because it doesn't yet have a digital manifestation, so I assign an LSID to represent the physical slide with no data [or the databased record for the physical slide], but with metadata as follows:
+   * Photographer: Richard Pyle
+   * Date: 15 April 2001
+   * Time: 10:42:28am (Fiji Time Zone)
+   * Locality: Fiji
+   * Habitat: Coral-reef drop-off
+   * Depth: 300 feet
+   * Film: Kodachrome 64
+   * f-Stop: 8
+   * Mount: Cardboard
+   * Frame: 26
+   * Storage: Refrigerator 2, Binder 12, Sheet 14, Slot 7
+   * Subject: Belonoperca sp.
+
+Now I want to put the image on the web, so I start by archivally scanning it as a 64MB TIFF file, and then converting it to a 5MB full-resolution JPEG for emailing to colleagues, and then I make a 100KB JPEG at 800x600 pixels for putting on the web.
+
+I have just created three new digital objects, each of which gets its own LSID, and each of which is associated to a specific digital bitstream (64MB TIFF, 5MB JPEG, and 100KB JEPG).
+
+So here we are with four LSIDs; one of which identifies an Data-less ("abstract") object (i.e., the [database record for the] physical 35-mm Kodachrome slide stored in refrigerator #2, etc.); and the other three identify Data-bearing digital files.  If I wanted to keep things simple, I could just copy all the Metadata fields from the physical slide LSID [except "Storage"] over to the other three LSIDs, and maybe add a few more, such as:
+   * Scanned Date: 30 April 2001
+   * Scanned By: Brian Greene
+   * Scanner Type: Nikon Super Coolscan 9000 ED Scanner
+   * Resolution: 4000dpi
+   * File Format: TIFF
+   * etc.
+
+I might just stop right there -- but I might also want to establish some sort of link between the four LSIDs, so that if I see the 100KB JPEG on the web, I can know to find the 35-mm original in Refrigerator 2.  In that case, I might add another metadata element to the three "Digital" (Data-bearing) LSIDs something like:
+   * Original: urn:lsid:guid.bishopmuseum.org:images:123456
+
+Another way to manage it might be to use the LSID assigned to the physical 35-mm slide as a "hub", the metadata of which enumerates the LSIDs of all known digital representations of the "original" 35-mm slide.
+
+Yet another way might be to assign the TIFF "original scan" as the "hub" for the two JPEGs, and link the TIFF directly to the 35-mm original.
+
+A slightly more sophisticated approach -- and the basic example that Ben used to explain the difference between Conceptual ("abstract") and "digital" (data-bearing) LSIDs -- might be to establish a fifth LSID, with no data, that serves as a "hub" to identify the "notion" of "the image that Richard Pyle captured 15 April 2001 at 10:42:28am 300 feet down in Fiji" -- and enumerate within its metadata the four LSIDs representing the four "manifestations" of the image (one 35-mm slide, one TIFF file, and two different JPEG files).
+
+So to us, it seems like there are three "kinds" of LSIDs here -- essentially corresponding to the trichotomy expressed by Donald:
+   * Primary entities with (unchanging data) and metadata [TIFF and two JPEGS]
+   * Primary entities with all information expressed as metadata [Physical 35-mm slide]
+   * Secondary entities with metadata relating a set of primary entities [the fifth LSID representing the abstract notion of the image, and serving as a "hub"]
+
+But from the LSID perspective, there are still only two kinds: those with data, and those without.  I don't see the need to single-out those LSIDs created solely for the purpose of acting as a hub as somehow fundamentally different from other non-data-bearing LSIDs; because the latter can serve the function of "hubs" as well.
+
+----
+
+---+++ Conclusions and Recommendations
+
+
+
+
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryInfrastructureWG

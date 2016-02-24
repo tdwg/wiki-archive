@@ -1,0 +1,170 @@
+%META:TOPICINFO{author="DonovanSharp" date="1156902521" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.12 Attaching Media to SDD Items
+
+---++++3.12.1 Media resources in SDD.
+
+
+The location of media in an SDD instance document is represented by a simple resource list. Media may include images (.jpeg, .png etc.), sound, video and web resources. SDD allows external references, embedded resource data, and provides for a multilingual caption.
+
+Media items are defined within the &lt;MediaObjects&gt; element and simply referenced each time they are used elsewhere in an SDD instance document.
+
+Simple SDD code for associated media has the basic structure shown below and in Example 3.12.1.1.
+
+%ATTACHURL%/media.gif
+
+---++++Example 3.12.1.1 - A simple SDD media dialog
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+
+<verbatim>
+    <MediaObjects>
+      <MediaObject id="m1">
+        <Representation>
+          <Label>Image description, e. g., to be used for alt-attribute in html.</Label>
+        </Representation>
+        <Type>Text</Type>
+        <Data href="file:/Media/Html/Gleditsia_triacanthos.htm"/>
+      </MediaObject>
+      <MediaObject id="m2">
+        <Representation>
+          <Label>No caption</Label>
+        </Representation>
+        <Type>Image</Type>
+        <Data href="file:/Media/Images/Gleditsia triacanthos.jpg"/>
+      </MediaObject>
+    </MediaObjects>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+The location of locally stored media objects is defined relative to the SDD instance document.
+
+The &lt;Representation&gt; element provides a label for the media object. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic [[SddLanguage][Language support in SDD]].
+
+&lt;Owners&gt; refers to a person, persons or institution defined in the SDD [[SddAgents][&lt;Agents&gt;]] element.
+
+&lt;IPRStatements&gt; records the original source of media (for example the full citation for a publication). and any restrictions on useage. May contain URL to IPR statements external to the SDD instance document.
+
+Media items are defined once and referenced for each useage. Multiple media items of different types may be referenced for an item.
+
+---++++Example 3.12.1.2 - Referencing media
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+
+<verbatim>
+  <Dataset>
+
+    <TaxonNames>
+      <TaxonName id="t1">
+        <Representation>
+          <Label>Gleditsia triacanthos</Label>
+          <MediaObject ref="m1"/>
+          <MediaObject ref="m2"/>
+        </Representation>
+      </TaxonName>
+    </TaxonNames>
+    <Characters>
+      <CategoricalCharacter id="c1">
+        <Representation>
+          <Label>Armature</Label>
+        </Representation>
+        <States>
+          <StateDefinition id="s1">
+            <Representation>
+              <Label>armed</Label>
+              <MediaObject ref="m3"/>
+              <MediaObject ref="m4"/>
+            </Representation>
+          </StateDefinition>
+        </States>
+      </CategoricalCharacter>
+    </Characters>
+<MediaObjects>
+	... media dialog goes here
+</MediaObjects>
+
+  </Dataset>
+
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+Associated information may include captions, web addresses and translations. Media may be directly embedded in the SDD code instead of referenced with a URL.
+
+---++++Example 3.12.1.3 - Associated information for embedded media
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+
+<verbatim>
+		<MediaObjects>
+			<MediaObject id="m1" uri="urn:lsid:local:local:129739128">
+				<Representation>
+					<Label>Image description, e. g., to be used for alt-attribute in html.</Label>
+				</Representation>
+				<Owners>
+					<Agent ref="a1" role="own "/>
+				</Owners>
+				<Type>Image</Type>
+				<Data href="http://test.edu/test.jpg"/>
+			</MediaObject>
+			<MediaObject id="m2">
+				<Representation>
+					<Label>Morning call of Homo sapiens</Label>
+				</Representation>
+				<Type>Sound</Type>
+				<Data href="http://test.edu/123.mp3"/>
+			</MediaObject>
+			<MediaObject id="m3">
+				<Representation>
+					<Label>Melampsora evonymi-caprearum</Label>
+					<!-- Details like Caption are optional -->
+					<Detail role="Caption" xml:lang="fr"><i>Melampsora evonymi-caprearum</i> Kleb., stade II sur <i>Salix caprea</i>L.</Detail>
+					<Detail role="Caption" xml:lang="de"><i>Melampsora evonymi-caprearum</i> Kleb., Sporenstadium II auf <i>Salix caprea</i> L.</Detail>
+					<Detail role="Caption" xml:lang="en"><i>Melampsora evonymi-caprearum</i> Kleb., spore stage II on <i>Salix caprea</i> L.</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<!-- Optionally Resources may be included rather than referencenced through URIs. 
+           An additional href specifying the source of the encoded resource is optional (in addition to the encoded content) -->
+    <EncodedData ContentType="image/png"  href="http://test.edu/Melampsora_evonymi-caprearum.png">R0lGODlhcgGSALMAAAQCAEMmCZtuMFQxDS8b</EncodedData>
+			</MediaObject>
+		</MediaObjects>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+Available "roles" within the &lt;Detail&gt; element are; Abstract, Caption, Coverage, Description, Normative and <noautolink>UnknownDetailRole</noautolink>.
+
+If resources are included within the SDD instance document they should be directly encoded, i.e. not wrapped into a MIME object first.
+
+
+
+
+
+
+-- Main.DonovanSharp - 05 Jun 2006
+
+%META:FILEATTACHMENT{name="media.gif" attachment="media.gif" attr="" comment="" date="1152497523" path="media.gif" size="17991" stream="media.gif" user="Main.DonovanSharp" version="2"}%

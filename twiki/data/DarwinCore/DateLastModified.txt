@@ -1,0 +1,32 @@
+%META:TOPICINFO{author="StanleyBlum" date="1208242846" format="1.1" reprev="1.7" version="1.7"}%
+%META:TOPICPARENT{name="DarwinCoreDraftStandard"}%
+---++Element Description: Date Last Modified
+The last date-time of publication when any of the data for the record were modified from the previous publication of that record. When publishing a record for the first time, use the publication date-time. Returns values as ISO 8601 date and time. (cf. http://www.w3.org/TR/NOTE-datetime.  Example: November 5, 1994, 8:15:30 am, US Eastern Standard Time&#8221; would be &#8220;1994-11-05T13:15:30Z&#8221;)
+
+---+++ Comments 
+Use the space below to make comments about this page. -- Main.StephenLong - 24 Aug 2006
+------
+<i>The following explanation may become part of the definition or supplementary description if it is broadly viewed as useful.  -- StanleyBlum; 2008-04-14 (my time, wherever that might be) </i>
+
+This field is intended to enable a data consumer to repeatedly query a provider and retrieve only the records that have been changed or newly published since the last time the consumer posed the same query to the provider.  Retrieving only the new and changed records is more efficient than retrieving all records, most of which are unchanged since the consumer's last visit.  To support this system the provider and consumer must use an explicit and comparable representation of absolute time.  If the DateLastModified is given without an indication of time zone, records could be missed.
+
+
+------
+http://www.w3/org/TR/NOTE-datetime is outdated from what the wiki now states.  
+
+Secondly, while DateLastModified is an essential component, I would agree, DateLastModified does not equal date+time+timezone displacement, and I am skeptical that this latter is a reasonable feature to expect of everyone's databases.  Are there off the shelf databases that actually allow you to set the timezone, much less the displacement from Z as part of the timestamp, and in this format? I can figure out how to take the pieces and knit them together in this format, but it adds overhead (unnecessary overhead IMHO, for which I would appreciate hearing a coherent argument beyond that it is a W3 standard for webpages (not databases)).  I'm wondering why this complex field (and not its components) should be part of the DarwinCore.
+
+-----
+
+It would be helpful to know how you think the w3 note conflicts with what is stated here about our need for this date-time format.  
+
+Every common operating system contains a time value (and timezone), which your database can use to record the time of editing and/or publication events.  Note, however, that it is not the time of editing that is relevant, but the time of publication.  These may be the same if your database is exposed live to your data provider software, but they are not the same if your data provider works off of a snapshot (a copy) of your database.  
+
+   -- StanleyBlum; 2008-04-15
+
+-------
+
+An updated link:
+http://www.w3.org/TR/NOTE-datetime
+
+What is the main objective of this field: human or machine readability?  

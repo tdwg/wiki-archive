@@ -1,0 +1,237 @@
+head	1.8;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.8
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.05.04.11.26.30;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.06.21.11.30.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.05.28.14.42.26;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.26.10.31.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.04.16.20.44.10;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.04.15.15.31.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.08.17.42.42;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741990" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+Note GH: this refers to the enumeration used in<br/> 
+0.9:  <nop>Terminology/StatisticalMeasures/StatisticalMeasure/Generalization/Method<br/>
+0.91: <nop>GeneralDeclarations/UnivariateStatisticalMeasures/UnivariateStatisticalMeasure/Generalization/Method<br/>
+ - (The enumeration is defined in <nop>UnivariateStatisticalMeasureMethodEnum.)
+
+---
+
+We have some measures of wing length which are not best characterized as "Guess", but rather as "ObserverEstimate" or "InformedEstimate" or some such thing. The point being that "Guess" sounds like it might mean something rather random. Or would, in fact,  "InformedEstimate" better capture what is meant by "Guess".
+
+-- Main.BobMorris - 08 Mar 2004
+
+Perhaps yes. I chose guess without intending the meaning you explain. <nop>InformedEstimate sound awful to me (like computer language). Do we know whether it is informed or not? Would "Estimate" be OK instead of guess? Problem is that we mean human estimates, not statistical estimates, which is why I avoided the term and used guess. Or should it be "<nop>HumanEstimate"? Please comment!
+-- Gregor Hagedorn, 15. April 2004
+---
+<nop>InformedEstimate sounds ok in American English, at least to me. Presumably whoever scored such a state would be implicitly asserting that they didn't pick a value out of thin air. I agree that just "Estimate" is problematic here. <nop>HumanEstimate seems stilted and suggests that there could be a <nop>MachineEstimate. -- Main.BobMorris - 16 Apr 2004
+---
+Another aspect is that a central or range values *may* be exact, but we don't know. The central value may be a single measurement (exact) or a mean (exact), the range may be min/max (exact), mean plus/minus s.d. (exact), any other defined method, or a range estimate. Currently "Undefined" is proposed as the appropriate generalized method name for this. Is that appropriate? -- Gregor Hagedorn, 15. April 2004
+---
+I don't think so. It seems funny to have something which is exact be a special case of something Undefined. I'm losing the point a little though. Are we trying to seek the generalizations that distinguish something estimated from an experts opinion or "eye-balled" estimate, from something that is estimated by a standard algorithm or formula? If yes, I could tolerate "ObserverEstimate" and "FormulaicEstimate" (or "StatisticalEstimate") -- Main.BobMorris - 16 Apr 2004
+---
+If Estimate and Undefined are accepted, we would have (please proof-read the annotations which will appear in the schema):
+
+<strong>Estimate</strong> = Human estimates for central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively). This method is appropriate when it is known that the measurement values are derived from experience with the described objects (perhaps from memory) or from scanning a sample of objects and measuring those objects considered 'typical'. It is not appropriate for single measurements nor for calculations based on statistical methods (which provide exact 'estimates'). Compare 'Undefined'.
+
+<strong>Undefined</strong> = Undefined central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively). The central value may, e. g., be a single measurement or an arithmetic mean, the range may, e. g., be minimum/maximum, mean plus/minus standard deviation, or a range estimate. 'Undefined' is important for legacy data where the statistical measure used is not known. If it is known that a range is an estimate rather than a defined value, 'Estimate' should be used instead.
+
+-- Gregor Hagedorn, 15. April 2004
+---
+Oh, I get it. Maybe we need three generalizations: <nop>ObserverEstimate, <nop>StatisticalEstimate, and <nop>UnknownMethod -- Main.BobMorris - 16 Apr 2004
+---
+
+Agreed. So the implicit generalization is <nop>StatisticalEstimate (not in enumeration, but all methods other than <nop>ObserverEstimate and <nop>UnknownMethod are implicitly derived from <nop>StatisticalEstimate) and the explicit method values:
+
+<strong><nop>ObserverEstimate:</strong> "Human estimates for central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively). This method is appropriate when it is known that the measurement values are derived from experience with the described objects (perhaps from memory) or from scanning a sample of objects and measuring those objects considered 'typical'. It is not appropriate for single measurements nor for calculations based on statistical methods (which provide exact 'statistical estimates'). Compare also 'UnknownMethod'. Note: all methods other than 'ObserverEstimate' and 'UnknownMethod' are implicitly derived from a generalized hypothetical 'StatisticalEstimate' method."
+
+<strong><nop>UnknownMethod:</strong> "Central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively) obtained by unknown methods, including observer estimates or any kind of statistical estimate. The central value may, e. g., be a single measurement or an arithmetic mean, the range may, e. g., be minimum/maximum, mean plus/minus standard deviation, or a range estimate. 'Undefined' is important for legacy data where the statistical measure used is not known. If it is known that a measure is a human estimate rather than a defined value, 'ObserverEstimate' should be used instead."
+
+I think the issue is solved and closed now.
+
+-- Gregor Hagedorn, 26. May 2004
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085755346" from="SDD.EnumerationOfMethodsInGeneralizationMethod" to="SDD.ResolvedTopicStatisticalMethodEnumeration"}%
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 44
+a44 43
+%META:TOPICINFO{author="GregorHagedorn" date="1087817402" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+Note GH: this refers to the enumeration used in<br/> 
+0.9:  <nop>Terminology/StatisticalMeasures/StatisticalMeasure/Generalization/Method<br/>
+0.91: <nop>GeneralDeclarations/UnivariateStatisticalMeasures/UnivariateStatisticalMeasure/Generalization/Method<br/>
+ - (The enumeration is defined in <nop>UnivariateStatisticalMeasureMethodEnum.)
+
+---
+
+We have some measures of wing length which are not best characterized as "Guess", but rather as "ObserverEstimate" or "InformedEstimate" or some such thing. The point being that "Guess" sounds like it might mean something rather random. Or would, in fact,  "InformedEstimate" better capture what is meant by "Guess".
+
+-- Main.BobMorris - 08 Mar 2004
+
+Perhaps yes. I chose guess without intending the meaning you explain. <nop>InformedEstimate sound awful to me (like computer language). Do we know whether it is informed or not? Would "Estimate" be OK instead of guess? Problem is that we mean human estimates, not statistical estimates, which is why I avoided the term and used guess. Or should it be "<nop>HumanEstimate"? Please comment!
+-- Gregor Hagedorn, 15. April 2004
+---
+<nop>InformedEstimate sounds ok in American English, at least to me. Presumably whoever scored such a state would be implicitly asserting that they didn't pick a value out of thin air. I agree that just "Estimate" is problematic here. <nop>HumanEstimate seems stilted and suggests that there could be a <nop>MachineEstimate. -- Main.BobMorris - 16 Apr 2004
+---
+Another aspect is that a central or range values *may* be exact, but we don't know. The central value may be a single measurement (exact) or a mean (exact), the range may be min/max (exact), mean plus/minus s.d. (exact), any other defined method, or a range estimate. Currently "Undefined" is proposed as the appropriate generalized method name for this. Is that appropriate? -- Gregor Hagedorn, 15. April 2004
+---
+I don't think so. It seems funny to have something which is exact be a special case of something Undefined. I'm losing the point a little though. Are we trying to seek the generalizations that distinguish something estimated from an experts opinion or "eye-balled" estimate, from something that is estimated by a standard algorithm or formula? If yes, I could tolerate "ObserverEstimate" and "FormulaicEstimate" (or "StatisticalEstimate") -- Main.BobMorris - 16 Apr 2004
+---
+If Estimate and Undefined are accepted, we would have (please proof-read the annotations which will appear in the schema):
+
+<strong>Estimate</strong> = Human estimates for central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively). This method is appropriate when it is known that the measurement values are derived from experience with the described objects (perhaps from memory) or from scanning a sample of objects and measuring those objects considered 'typical'. It is not appropriate for single measurements nor for calculations based on statistical methods (which provide exact 'estimates'). Compare 'Undefined'.
+
+<strong>Undefined</strong> = Undefined central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively). The central value may, e. g., be a single measurement or an arithmetic mean, the range may, e. g., be minimum/maximum, mean plus/minus standard deviation, or a range estimate. 'Undefined' is important for legacy data where the statistical measure used is not known. If it is known that a range is an estimate rather than a defined value, 'Estimate' should be used instead.
+
+-- Gregor Hagedorn, 15. April 2004
+---
+Oh, I get it. Maybe we need three generalizations: <nop>ObserverEstimate, <nop>StatisticalEstimate, and <nop>UnknownMethod -- Main.BobMorris - 16 Apr 2004
+---
+
+Agreed. So the implicit generalization is <nop>StatisticalEstimate (not in enumeration, but all methods other than <nop>ObserverEstimate and <nop>UnknownMethod are implicitly derived from <nop>StatisticalEstimate) and the explicit method values:
+
+<strong><nop>ObserverEstimate:</strong> "Human estimates for central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively). This method is appropriate when it is known that the measurement values are derived from experience with the described objects (perhaps from memory) or from scanning a sample of objects and measuring those objects considered 'typical'. It is not appropriate for single measurements nor for calculations based on statistical methods (which provide exact 'statistical estimates'). Compare also 'UnknownMethod'. Note: all methods other than 'ObserverEstimate' and 'UnknownMethod' are implicitly derived from a generalized hypothetical 'StatisticalEstimate' method."
+
+<strong><nop>UnknownMethod:</strong> "Central value, lower, or upper range limit (with <nop>MethodValue = 0, -1, and +1, respectively) obtained by unknown methods, including observer estimates or any kind of statistical estimate. The central value may, e. g., be a single measurement or an arithmetic mean, the range may, e. g., be minimum/maximum, mean plus/minus standard deviation, or a range estimate. 'Undefined' is important for legacy data where the statistical measure used is not known. If it is known that a measure is a human estimate rather than a defined value, 'ObserverEstimate' should be used instead."
+
+I think the issue is solved and closed now.
+
+-- Gregor Hagedorn, 26. May 2004
+---
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085755346" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085567460" format="1.0" version="1.4"}%
+d44 1
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082148250" format="1.0" version="1.3"}%
+d32 12
+a43 2
+---
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082043060" format="1.0" version="1.2"}%
+d15 8
+a22 3
+
+Another aspect is that a central or range values *may* be exact, but we don't know. The central value may be a single measurement (exact) or a mean (exact), the range may be min/max (exact), mean plus/minus s.d. (exact), any other defined method, or a range estimate. Currently "Undefined" is proposed as the appropriate generalized method name for this. Is that appropriate?
+
+d30 4
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1078767762" format="1.0" version="1.1"}%
+d3 7
+d13 12
+@

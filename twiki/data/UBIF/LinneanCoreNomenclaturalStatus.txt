@@ -1,0 +1,185 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1160554399" format="1.1" version="1.15"}%
+%META:TOPICPARENT{name="LinneanCore"}%
+What is the status of a name-string under the rules of the code?
+
+Note: the enumerations below are an attempt to collect an organize the commonly used status codes - and figure our where apples are mixed with oranges :-). This is not yet meant to be a decision, which codes need to be in a constrained vocabulary, so the information can be exchanged and processed by machines, and for which an unconstrained text field is sufficient. I believe that most likely a two-layer approach (basic situation expressed by fixed enumeration (similar to the 5 codes Jerry proposed), specific situation expressed in free-form text field. Nevertheless, I would consider it helpful to provide a recommended vocabulary (or enumeration) for the latter case as well, with the recommendation that if these codes are used, an agreed semantics can be assumed.
+
+*Urgent request to zoologists: Can you contribute an actual list of status values as used in your database, with explanations?* I believe simply listing what is used in your area will be helpful, in a kind of inventory. Remember, the reason to list this is not to have a _very long_ list of codes, but to get an overview of what is common and to identify codes on which it would be useful to agree.
+
+---
+
+The Berlin model http://www.bgbm.org/scripts/ASP/BGBMModel/Catalogues.asp?Cat=CR has the following list of nomenclatural status value categories:
+
+| Code | Description |
+| nom. inval.     | Invalid name, based on another invalid name or violating the ICBN e.g. when a (latin) diagnosis is missing and/or a clear indicated type is lacking  |
+| nom. illeg.     | Illegitimate name, validly published but not available (mostly later homonymes) |
+| nom. nud.       | Nomen nudum, i.e. a name, published without a description or diagnosis |
+| nom. rej.       | Name, rejected by the ICBN |
+| nom. rej. prop. | Name, proposed for rejection to the ICBN |
+| nom. utique rej.| Name, rejected by the ICBN (Art. 56.1), because otherwise it would cause a disadvantageous nomenclatural change |
+| nom. utique rej. prop.| Name, proposed for rejection to the ICBN (Art. 56.1), because otherwise it would cause a disadvantageous nomenclatural change |
+| nom. cons.       | Name, conserved by the ICBN |
+| nom. cons. prop. | Name, proposed for conservation to the ICBN |
+| orth. cons.      | Name, whose spelling (orthography) is conserved by the ICBN |
+| orth. cons. prop.| Name, whose spelling (orthography) is proposed for conservation to the ICBN |
+<small>(Descriptions provided in email by Marc Geoffroy and Wolf Henning, 6. Dec.)</small>
+
+---
+
+Jerry's original <nop>LinneanCore schema proposal contained for <nop>NomenclaturalStatus on a higher abstraction level:<br/>
+- xs:enumeration value="Rejected"<br/>
+- xs:enumeration value="Fails"<br/>
+- xs:enumeration value="Conserved"<br/>
+- xs:enumeration value="Sanctioned"<br/>
+- xs:enumeration value="Accepted"
+
+   * Gregor: I believe "accepted" is to be read as nomenclaturally accepted (under ICBN = valid and legitimate; under ICZN available (?) - note that "valid" means something entirely different in ICBN and ICZN!), not whether the name/type concept is correct/accepted for a taxon concept. I believe a different term should be used.
+   * Jerry writes about *fails* in email: "I think I was trying to capture a nomenclatural comment about names that do not need to be considered by codes but have a strong link with code names. These are names that aren't 'rejected' because they don't even enter the nomenclatural filter process. It is important that some of these names are carried by a nomenclatural exchange mechanism, e.g. pre-change in starting point names that were once considered under previous versions of the code but not now, or even to capture pointers to pre-linnaean names that have no nomenclatural status but actually carry the publication details that people want - and not a subsequent one-line validation in Fries. It is a tricky issue that pushes the boundaries of what a nomenclatural exchange standard should do. Similar to many problems the subset of nomenclatural data cannot be defined without reference to the universal set of all names"
+
+---
+
+Sally Hinchcliffe reports that IPNI has split status into three separate fields. Sally writes: "We have three, which may be used in combination with each other. [...] a name can have values for any one of the three statuses singly or in combination.
+
+Name status (botanical code) values:<br/>
+ - nom. cons.<br/>
+ - orth. cons. (added to list by Kanchi Gandhi)<br/>
+ - nom. et. orth. cons.<br/>
+ - nom. rej.<br/>
+ - unknown
+
+Name Status (editor) values:<br/>    
+ - nom. illeg.<br/>
+ - nom. inval.<br/>
+ - unknown
+
+Name Status (qualifier) values:<br/>
+ - nom. superfl. <br/>
+ - nom. subnud.<br/>
+ - nom. obsc     <br/>
+ - nom. nud.      <br/>
+ - nom. dub.      <br/>
+ - nom. confus.  <br/>
+ - nom. ambig.   <br/>
+ - monstrosity    <br/>
+ - later homonym<br/>
+ - unknown
+
+Kanchi Gandhi, IPNI editor at Harvard, explains some codes (17./20. Dec. 2004):
+   * *"nom. ambig."* refers to a name based on a very general description applicable to more than 1 taxon.  In other words, it is a case of misapplied names. Note: the type of an "ambig." name belongs to a single taxon (in contrast to the type of a "confus." name) or there may NOT be a type specimen.  Either way, the "ambig." name is misapplied (because of the generalized description or by the misinterpretation).
+   * *"nom. confus."*: refers to a name based on a type consisting of discordant elements. Note: "confus." names also have generalized descriptions/diagnoses.  Since their types have discordant elements, it is difficult to associate the description/diagnosis with any segment of the type element.
+      * Of course, presently an individual botanist cannot reject a name as "confus." or as "ambig."  This is done by a Committee which acts upon proposals made by botanists.
+   * *"nom. obsc."*: A name, which was published in an obscure publication, was never widely used. In botanical literature, the name remained in obscurity.
+      * Gregor: This has no influence on the formal evaluation of valid publication under ICBN. It may be valuable information nevertheless.
+   * *"nom. subnud."*: Formerly, a new taxon with a scant diagnosis/description (e.g., perennial; robust plant; large leaf; aromatic plant; fragrant flower; Red flowers; large fruits; etc.).  Such short descriptions/diagnoses were termed as nom. subnud. In general, in these cases, it is difficult to ID a taxon. Occasionally, a short diagnosis may be a key character providing an ID of a taxon.
+      * Gregor: Formally, any arbitrary short description is valid under ICBN ("small fungus, spores not seen"). Thus, if I understand it correctly, the qualifiers *"nom. ambig"*, *"nom. confus."*, *"nom. obsc."* and *"nom. subnud."*, are applicable either to a currently "botany: valid and legitimate" or "zoology: available" name, or are reasons given for "nom. rej."/"nom. utique rej.". The are not actual status codes, rather highlight _potential_ problems.
+   * *"nom. dub."*: doubtful name.  Application of a name is doubtful.  The description of a name may be vague, and its type has not been seen.  In such cases, later authors apply such names doubtfully to plants collected from the same area and vicinity.
+      * (Gregor: Other definition, from "Northern Ontario flora":) – "A dubious name (Latin: nomen dubium). A name whose application is uncertain; the confusion being derived from an incomplete or confusing description".
+   * "nom. et. orth. cons." versus "orth. cons.": "orth. cons." refers to only the conservation of a specific spelling of a name or of an epithet.  The name itself is NOT conserved. In contrast, "nom. et orth. cons." refers to a conserved name with conserved spelling.
+
+-- Main.GregorHagedorn - 16. Dec 2004
+
+---
+
+Markus Weiss, Bot. Staatsammlung München reports the following codes in www.lias.org and the myxomycetes name database:
+   * *nom. provis.* (and "*ad interim*" as a synonym of this)
+   * comb.
+   * *comb. ined.*
+   * *nom. ined.*
+   * comb. superfl.
+   * nom. herb.
+   * nom. illeg.
+   * nom. inval.
+   * nom. nudum
+   * nom. rej.
+
+-- 20. Dec. 2004
+
+Gregor:  The bold codes (my formatting) are those that have not yet been discussed in other lists, could someone provide definitions for those? "comb." is unclear to me, seems to be rather LCNameCreationTypeDiscussion? Also, "ined." in my knowledge usually indicates an explicit indicator that
+a name that is used is to be considered not yet published (which is a LCNameCreationTypeDiscussion, not a later status assessment). I believe 
+*nom. provis.* and *ad interim* fall into the same category -- we would need definitions to tell! -- 20. Dec. 2004
+
+---
+
+The following is my attempt to draw up a list for LinneanCore including semantic details. Note that I am uncertain whether a long enumeration (plus free-form text as alternative) should be placed, or only a short highly abstract enumeration with 3-5 values, and all the rest should be free-form. That partly depends on other decisions. Even in the latter case a list of "recommended" free-form codes with semantic annotation and mapping to the coarse abstract categories would be highly useful. Thus the following list attempts to show both possible levels. The most relevant question for this is that a zoologist and bacteriologist would either add to the list, or present equivalent lists from their subject with notes that allow some comparison.
+
+In the last column "Rel." a "-" a status where nomenclatural reasoning is limited to a single name, a "R" status codes where nomenclatural reasoning involves a relation to another name. I propose to express such *relational status* here similarly to non-relational status and not as an attribute on the relation. Status information may be available even when no information is available about which other name the relation may point to. Thus the status attribute explains/qualifies the role of a nomenclatural relation, but it can be expressed independently. If expressing nomenclatural status involving other names expressedly as an attribute on a relation, it would have to appear in two different places depending on whether the relation is known or unknown.
+
+The list is basically exclusive botanical, because so far no zoological status codes have been reported. One purpose of this topic is, however, to see which codes can be shared, and which need to be code specific. As a non-taxonomical consumer of taxonomic names, I am much more interested in the cases that span the codes, than the details within the code...
+
+|*Code*                     | *Description*                          | *Rel.* |
+| *1. Status codes indicating acceptance or conservation:* &nbsp; |||
+|__OK__                     | Under ICBN: "valid and legitimate" -- Under ICZN: "available"???? -- Not certain whether "OK" is a good code, but I attempt to avoid the "accepted" Jerry used (see above) | - |
+|__nom. cons.__             | A conserved name ("nomen conservandum"). Without conservation the name would be considered illegitimate and replaced by another name. However, an explicit proposal was made to the committee overseeing rejected and conserved names and accepted. Compare also "nom. cons. prop.". -- Discussion: Is this equivalent under the rules of the ICBN AND ALSO ICZN??? | R |
+|__orth. cons.__            | The orthography of the name is conserved, even though it would normally have to be corrected on formal/grammatical grounds. The name itself is not necessarily conserved -- Probably ICBN only? | R |
+|__nom. &amp; orth. cons.__  | Both orthography and name are conserved. (Note: Either a combination code for both orthography and name conservation is required, or multiple status values need to be supported.) -- ICBN only? | R |
+| |||
+| *(1.a  Doubtful status for names that can not currently be outright rejected, may be listed as subclasses of OK? Very uncertain here! The following definitions are largely based on the information supplied above by Kanchi Gandhi, IPNI editor at Harvard)* &nbsp; |||
+|__nom. ambig.__        |  refers to a name based on a very general description applicable to more than 1 taxon.  In other words, it is a case of misapplied names. Note: the type of an "ambig." name belongs to a single taxon (in contrast to the type of a "confus." name) or there may NOT be a type specimen.  Either way, the "ambig." name is misapplied (because of the generalized description or by the misinterpretation). | - |
+|__nom. confus.__       | refers to a name based on a type consisting of discordant elements. Note: "confus." names also have generalized descriptions/diagnoses.  Since their types have discordant elements, it is difficult to associate the description/diagnosis with any segment of the type element. | - |
+|__nom. subnud.__      | Formerly, a new taxon with a scant diagnosis/description (e.g., perennial; robust plant; large leaf; aromatic plant; fragrant flower; Red flowers; large fruits; etc.).  Such short descriptions/diagnoses were termed as nom. subnud. In general, in these cases, it is difficult to ID a taxon. Occasionally, a short diagnosis may be a key character providing an ID of a taxon. | - |
+|__nom. obsc.__          | A name, which was published in an obscure publication, was never widely used. In botanical literature, the name remained in obscurity. | - |
+|__nom. dub.__            | A doubtful name (Latin: "nomen dubium"), whose application is uncertain.  The description of a name may be incomplete, confusing, or vague, and its type has not been seen. | - |
+| |||
+| *2. Status codes indicating rejection:* <br/>(= nomenclatural rejection either based on rules or explicit decisions) |||
+|__nom. inval.__ (ICBN)     | A name invalid under the rules of ICBN ("nomen invalidum"). The name was not validly published according to the ICBN rules, or the name was not accepted by the author in the original publication. | - |
+| *  __tautonym__                          | A tautonym is a species name in which the genus and specific epithet are identical. Tautonyms cannot be validly published in botany ([[http://www.bgbm.org/iapt/nomenclature/code/SaintLouis/0027Ch3Sec4a023.htm][ICBN 23.4.]]) but are legal in zoology (= under ICZN). | - |
+| * __nom. nud.__ (ICBN only?) | A "naked" name ("nomen nudum"), which is invalid because it was published without a description or reference to a type specimen (after the date when this became a requirement). | - |
+| * __nom. herb.__ (ICBN only?) | A "herbarium" name, which has never been published according to the rules of ICBN, but exists on herbarium material and may have entered common usage. *Comment Franz Schuhwerk: "not found in ICBN, The same as nomen nudum..."* | - |
+|__nom. illeg.__ (ICBN)     | A name illegitimate under the rules of ICBN ("nomen illegitimum"). The name is validly published, but does not follow one or more ICBN rules. Examples are later homonyms, later isonyms, superfluous names (see "nom. illeg. superfl."), and tautonyms. Special cases of illegitimate name commonly abbreviated in botany are: | ? |
+| * __nom. illeg. (later homonym)__           | A name that is fully identical (in botany after applying required spelling or grammar corrections) with an earlier name | R |
+| * __nom. illeg. (treated<br/>as later homonym)__ | A name that is not a strict homonym, but so similar that under the recommendations of the code (e.g. ICBN) it should be treated as if it were a homonym | R |
+| * __nom. illeg. superfl.__                  | A nomenclaturally superfluous name, i.e. a validly published name existed previously and should have been adopted. | R |
+|__comb. inval.__ (ICBN)    | A combination invald under the rules of ICBN ("combinatio invalidum") | - |
+|__comb. illeg.__ (ICBN)    | A combination illegitimate under the rules of ICBN ("combinatio illegitimum") | - |
+|__nom. utique rej.__       | Name rejected outright, i. e. without proposing another name to be conserved in favor of this name ("nomen utique rejiciendum"). This status applies to explicitly listed protonym names as well as to any combinations based on the protonym. | - |
+|__nom. rej.__              | Name rejected in favor of a name to be conserved ("nomen rejiciendum" in favor of "nom. cons."). This status applies to explicitly listed protonym names as well as to any combinations based on the protonym. Compare also "nom. rej. prop.", and "nom. cons." | R |
+| |||
+| *3. Status codes indicating proposals for conservation/rejection:* &nbsp; |||
+|__nom. utique rej. prop.__ | (as above, name proposed for outright rejection, but proposal not or not yet accepted)| R |
+|__nom. rej. prop.__        | (as above, name proposed for rejection in favor of conserved name, but proposal not or not yet accepted) | R |
+|__nom. cons. prop.__       | (as above, conservation of name is proposed but not or not yet accepted)              | R |
+|__orth. cons. prop.__      | (as above, conservation of orthography is proposed but not or not yet accepted)       | R |
+| |||
+| *4. Status codes indicating that the nomenclatural code is inapplicable:* &nbsp; |||
+|__inapplicable__      | Intended for the case Jerry describes as "fails", i.e. pre-starting point or ill-formed names that appear like valid scientific names but to which the code of nomenclature does not apply. _"Inapplicable"_ is no conventionally used code - is there one?  | R |
+
+A very helpful source of definitions for drawing was the Northern Ontario plant database, http://www.northernontarioflora.ca/definitions.cfm. The list was reviewed on 21. Dec. 2004 by Franz Schuhwerk, many thanks!
+
+*Note:* What is the "monstrosity" qualified status values from the IPNI list, does this need adding here? Also not covered is *nom. ined.*:
+   * Jerry Cooper: "used e.g. for informal taxon names like "mycelia sterilia" in fungi. Probably not in the scope of LC, although some such names often have to handled for practical reasons in the same database as formal names."
+   * Gregor: a different sense of ined. seems to exist in keys or checklists, compare the LCNameCreationTypeDiscussion.
+---
+
+Some of my personal intended requirements of expressing nomenclatural status: I would like the LC to be able to express knowledge of nomenclatural status, even when I cannot express the relation. I see this as a problem when expressing data with the TCS relation system. TCS provides for rejections/conservation, (treated as) later homonym etc. only if the other side of the relation is actually known and present in the dataset. However, I find it not uncommon to know that a name is a later homonym and therefor illegitimate under ICBN even if I have not the data a later homonym of which in my dataset yet. I may be able to guess this, and ideally the data should be there, but the data may not yet have been edited that far.
+
+*Questions:*
+   * General: invalid/illegitimate are clearly ICBN concepts. Can the other be used across the nomenclatural codes? *What do zoologists use?*
+   * Are separate codes needed for *comb. illegit./invalid.* or not? Note that in any case the "relation" pointing to the base name (basionym/protonym) of the combination is not part of the status relation, but already expressed elsewhere (protonym reference). It is not a question of secondary status assessment, but of primary name creation.
+   * Where does something like "Typus: non designatus" belong? Is this a category or is it something that belongs into <nop>StatusQualification/RuleConsidered as proposed by Jerry?
+   * Do we need something like "Fails" as proposed by Jerry to capture exclusion of names that look like they would fall under the code but don't (at least that is the way I understand Jerry's intent)? For the moment I omitted it because I am unable to clearly explain how it would be used.
+   * do we need "Sanctioned" (= a ":" is present in full authorship) as proposed by Jerry, or is this evident from the name-with-authors itself, similar to validated (= "ex" present in full authorship)? In my mind sanctioning and validation are in the category of nom. nov., comb. nov. (see LCNameCreationTypeDiscussion), which are creation intentions/name types, but not status values.
+   * do we need something like "unavailable"? In ICBN, 14.10 states: "A conserved name, with any corresponding autonym, is conserved against all earlier homonyms. An earlier homonym of a conserved name is not made illegitimate by that conservation but is unavailable for use; if not otherwise illegitimate, it may serve as basionym of another name or combination based on the same type (see also Art. 55.3)." Is this covered by "nom. rej."?
+   * I have no good idea what to call the possible relation pointer. Just <nop>CrossReference or <nop>RelatedName? Note that the relation in these cases is only informational and based on issues of the name-string-with/without-authors. 
+      * Are these relations nomenclatural or TCS? I think they are not well-placed in a concept object: these relations are based on name-string and publication arguments, usually not on type-concept arguments (with exceptions like distinguishing between "illegit. (later homonym)" and "nom. illegit. superfl.". For example, if a name is conserved because it is widely used in an economically important context, neither the type specimen is forever protected (it may become lost and neo/lectotypification may be necessary) nor the character circumscription concept is affected by conservation - any character circumscriptions (and indeed recombination into different ranks/genera) are automatically conserved as well.
+
+-- Main.GregorHagedorn - 18./19. Nov 2004
+
+From http://fp.bio.utk.edu/mycology/Nomenclature/nom-pt2.htm: "In a proposal made to the Stockholm Congress (1950), there appears the following table of terms:
+   * ADMISSIBLE NAMES vs. INADMISSIBLE NAMES (Chapter III of ICBN)
+   * NOT VALIDLY PUBLISHED NAMES vs. VALIDLY PUBLISHED NAMES (Chapter IV of ICBN)
+   * IMPRIORABLE NAMES vs. PRIORABLE NAMES (ss Sprague) (Arts. 11-15)
+   * ILLEGITIMATE NAMES vs. LEGITIMATE NAMES (Chapters V-VI of ICBN)"
+
+Also, here is an extract from the hugely valuable <nop>BioCode synopsis (http://www.bgbm.org/iapt/biocode):
+
+| *Nomenclatural status* ||||| 
+| *<nop>BioCode* | *BC* | *ICBN* | *ICNCP* | *ICZN* | 
+| established | validly published | validly published | established | available | 
+| acceptable | legitimate           | legitimate          | acceptable  | potentially valid | 
+| *Taxonomic status* ||||| 
+| accepted | correct | correct | accepted | valid | 
+(The last line only to clarify, that this topic does *not* deal with taxonomic status...)
+
+-- Main.GregorHagedorn - 17 Dec. 2004

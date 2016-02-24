@@ -1,0 +1,29 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118879" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="DiscussionFor1dot1RC2"}%
+---+!! %TOPIC%
+
+I noticed that !TaxonHierarchy cannot be referenced in descriptions. I think it will be a good idea to have the ability to do that.
+
+-- Main.JacobAsiedu - 09 Oct 2006
+
+I cannot at the moment think how (and where in the schema) to use this. Please describe a use-case for which purpose the references are intended. Which biological knowledge that is part of an organism description requires to choose between multiple alternative taxon hierarchies?
+
+We did have a reference for taxon hierarchies for operational "user-interface-setup" purposes, e.g. to define which of multiple hierarchies is used for data inheritance (down/up) and which hierarchy is displayed by default in an identification tool. However, these attempts were deemed too preliminary and left in discussion state (double underscore).
+
+-- Main.GregorHagedorn - 31 Oct 2006
+
+We use them to represent relations between taxa and sets of taxa, e.g. "similar species", "prey", "predators", "larval hosts", etc. Often these are specific to the description, not the taxon described, as they may depend on the geographic or temporal scope of a description. For "species of concern", e.g. invasives, rare species, agricultural pests, pathogens,... these may be especially important.
+
+To the best of my understanding, there is no place except in a !TaxonHierarchy to hang a list.
+
+-- Bob Morris
+
+You are right, we do not have any features in SDD to describe organism interactions like prey/predator/pollinator/pathogen/host etc. "Similar species" is an interesting additional case we have never discussed yet. Essentially the functionality has been moved into a future release, to be able to release current SDD.
+
+I believe using taxon hierarchy for these purposes is inappropriate. Although a flat list is technically a hierarchy, the hierarchies in UBIF/SDD are intended to have a general meaning, i.e. a possible classification/arrangement of taxa, which is not specific to a single description. Using them to express relations between taxa means that the scope of a taxon hierarchy must be made transparent to users intending to use the hierarchy for real taxon classification purposes (a dataset might contain 3 classifications and 2000 relationships). Furthermore, organism relationships are two sided, and using taxon hierarchies for this purpose would require data duplication if both sides of the relationship are being described.
+
+I believe a separate new mechanism is a better solution for the problem.
+
+BTW: How do you express relations in RDF in a way allowing automatic interpretation that "A is-pathogen-of B" automatically implies that "B is-host-of A"?
+
+-- Main.GregorHagedorn - 02 Nov 2006

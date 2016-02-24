@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+<body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<h2><a name="SDD_Part_0_Introduction_and_Prim"></a> SDD Part 0: Introduction and Primer to the SDD Standard </h2>
+<p />
+<h3><a name="3_11_Dependencies_in_SDD"></a> 3.11 Dependencies in SDD </h3>
+<p />
+Dependencies are logical relationships between characters such that a state of one character controls the presence (or absence) of another feature in interactive keys.
+<p />
+Consider, for example, the following features:
+<p />
+<img alt="depend.jpg" src="http://wiki.tdwg.org/twiki/static/_publish/depend.jpg" />
+<p />
+Wing colour and Wing shape only have meaning when wings are present &#8211; if wings are absent, they are logically inappropriate in the key. Relationships of this kind are generally accomodated within interactive identification applications by the use of dependencies. For the above example a negative dependency may be set such that if a user chooses the state Wings: absent, then the characters Wing Colour and Wing Shape will be removed from characters Available. Alternatively, some applications allow a positive dependency to be set so for example Wing Colour and Wing Shape are initially hidden and only appear if a user chooses the state Wings: present. Dependencies can help to keep the character list cleaner and less cluttered, and help make some features work better.
+<p />
+In SDD dependencies are defined by &lt;DependencyRules&gt; within the &lt;CharacterTree&gt; element.
+<p />
+A simple SDD code instance representing dependency definition has the basic structure shown below and in Example 3.11.1.
+<p />
+<img alt="chartreenodeseq.gif" src="http://wiki.tdwg.org/twiki/static/_publish/chartreenodeseq.gif" />
+<p />
+<h4><a name="Example_3_11_1_Negative_dependen"></a> Example 3.11.1 - Negative dependencies in SDD. </h4>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<pre>
+        &#60;Nodes&#62;
+          &#60;CharNode&#62;
+            &#60;DependencyRules&#62;
+              &#60;InapplicableIf&#62;
+                &#60;State ref&#61;&#34;s13&#34;/&#62;
+              &#60;/InapplicableIf&#62;
+            &#60;/DependencyRules&#62;
+            &#60;Character ref&#61;&#34;c1&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;CharNode&#62;
+            &#60;DependencyRules&#62;
+              &#60;InapplicableIf&#62;
+                &#60;State ref&#61;&#34;s4&#34;/&#62;
+                &#60;State ref&#61;&#34;s13&#34;/&#62;
+              &#60;/InapplicableIf&#62;
+            &#60;/DependencyRules&#62;
+            &#60;Character ref&#61;&#34;c2&#34;/&#62;
+          &#60;/CharNode&#62;
+
+        ... etc.
+        
+        &#60;/Nodes&#62; 
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+Positive dependencies are expressed in the same fashion with the &lt;InapplicableIf&gt; tag
+<p />
+It is currently unknown how applications which enforce referential integrity between scored data and dependencies will manage data imported from applications which do not enforce referential integrity.
+<p />
+<p />
+<p />
+<p />
+-- DonovanSharp - 01 Jun 2006
+<p />
+<p />
+</body></html> 

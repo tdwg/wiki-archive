@@ -1,0 +1,55 @@
+---+ Package =TWiki::Configure::Load=
+
+---++ Purpose
+
+This module consists of just a single subroutine =readConfig=.  It allows to
+safely modify configuration variables _for one single run_ without affecting
+normal TWiki operation.
+
+
+%TOC%
+
+---++ StaticMethod *readConfig* <tt>()</tt>
+
+In normal TWiki operations as a web server this routine is called by the
+=BEGIN= block of =TWiki.pm=.  However, when benchmarking/debugging it can be
+replaced by custom code which sets the configuration hash.  To prevent us from
+overriding the custom code again, we use an "unconfigurable" key
+=$cfg{ConfigurationFinished}= as an indicator.
+
+Note that this method is called by TWiki and configure, and *only* reads
+TWiki.spec= to get defaults. Other spec files (those for extensions) are
+*not* read.
+
+The assumption is that =configure= will be run when an extension is installed,
+and that will add the config values to LocalSite.cfg, so no defaults are
+needed. TWiki.spec is still read because so much of the core code doesn't
+provide defaults, and it would be silly to have them in two places anyway.
+
+
+
+---++ StaticMethod *expandValue* <tt>($string) -> $boolean</tt>
+
+Expands references to TWiki configuration items which occur in the
+value of other configuration items.  Use expand($hashref) if the item
+is not a plain scalar.
+
+Happens to return true if something has been expanded, though I don't
+know whether you would want that.  The replacement is done in-place,
+
+
+
+---++ StaticMethod *readDefaults* <tt>() -> \@errors</tt>
+
+This is only called by =configure= to initialise the TWiki config hash with
+default values from the .spec files.
+
+Normally all configuration values come from LocalSite.cfg. However when
+=configure= runs it has to get default values for config vars that have not
+yet been saved to =LocalSite.cfg=.
+
+Returns a reference to a list of the errors it saw.
+
+SEE ALSO: TWiki::Configure::TWikiCfg::load
+
+

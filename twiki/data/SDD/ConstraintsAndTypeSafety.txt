@@ -1,0 +1,11 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118872" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+(Not sure if this is the right expression of the issue). (This discussion references SDD 0.9beta16). To prevent proliferation of types, we tend to use a single base type of key and of keyref. But often the identity constraints on the uses of keyrefs are in the place where the keyrefs are used and may (a) escape notice and (b)it is confusing that this is actually enforcing that uniqueness of the keys is only up to the place where the keyref constraints are defined. For example, among the three kinds of Frequency modifiers, and the <nop>GeneralModifier and the <nop>CertaintyModifier that can be on a State, there can be overlap in the keys because each has different constraints expressed in the keyrefs. One clarifying approach might be to make each key/keyref pair in use in these contexts have a different type name showing the context, even though the constraint itself determines it and it will be impossible, say, ato have a keyref where an <nop>CertaintyModifier reference is required accidentally reference a Frequency key even should the keys be the same as strings (or, more properly, as integers)
+
+Related(?) question: HowDoCodeGeneratorsEnforceIdentityConstraints?
+
+-- Main.BobMorris - 01 Nov 2003
+
+%META:TOPICMOVED{by="BobMorris" date="1067727817" from="SDD.DerivationsFromTypesWhereTheDerivationsHaveDifferentConstraints" to="SDD.ConstraintsAndTypeSafety"}%

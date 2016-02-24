@@ -1,0 +1,48 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2006.05.04.20.05.27;	author RicardoPereira;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@---++ Use PURLs as GUIDs
+
+From the [[http://wiki.tdwg.org/twiki/bin/view/TAG/UsePURLsAsGUIDs][TDWG TAG Wiki]] by GregorHagedorn.
+
+If using LSIDs causes problems with automated reasoning using semantic web technologies (see WhyWeShouldNotUseLSIDs), what arguments do we really have to not use PURLs? Roger Hyam mentioned at TAG-1 that he proposed PURLs at the GUID meeting, but that this was rejected. Why?
+
+Do we need to use purl.org or can we set up our own purl resolver? I would not mind a purl.gbif.net, but we may need to reserve an appropriate DNS name, which would be independent enough to survive name changes both of TDWG or GBIF.
+
+One advantage of LSIDs is their separation between data and metadata. However, it seems to me that this can also be achieved by content negotiation. With an accept: xml-tdgwmetadata we may configure the resolver to return metadata instead of the data.
+
+The issue that purls in practice seem to be not very stable is truly a management problem, not a technical problem. Using different technology like LSIDs helps management to separate the issue of low management normal URLs and managed persistent purls, but I believe going through an agreed purl yields very similar results in documenting management decisions. The real problem with Purls as it appears to me, it that most institutions decide: well if it is simply URL forwarding and rewriting, then we simply do this ourself - but then do not follow this decision by allocating enough resources to truly hold the promise.
+
+If we can agree on a URL-pattern that signifies the decision to keep a URL persistent, the GBIF could offer a service of notifying providers that they do not keep the contract. This seems to be a natural extension of the GBIF indexing service.
+
+GregorHagedorn - 28 Apr 2006
+
+Funny, today we were discussing about this approach in the TAPIR group. I would like just to add an example to Gregor's comments so that people not aware of what a PURL is can get an idea. I registered today an specimen:
+
+http://purl.oclc.org/NET/BGBM/training/Specimen/1352
+
+This URL is redirected to a BioCASe wrapper with a search by Specimen ID embed as a GET parameter. I do not paste the real URL because in the case of BioCASe it looks very ugly (just XML URL encoded). The wrapper is also returning the specimen described in ABCD 1.2 + the BioCASe protocol envelope, what is ugle, but the BioCASe was not created with this idea in mind (in TAPIR you can disable the protocol envelope).
+
+JavierTorre - 28 Apr 2006
+@

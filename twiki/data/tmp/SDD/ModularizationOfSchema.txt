@@ -1,0 +1,99 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147083439" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+The plan for SDD is to technically modularize the schema. The reason for not doing it already are that this makes change/refactoring more difficult and error prone, so that we postponed actually splitting the documents until stability is reached. So far we intend to split the schema at the root sections, each root section becoming a module. Entities and Resources together are in fact one standard module (which is why I resented splitting them in Lisbon, but the only problem is that they are an exception in communicating the plan, no technical problems occur!).
+
+However, Kevin recently brought up that we should also improve our communication by publicly repackaging parts of SDD so that different demands can be matched more easily and with less complexity. It may be more easy to explain and communicate intentions and design that way.
+
+Technically I see no problems and by now know pretty well how to do it. There are some technical questions. You either have truly different schemata with different namespace, which means that every xml element looks like &lt;SDD.Terminology:Characters&gt; etc., or you can have one name space but multiple schema options, all of which are consistent and any sub-schema document can be validated under the superschema. I prefer the latter, but I am quite open to do otherwise provided someone can argue why.
+
+Now to the contentious points:
+
+My list of "inner" things (i.e. other than entire sections) that may be independent useful is currently:
+
+<ul class="compact">
+<li>Audience definitions inside <nop>ProjectDefinition</li>
+<li>Coding status</li>
+<li>Statistical measures (the "global" definitions)</li>
+<li>perhaps the glossary part</li>   
+</ul>
+
+all inside Terminology. 
+
+To make progress here: Should we introduce a new section for "generics" like
+
+<ul class="compact">
+<li>Audience definitions</li>
+<li>Coding status</li>
+<li>Statistical measures</li>
+</ul>
+
+I think this would be a good idea and help people understand the current structure. Unfortunately, I have absolutely no idea how to name the section for it.
+
+Which goes back to the "name question". We would need not only a single, but multiple names. SDD.Terminology, SDD.Keys etc.?Please do add your personal name favorites to the topic NameForStandardWikiDiscussions which is still pretty bare!
+
+-- Gregor Hagedorn - 11 Mar 2004
+
+---
+
+On splitting the schema into modules...
+
+Coming in as an outsider I could initially not understand the basis of the huge, complex, modular structure. In particular, in my mind defining terminology and recording descriptive data are two very separate conceptual processes (although the distinction is less clear in the real world..) and you wouldnt ever want to describe them in the same document.
+
+However... I am happier now that I understand that you are going to 'modularize' the root Sections, as I find it conceptually easier to think of the sections as separate standalone schemas – and think that our taxonomists would too. However, fitting all the sections into a single overall superschema has obviously been necessary for integrated development.  As long as the modules remain fully compatible, users (including application developers) will probably be happier to work with the modularized sections – i.e. keys or descriptions or terminology.
+
+But I think I now share Gregor's view that in order to (easily) retain full compatibility of the sections  they have to remain part of the same overall schema for future development, (but  users *must* have them  presented, described, documented _etc_ independently).
+
+
+-- Main.TrevorPaterson - 11 Mar 2004 
+
+---
+
+It may not be that simple. My reason for suggesting full modularization (ie splitting of the schema) was twofold - firstly I think it may conceptually simplify SDD (and Trevor's comments back that up), and secondly I think some parts of what we're developing for SDD will surely be useful outside the context of SDD. 
+
+The example I gave off-Wiki to Gregor and Bob was the taxon list and hierarchy - many other uses for a schema-controlled taxon list and hierarchy can be imagined that have nothing to do with descriptive data. By developing an independent (but SDD-compliant) schema for this purpose we may bring in a new group of contributors who currently have no interest in SDD. Ditto for the terminology definition as Trevor suggests, and Gregor's list above.
+
+You can see that this provides an opportunity and a challenge - those new users will have views as to how the schema should be structured that are relevant to their domain but may not be relevant to SDD, and this would all need to be kept consistent. But surely it can be done because everything is glued together by a fairly common purpose (particularly within the taxonomic domain).
+
+My suggestion was to take each bit of SDD, hold it up to the light and ask "Would this have a use as a standalone standard outside the strict context of SDD"? If the answer is yes, make it a separate schema.
+
+Gregor raises the stromg point that, of course, managing all this may be a bit like herding cats: "As soon as we change or 'refactor' the schema significantly, it gets bloody (to use Australian English :-)) difficult when you have a zoo of hierarchically organized documents. Changing something means to open a dozen documents, test their validity, etc. Furthermore, it is much more difficult to search for naming consistency, or copy or move elements."
+
+This is true. We need to decide if the opportunity outweighs the challenge.
+
+-- Main.KevinThiele - 11 Mar 2004   
+
+---
+
+It is good to hear Trevor's comments, that he believes for him SDD would become easier to penetrate. And yes, I believe the opportunity outwheighs the challenge. Also I believe we can postpone the actual splitting at least until autumn. We should stress the splitting in the primer, documentation, etc. We should have Names for it ready (suggestions for this?)! Actually doing it is then a single days work.
+
+Technically it is no problem to cross the border of SDD and have a single file shared by ABCD (perhaps even Taxon Names?) and SDD. The way to do it that I learned is to have NO namespace in a schema file, and xs:include it in another with a namespace. The included file is not a stand-alone schema, but it can easily be made into one. However, I am not sure that is meaningful for what ABCD and SDD are currently attempting, i.e. to synchronize overarching structures and Generation/Transformation, <nop>ProjectDefinition/<nop>ContentEnvelope kind of things. They usually make sense only in combination with other things. Please correct me if you think it is important to introduce multiple namespace (which means to burden developers, I believe).
+
+Back to my question: I more and more believe (e.g. Jacob had problems figuring out <nop>StatisticalMeasures) that the "generic" stuff should be put into a new section. What would be a good name or concept for it?
+
+We have several things (e.g. <nop>ExpertiseLevel) which we simply have fixed in the schema. The 3 things:
+
+<ul class="compact">
+<li>Audience definitions</li>
+<li>Coding status</li>
+<li>Statistical measures</li>
+</ul>
+
+could well be handled as enumerated types, and initially statistical measures were treated almost like that (almost means that it was only possible to extend the labeling to new languages, but you could not introduce a new measure. Now, both the labels and the concepts are extensible for all 3 cases. So extensibility is an important part of the concept.
+
+Of course, Terminology is extensible by definition. But following Kevin, I now believe it makes sense to split out the things that have little to do with descriptions, but could be used in any other context equally well.
+
+A long name for the section could be <nop>ExtensibleGenericConcepts - but I don't like it.
+
+-- Gregor Hagedorn - 12 Mar 2004   
+
+---
+
+For the time being I have chosen <strong><nop>GeneralDeclarations</strong> as the name for the section containing Audience definitions, Coding status, Statistical measures (and perhaps further object collection in the future).
+
+If you have objections or think another name is more appropriate, please raise this issue as soon as possible. The section names are really relevant, because they form the basis of modularization and communicating the schema.
+
+Other topics relevant to modularization are FederationOfTerminology, IncludeMechanismsInSupportOfIntegration  
+
+-- Gregor Hagedorn - 16 Mar/28 May 2004

@@ -1,0 +1,414 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@Although there were some changes in the metadata response format during the Madrid 2005 meeting, it was not thoroughly reviewed. Currently, a metadata response looks like:
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://res.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://res.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+    </header>
+    <metadata>
+        <label>Australian Fruit Flies</label>
+        <accesspoint>http://www.flies.au/pywrapper/flies</accesspoint>
+        <geoLocation lat="52.497806" long="13.438339"/>
+        <abstract>Australian fruit flies collection of georeferenced records observations</abstract>
+        <keywords>fuit flies observation australia diptera Tephritidae</keywords>
+        <citation>Australian Fruit Flies</citation>
+        <rights>free</rights>
+        <lastUpdated>2006-01-01T00:00:00</lastUpdated>
+        <indexingPreferences startTime="09:30:00Z" maxDuration="PT1H" frequency="P1M" MetadataReview>
+        <relatedEntities>
+            <entity>
+                <name>TAPIR working group</name>
+                <contact>
+                    <name>Frank Sinatra</name>
+                    <email>f.sinatra@@tapir.com</email>
+                    <role>system administrator</role>
+                </contact>
+                <role>Hosting Provider</role>
+            </entity>
+        </relatedEntities>
+    </metadata>
+</response>
+</verbatim>
+
+However, many elements overlap with other elements from well-known schemas like DublinCore and GeoRSS. If we encode such contents using these other schema elements, a metadata response could look like:
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://res.tdwg.org/tapir/1.0"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://res.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+   <header xmlns="">
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+    </header>
+        <metadata>
+            <dc:title>Australian Fruit Flies</dc:title>
+            <dc:type>http://purl.org/dc/dcmitype/Service</dc:type>
+            <accesspoint xmlns="">http://www.flies.au/pywrapper/flies</accesspoint>
+            <dc:description>Australian fruit flies collection of georeferenced records observations</dc:description>
+            <dc:language>EN</dc:language>
+            <dc:subject>fuit flies observation australia diptera Tephritidae</dc:subject>
+            <dct:bibliographicCitation>Australian Fruit Flies TAPIR provider</dct:bibliographicCitation>
+            <dc:rights>free</dc:rights>
+            <dct:modified>2006-01-01T00:00:00</dct:modified>
+            <indexingPreferences xmlns="" startTime="09:30:00Z" maxDuration="PT1H" frequency="P1M" MetadataReview>
+            <relatedEntity xmlns="">
+                <role>technical host</role>
+                <entity>
+                    <identifier>someGUID</identifier>
+                    <name>TAPIR working group</name>
+                    <acronym>TAPIR-WG</acronym>
+                    <logoURL>http://somehost/entitylogo.png</logoURL>
+                    <description>Description about the TAPIR working group</description>
+                    <relatedInformation>http://somehost/moreinfo</relatedInformation>
+                    <hasContact>
+                        <role>system administrator</role>
+                        <vcard:VCARD>
+                            <vcard:FN>Frank Sinatra</vcard:FN>
+                            <vcard:TITLE>Main singer</vcard:TITLE>
+                            <vcard:TEL>some phone number</vcard:TEL>
+                            <vcard:EMAIL>f.sinatra@@tapir.com</vcard:EMAIL>
+                        </vcard:VCARD>
+                    </hasContact>
+                    <geo:Point>
+                        <geo:lat>45.256</geo:lat>
+                        <geo:long>-71.92</geo:long>
+                    </geo:Point>
+                </entity>
+            </relatedEntity>
+        </metadata>
+</response>
+</verbatim>
+
+
+
+---+ Roles
+Both entities and contacts are repeatable and have a role assigned to them. The role is based on a simpletype union between an enumeration (to have a common base set of roles) and xsd:string to allow any other role as well.
+---+++ entityRoleType
+   * data supplier
+   * technical host
+---+++ contactRoleType
+   * data administrator
+   * system administrator
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d58 31
+a88 31
+                <dc:description>Australian fruit flies collection of georeferenced records observations</dc:description>
+                <dc:language>EN</dc:language>
+                <dc:subject>fuit flies observation australia diptera Tephritidae</dc:subject>
+                <dct:bibliographicCitation>Australian Fruit Flies TAPIR provider</dct:bibliographicCitation>
+                <dc:rights>free</dc:rights>
+                <dct:modified>2006-01-01T00:00:00</dct:modified>
+                <indexingPreferences xmlns="" startTime="09:30:00Z" maxDuration="PT1H" frequency="P1M" MetadataReview>
+                <relatedEntity xmlns="">
+                    <role>technical host</role>
+                    <entity>
+                        <identifier>someGUID</identifier>
+                        <name>TAPIR working group</name>
+                        <acronym>TAPIR-WG</acronym>
+                        <logoURL>http://somehost/entitylogo.png</logoURL>
+                        <description>Description about the TAPIR working group</description>
+                        <relatedInformation>http://somehost/moreinfo</relatedInformation>
+                        <hasContact>
+                            <role>system administrator</role>
+                            <vcard:VCARD>
+                                <vcard:FN>Frank Sinatra</vcard:FN>
+                                <vcard:TITLE>Main singer</vcard:TITLE>
+                                <vcard:TEL>some phone number</vcard:TEL>
+                                <vcard:EMAIL>f.sinatra@@tapir.com</vcard:EMAIL>
+                            </vcard:VCARD>
+                        </hasContact>
+                        <geo:Point>
+                            <geo:lat>45.256</geo:lat>
+                            <geo:long>-71.92</geo:long>
+                        </geo:Point>
+                    </entity>
+                </relatedEntity>
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d43 7
+a49 8
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:dct="http://purl.org/dc/terms/"
+          xmlns:geo="xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+          xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#"
+          xsi:schemaLocation="http://res.tdwg.org/tapir/1.0 
+                             http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+d54 36
+a89 36
+    <metadata>
+        <dc:title>Australian Fruit Flies</dc:title>
+        <dc:type>http://purl.org/dc/dcmitype/Service<dc:type>
+        <accesspoint>http://www.flies.au/pywrapper/flies</accesspoint>
+        <dc:description>Australian fruit flies collection of georeferenced records observations</dc:description>
+        <dc:language>EN</dc:language>
+        <dc:subject>fuit flies observation australia diptera Tephritidae</dc:subject>
+        <dct:bibliographicCitation>Australian Fruit Flies TAPIR provider</dct:bibliographicCitation>
+        <dc:rights>free</dc:rights>
+        <dct:modified>2006-01-01T00:00:00</dct:modified>
+        <indexingPreferences startTime="09:30:00Z" maxDuration="PT1H" frequency="P1M" MetadataReview>
+        <relatedEntity>
+            <role>technical host</role>
+            <entity>
+                <identifier>someGUID</identifier>
+                <name>TAPIR working group</name>
+                <acronym>TAPIR-WG</acronym>
+                <logoURL>http://somehost/entitylogo.png</logoURL>
+                <description>Description about the TAPIR working group</description>
+                <relatedInformation>http://somehost/moreinfo</relatedInformation>
+                <geo:Point>
+                    <geo:lat>45.256</geo:lat>
+                    <geo:long>-71.92</geo:long>
+                </geo:Point>
+                <hasContact>
+                    <role>system administrator</role>
+                    <vcard:VCARD>
+                        <vcard:FN>Frank Sinatra</vcard:FN>
+                        <vcard:TITLE>Main singer</vcard:TITLE>
+                        <vcard:EMAIL>f.sinatra@@tapir.com</vcard:EMAIL>
+                        <vcard:TEL>some phone number</vcard:TEL>
+                    </vcard:VCARD>
+                </hasContact>
+            </entity>
+        </relatedEntity>
+    </metadata>
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d46 1
+a46 1
+          xmlns:georss="http://www.georss.org/georss"
+d75 4
+a78 3
+                <georss:where>
+                    <georss:point>45.256 -71.92</georss:point>
+                </georss:where>
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d80 1
+a80 1
+                    <contact>
+d85 1
+a85 1
+                    </contact>
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d45 1
+d62 1
+a62 1
+        <dc:bibliographicCitation>Australian Fruit Flies TAPIR provider</bibliographicCitation>
+d64 1
+a64 1
+        <dc:modified>2006-01-01T00:00:00</dc:modified>
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d46 1
+d61 1
+a61 1
+        <citation>Australian Fruit Flies</citation>
+d65 2
+a66 1
+        <relatedEntities>
+a67 1
+                <role>technical host</role>
+d77 1
+a77 1
+                <contact>
+d79 7
+a85 5
+                    <name>Frank Sinatra</name>
+                    <title>Main singer</title>
+                    <email>f.sinatra@@tapir.com</email>
+                    <phone>some phone number</phone>
+                </contact>
+d87 1
+a87 1
+        </relatedEntities>
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d66 2
+a67 2
+                <role>Hosting Provider</role>
+                <dc:identifier>someGUID</dc:identifier>
+d71 2
+a72 2
+                <dc:description>Description about the TAPIR working group</dc:description>
+                <dc:relation>http://somehost/moreinfo</dc:relation>
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d58 1
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d65 1
+d76 1
+a80 1
+                    <role>system administrator</role>
+a81 1
+                <role>Hosting Provider</role>
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@a61 3
+        <georss:where>
+            <georss:point>45.256 -71.92</georss:point>
+        </georss:where>
+d87 11
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d62 3
+@

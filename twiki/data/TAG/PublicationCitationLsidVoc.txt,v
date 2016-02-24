@@ -1,0 +1,924 @@
+head	1.11;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.11
+date	2007.11.14.19.12.30;	author RichardPyle;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.11.13.21.00.54;	author AnnaWeitzman;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.11.13.18.39.09;	author RicardoPereira;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.11.13.16.45.47;	author AnnaWeitzman;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.11.13.13.27.55;	author AnnaWeitzman;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.11.13.09.07.24;	author RichardPyle;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.11.13.08.04.38;	author RichardPyle;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.02.02.10.46.36;	author RogerHyam;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.29.10.02.34;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.12.05.14.05.31;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.12.04.21.28.18;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.11
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RichardPyle" date="1195067550" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="LsidVocs"}%
+---+ <nop>%TOPIC%
+
+This is a summary of the LSID Vocabulary for PublicationCitations. Read LsidVocs  information  on LSID Vocabularies in general.
+
+---++ Resources
+
+|  *The RDF OWL vocabulary* |http://rs.tdwg.org/ontology/voc/PublicationCitation|
+|  *Avowed XML Instance* | http://rs.tdwg.org/ontology/voc/tapir/structure/PublicationCitation/template.xml |
+|  *Avowed XML Schema* | http://rs.tdwg.org/ontology/voc/tapir/structure/PublicationCitation/schema.xsd |
+
+---++ Deployments
+   *  not yet!
+
+---++ Discussion
+
+Visiting the first link under Resources above with a modern web browser will display the documentation for the vocabulary. Please read this first. If you then have any discussion points or questions please add them below.
+---
+To seed this discussion, I have added some excerpts from an email exchange between myself and Roger Hyam; and I've secondarily added some additional comments as well. I suppose it would be more proper to create a separate discussion page for each Property Name under each specific vocabulary (e.g., !OntDiscussPublicationCitationPublicationCitationalternateTitle), but for simplicty, I thouyght it would be easier to create a single generic discussion page here, with a header for each Propery Name, and then these can be moved to dedicated discussion pages as needed. -- Main.RichardPyle 12 Nov 2007 21:23HST
+---
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#alternateTitle][alternateTitle]]*
+
+This is one of the fields from EndNote that I ended up not using in my own DB.  However, I do use "[[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]]" for standard Journal abbreviations.  I know there is already a [[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]] for "prefered short or abbreviated title of the publication", but my question is  whether I should include the same value duplicated in [[http://rs.tdwg.org/ontology/voc/PublicationCitation#alternateTitle][alternateTitle]],  or if the latter is used only for "additional" titles other than  [[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]]. -- Main.RichardPyle 09 Sep 2007 23:24HST
+
+   * My feeling is that it would be for different titles. One could use if for translations (using the xml:lang attribute in RDF) but that is probably another story. If you are providing the short title I wouldn't put it in here again. -- Main.RogerHyam 10 Sep 2007 03:45HST
+
+   * First, I think Rich may be confusing two different issues.  We do need a list of all title forms that have ever been used for a work, whether it is a journal or a book or book series, but that is not this (although we might model such a resource on these elements once we stabilise them).  In such a list we would have all forms, including the "[[http://rs.tdwg.org/ontology/voc/PublicationCitation#Title][Title]]" and "[[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]]". -- Main.AnnaWeitzman 13 Nov 2007
+
+   * There are many forms of some titles that have been use over centuries.  Each of these could be listed here.  The "[[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]]" could be used for the currently recommended one. -- Main.AnnaWeitzman 13 Nov 2007
+
+      * O.K., agreed (except I'm not sure [[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]] is the best place for "currently recommended" title) -- but does this mean we drop this property from the vocab altogether (in favor of a more robust multi-!alternateTitle structure to be developed later)? Or, do we define this properly more precisely?
+
+-- Main.RichardPyle 14 Nov 2007 09:02HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#authorship][authorship]]*
+
+It seems to me that it would be useful to suggest a "best practices" for formatting this property, to at least try to encourage consistency for those data providers who have control over how the author names are formatted.  For what it's worth, my standard is:
+
+Firstauthorlastname, FirstAuthorGivenname1 FirstAuthorGivenname2, FirstAuthorSuffix; Secondauthorlastname, FirstAuthorGiven1 FirstAuthorGiven2, FirstAuthorSuffix; etc...
+
+That is, comma delimiting !LastName from !GivenNames; spaces (or hyphens) delimiting individual !GivenNames (e.g., !FirstName, !MiddleName, etc.); comma delimiting suffix (Jr., III., etc.); and semicolon delimiting each author (including separation of penultimate and last author names).  This style is relatively easy to parse (as opposed to other common author styles, which are not always easy to parse).
+
+I also try to include full names and spellings as they appear on the byline of the publication itself.  For example, even if I know the author to be a "Jr.", I only include the "Jr." if it was actually included in the byline.  Same goes for middle initial vs. spelled out middle name.  I suppose the completed information could be bracketed (e.g., if the byline said "Richard L. Pyle", we could recommend providing it here as "Pyle, Richard L[awrence]").  The way I deal with this is in having a robust Agents data management system, that cross-links synonyms/aliases in such a way that I can link "Pyle, R. L." to "Pyle, Richard Lawrence".  Also, note here that I added a space between the initials -- which I think should be best-practice (i.e., "Pyle, R. L.", instead of "Pyle, R.L.").
+
+There are many other topics of discussion concerning "best practices" of [[http://rs.tdwg.org/ontology/voc/PublicationCitation#authorship][authorship]], but this is perhaps something that should be discussed in the context of Agents, rather than PublicationCitation.
+
+-- Main.RichardPyle 12 Nov 2007 22:23HST
+
+   * Agreed (and all subsequent mention of best practices needed). -- Main.AnnaWeitzman 13 Nov 2007
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#authorTeam][authorTeam]]*
+
+I am *NOT* a fan of the concept of creating identifiers for "teams" of people.  It certainly can be done, but I'm very uncomfortable with the idea (for many reasons).  I'd rather see some sort of mechanism for providing an ordered list of Agents who serve in various "role" capacities for a given publication.  Most would have role "Author", but this would also allow for role "Editor", and various other Agent-roles associated with a publicationCitation (e.g., "Publisher" might be another role -- but maybe best not to go down that path just yet).
+
+-- Main.RichardPyle 12 Nov 2007 22:26HST
+
+   * Agreed.  I also noted that Editor is missing from this list.  Whatever direction we go -- Actors or separating them out, we need to include Editors. -- Main.AnnaWeitzman 13 Nov 2007
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#datePublished][datePublished]]*
+
+I think it might be better to rename this something like "!verbatimDate", and define it clearly.  In all of my "dated" data objects, where there may be variations and uncertainties in the value of the date, I use three properties: !verbatimDate (used for recording how the date was actually written -- in this case, the date as it appears within the publication itself), !startDate, and !endDate (the latter two as standard date values, serving as the start-point and end-point of a range in which the event -- in this case date pf publication -- is likely to have occurred.  The !verbatimDate is for human eyes, while the other two are used for chronology filtering/sorting.
+
+-- Main.RichardPyle 12 Nov 2007 22:30HST
+
+   * Agreed.  But we also need a place to put a "!correctedDate".  All too many times the !verbatimDate has been proven incorrect (and documented in a place like Taxonomic Literature for botany).  We need to be able to include this, and reference the source of the correction.  -- Main.AnnaWeitzman 13 Nov 2007
+
+      * Good point -- I should have clarified that I use !startDate & !endDate for "actual" window of time that it was published; not as a normalized interpretation of !verbatimDate.  But maybe we need separate "normalized" start/end date values for both (i.e., one for !verbatimDate, and one for "actual" date).  To me, !verbatimDate is something that is useful for a human, but probably doesn't have any real value to be able to sort/filter via chronology.  -- Main.RichardPyle 14 Nov 2007 09:05HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#doi][doi]]*
+
+We might want to create some sort of structure or mechanism for providing an assortment of typed "identifiers", all handled in a similar way.  We have four properties here already that would fall into this category ([[http://rs.tdwg.org/ontology/voc/PublicationCitation#doi][doi]], [[http://rs.tdwg.org/ontology/voc/PublicationCitation#issn][issn]], [[http://rs.tdwg.org/ontology/voc/PublicationCitation#isbn][isbn]], [[http://rs.tdwg.org/ontology/voc/PublicationCitation#url][url]]), and to this we could add all sorts of other ones (LSIDs, Handles, etc., etc.).  If we created a separate Property in the vocabulary for every conceivable identifier, things could get ugle (especially considering that any given publicationCitation might have more than one identifier of a given type -- LSID, Handle, url, etc.).
+
+-- Main.RichardPyle 12 Nov 2007 22:36HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#edition][edition]]*
+
+I think this is primarily intended for editions of books, but I wonder if this is where one should put Series number for Journals; e.g.: Annals and Magazine of Natural History, Series 10; Annals and Magazine of Natural History Series 11; etc.
+
+-- Main.RichardPyle 12 Nov 2007 22:40HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#endDate][endDate]]*
+
+See comments above for !datePublished. -- Main.RichardPyle 12 Nov 2007 22:41HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#figures][figures]]*
+
+This could use with some "best practices" suggestions. I think it was originally intended to cite Plates that were not part of the numbered pages (often the plates do not get page numbers in sequence with the text pages).  However, maybe this should also be used to note how many figures appear within the publication?
+
+-- Main.RichardPyle 12 Nov 2007 22:42HST
+
+   * It strikes me that we don't want to mix uses unless we are very clear on best practices. -- Main.AnnaWeitzman - 13 Nov 2007
+
+      * Agreed! We don't want to mix uses -- bad wording on my part.  WHat I really think we need to do is define this more precisiely, from among the various options of how it could be defined. -- Main.RichardPyle 14 Nov 2007 09:06HST
+
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#isbn][isbn]]*
+
+See comments above for doi. -- Main.RichardPyle 12 Nov 2007 22:43HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#issn][issn]]*
+
+See comments above for doi. -- Main.RichardPyle 12 Nov 2007 22:43HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#number][number]]*
+
+There ought to be some clarification as to what this property is used for.  In some definitions, it is used *only* for numbers *within* a specific [[http://rs.tdwg.org/ontology/voc/PublicationCitation#volume][volume]]; but other times people have used it for just the sequential number of the article.  There needs to be some clarificaiton on what to provide for this property, vs. what to provide for [[http://rs.tdwg.org/ontology/voc/PublicationCitation#volume][volume]].
+
+-- Main.RichardPyle 12 Nov 2007 22:44HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#numberOfVolumes][numberOfVolumes]]*
+
+I use this for recording number of volumes in a finite volume series (see related discussion under !publicationType). -- Main.RichardPyle 12 Nov 2007 22:46HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#pages][pages]]*
+
+Again, there should be some "best practices" for this.  For example, hyphen or en-dash when indicating ranges? If it's a book of 525 pages, should this be entered as "525 pp.", or "1&#8211;525"? How should un-numbered page ranges be indicated (I enclose in [square brackets]). Should Plates be included here, if not part of numbered pages, or should they go in [[http://rs.tdwg.org/ontology/voc/PublicationCitation#figures][figures]]? Many other questions as well.
+
+-- Main.RichardPyle 12 Nov 2007 22:51HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#parentPublication][parentPublication]]*
+
+As there does not appear to be any element in PublicationCitation for "Journal" (or "series", or "periodical"), do I assume correctly that the Journal name for a JournalArticle would be derived from the title of the [[http://rs.tdwg.org/ontology/voc/PublicationCitation#parentPublication][parentPublication]] link for the JournalArticle? -- Main.RichardPyle 09 Sep 2007 23:24HST
+
+   * Yes. Remember that the parent publications does not have to have a GUID it can be an anonymous nodes within the RDF. -- Main.RogerHyam 10 Sep 2007 03:45HST
+
+   * Excuse my ignorance, can you explain why parent publications do not have a GUID? -- Main.AnnaWeitzman - 13 Nov 2007
+
+      * When we have them as separate objects, they certainly do have GUIDs (I would hope!).  But I think this needs to accomodate bibliographic content that has not been normalized to that extent yet -- i.e., that has only been parsed by a machine for convenience, and not with enough reliability to have necessarily been GUID'ed.  In that case, I can see the value of an internal identifier, for which no authority has yet issued a permanent GUID.  -- Main.RichardPyle 14 Nov 2007 09:08HST
+
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#parentPublicationString][parentPublicationString]]*
+
+(Enter Comments Here)
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#placePublished][placePublished]]*
+
+Some best practices here would be helpful...(e.g., when to include the country or state as well as the city). -- Main.RichardPyle 12 Nov 2007 22:54HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#publicationType][publicationType]]*
+
+Regarding *[[http://rs.tdwg.org/ontology/voc/PublicationCitation#PublicationTypeTerm][publicationTypeTerm]]*:
+
+I now distinguish two kinds of "series".  One is "BookSeries", which is characterized by a finite set of volumes, the total number of which are usually known in advance, and are often published concurrently (e.g., a 5-volume set of books).  The other is "Periodical" (or "Serial" -- I haven't decided which word I like better), which is characterized by recussing volumes, published periodially in regular or irregular intervals, without a known finite number of volumes. These are Journals, Magazines, Newspapers, and certain kinds of book-like series that seem to be perpetual (e.g., FAO Fishereies series).  Two questions on this:
+   1 There are enough examples of "borderline" cases between these two kinds of series, that I'm slightly tempted to lump them together as just plain "Series"; and
+   1 If they are kept separate, then I assume the two corresponding PublicationTypeTerms would be "BookSeries" and "Journal".  In this case, I'm wondering whether the word "Journal" shouldn't be replaced with something more general, like "Periodical" or "Serial", to accommodate magazines, newspapers, and other such recurring/perpetual series.  -- Main.RichardPyle 09 Sep 2007 23:24HST
+
+   * It sounds to me like you are going a long way to defining some or these terms. Periodical sounds to me like something that comes out regularly (and some of these things are irregular). Serial sounds better but then we have JournalArticle, MagazineArticle and NewspaperArticle. It seems odd that we have Journal but not Magazine or Newspaper in such cases. What if we changed Journal to Serial and compressed the three different articles into just Article. So we would have:
+      * Serial: A publication that appears in a number of parts without having a predetermined number of issues.
+      * Article: A publication that appears as a subpart of a part of a Serial
+-- Main.RogerHyam 10 Sep 2007 03:45HST
+
+   * BookSeries: ? (all I can think is that Harry Potter hasn't been killed off so there is bound to be another book and so I can't say it is a book series it must be a Serial). If you can come up with some good definitions then I'll enter them in the vocabulary. We should sort out the Magazine and Newspaper stuff at the same time though. -- Main.RogerHyam 10 Sep 2007 03:45HST
+
+I think we need a careful discussion about the enumeration of [[http://rs.tdwg.org/ontology/voc/PublicationCitation#PublicationTypeTerm][publicationTypeTerm]]. -- Main.RichardPyle 12 Nov 2007 22:56HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#publisher][publisher]]*
+
+-- Should this be referenced to [[http://rs.tdwg.org/ontology/Base#Actor][Actor]]? -- Main.RichardPyle 12 Nov 2007 22:57HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#reprintEdition][reprintEdition]]*
+
+I don't even know what this property is used for -- it should be more clearly defined. -- Main.RichardPyle 12 Nov 2007 22:58HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#section][section]]*
+
+I don't even know what this property is used for -- it should be more clearly defined. -- Main.RichardPyle 12 Nov 2007 22:58HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]]*
+
+Is this used for anything other than Journal abbreviations???  -- Main.RichardPyle 12 Nov 2007 22:58HST
+
+   * Yes, quite commonly it is used for books--especially older ones that have titles that are 10 miles long.  TL-2 provides a list of standardized short title for Botany, but zoologists use them too (e.g., Syst. Nat., ed 10. rather than "Systema Naturae per regna tria naturae, secundum Classes, Ordines, Genera, Species, cum characteribus, differentiis, synonymis, locis. Editio Decima, Reformata." is a rather short, but famous, example). -- Main.AnnaWeitzman - 13 Nov 2007
+
+      * Good point. -- Main.RichardPyle 14 Nov 2007 09:10HST
+
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#startDate][startDate]]*
+
+See comments above for !datePublished. -- Main.RichardPyle 12 Nov 2007 22:51HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#title][title]]*
+
+Pretty straightforward, but still need some discussion (e.g., Whether or not to include a period at the end; whether to use capitalization as originally appeared, or standardize to first-word and proper-names only, or...???; how to denote italicized words within title? etc.) -- Main.RichardPyle 12 Nov 2007 23:01HST
+
+   * Including whether it is the full title page title e.g., "Systema Naturae per regna tria naturae, secundum Classes, Ordines, Genera, Species, cum characteribus, differentiis, synonymis, locis." or a shorter, unabbreviated title.  I vote for the full title, as long as we are consistent.  As ever, nothing in taxonomy is every as simple or straightforward as it seems. -- Main.AnnaWeitzman - 13 Nov 2007
+
+      * I agree -- this property should be for full title (maybe rename !fullTitle?) We can use !shortTitle for the other -- unless !shortTitle is subsumed into a more robust structure for handling multiple alterantive titiles. -- Main.RichardPyle 14 Nov 2007 09:11HST
+
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#url][url]]*
+
+See comments above for doi. -- Main.RichardPyle 12 Nov 2007 22:43HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#volume][volume]]*
+
+See comments under "number" above.  Also, should this be numeric always, or as published (e.g., I, II, etc.)? Should it ever have a "Vol." or "Volume" included? -- Main.RichardPyle 12 Nov 2007 23:02HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#year][year]]*
+
+How does this differ from the values included in [[http://rs.tdwg.org/ontology/voc/PublicationCitation#datePublished][datePublished]]/!verbatimDate and the [[http://rs.tdwg.org/ontology/voc/PublicationCitation#startDate][startDate]]/![[http://rs.tdwg.org/ontology/voc/PublicationCitation#endDate][endDate]] fields?
+---
+
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AnnaWeitzman" date="1194987654" format="1.1" version="1.10"}%
+d32 4
+d68 2
+d94 3
+d129 3
+d175 3
+d188 3
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RicardoPereira" date="1194979149" format="1.1" version="1.9"}%
+d54 1
+a54 1
+   * Agreed.  I also noted that Editor is missing from this list.  Whatever direction we go with Actors or separating them out, we need to include Editors. -- Main.AnnaWeitzman 13 Nov 2007
+d86 2
+d118 2
+d161 2
+d171 2
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AnnaWeitzman" date="1194972347" format="1.1" reprev="1.8" version="1.8"}%
+d54 125
+a178 1
+   * Agreed.  I also note that Editor is missing from th
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="AnnaWeitzman" date="1194960475" format="1.1" version="1.7"}%
+d46 1
+a46 1
+   * Agreed. -- Main.AnnaWeitzman 13 Nov 2007
+d54 1
+a54 125
+   * Agreed.  I also noted that Editor is missing from this list.  Whatever direction we go with Actors or separating them out, we need to include Editors. -- Main.AnnaWeitzman 13 Nov 2007
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#datePublished][datePublished]]*
+
+I think it might be better to rename this something like "!verbatimDate", and define it clearly.  In all of my "dated" data objects, where there may be variations and uncertainties in the value of the date, I use three properties: !verbatimDate (used for recording how the date was actually written -- in this case, the date as it appears within the publication itself), !startDate, and !endDate (the latter two as standard date values, serving as the start-point and end-point of a range in which the event -- in this case date pf publication -- is likely to have occurred.  The !verbatimDate is for human eyes, while the other two are used for chronology filtering/sorting.
+
+-- Main.RichardPyle 12 Nov 2007 22:30HST
+
+   * Agreed.  But we also need a place to put a "!correctedDate".  All too many times the !verbatimDate has been proven incorrect (and documented in a place like Taxonomic Literature for botany).  We need to be able to include this, and reference the source of the correction.  -- Main.AnnaWeitzman 13 Nov 2007
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#doi][doi]]*
+
+We might want to create some sort of structure or mechanism for providing an assortment of typed "identifiers", all handled in a similar way.  We have four properties here already that would fall into this category ([[http://rs.tdwg.org/ontology/voc/PublicationCitation#doi][doi]], [[http://rs.tdwg.org/ontology/voc/PublicationCitation#issn][issn]], [[http://rs.tdwg.org/ontology/voc/PublicationCitation#isbn][isbn]], [[http://rs.tdwg.org/ontology/voc/PublicationCitation#url][url]]), and to this we could add all sorts of other ones (LSIDs, Handles, etc., etc.).  If we created a separate Property in the vocabulary for every conceivable identifier, things could get ugle (especially considering that any given publicationCitation might have more than one identifier of a given type -- LSID, Handle, url, etc.).
+
+-- Main.RichardPyle 12 Nov 2007 22:36HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#edition][edition]]*
+
+I think this is primarily intended for editions of books, but I wonder if this is where one should put Series number for Journals; e.g.: Annals and Magazine of Natural History, Series 10; Annals and Magazine of Natural History Series 11; etc.
+
+-- Main.RichardPyle 12 Nov 2007 22:40HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#endDate][endDate]]*
+
+See comments above for !datePublished. -- Main.RichardPyle 12 Nov 2007 22:41HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#figures][figures]]*
+
+This could use with some "best practices" suggestions. I think it was originally intended to cite Plates that were not part of the numbered pages (often the plates do not get page numbers in sequence with the text pages).  However, maybe this should also be used to note how many figures appear within the publication?
+
+-- Main.RichardPyle 12 Nov 2007 22:42HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#isbn][isbn]]*
+
+See comments above for doi. -- Main.RichardPyle 12 Nov 2007 22:43HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#issn][issn]]*
+
+See comments above for doi. -- Main.RichardPyle 12 Nov 2007 22:43HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#number][number]]*
+
+There ought to be some clarification as to what this property is used for.  In some definitions, it is used *only* for numbers *within* a specific [[http://rs.tdwg.org/ontology/voc/PublicationCitation#volume][volume]]; but other times people have used it for just the sequential number of the article.  There needs to be some clarificaiton on what to provide for this property, vs. what to provide for [[http://rs.tdwg.org/ontology/voc/PublicationCitation#volume][volume]].
+
+-- Main.RichardPyle 12 Nov 2007 22:44HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#numberOfVolumes][numberOfVolumes]]*
+
+I use this for recording number of volumes in a finite volume series (see related discussion under !publicationType). -- Main.RichardPyle 12 Nov 2007 22:46HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#pages][pages]]*
+
+Again, there should be some "best practices" for this.  For example, hyphen or en-dash when indicating ranges? If it's a book of 525 pages, should this be entered as "525 pp.", or "1&#8211;525"? How should un-numbered page ranges be indicated (I enclose in [square brackets]). Should Plates be included here, if not part of numbered pages, or should they go in [[http://rs.tdwg.org/ontology/voc/PublicationCitation#figures][figures]]? Many other questions as well.
+
+-- Main.RichardPyle 12 Nov 2007 22:51HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#parentPublication][parentPublication]]*
+
+As there does not appear to be any element in PublicationCitation for "Journal" (or "series", or "periodical"), do I assume correctly that the Journal name for a JournalArticle would be derived from the title of the [[http://rs.tdwg.org/ontology/voc/PublicationCitation#parentPublication][parentPublication]] link for the JournalArticle? -- Main.RichardPyle 09 Sep 2007 23:24HST
+
+   * Yes. Remember that the parent publications does not have to have a GUID it can be an anonymous nodes within the RDF. -- Main.RogerHyam 10 Sep 2007 03:45HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#parentPublicationString][parentPublicationString]]*
+
+(Enter Comments Here)
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#placePublished][placePublished]]*
+
+Some best practices here would be helpful...(e.g., when to include the country or state as well as the city). -- Main.RichardPyle 12 Nov 2007 22:54HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#publicationType][publicationType]]*
+
+Regarding *[[http://rs.tdwg.org/ontology/voc/PublicationCitation#PublicationTypeTerm][publicationTypeTerm]]*:
+
+I now distinguish two kinds of "series".  One is "BookSeries", which is characterized by a finite set of volumes, the total number of which are usually known in advance, and are often published concurrently (e.g., a 5-volume set of books).  The other is "Periodical" (or "Serial" -- I haven't decided which word I like better), which is characterized by recussing volumes, published periodially in regular or irregular intervals, without a known finite number of volumes. These are Journals, Magazines, Newspapers, and certain kinds of book-like series that seem to be perpetual (e.g., FAO Fishereies series).  Two questions on this:
+   1 There are enough examples of "borderline" cases between these two kinds of series, that I'm slightly tempted to lump them together as just plain "Series"; and
+   1 If they are kept separate, then I assume the two corresponding PublicationTypeTerms would be "BookSeries" and "Journal".  In this case, I'm wondering whether the word "Journal" shouldn't be replaced with something more general, like "Periodical" or "Serial", to accommodate magazines, newspapers, and other such recurring/perpetual series.  -- Main.RichardPyle 09 Sep 2007 23:24HST
+
+   * It sounds to me like you are going a long way to defining some or these terms. Periodical sounds to me like something that comes out regularly (and some of these things are irregular). Serial sounds better but then we have JournalArticle, MagazineArticle and NewspaperArticle. It seems odd that we have Journal but not Magazine or Newspaper in such cases. What if we changed Journal to Serial and compressed the three different articles into just Article. So we would have:
+      * Serial: A publication that appears in a number of parts without having a predetermined number of issues.
+      * Article: A publication that appears as a subpart of a part of a Serial
+-- Main.RogerHyam 10 Sep 2007 03:45HST
+
+   * BookSeries: ? (all I can think is that Harry Potter hasn't been killed off so there is bound to be another book and so I can't say it is a book series it must be a Serial). If you can come up with some good definitions then I'll enter them in the vocabulary. We should sort out the Magazine and Newspaper stuff at the same time though. -- Main.RogerHyam 10 Sep 2007 03:45HST
+
+I think we need a careful discussion about the enumeration of [[http://rs.tdwg.org/ontology/voc/PublicationCitation#PublicationTypeTerm][publicationTypeTerm]]. -- Main.RichardPyle 12 Nov 2007 22:56HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#publisher][publisher]]*
+
+-- Should this be referenced to [[http://rs.tdwg.org/ontology/Base#Actor][Actor]]? -- Main.RichardPyle 12 Nov 2007 22:57HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#reprintEdition][reprintEdition]]*
+
+I don't even know what this property is used for -- it should be more clearly defined. -- Main.RichardPyle 12 Nov 2007 22:58HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#section][section]]*
+
+I don't even know what this property is used for -- it should be more clearly defined. -- Main.RichardPyle 12 Nov 2007 22:58HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#shortTitle][shortTitle]]*
+
+Is this used for anything other than Journal abbreviations???  -- Main.RichardPyle 12 Nov 2007 22:58HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#startDate][startDate]]*
+
+See comments above for !datePublished. -- Main.RichardPyle 12 Nov 2007 22:51HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#title][title]]*
+
+Pretty straightforward, but still need some discussion (e.g., Whether or not to include a period at the end; whether to use capitalization as originally appeared, or standardize to first-word and proper-names only, or...???; how to denote italicized words within title? etc.) -- Main.RichardPyle 12 Nov 2007 23:01HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#url][url]]*
+
+See comments above for doi. -- Main.RichardPyle 12 Nov 2007 22:43HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#volume][volume]]*
+
+See comments under "number" above.  Also, should this be numeric always, or as published (e.g., I, II, etc.)? Should it ever have a "Vol." or "Volume" included? -- Main.RichardPyle 12 Nov 2007 23:02HST
+
+*[[http://rs.tdwg.org/ontology/voc/PublicationCitation#year][year]]*
+
+How does this differ from the values included in [[http://rs.tdwg.org/ontology/voc/PublicationCitation#datePublished][datePublished]]/!verbatimDate and the [[http://rs.tdwg.org/ontology/voc/PublicationCitation#startDate][startDate]]/![[http://rs.tdwg.org/ontology/voc/PublicationCitation#endDate][endDate]] fields?
+---
+
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1194944844" format="1.1" reprev="1.6" version="1.6"}%
+d28 4
+d46 2
+d54 2
+d62 2
+d178 1
+a178 1
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1194941078" format="1.1" reprev="1.5" version="1.5"}%
+d20 1
+a20 1
+To seed this discussion, I have added some excerpts from an email exchange between myself and Roger Hyam; and I've secondarily added some additional comments as well. I suppose it would be more proper to create a separate discussion page for each Property Name under each specific vocabulary (e.g., !OntDiscussPublicationCitationPublicationCitationalternateTitle), but for simplicty, I thouyght it would be easier to create a single generic discussion page here, with a header for each Propery Name, and then these can be moved to dedicated discussion pages as needed. -- Main.RichardPyle 12 Nov 2007 17:23HST
+d30 11
+a40 1
+(Enter Comments Here)
+d44 3
+a46 1
+(Enter Comments Here)
+d50 3
+a52 1
+(Enter Comments Here)
+d56 3
+a58 1
+(Enter Comments Here)
+d62 3
+a64 1
+(Enter Comments Here)
+d68 1
+a68 1
+(Enter Comments Here)
+d72 3
+a74 1
+(Enter Comments Here)
+d78 1
+a78 1
+(Enter Comments Here)
+d82 1
+a82 1
+(Enter Comments Here)
+d86 3
+a88 1
+(Enter Comments Here)
+d92 1
+a92 1
+(Enter Comments Here)
+d96 3
+a98 1
+(Enter Comments Here)
+d102 3
+a104 1
+(Enter Comments Here)
+d112 1
+a112 1
+(Enter Comments Here)
+d125 1
+d129 2
+d133 1
+a133 1
+(Enter Comments Here)
+d137 1
+a137 1
+(Enter Comments Here)
+d141 1
+a141 1
+(Enter Comments Here)
+d145 1
+a145 1
+(Enter Comments Here)
+d149 1
+a149 1
+(Enter Comments Here)
+d153 1
+a153 1
+(Enter Comments Here)
+d157 1
+a157 1
+(Enter Comments Here)
+d161 1
+a161 1
+(Enter Comments Here)
+d165 1
+a165 2
+(Enter Comments Here)
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1170413196" format="1.1" version="1.4"}%
+d20 121
+a140 1
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1170064954" format="1.1" version="1.3"}%
+d10 2
+a11 2
+|  *Avowed XML Instance* | Being developed |
+|  *Avowed XML Schema* | Being developed |
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1165327531" format="1.1" version="1.2"}%
+d18 1
+a18 203
+Please add discussion to %TOPIC%Discussion as some text on this page is auto generated and your contributions may lost.
+
+
+---++ Ontology: TDWG PublicationCitation LSID Ontology
+   * *Location:* http://rs.tdwg.org/ontology/voc/PublicationCitation
+   * *Creator:* Roger Hyam
+   * *Publisher:* TDWG Biodiversity Information Standards
+   * *Issued:* 2006-12-06
+   * *Modified:* $Date: 2006-12-04 21:20:41 +0000 (Mon, 04 Dec 2006) $
+   * *Version Info:* 0.2 - [SVN $Rev: 765 $]
+   * *Description:* Ontology describing the metadata returned for LSIDs that are used for
+         publication citations. 
+   * *Comment:*  This ontology is based on a combination of suggestions
+         from TaxMLit, TaxonX and a draft 0.95 of TCS which was, in turn based on Rich Pyle's
+         Taxonomer data model which was inspired by Endnote 7.
+---++ Class: Publication Citation
+   * *Label:* Publication Citation
+   * *Comment:* A publication citation is a reference to a publication. It is an attempt to
+         uniquely identify a point or region within bibliographic space.
+   * *Sub Class Of:* http://rs.tdwg.org/ontology/Core#PublicationCitation
+   * *Defined By:* http://rs.tdwg.org/ontology/voc/PublicationCitation
+---+++ Property: publicationType
+   * *Label:* Publication Type
+   * *Comment:* The type of publication
+   * *Range:* http://rs.tdwg.org/ontology/voc/PublicationCitation#PublicationTypeTerm
+---+++ Property: authorTeam
+   * *Label:* Author Team
+   * *Comment:* A breakdown of the authors of this publication including.
+   * *Range:* http://rs.tdwg.org/ontology/Base#Actor
+---+++ Property: parentPublication
+   * *Label:* Parent Publication
+   * *Comment:* The publication in which this publication is embedded. For a journal article
+         this would be the journal. It is recommended that even if this property is populated the
+         parentPublicationString is also populated as it will be understood by less able clients. 
+   * *Range:* #PublicationCitation
+---+++ Property: authorship
+   * *Label:* Authorship
+   * *Comment:* The authors of the publication as a string. May include initials etc.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: year
+   * *Label:* Year
+   * *Comment:* The year of publication
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: title
+   * *Label:* Title
+   * *Comment:* The title of the publication
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: parentPublicationString
+   * *Label:* Parent Publication String
+   * *Comment:* A string representing the parent publication. In the case of a journal article
+         this is the journal. For a book it may be the book series. For a manuscript or audiovisual
+         material it may be the collection. Details of this parent publication may be given in the
+         parentPublication property. It is recommended that even if the parentPublication property
+         is provided this property is still populated for clients that may not process linked or
+         embedded objects.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: shortTitle
+   * *Label:* Short Title
+   * *Comment:* The prefered short or abbreviated title of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: alternateTitle
+   * *Label:* Alternate Title
+   * *Comment:* Alternative title for the publication. Also known as. Could be repeated for
+         multiple abbreviations.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: publisher
+   * *Label:* Publisher
+   * *Comment:* The name of the publisher of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: placePublished
+   * *Label:* Place Published
+   * *Comment:* The geographical place of publication. Typically the city and or country names.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: volume
+   * *Label:* Volume
+   * *Comment:* The volume number as a string.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: numberOfVolumes
+   * *Label:* numberOfVolumes
+   * *Comment:* The number of volumes in the publications.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: number
+   * *Label:* number
+   * *Comment:* The part number within a publication e.g. 4(2):123 means Volume 4, number 3, p.
+         123 or a serial number as in the case of magazines which are often numbered by issue. 
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: pages
+   * *Label:* pages
+   * *Comment:* The page spread of the publication. May be a single page or a range.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: section
+   * *Label:* Section
+   * *Comment:* Some publications are split into sections. This can be signified here.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: edition
+   * *Label:* Edition
+   * *Comment:* The edition of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: datePublished
+   * *Label:* Date Published
+   * *Comment:* The date of publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: startDate
+   * *Label:* Start Date
+   * *Comment:* The starting date of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: endDate
+   * *Label:* End Date
+   * *Comment:* The end date of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: isbn
+   * *Label:* ISBN
+   * *Comment:* International Standard Book Number.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: issn
+   * *Label:* ISSN
+   * *Comment:* International Standard Serial Number.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: issn
+   * *Label:* DOI
+   * *Comment:* The Digital Object Identifier for the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: reprintEdition
+   * *Label:* Reprint Edition
+   * *Comment:* Reprint Edition
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: figures
+   * *Label:* Figures
+   * *Comment:* Figures
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: url
+   * *Label:* URL
+   * *Comment:* URL
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---++ Class: Publication Citation
+   * *Label:* Publication Citation
+   * *Comment:* 
+   * *Sub Class Of:* http://rs.tdwg.org/ontology/Base#DefinedTerm
+   * *Defined By:* http://rs.tdwg.org/ontology/voc/PublicationCitation
+---+++ Term: Generic
+   * *Label:* Generic
+   * *Definition:* A generic publication.
+---+++ Term: Artwork
+   * *Label:* Artwork
+   * *Definition:* An Artwork type publication.
+---+++ Term: AudiovisualMaterial
+   * *Label:* Audiovisual Material
+   * *Definition:* A Audiovisual Material type publication.
+---+++ Term: Book
+   * *Label:* Book
+   * *Definition:* A Book type publication.
+---+++ Term: BookSection
+   * *Label:* Book Section
+   * *Definition:* A Book Section type publication.
+---+++ Term: BookSeries
+   * *Label:* Book Series
+   * *Definition:* A Book Series type publication.
+---+++ Term: ComputerProgram
+   * *Label:* Computer Program
+   * *Definition:* A Computer Program type publication.
+---+++ Term: ConferenceProceedings
+   * *Label:* Conference Proceedings
+   * *Definition:* A Conference Proceedings type publication.
+---+++ Term: EditedBook
+   * *Label:* Edited Book
+   * *Definition:* A Edited Book type publication.
+---+++ Term: JournalArticle
+   * *Label:* Journal Article
+   * *Definition:* A Journal Article type publication.
+---+++ Term: MagazineArticle
+   * *Label:* Magazine Article
+   * *Definition:* A Magazine Article type publication.
+---+++ Term: Map
+   * *Label:* Map
+   * *Definition:* A Map type publication.
+---+++ Term: NewspaperArticle
+   * *Label:* Newspaper Article
+   * *Definition:* A Newspaper Article type publication.
+---+++ Term: Patent
+   * *Label:* Patent
+   * *Definition:* A Patent type publication.
+---+++ Term: Report
+   * *Label:* Report
+   * *Definition:* A Report type publication.
+---+++ Term: Thesis
+   * *Label:* Thesis
+   * *Definition:* A Thesis type publication.
+---+++ Term: Communication
+   * *Label:* Communication
+   * *Definition:* A Communication type publication.
+---+++ Term: SubReference
+   * *Label:* Sub-Reference
+   * *Definition:* A Sub-Reference type publication.
+---+++ Term: Determination
+   * *Label:* Determination
+   * *Definition:* A Determination type publication.
+---+++ Term: Commentary
+   * *Label:* Commentary
+   * *Definition:* A Commentary type publication.
+---+++ Term: WebPage
+   * *Label:* Web Page
+   * *Definition:* A Web Page type publication.
+
+d20 1
+a20 1
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1165267698" format="1.1" version="1.1"}%
+a20 2
+
+
+d35 2
+a36 1
+   * *Comment:* 
+d39 14
+d65 17
+a81 7
+---+++ Property: secondaryTitle
+   * *Label:* Secondary Title
+   * *Comment:* The secondary or sub title of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: secondaryTitle
+   * *Label:* Secondary Title
+   * *Comment:* The secondary or sub title of the publication.
+d85 1
+a85 5
+   * *Comment:* The publisher of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: placePublished
+   * *Label:* Place Published
+   * *Comment:* The geographical place of publication.
+d89 1
+a89 1
+   * *Comment:* The geographical place of publication.
+d93 1
+a93 1
+   * *Comment:* The volume number as a string
+d95 3
+a97 3
+---+++ Property: numberVolumes
+   * *Label:* numberVolumes
+   * *Comment:* The number of volumes
+d101 2
+a102 1
+   * *Comment:* The number of the publication
+d106 1
+a106 1
+   * *Comment:* The page spread of the publication
+d110 1
+a110 1
+   * *Comment:* The section of the publication
+d114 1
+a114 1
+   * *Comment:* The edition of the publication
+d120 3
+a122 3
+---+++ Property: typeWork
+   * *Label:* Type Work
+   * *Comment:* Type Work
+d124 3
+a126 8
+---+++ Property: shortTitle
+   * *Label:* Short Title
+   * *Comment:* The short or abbreviated title of the publication.
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: alternateTitle
+   * *Label:* Alternate Title
+   * *Comment:* Alternative title for the publication. Also known as. Could be repeated for
+         multiple abbreviations.
+d136 3
+a138 3
+---+++ Property: originalPublication
+   * *Label:* Original Publication
+   * *Comment:* Original Publication
+a143 8
+---+++ Property: reviewedItem
+   * *Label:* Reviewed Item
+   * *Comment:* Reviewed Item
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: figures
+   * *Label:* Figures
+   * *Comment:* Figures
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+a147 8
+---+++ Property: startDate
+   * *Label:* Start Date
+   * *Comment:* Start Date
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+---+++ Property: endDate
+   * *Label:* End Date
+   * *Comment:* End Date
+   * *Range:* http://www.w3.org/2001/XMLSchema#string
+a151 4
+---+++ Property: authorTeam
+   * *Label:* Author Team
+   * *Comment:* A breakdown of the authors of this publication including.
+   * *Range:* http://rs.tdwg.org/ontology/Base#Actorhttp://rs.tdwg.org/ontology/Base#Actor
+d157 63
+d221 1
+a221 2
+
+----
+a222 1
+
+@

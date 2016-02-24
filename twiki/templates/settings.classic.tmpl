@@ -1,0 +1,59 @@
+%TMPL:INCLUDE{"twiki.classic"}%
+
+
+
+%TMPL:DEF{"templatescript"}%
+<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/PatternSkin/twiki_edit.js"></script>
+%TMPL:END%
+
+
+
+%TMPL:DEF{"bodystart"}%
+<body bgcolor="#ffffff" onload="initForm()">
+#PageTop
+%TMPL:END%
+
+
+%TMPL:DEF{"titleaction"}%(set preferences) %TMPL:END%
+
+%TMPL:DEF{"webaction"}%Preferences for%TMPL:END%
+
+
+%TMPL:DEF{"topicaction"}%
+	<input type="submit" class="twikiSubmit" name="action" value="Cancel" id="cancel" />%TMPL:P{"sep"}%
+	<input type="submit" class="twikiSubmit" name="action" value="Save" id="checkpoint" />%TMPL:END%
+
+
+%TMPL:DEF{"footernote"}%
+<div class="TWikiFooterNote">
+&nbsp; &nbsp;
+</td><td valign="top">
+<font color="#333333" size="-1">
+*Note:*
+   * Get help on
+     <a target="TWikiVariables" onclick="return launchWindow('%TWIKIWEB%','TWikiVariables')" href="%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/TWikiVariables" rel='nofollow'>Setting topic preferences</a>.
+   * Each preference has the syntax <br />[multiple of 3 spaces] * [space] Set [space] VARIABLENAME [space] = [value]
+</font>
+ </div>%TMPL:END%
+
+
+
+
+%TMPL:DEF{"content"}%
+<form method="post" name="main" action="%SCRIPTURLPATH{"manage"}%/%WEB%/%TOPIC%">
+---+ %TMPL:P{"webaction"}% %TOPIC%
+
+<div class="twikiEditTextarea">
+<input type="hidden" name="originalrev" value="%ORIGINALREV%" />
+<input type="hidden" name="action" value="saveSettings" />
+<textarea id='topic' name='text' wrap='virtual' rows='%EDITBOXHEIGHT%' cols='%EDITBOXWIDTH%' style='%EDITBOXSTYLE%'>
+%TEXT%
+</textarea><br />
+</div>
+%TMPL:P{"topicinfo"}%</form>%TMPL:END%
+
+%TMPL:P{"htmldoctype"}%
+%TMPL:P{"head"}%
+%TMPL:P{"bodystart"}%
+%TMPL:P{"main"}%
+%TMPL:P{"bodyend"}%

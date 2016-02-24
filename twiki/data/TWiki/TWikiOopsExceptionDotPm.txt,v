@@ -1,0 +1,76 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.12.03;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::OopsException=
+*extends* <tt>Error</tt>
+
+
+Exception used to raise a request to redirect to an Oops URL.
+An OopsException thrown anywhere in the code will redirect the
+browser to a url based on the =oops= script. =oops= requires a
+=template= parameter, that is the name of a template file from
+the =templates= directory. This file will be expanded and the
+parameter values passed to the exception instantiated. The
+result will be shown in the browser.
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($template,...)</tt>
+   * =template= is the name of an oops template
+The remaining parameters are interpreted as key-value pairs. The following keys are used:
+   * =web= will be used as the web for the oops
+   * =topic= will be used as the topic for the oops
+   * =def= - is the (optional) name of a TMPL:DEF within the template
+   * =keep= - if set, the exception handler should try it's damndest to retain parameter values from the query.
+   * =params= is a reference to an array of parameters. These will be substituted for !%PARAM1%, !%PARAM2% ... !%PARAMn% in the template.
+
+
+
+---++ ObjectMethod *stringify* <tt>([$session]) -> $string</tt>
+
+Generates a string representation for the object. if a session is passed in, and
+the excpetion specifies a def, then that def is expanded. This is to allow
+internal expansion of oops exceptions for example when performing bulk operations.
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d27 1
+a27 1
+---++ ObjectMethod *stringify* <tt>() -> $string</tt>
+d29 3
+a31 1
+Generates a string representation for the object, mainly for debugging.
+@

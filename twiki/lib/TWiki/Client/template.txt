@@ -1,0 +1,58 @@
+sub login {
+    my( $this, $query, $twikiSession ) = @_;
+    my $twiki = $this->{twiki};
+
+    my $origurl = $query->param( 'origurl' );
+    my $loginName = $query->param( 'username' );
+    my $loginPass = $query->param( 'password' );
+
+    # Eat these so there's no risk of accidental passthrough
+    $query->delete('origurl', 'username', 'password');
+
+    my $tmpl = $twiki->{templates}->readTemplate(
+        'login', $twiki->getSkin() );
+
+    my $banner = $twiki->{templates}->expandTemplate( 'LOG_IN_BANNER' );
+    my $note = '';
+    my $topic = $twiki->{topicName};
+    my $web = $twiki->{webName};
+
+    my $cgisession = $this->{cgisession};
+
+    if( $cgisession && $cgisession->param( 'AUTHUSER' ) &&
+          $loginName ne $cgisession->param( 'AUTHUSER' )) {
+        $banner = $twiki->{templates}->expandTemplate( 'LOGGED_IN_BANNER' );
+        $note = $twiki->{templates}->expandTemplate( 'NEW_USER_NOTE' );
+    }
+
+    if( $loginName ) {
+        my $passwordHandler = $twiki->{users}->{passwords};
+        my $validation = $passwordHandler->checkPassword( $loginName, $loginPass );
+
+        if( $validation ) {
+            $this->userLoggedIn( $loginName );
+            $cgisession->param( 'VALIDATION', $validation ) if $cgisession;
+            if( !$origurl || $origurl eq $query->url() ) {
+                $origurl = $twiki->getScriptUrl( 0, 'view', $web, $topic );
+            }
+            # Redirect with passthrough
+            $twikiSession->redirect($origurl, 1 );
+            return;
+        } else {
+            $banner = $twiki->{templates}->expandTemplate('UNRECOGNISED_USER');
+        }
+    }
+
+    # TODO: add JavaScript password encryption in the template
+    # to use a template)
+    $origurl ||= '';
+    $tmpl =~ s/%ORIGURL%/$origurl/g;
+    $tmpl =~ s/%BANNER%/$banner/g;
+    $tmpl =~ s/%NOTE%/$note/g;
+
+    $tmpl = $twiki->handleCommonTags( $tmpl, $web, $topic );
+    $tmpl = $twiki->{renderer}->getRenderedVersion( $tmpl, '' );
+    $tmpl =~ s/<nop>//g;
+    $twiki->writePageHeader( $query );
+    print $tmpl;
+}

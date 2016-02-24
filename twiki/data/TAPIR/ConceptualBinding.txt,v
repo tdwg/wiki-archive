@@ -1,0 +1,208 @@
+head	1.10;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@---+ Conceptual Binding
+
+To define a filter and a ResponseStructure it is necessary to make references to concepts from a ConceptualSchema. In filters they are associated to a ComparativeOperator, and in a ResponseStructure they appear inside element or attribute definitions.
+
+DifferencesInConceptualBinding shows how the protocols are currently dealing with this issue.
+
+The new protocol already has these proposals:
+
+ConceptualBindingProposalOne
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d7 1
+a7 21
+In DiGIR this has been done using a SubstitutionGroup approach, while BioCASE uses an xpath-alike based approach. SubstitutionGroups cannot easily deal with hierarchically nested xml documents, so we follow the xpath based approach here.
+
+---+++++ XPath based Conceptual Binding
+
+To locate a concept it needs to:
+
+ a. identify the ConceptualSchema that is being referred to
+      * --> schema namespace
+   * identifiy the concept(element) within that schema
+      * --> exact xpath to just 1 element
+
+So a reference to any concept could look like this:
+
+*<concept schema="http://www.tdwg.org/someschema" concept="/recordset/record/identification/fullname" ConceptualBinding>*
+
+or for attributes:
+
+*<concept schema="http://www.tdwg.org/someschema" concept="/recordset/record/identification/@@fullname" ConceptualBinding>*
+
+
+As a filter and especially a ResponseStructure definition might need a lot of concepts referenced, it might be useful to use a the xml ID & IDREF mechanism to refer via IDREF to a list of schema namespaces defined somewhere with their xml IDs.
+d9 1
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d3 1
+a3 1
+To define a filter and a ResponseStructure it is necessary to bind a concept of the ConceptualSchema to a ComparativeOperator in a filter or an element definition in the ResponseStructure.
+d5 3
+a7 1
+In DiGIR so far this has been done using a SubstitutionGroup approach while BioCASE uses an xpath-alike based approach. SubstitutionGroups cannot easily deal with hierarchically nested xml documents, so we follow the xpath based approach here.
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d7 1
+a7 1
+---+++++ Binding using an XPath
+d24 3
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d18 1
+a18 1
+*<concept schema="http://www.tdwg.org/foo" concept="/recordset/record/identification/fullname" ConceptualBinding>*
+d22 1
+a22 1
+*<concept schema="http://www.tdwg.org/foo" concept="/recordset/record/identification/@@fullname" ConceptualBinding>*
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d18 1
+a18 1
+*<concept schema="http://www.tdwg.org/useyourimagination" concept="/recordset/record/identification/fullname" ConceptualBinding>*
+d22 1
+a22 1
+*<concept schema="http://www.tdwg.org/useyourimagination" concept="/recordset/record/identification/@@fullname" ConceptualBinding>*
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d18 5
+a22 1
+<concept schema="http://www.tdwg.org/useyourimagination" concept="/recordset/record/identification/fullname" ConceptualBinding>
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d18 1
+a18 1
+<concept schema="http://www.tdwg.org/useyourimagination" concept="/RecordSet/Record/Identification/FullName" ConceptualBinding>
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d11 1
+a11 1
+ *a identify the ConceptualSchema that is being referred to
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d11 1
+a11 1
+ a* identify the ConceptualSchema that is being referred to
+@

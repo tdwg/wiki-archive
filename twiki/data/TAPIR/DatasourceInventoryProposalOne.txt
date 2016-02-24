@@ -1,0 +1,48 @@
+---+ Datasource Inventory Proposal One
+
+A proposal for an InventoryRequest that accepts multiple concepts.
+
+---+++++ Request
+<verbatim>
+<request>
+  <header>
+    ...
+  </header>
+  <inventory count="true" start=0 limit=1000 xmlns:ns1="http://www.somenamespace.org" xmlns:ns2="http://www.anothernamespace.org">
+    <concepts>
+      <concept path="ns1:/record/taxon/fullname"/> *
+      <concept path="ns2:/Gazeteer/Location/ISOcountry"/>
+    </concepts>
+    <filter>
+      ...
+    </filter>
+  </inventory>
+</request>
+
+with* being repeatable elements
+</verbatim>
+
+---+++++ Response
+
+<verbatim>
+<response>
+  <header>
+   ...
+  </header>
+  <inventory xmlns:ns1="http://www.somenamespace.org" xmlns:ns2="http://www.anothernamespace.org">
+    <record count="13"> *
+      <value>Abies alba Mill.</value> *
+      <value>DE</value>
+    </record>
+    <record count="45">
+      <value>Quercus robur L.</value>
+      <value>DE</value>
+    </record>
+  </inventory>
+  <footer start="0" next="2" totalReturned="2" totalMatched="117" DatasourceInventoryProposalOne>
+</response>
+
+with* being repeatable elements
+</verbatim>
+
+Note: order of values should be the same as the order of concepts specified in the request.

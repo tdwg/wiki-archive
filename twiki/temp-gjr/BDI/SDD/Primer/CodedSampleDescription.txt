@@ -1,0 +1,178 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258682522" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="CodedData"}%
+---++Main.BDI Part 0: Introduction and Primer to the Main.BDI Standard 
+
+---+++2.2 Main.BDI for coded sample descriptions
+
+Sample data descriptions (Box 2.1.1.2) usually comprise repeated measurements of parts of individual specimens, and are the basis from which the more abstracted descriptions in natural language and coded descriptions are derived. Few taxonomists consistently record and archive their raw data in a standardised format. 
+
+----++++Box 2.2.1 - Example of sample (specimen) descriptive data
+
+  <div>
+	<table bgcolor="#ddddff" border="1" width="80%" cellspacing="0" id="table10" cellpadding="0">
+		<tr>
+			<td rowspan="2" align="center">Specimen</td>
+			<td colspan="5" align="center">Spore length</td>
+			<td colspan="5" align="center">Spore width</td>
+			<td width="163" rowspan="2" align="center">Spore colour</td>
+		</tr>
+		<tr>
+			<td width="25" align="center">1</td>
+			<td width="25" align="center">2</td>
+			<td width="25" align="center">3</td>
+			<td width="25" align="center">4</td>
+			<td width="25" align="center">5</td>
+			<td width="25" align="center">1</td>
+			<td width="25" align="center">2</td>
+			<td width="25" align="center">3</td>
+			<td width="25" align="center">4</td>
+			<td width="25" align="center">5</td>
+		</tr>
+		<tr>
+			<td align="center">TJM45337</td>
+			<td width="25" align="center">12</td>
+			<td width="25" align="center">13</td>
+			<td width="25" align="center">12</td>
+			<td width="25" align="center">15</td>
+			<td width="25" align="center">11</td>
+			<td width="25" align="center">8</td>
+			<td width="25" align="center">8</td>
+			<td width="25" align="center">7</td>
+			<td width="25" align="center">6</td>
+			<td width="25" align="center">6</td>
+			<td width="163" align="center">brown</td>
+		</tr>
+		<tr>
+			<td align="center">TLM33466</td>
+			<td width="25" align="center">15</td>
+			<td width="25" align="center">18</td>
+			<td width="25" align="center">17</td>
+			<td width="25" align="center">17</td>
+			<td width="25" align="center">15</td>
+			<td width="25" align="center">10</td>
+			<td width="25" align="center">8</td>
+			<td width="25" align="center">9</td>
+			<td width="25" align="center">9</td>
+			<td width="25" align="center">10</td>
+			<td width="163" align="center">yellow</td>
+		</tr>
+	</table>
+	</div>
+
+Coded sample descriptions record the range of characteristics found in an individual, as opposed to a class or taxon (e.g. species, genus etc.). To record summary data for taxonomic levels higher than the individual, see the topic [[CodedData][Using Main.BDI for coded summary descriptions]].
+
+A coded sample description requires three essential items: the identifiers of the specimens being described, a set of descriptors (characters and states) used to describe the specimens, and the coded descriptions themselves.
+
+A simple Main.BDI instance document representing part of the sample data above has the basic structure shown below and in Example 2.2.1.
+
+%ATTACHURL%/coded_sample_descriptions.gif
+
+
+----++++Example 2.2.1 - A simple coded sample description
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<tr>
+<td>
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets xsi:schemaLocation="http://ns.tdwg.org/UBIF/2006 http://www.lucidcentral.org/2006/SDD/SDD1.1-RC1/SDD.xsd" xmlns="http://ns.tdwg.org/UBIF/2006" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<TechnicalMetadata created="2006-06-22T11:19:56.007+10:00">
+		<Generator name="by hand" version="1"/>
+	</TechnicalMetadata>
+	<Dataset xml:lang="en-us">
+		<Representation>
+			<Label>sample data example</Label>
+		</Representation>
+		<Specimens>
+			<Specimen id="sp1">
+				<Representation>
+					<Label>TJM45337</Label>
+				</Representation>
+			</Specimen>
+			<Specimen id="sp2">
+				<Representation>
+					<Label>TLM33466</Label>
+				</Representation>
+			</Specimen>
+                        ...etc
+		</Specimens>
+		<Characters>
+			<QuantitativeCharacter id="ch1">
+				<Representation>
+					<Label>Spore length</Label>
+				</Representation>
+			</QuantitativeCharacter>
+			<CategoricalCharacter id="ch3">
+				<Representation>
+					<Label>Spore colour</Label>
+				</Representation>
+				<States>
+					<StateDefinition id="s1">
+						<Representation>
+							<Label>brown</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s2">
+						<Representation>
+							<Label>yellow</Label>
+						</Representation>
+					</StateDefinition>
+                                        ...etc
+				</States>
+			</CategoricalCharacter>
+                        ...etc
+		</Characters>
+		<CodedDescriptions>
+			<CodedDescription>
+				<Representation>
+					<Label>Specimen data for fungal specimens</Label>
+				</Representation>
+				<SampleData>
+					<SamplingEvent id="TJM45337">
+						<SamplingUnit>
+							<Quantitative ref="ch1" value="12"/>
+						</SamplingUnit>
+						<SamplingUnit>
+							<Quantitative ref="ch1" value="13"/>
+						</SamplingUnit>
+						<SamplingUnit>
+							<Quantitative ref="ch1" value="12"/>
+						</SamplingUnit>
+						<SamplingUnit>
+							<Quantitative ref="ch1" value="15"/>
+						</SamplingUnit>
+						<SamplingUnit>
+							<Quantitative ref="ch1" value="11"/>
+						</SamplingUnit>
+						<SamplingUnit>
+							<Categorical ref="ch3">
+								<State ref="s1"/>
+							</Categorical>
+						</SamplingUnit>
+					</SamplingEvent>
+                                       ...etc
+				</SampleData>
+			</CodedDescription>
+		</CodedDescriptions>
+	</Dataset>
+</Datasets>
+</verbatim>
+</td>
+</tr>
+
+</table>
+
+For more information on defining sampling units using the &lt;Specimens&gt; element, see the topic [[SpecimenNames][Defining specimen names]]. 
+For more information on defining characters and states using the &lt;Characters&gt; element, see the topic [[SddCharacters][Defining characters and states]].
+
+Note that characters can also be arranged into hierarchies. See the topic [[CharacterHierarchies][Defining character hierarchies]] for more information.
+
+The &lt;Representation&gt; element provides a label for the description. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic [[SddLanguage][Language support in Main.BDI]].
+
+The &lt;SamplingEvent&gt; includes elements specifying the timing and location of the sample data. For more information see the topic [[SamplingEvent][Elements within &lt;SamplingEvent&gt;]]
+
+Characters used in the description are listed under &lt;SampleData&gt;. Main.BDI distinguishes between different kinds of characters (see the topic [[SddCharacters][Defining characters and states]] for more information). For categorical characters (characters with states) the states occurring in the taxon being described are listed by reference. In the example given above, the specimen TJM45337 is described as having brown spores (state s1 of character ch3) while specimen TLM33466is described as having yellow spores (state s2 of character ch3). Note that states that are not listed are inferred to not occur in the taxon being described.
+
+-- Main.KevinThiele - 06 Jul 2006
+
+%META:FILEATTACHMENT{name="coded_sample_descriptions.gif" attachment="coded_sample_descriptions.gif" attr="" comment="" date="1152265181" path="coded_sample_descriptions.gif" size="12647" stream="coded_sample_descriptions.gif" user="Main.KevinThiele" version="3"}%

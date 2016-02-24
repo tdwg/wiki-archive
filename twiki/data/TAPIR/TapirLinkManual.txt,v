@@ -1,0 +1,132 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2011.04.01.12.08.36;	author RenatoDeGiovanni;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RenatoDeGiovanni" date="1301659716" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="TapirLink"}%
+---++ Introduction
+
+TapirLink is an application designed to allow deployment of data using the TAPIR protocol.
+
+This Guide is split into three parts:
+
+   * Before you install &#8211; dealing with the way in which you need to prepare for TapirLink. This requires appropriate hardware, software and some configuration to be performed. This step will likely require your database administrator and Information Technology (IT) support group to be involved.
+   * Installation &#8211; dealing with how to install the TapirLink software. This is relatively easy, but requires particular access privileges to the web server and will likely need some involvement from an IT support group.
+   * Configuration &#8211; not highly technical. Requires knowledge of the database, its fields and values. You will also need to have access to the setup pages on the web server in the TapirLink installation previously completed.
+
+---++ Before you Install
+
+Installation of TapirLink is relatively easy, however, you need to have your data and infrastructure prepared before you can deploy your data over the web.
+
+To create a functional data provider using TapirLink, your organization will need to have a physical web server outside of the corporate firewall which your IT support group will allow you to install software on. This server requires a web server package, such as [[http://www.apache.org][Apache]]. Additionally, you will need [[http://www.php.net][PHP]] (make sure to use version 4.2.3 or higher) with the [[http://www.php.net/mbstring][PHP mbstring module]] enabled and another PHP module to allow connection to the specific database package that you are planning to use. Currently, TapirLink can only expose data that is stored in a relational database. Please check if your database is supported before installing: http://phplens.com/adodb/supported.databases.html
+
+Although TapirLink has been initially used by specimen/observation data providers, it is a general purpose package that can be used to serve any kind of data. Since TAPIR has been designed for federated networks, each data provider needs to choose one or more data sharing standards to use. Those currently available for specimen/observation data providers include:
+
+   * [[http://www.tdwg.org/schemas/abcd/2.06][ABCD 2.06]]
+   * [[http://rs.tdwg.org/dwc/][DarwinCore]]
+   * [[http://rs.tdwg.org/ontology/voc/Specimen.rdf][TDWG Specimen Ontology]]
+
+There are several ways to approach the database package on the web server: 
+
+   1. Expose your production database to the web server to allow for a direct connection to the production database,
+   2. Construct a &#8220;mirror&#8221; database to be a direct copy of the production database, and then perform more complex mapping of the fields to the data sharing standard chosen in TapirLink&#8217;s configuration (described in the Post-Installation section), or
+   3. Construct a &#8220;mirror&#8221; of the production database so that the fields match the data sharing standard you will use in TapirLink, and then perform the translation from your Production Database data to this standard when you upload data, making mapping easier in TapirLink.
+
+Each option has its advantages and drawbacks, so the decision should be on a case by case basis.
+
+---++ Installation
+
+There are two ways to download and install TapirLink:
+
+   1. Download the [[http://sourceforge.net/project/showfiles.php?group_id=38190&package_id=217873][latest release package]]. Choose the zip file if you are installing on a Windows platform, or the tarball for the other platforms. Extract the file after downloading. This is the easiest and most common way of downloading, but it does not offer any facilities to upgrade to newer versions in the future.
+   2. Check out the <noautolink>TapirLink</noautolink> code from the Subversion repository. This option will probably take more time because you will need a Subversion client software. However, it will be easier to upgrade whenever necessary. You can find more information about this installation option [[http://sourceforge.net/svn/?group_id=38190][here]]. When using the Subversion client, you will need to indicate the <noautolink>TapirLink</noautolink> repository address: !https://digir.svn.sourceforge.net/svnroot/digir/tapirlink/trunk. If you want to avoid downloading an unstable version, you can specify the corresponding revision number of the latest stable release. This can be found in the [[http://digir.svn.sourceforge.net/viewvc/*checkout*/digir/tapirlink/trunk/ChangeLog.txt][latest version of the ChangeLog file]].
+
+After downloading TapirLink, configure your web server to expose the admin and www directories. The admin directory must be password protected and behind a secure connection if possible.  For example, extract the TapirLink archive to a location on your web server outside of the document root. Create Apache aliases to the www and admin directories called tapir and tapiradmin respectively. If using IIS configure the two directories for web sharing with appropriate aliases.
+
+All directories must be readable by the web server user and the config, log, cache and statistics directories must be writable (but not exposed to the web).
+
+Check your installation by navigating to !http://your_server/your_admin_alias/check.php and you will see a page entitled TapirLink Configuration Test.
+
+---++ Configuring
+
+Navigate to !http://your_server/your_admin_alias/configurator.php to set up your first resource. 
+
+The resource is setup in six stages.  As you progress through the process, you will be presented with a separate page for each stage.  Each step has solid documentation on what should be in each field. Once you&#8217;ve finished the process, you can access the pages again via the configurator page (shown on the right) whenever you need to make any changes.
+
+<img src="%ATTACHURLPATH%/pic1.png" alt="Screenshot of the configuration interface" width="769"/>
+
+   * Stage 1 &#8211; Descriptive metadata regarding your data source.
+   * Stage 2 &#8211; The connection details, driver, username, and password for your database.
+   * Stage 3 &#8211; Defines the database tables that you will serve information from, including joins between the fields.
+   * Stage 4 &#8211; Set up simple filter criteria to enable you to prevent particular records from being available.
+   * Stage 5 &#8211; Select the data standard that you chose earlier to map your data to (see below).
+   * Stage 6 &#8211; Configure items such as maximum number of records and case sensitivity.
+
+During Stage 5 of the configuration, you will need to map your fields in the database to the fields in your chosen data sharing standard.  Depending on how your database was implemented in the pre-installation section, this will either be a direct mapping of fields, or a process where you need to perform some conversions.  
+
+Mapping of the fields in your database is performed via the configurator page, as shown on the left.  Each field in the chosen data standard needs to be mapped to particular fields in your database, and can be done as single columns, server variables or via fixed values.
+
+<img src="%ATTACHURLPATH%/pic2.png" alt="Screenshot of the database mapping configuration" width="660"/>
+
+The key fields are marked with asterisks, and any other fields may or may not be mapped.
+
+The aim of this mapping is to map as much of the data sharing standard as possible.  If your database was originally designed with this in mind, all fields will be present.  However, many legacy databases will not have all the fields and the mapping will not be complete for TapirLink.
+
+Having completed the configuration click the save new resource button. You can test the resource by navigating to !http://your_server/your_www_alias/tapir_client.php. Using this client you can experiment with the different requests that TapirLink handles.
+
+Your final step should be to reference the new TapirLink implementation with the appropriate data portal service, such as [[http://www.gbif.org][GBIF]].
+
+---++ More information
+
+TDWG:
+
+   * The [[http://www.tdwg.org][TDWG main site]] 
+
+TAPIR:
+
+   * TDWG&#8217;s [[http://www.tdwg.org/activities/tapir/][TAPIR Task Group]]
+
+<noautolink>TapirLink</noautolink>:
+
+   * The TDWG TapirLink site
+
+Data Sharing Standards:
+
+   * [[http://www.tdwg.org/schemas/abcd/2.06][ABCD 2.06]]
+   * [[http://rs.tdwg.org/dwc/][DarwinCore]]
+   * [[http://rs.tdwg.org/ontology/voc/Specimen.rdf][TDWG Specimen Ontology]]
+
+Web server software:
+
+   * [[http://www.apache.org][Apache]]
+   * [[http://www.php.net][PHP]]
+   * [[http://www.mysql.com][MySQL]]
+
+Mailing list:
+
+   * [[http://lists.tdwg.org/mailman/listinfo/tdwg-tag][TDWG Architecture Group mailing list]] 
+
+%META:FILEATTACHMENT{name="pic2.bmp" attachment="pic2.bmp" attr="" comment="Screenshot of the database mapping configuration" date="1301657209" path="pic2.bmp" size="520794" stream="pic2.bmp" user="Main.RenatoDeGiovanni" version="1"}%
+%META:FILEATTACHMENT{name="pic1.bmp" attachment="pic1.bmp" attr="" comment="Screenshot of the configuration interface" date="1301659283" path="pic1.bmp" size="1138174" stream="pic1.bmp" user="Main.RenatoDeGiovanni" version="1"}%
+%META:FILEATTACHMENT{name="pic1.png" attachment="pic1.png" attr="" comment="Screenshot of the configuration interface" date="1301659394" path="pic1.png" size="23046" stream="pic1.png" user="Main.RenatoDeGiovanni" version="1"}%
+%META:FILEATTACHMENT{name="pic2.png" attachment="pic2.png" attr="" comment="Screenshot of the database mapping configuration" date="1301659512" path="pic2.png" size="26737" stream="pic2.png" user="Main.RenatoDeGiovanni" version="1"}%
+@

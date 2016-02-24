@@ -1,0 +1,185 @@
+---+ Package =TWiki::Client=
+
+The package is also a Factory for login managers and also the base class
+for all login managers.
+
+On it's own, an object of this class is used when you specify 'none' in
+the security setup section of
+[[%SCRIPTURL{"configure"}%][configure]]. When it is used,
+logins are not supported. If you want to authenticate users then you should
+consider TemplateLogin or ApacheLogin, which are subclasses of this class.
+
+If you are building a new login manager, then you should write a new subclass
+of this class, implementing the methods marked as *VIRTUAL*. There are already
+examples in the =lib/TWiki/Client= directory.
+
+The class has extensive tracing, which is enabled by
+$TWiki::cfg{Trace}{Client.pm}. The tracing is done in such a way as to
+let the perl optimiser optimise out the trace function as a no-op if tracing
+is disabled.
+
+Here's an overview of how it works:
+
+Early in TWiki::new, the login manager is created. The creation of the login manager does two things:
+   1 If sessions are in use, it loads CGI::Session but doesn't initialise the session yet.
+   1 Creates the login manager object
+Slightly later in TWiki::new, loginManager->loadSession is called.
+   1 Calls loginManager->getUser to get the username *before* the session is created
+      * TWiki::Client::ApacheLogin looks at REMOTE_USER
+      * TWiki::Client::TemplateLogin just returns undef
+   1 reads the TWIKISID cookie to get the SID (or the TWIKISID parameters in the CGI query if cookies aren't available, or IP2SID mapping if that's enabled).
+   1 Creates the CGI::Session object, and the session is thereby read.
+   1 If the username still isn't known, reads it from the cookie. Thus TWiki::Client::ApacheLogin overrides the cookie using REMOTE_USER, and TWiki::Client::TemplateLogin *always* uses the session.
+
+Later again in TWiki::new, plugins are given a chance to *override* the username found from the loginManager.
+
+The last step in TWiki::new is to find the user, using whatever user mapping manager is in place.
+
+---++ ObjectData =twiki=
+
+The TWiki object this login manager is attached to.
+
+
+%TOC%
+
+---++ StaticMethod *makeLoginManager* <tt>($twiki) -> $TWiki::Client</tt>
+
+Factory method, used to generate a new TWiki::Client object
+for the given session.
+
+
+
+---++ ObjectMethod *loadSession* <tt>($defaultUser) -> $login</tt>
+
+Get the client session data, using the cookie and/or the request URL.
+Set up appropriate session variables in the twiki object and return
+the login name.
+
+$defaultUser is a username to use if one is not available from other
+sources. The username passed when you create a TWiki instance is
+passed in here.
+
+
+
+---++ ObjectMethod *checkAccess* <tt>()</tt>
+
+Check if the script being run in this session is authorised for execution.
+If not, throw an access control exception.
+
+
+
+---++ ObjectMethod *finish* <tt></tt>
+
+Complete processing after the client's HTTP request has been responded
+to. Flush the user's session (if any) to disk.
+
+
+
+---++ StaticMethod *expireDeadSessions* <tt>()</tt>
+
+Delete sessions and passthrough files that are sitting around but are really expired.
+This *assumes* that the sessions are stored as files.
+
+This is a static method, but requires TWiki::cfg. It is designed to be
+run from a session or from a cron job.
+
+
+
+---++ ObjectMethod *userLoggedIn* <tt>($login,$wikiname)</tt>
+
+Called when the user logs in. It's invoked from TWiki::UI::Register::finish
+for instance, when the user follows the link in their verification email
+message.
+   * =$login= - string login name
+   * =$wikiname= - string wikiname
+
+
+
+---++ ObjectMethod *endRenderingHandler* <tt>()</tt>
+
+This handler is called by getRenderedVersion just before the plugins
+postRenderingHandler. So it is passed all HTML text just before it is
+printed.
+
+*DEPRECATED* Use postRenderingHandler instead.
+
+
+
+---++ ObjectMethod *addCookie* <tt>($c)</tt>
+
+Add a cookie to the list of cookies for this session.
+   * =$c= - a CGI::Cookie
+
+
+
+---++ ObjectMethod *modifyHeader* <tt>(\%header)</tt>
+
+Modify a HTTP header
+   * =\%header= - header entries
+
+
+
+---++ ObjectMethod *redirectCgiQuery* <tt>($url)</tt>
+
+Generate an HTTP redirect on STDOUT, if you can. Return 1 if you did.
+   * =$url= - target of the redirection.
+
+
+
+---++ ObjectMethod *getSessionValues* <tt>() -> \%values</tt>
+
+Get a name->value hash of all the defined session variables
+
+
+
+---++ ObjectMethod *getSessionValue* <tt>($name) -> $value</tt>
+
+Get the value of a session variable.
+
+
+
+---++ ObjectMethod *setSessionValue* <tt>($name,$value)</tt>
+
+Set the value of a session variable.
+We do not allow setting of AUTHUSER.
+
+
+
+---++ ObjectMethod *clearSessionValue* <tt>($name) -> $boolean</tt>
+
+Clear the value of a session variable.
+We do not allow setting of AUTHUSER.
+
+
+
+---++ ObjectMethod *forceAuthentication* <tt>() -> boolean</tt>
+
+*VIRTUAL METHOD* implemented by subclasses
+
+Triggered by an access control violation, this method tests
+to see if the current session is authenticated or not. If not,
+it does whatever is needed so that the user can log in, and returns 1.
+
+If the user has an existing authenticated session, the function simply drops
+though and returns 0.
+
+
+
+---++ ObjectMethod *loginUrl* <tt>(...) -> $url</tt>
+
+*VIRTUAL METHOD* implemented by subclasses
+
+Return a full URL suitable for logging in.
+   * =...= - url parameters to be added to the URL, in the format required by TWiki::getScriptUrl()
+
+
+
+---++ ObjectMethod *getUser* <tt>()</tt>
+
+*VIRTUAL METHOD* implemented by subclasses
+
+If there is some other means of getting a username - for example,
+Apache has remote_user() - then return it. Otherwise, return undef and
+the username stored in the session will be used.
+
+

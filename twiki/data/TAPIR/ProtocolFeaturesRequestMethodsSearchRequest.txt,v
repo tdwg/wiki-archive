@@ -1,0 +1,367 @@
+head	1.13;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.13
+date	2007.01.10.12.55.17;	author RicardoPereira;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.13
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RicardoPereira" date="1168433717" format="1.1" version="1.13"}%
+---+++ Search Request
+
+This is the main method to retrieve data on records.
+Apart from the searches already in use in the CurrentProtocols (see also their DifferencesInRequestTypes) it would be desireable to have subtypes of searches:
+
+---+++++ Search Subtypes 
+   * *FullDocumentSearch* - return an xmldocument compliant to a well known standard with all data existing
+
+   * *PartialDocumentSearch* - return an xml document compliant to a well known standard with only selected parts of it
+
+   * *CustomDocumentSearch* - return a custom xml document with a ResponseStructure given in the request
+
+
+---+++++ Additional features 
+
+*Different Conceptual Schemas for request/response:*
+
+One thing that can be done in BioCASE is to specify in which schema you are "asking for" and in which schema you want your reply to be. So if the data provider has mapped one database to Darwin Core and ABCD is possible to query using Darwin Core concepts and get an ABCD document as a result, or the other way around.
+
+
+*Sorting the results: (discarded)*
+
+It could be also interesting to be able to define in the protocol sorting criterias so that the wrapper can sort the results, or can query using this sortings, and produce sorted lists. For example imagine you want just a simple strcuture like this:
+
+<verbatim>
+<Taxon UnitID="22">Luzula Luzuloides</TaxonName>
+</verbatim>
+
+And you want the results sorted by the name, not the UnitID.
+
+This can save the portals a lot of processing time.
+
+
+*Comments:*
+     I would like to see if XQuery implements any sorting. But as we have to think in XML terms instead of SQL, I don't see an easy way of sorting nested structure. Imagine something simple as specimens with multiple identifications:
+<verbatim>
+<specimen>
+  <identifications>
+    <scientificName>Abies alba Miller</scientificName>
+    <scientificName>Picea abies subsp. obovata (Ledeb.) Domin</scientificName>
+  </identifications>
+</specimen>
+<specimen>
+  <identifications>
+    <scientificName>Larix decidua P. Mill.</scientificName>
+  </identifications>
+</specimen>
+</verbatim>
+     Is this the final sorted stage if you want it sorted by scientific name? You will never be able to sort over the whole document, but only within RepeatableRegions of the document.
+     -- Markus Döring 6.7.2004
+-----
+
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d1 53
+a53 49
+---+++ Search Request
+
+This is the main method to retrieve data on records.
+Apart from the searches already in use in the CurrentProtocols (see also their DifferencesInRequestTypes) it would be desireable to have subtypes of searches:
+
+---+++++ Search Subtypes
+   * *FullDocumentSearch* - return an xmldocument compliant to a well known standard with all data existing
+
+   * *PartialDocumentSearch* - return an xml document compliant to a well known standard with only selected parts of it
+
+   * *CustomDocumentSearch* - return a custom xml document with a ResponseStructure given in the request
+
+
+---+++++ Additional features
+
+*Different Conceptual Schemas for request/response:*
+
+One thing that can be done in BioCASE is to specify in which schema you are "asking for" and in which schema you want your reply to be. So if the data provider has mapped one database to Darwin Core and ABCD is possible to query using Darwin Core concepts and get an ABCD document as a result, or the other way around.
+
+
+*Sorting the results: (discarded)*
+
+It could be also interesting to be able to define in the protocol sorting criterias so that the wrapper can sort the results, or can query using this sortings, and produce sorted lists. For example imagine you want just a simple strcuture like this:
+
+<Taxon UnitID="22">Luzula Luzuloides</TaxonName>
+
+And you want the results sorted by the name, not the UnitID.
+
+This can save the portals a lot of processing time.
+
+
+*Comments:*
+     I would like to see if XQuery implements any sorting. But as we have to think in XML terms instead of SQL, I don't see an easy way of sorting nested structure. Imagine something simple as specimens with multiple identifications:
+<verbatim>
+<specimen>
+  <identifications>
+    <scientificName>Abies alba Miller</scientificName>
+    <scientificName>Picea abies subsp. obovata (Ledeb.) Domin</scientificName>
+  </identifications>
+</specimen>
+<specimen>
+  <identifications>
+    <scientificName>Larix decidua P. Mill.</scientificName>
+  </identifications>
+</specimen>
+</verbatim>
+     Is this the final sorted stage if you want it sorted by scientific name? You will never be able to sort over the whole document, but only within RepeatableRegions of the document.
+     -- Markus Döring 6.7.2004
+-----
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d7 1
+a7 1
+   * *FullDocumentSearch* - return a document compliant to a well known standard with all data existing
+d9 1
+a9 1
+   * *PartialDocumentSearch* - return a document compliant to a well known standard with only selected parts of it
+d11 1
+a11 1
+   * *CustomDocumentSearch* - return a custom document with a ResponseStructure given in the request
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d7 1
+a7 1
+   * *full documents* - This should always return the most complete document possible with all data available for a requested schema. Similar to an SQL SELECT* search. 
+d9 1
+a9 1
+   * *partial documents* - A list of concepts (xpaths) can be submitted to create response documents only containing the requested list of concepts, but in a structure defined by a requested schema.
+d11 1
+a11 1
+   * *custom documents* - This search defines the strucure of the returned document entirely within the request. To allow the database mapping to work it must refer to an existing configured ConceptualSchema though. See CustomSearch for an example base on the proposal for a new BiocaseProtocol.
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d47 1
+a47 1
+     Is this the final sorted stage if you want it sorted by scientific name? You will never be able to sort over the whole document, but only within "repeatable regions" of the document.
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d11 1
+a11 1
+   * *custom documents* - This search defines the strucure of the returned document entirely within the request. To allow the database mapping to work it must refer to an existing configured ConceptualSchema though. See the new BiocaseProtocol proposal for an example.
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d11 1
+a11 1
+   * *self-defined documents* - This search defines the strucure of the returned document entirely within the request. To allow the database mapping to work it must refer to an existing configured federation/data schema though. See the new BiocaseProtocol proposal for an example.
+d16 1
+a16 1
+*Different federation schemas for request/response:*
+d21 1
+a21 1
+*Sorting the results:*
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d31 19
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d4 1
+a4 1
+Apart from the searches already in use in the CurrentProtocols (see also their DifferencesInRequestTypes) it would be desireable to haave subtypes of searches:
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d1 2
+d4 1
+d6 2
+a7 4
+There are 3 kind of searches possible:
+
+   * full documents
+This should always return the most complete document possible with all data available. Similar to an SQL SELECT* search.
+d9 1
+a9 2
+   * partial documents
+A list of concepts (xpaths) can be submitted to create response documents only containing the requested list of concepts, but in a structure defined by a given schema
+d11 1
+a11 2
+   * self-defined documents
+This search defines the strucure of the returned document entirely within the request. To allow the database mapping to work it must refer to an existing configured federation/data schema though. See the new BiocaseProtocol proposal for an example.
+d14 1
+a14 1
+---++++ Additional features
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d12 1
+a12 1
+This search defines the strucure of the returned document entirely within the request. To allow the database mapping to work it must refer to an existing configured federation/data schema though. See the new biocase protocol2 proposal for an example.
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d15 3
+a17 1
+====Additional features====
+a18 1
+*different federation schemas for request/response:*
+a20 5
+*Defining result structures:*
+
+One limitation with BioCASE is that you always will have to retrieve a complete ABCD document, for example. You can not define the structure that you want as a result. This is a potencial performance problem. If a portal only needs a list of taxons and unitIds that match a certain criteria then it will have to download the complete ABCD documents for all the records...
+
+Something nice would be to be able to specify the structure that you want your results to be returned, for example....
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 1
+a1 1
+This is the main method. It defines how to search a providers database and essentially wraps simple SQL SELECT statements into a XML format (defined by the protocol of course). Right now the select part of the statement is fixed and all matching data is returned.
+d3 1
+a3 1
+You can get more information about how BioCASE does this http://www.biocase.org/dev/protocol/index.shtml. For digir try in the sourceforge page http://digir.sourceforge.net.
+d5 2
+a6 1
+They are both very similar in the way the queries are described, using logical comparators. In fact the BioCASE protocol is based on Digir so that is why they look so similar.
+d8 10
+a35 2
+
+[JT] Not finished!
+@

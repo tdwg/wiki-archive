@@ -1,0 +1,82 @@
+%META:TOPICINFO{author="RicardoPereira" date="1170087821" format="1.1" version="1.8"}%
+---++ LSID Resolver Namespaces
+
+*Coordinator(s):* DonaldHobern
+
+*Participants:* KevinRichards
+
+----
+---+++ Description
+This group will develop best practices for assigning resolver authority identifications and namespaces for LSIDs.
+
+The syntax of a LSIDs is as following:
+
+urn:lsid:<authority>:<namespace>:<identifier>:<revision>
+
+The following are examples of LSIDs:
+
+   * urn:lsid:pdb.org:1AFT:1 - This is the first version of the 1AFT protein in the Protein Data Bank)
+   * urn:lsid:ncbi.nlm.nih.gov:pubmed:12571434 - References a Pubmed article
+   * urn:lsid:ncbi.nlm.nig.gov:Genbank:T48601:2 - Refers to the second version of an entry in Genbank
+
+In those examples, *pdb.org* and *ncbi.nlm.nih.gov* are LSID authority identifications and *1AFT*, *pubmed*, and *Genbank* are LSID namespaces.
+
+(Thanks to Main.KevinRichards for pointing out the lack of clarity on this page between authority identifications and namespaces.)
+----
+---+++ Discussion
+Main.DonaldHobern: The key issues to address here are the following:
+
+   1.  Under what circumstances should we allow (or even encourage) an organisation to use another organisation's domain name for its authority identification?
+   1.  What are the best practices for assigning authority identifications to different data sets?  In particular, should an organisation use a single authority identification for all its data sets, or is it better to assign a different authority identification to each data set (e.g. using subdomains) in order to simplify the task of transfering a data set (along with the responsibility for maintaining its LSIDs) to another organisation?
+   1.  What are the best practices for selecting namespaces?
+
+----
+---+++ Conclusions and Recommendations
+
+Main.KevinRichards (20 March 2006):
+My thoughts so far for LSID authority namespaces:
+
+There are 2 parts to the LSID that require some sort of standardising for use in a particular domain, the authority name itself and the namespace part of and LSID.
+
+For example, for the LSID urn:lsid:indexfungorum.org:Names:12345, the authority part is "indexfungorum.org" and the namespace is "Names". 
+
+The format of the authority part influences several aspects of LSID resolution, in particular the DNS domain names. An LSID is resolved by basically going through a 3 step process - firstly checking the local cache to see if an LSID at this authority has been resolved before; then checking DNS records to locate the authority/IP Address that handles LSID requests of a particular domain name; then just trying to locate a web service at the Internet address equivalent to the LSID authority part. Therefore, in theory, if we want to use the standard DNS resolution mechanism the authority part of the LSID must be set up using SRV records, in the DNS system to point to an IP Address/Domain that provides an LSID authority web service. The authority part of an LSID should therefore be within the control of the institution maintining the LSID authority - ie indexfungorum would quite likely come into conflict if it decided to use the authority taxon.ipni.org. 
+
+Examples therefore of an indexfungorum authority ID would need to be subdomains of the indexfungorum.org domain, eg taxon.indexfungorum.org. 
+
+The next question is how specific these subdomains should get before the LSID namespace is a more suitable place to define a subset. Eg using an authority name of amanita.names.indexfungorum.org is going a bit far. This would be better expressed as an LSID urn:lsid:names.indexfungorum.org:Amanita:123, if this level of specification is required.
+ 
+The LSID best practices document (http://www-128.ibm.com/developerworks/opensource/library/os-lsidbp/) suggests authority names to the institution level, or perhaps to a more specific project level if this will calrify/ease the management of data entities within the institution.
+
+It would be therefore reasonable to use subdomains to the level of a "database" or "project" then use namespaces to define the more specific levels. Eg perhaps an institution with several projects such as Landcare Research could use authorities like fungi.landcareresearch.co.nz and plants.landcareresearch.co.nz and namespaces like Names, Literature, Images, etc.  This would obviously be dependant on the size of an organisation, ie smaller organisations will likely only have one authority name, and may even get another organisation to manage/assign LSIDs for them.
+ 
+In the interest of persistence, perhaps the authority part of the LSID should not be linked to an existing organisation.  This organisation may cease to exist, but the data needs to be maintained.  This would require "generic" domain names to be setup, eg instead of using something like fungi.landcareresearch.co.nz for the fungi names maintained at Landcare Research, it would be better to create a domain name like nzfungi.org.  This is not a necessity with LSIDs as the SRV records that direct LSID resolution can be mapped to the new organisation that will maintain the data for the now non-existent organisation.  However it is probably a good practice to follow.
+ 
+The question as to whether to allow/encourage organisations to use the domain name of another organisation for their LSIDs will depend on the circumstances and the use that organisation has in mind for the LSIDs.  In most cases the best place for the LSIDs to be assigned/managed is the organisation that maintains the source dataset, and any other interested parties can either create their own LSIDs for data that relates to the source data, or use the FAN mechanism built in to the LSID framework.  The FAN (Foreign Authority Notification) services allow an organisation to provided "extra" data for someone else's LSIDs.  For the nomenclator/aggregator use case, the nomenclator could create their own LSIDs for a taxonomic name, then point to the source data (for example by using an RDF triple and the source data's LSID).  If this nomenclators version of the name became accepted by other organisations, then these organisations (even the source organisation) could point to the nomenclator's LSID via RDF (eg SourceLSID sameAs NomenclatorLSID).  
+If for some reason an external organisation requires an LSID to be assigned using another organisations's authorty name, then that organisation should request the managing organisation to issue them on demand.
+ 
+A lot of this discussion has obviously ignored the requirement of opactity (ie that no meaning can be read into the ID of an object - also known as transparency!).  It is not practical to make an ID completely un-interpretable as even an LSID requires the prefix of urn:lsid and this immediately informs a reader that it is a resolvable LSID URN.  Opacity is a social issue - the best way to make an ID opaque is to not show it to any readers.
+
+In summary:
+ 
+   1.  The LSID authority name should be controlled by the institution that "owns" the data being represented by the LSID
+   2.  The authority part of the LSID should be to institution level or a project within that institution if the institution is large, conatins many projects or it is more practical to do so.  See the LSID best practices guide at http://www-128.ibm.com/developerworks/opensource/library/os-lsidbp/
+   3.  The authority name will most likely be the Internet domain name of the institution/project, or a subdomain of that.  However it would be better to use generic project names (such as IPNI.org) to aid persistence - ie the authority name will not forever refer to an institution that may no longer exist.
+   4.  The namespace part of the LSID should be kept generic enough to cover the entire subject scope of the LSID data, eg "Fungi/Names", and not specific namespaces such as "Fungi/TCS"
+   5.  External parties requiring to use/assign LSIDs that are maintined by another institute should use the FAN (foreign authority notification) mechanism built into the LSID framework, wherever possible.  In cases where this is not practical, it would be best for the external party to request the assignment of LSIDs through the "owner" of the LSID authority.
+ 
+----
+Main.BobMorris 2006-03-20
+
+--Main.KevinRichards wrote: "A lot of this discussion has obviously ignored the requirement of opactity (ie that no meaning can be read into the ID of an object - also known as transparency!).  It is not practical to make an ID completely un-interpretable as even an LSID requires the prefix of urn:lsid and this immediately informs a reader that it is a resolvable LSID URN.  Opacity is a social issue - the best way to make an ID opaque is to not show it to any readers."
+ 
+Since you characterize opacity as a social issue, I assume you mean "human readers" by readers. However, I think that is a red-herring and think that the more important guidance one should take from an opacity requirement is that _software agents_ should be discouraged or even prohibited from relying on anything in the LSID for any semantic reasoning. For example, if an agent is  looking for things about fungi in some service listing LSIDs, it must not expect that the only LSIDs revealing anything about fungi will be those with words deemed semantically equivalent to fungi. My take on the rather nice IBM article is that it only offers a way to conveniently generate namespace parts. It is too easy from that article to believe that you learn something about the way the data are organized from the LSID, a position I don't think it takes, but dangerously allows the reader to believe.  Relying on something about subject scope is particularly dangerous in science, where what is deemed the important descriptive idea of a subject can cataclysmically change. The result will be that anything that relies on the semantics of the name space will come to need more and more semantic processing over time. If application writers fall into this trap, their applications will rust.
+ 
+Also, I believe that whenever possible, it should be the case that a software agent can detect from the data-here the LSID-whether it violates some published best-practice. Your criterion 4 doesn't suggest any way to me to do that. (However, I acknowledge that one might argue that "best practice" more often than not refers to something which is not formally specifiable, which would probably contradict my belief). For what it is worth, I dispute your claim that a human or software agent reader may comfortably depend on  the beginning of an LSID assuring that the string is a resolvable LSID URN.  For example, urn:lsid:cs.umb.edu:KevinIsWrong:1 is, I am quite certain, not a resolvable URN, unless "is a resolvable LSID URN" means nothing other than "conforms to the LSID syntax" which then adds no semantics.
+
+For these reasons, I'm presently opposed that it be regarded as a best practice to attempt to embed domain knowledge in LSIDs. If it is not a best practice, then the namespaces will be all over the map and people will not be encouraged to write applications which depend on their meaning. Which is good. But I predict I will lose this argument. :-)
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryInfrastructureWG

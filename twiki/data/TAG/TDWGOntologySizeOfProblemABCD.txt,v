@@ -1,0 +1,210 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2006.05.05.12.32.58;	author MarkusDoering;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.05.05.10.05.54;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.05.04.16.57.58;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="MarkusDoering" date="1146832377" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="TDWGOntologySizeOfProblem"}%
+---+ <nop>%TOPIC%
+
+
+---++ Usage Survey
+
+A much better version of this is available on the Biocase site [[http://www.biocase.org/whats_biocase/concept_survey.cfm][here]] where the concepts are monitored automatically. The stuff below does not differentiate between the different schemas but is left for general interest.
+
+There are over 900 mapping-concepts (equivalent to elements) in ABCD. This seems a large number to map and synonymise so I (Main.RogerHyam) did a quick and dirty survey of the providers listed on the BioCASE site [[http://www.biocase.org/whats_biocase/providers_list.cfm][here]] which is a view onto the GBIF UDDI. Most providers default to a capabilities response when called directly. Each one in the UDDI registry was called using OxygenXML and all the capability responses were then 'mangled' to produce a basic list of provider URL to concept.
+   * [[%ATTACHURL%/sources.txt][This is a list of the providers polled]]
+   * [[%ATTACHURL%/results_01.txt][Mapping Concepts found]]
+   * [[%ATTACHURL%/results_01.mdb][Access DB of results (1.5mb)]]
+
+---+++ Mapping-Concepts Per Source
+A total of 78 sources were examined and the average number of concepts mapped was 53. One of the sources appears erroneous as it has some 310 concepts mapped some of which are duplicates http://geifir.ngb.se/biocase/pywrapper.cgi?dsa=NGB the number also seems to vary so it may still be being worked on. The vast majority of providers (95%) map less than 75 concepts.
+
+/!\ MarkusDoering: These are no duplicates. A concept is identified by its pyth AND the schema namespace. There might be 2 concepts with the same path but they do belong to different schemas (mostly different versions). Please see http://www.biocase.org/whats_biocase/concept_survey.cfm for an overview.
+
+---+++ Most Popular Concepts
+   * Analysis of popular concepts is skewed a little by the fact that some providers map concepts more than once. 13 Providers map /DataSets/DataSet/Units/Unit/UnitID more than once for example. These weren't removed as this is just a quick survey.
+   * The total number of unique concepts mapped was 560.
+   * 255 of these were only mapped by one source
+   * 451 were mapped by less than 7 providers i.e. less than 10% of the the sample.
+   * 109 concepts were mapped by more than 6 providers.
+
+The 109 most popular concepts are given in the table below.
+
+|*Mapping-Concept*|* # Sources*|
+|/DataSets/DataSet/ContentContacts/ContentContact/Address|8|
+|/DataSets/DataSet/ContentContacts/ContentContact/Email|10|
+|/DataSets/DataSet/ContentContacts/ContentContact/Name|15|
+|/DataSets/DataSet/ContentContacts/ContentContact/Phone|7|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied|73|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Description|64|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/CopyrightDeclaration|34|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/IPRDeclaration|33|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Addresses/Address|36|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/EmailAddresses/EmailAddress|62|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationCodes/OrganisationCode|37|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Organisation/OrganisationName|47|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/Person/PersonName|62|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/TelephoneNumbers/TelephoneNumber/Number|59|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/LegalOwner/URLs/URL|44|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/RightsURL|31|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/SpecificRestrictions|36|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Rights/TermsOfUse|47|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Acknowledgement|33|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/Disclaimer|34|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/LogoURL|49|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Statements/StatementURL|28|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Addresses/Address|39|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/EmailAddresses/EmailAddress|68|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Organisation/OrganisationCodes/OrganisationCode|38|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Organisation/OrganisationName|72|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/Person/PersonName|71|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/TelephoneNumbers/TelephoneNumber/Number|63|
+|/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Supplier/URLs/URL|66|
+|/DataSets/DataSet/Metadata/Description/Representation/Details|9|
+|/DataSets/DataSet/Metadata/Description/Representation/Title|15|
+|/DataSets/DataSet/Metadata/Description/Representation[@@language]|15|
+|/DataSets/DataSet/Metadata/IconURI|12|
+|/DataSets/DataSet/Metadata/RevisionData/Creators|10|
+|/DataSets/DataSet/Metadata/RevisionData/DateCreated|10|
+|/DataSets/DataSet/Metadata/RevisionData/DateModified|15|
+|/DataSets/DataSet/OriginalSource/SourceExpiryDate|30|
+|/DataSets/DataSet/OriginalSource/SourceInstitutionCode|73|
+|/DataSets/DataSet/OriginalSource/SourceLastUpdatedDate|73|
+|/DataSets/DataSet/OriginalSource/SourceName|73|
+|/DataSets/DataSet/OriginalSource/SourceNumberOfRecords|55|
+|/DataSets/DataSet/OriginalSource/SourceVersion|31|
+|/DataSets/DataSet/OriginalSource/SourceWebAddress|48|
+|/DataSets/DataSet/TechnicalContacts/TechnicalContact/Address|10|
+|/DataSets/DataSet/TechnicalContacts/TechnicalContact/Email|13|
+|/DataSets/DataSet/TechnicalContacts/TechnicalContact/Name|15|
+|/DataSets/DataSet/TechnicalContacts/TechnicalContact/Phone|8|
+|/DataSets/DataSet/Units/Unit/CollectorsFieldNumber|16|
+|/DataSets/DataSet/Units/Unit/DateLastEdited|30|
+|/DataSets/DataSet/Units/Unit/Gathering/Country/Name|14|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgent/Person/PersonName|36|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringAgents/GatheringAgentsText|15|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/DateText|32|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeBegin|38|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringDateTime/ISODateTimeEnd|20|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementLowerValue|31|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Altitude/MeasurementAtomized/MeasurementUpperValue|22|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/ContinentOrOcean|25|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/CountryName|48|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/ISO2Letter|29|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Country/ISO3Letter|13|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/LocalityText|60|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/NamedAreas/NamedArea/NamedAreaClass|29|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/NamedAreas/NamedArea/NamedAreaName|34|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/Notes|8|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/CoordinateErrorDistanceInMeters|26|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal|39|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal|39|
+|/DataSets/DataSet/Units/Unit/Gathering/GatheringSite/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/SpatialDatum|10|
+|/DataSets/DataSet/Units/Unit/Gathering/LocalityText|11|
+|/DataSets/DataSet/Units/Unit/Gathering/Project/ProjectTitle|7|
+|/DataSets/DataSet/Units/Unit/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LatitudeDecimal|11|
+|/DataSets/DataSet/Units/Unit/Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/LongitudeDecimal|11|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationDate/DateText|7|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationNotes|7|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/IdentificationReference/ReferenceCitation|7|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/Identifier/IdentifierPersonName/PersonName|44|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/HigherTaxa/HigherTaxon/HigherTaxonName|9|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/HigherTaxa/HigherTaxon/HigherTaxonRank|7|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString|15|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon|55|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/HigherTaxa/HigherTaxon[@@TaxonRank]|37|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/IdentificationQualifier[@@Rank]|7|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/NameAuthorYearString|73|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/AuthorTeam|26|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/FirstEpithet|33|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Genus|37|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/Rank|9|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Botanical/SecondEpithet|25|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Zoological/AuthorTeamParenthesisAndYear|12|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Zoological/Genus|23|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Zoological/SpeciesEpithet|23|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameAtomized/Zoological/SubspeciesEpithet|15|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification/TaxonIdentified/ScientificNameString|16|
+|/DataSets/DataSet/Units/Unit/Identifications/Identification[@@PreferredIdentificationFlag]|19|
+|/DataSets/DataSet/Units/Unit/Identifications/IdentificationHistory|8|
+|/DataSets/DataSet/Units/Unit/NamedCollections/NamedCollection|11|
+|/DataSets/DataSet/Units/Unit/RecordBasis|37|
+|/DataSets/DataSet/Units/Unit/SourceID|18|
+|/DataSets/DataSet/Units/Unit/SourceInstitutionID|18|
+|/DataSets/DataSet/Units/Unit/UnitCollectionDomain/ZoologicalUnit/ZoologySex|8|
+|/DataSets/DataSet/Units/Unit/UnitDescription|24|
+|/DataSets/DataSet/Units/Unit/UnitDigitalImages/UnitDigitalImage/ImageURI|23|
+|/DataSets/DataSet/Units/Unit/UnitFacts/UnitFact/FactText|11|
+|/DataSets/DataSet/Units/Unit/UnitID|91|
+|/DataSets/DataSet/Units/Unit/UnitIDNumeric|12|
+|/DataSets/DataSet/Units/Unit/UnitReferences/UnitReference/ReferenceCitation|12|
+|/DataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/NomenclaturalTypeDesignations/NomenclaturalTypeDesignation/TypeStatus|18|
+|/DataSets/DataSet/Units/Unit/UnitStateDomain/SpecimenUnit/UnitPreparation/PreparationType|15|
+
+
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+
+
+ 
+
+
+%META:FILEATTACHMENT{name="results_01.txt" attr="" autoattached="1" comment="Mapping Concepts found" date="1146758061" path="results_01.txt" size="592416" user="Main.RogerHyam" version="1"}%
+%META:FILEATTACHMENT{name="sources.txt" attr="" autoattached="1" comment="Biocase Providers Polled" date="1146757857" path="sources.txt" size="5958" user="Main.RogerHyam" version="1"}%
+%META:FILEATTACHMENT{name="results_01.mdb" attr="" autoattached="1" comment="Access DB of results" date="1146761673" path="results_01.mdb" size="1576960" user="Main.RogerHyam" version="1"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1146823554" format="1.1" version="1.2"}%
+d18 2
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1146761878" format="1.1" version="1.1"}%
+d8 2
+@

@@ -1,0 +1,339 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2006.03.14.23.17.07;	author AnnieSimpson;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="AnnieSimpson" date="1142378227" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="TechnicalImplementationWorkingGroup"}%
+TECH GROUP
+
+2006-02-22 - Day 2
+
+Recommendations indexed by priority number
+
+Michael
+
+Structure issue
+
+
+Taxon/Location
+
+Location/Taxon
+
+Location + Taxon + Relations
+
+
+What to do with it?
+
+
+Checklist Structure
+
+Bob (BM): This is an XSLT issue.
+
+Markus (MD): XSLT is fast
+
+
+<taxon id='T1'>
+
+	<location='L1'>	</location>
+
+	<location='L2'>	</location>
+
+</taxon>
+
+
+<location='L1'>
+
+	<taxon id='T1'>	</taxon>
+
+	<taxon id='T2'>	</taxon>
+
+</location>
+
+
+	|| *Advantages* | *Drawbacks* |
+|1. Taxon/Location|Natural choice, Human readable, Final choice by SD (after trials), Match facts sheet |Repetition|
+|2. Location/Taxon	|Match checklist, Match source, XSLT==> Option 1	|Repetition, Location is harder to manage|
+|3. Relational|Size, Match database structure, More flexibility|Manage keys, Require key generation (data is not normalized), More application tools, Difficult to process input|
+
+
+*MB: Would Expertise fit as a top-level element?*
+
+*BM: Likely to have keys/ID*
+
+
+Hannu (HS): The data provider could map the data into the desired structure
+
+What would be the impact on the checklist?
+
+
+Shawn (SD): Keep it relational
+
+
+Facts sheet = about 1 group of species + data from provider
+
+this is weakly location-dependent
+
+Facts sheet can vary a lot
+
+
+HS: GBIF data repository tool can be used to process you spreadsheet data.
+
+BM: Tools almost exist
+
+DS: Not easy to normalize from actual data
+
+Risk of duplication / Matching problems
+
+
+BM: if we accept spreadsheet
+
+- indentation
+
+- multiple items in same cell (concatenated items)
+
+
+MD: option 1 is more human-readable
+
+(Wouter) WA: How do you extent the model if you should option 1?
+
+
+SD: Define unique identifaction process
+
+Location can be anything; difficult ==> Species (Option 1.)
+
+
+BM/SD: Scientific name is not a good key ==> need better identification
+
+HS: 10 more years for good naming system
+
+
+HS: People will need to design a back-end database
+
+
+BM: look at exercises ==> both Taxon (=1) &  Location (=3)
+
+IAS experts work in a specific location
+
+
+MD: Favours Option 2. 
+
+_Taxon specific could be managed worldwide_
+
+
+BM: Extensibility?
+
+Problem if XML references IDREF
+
+
+ODM: What will be do with the data?
+
+SD/MD/HS/BM: portals can be built
+
+
+WA: Problem using speadsheets / people mess it up
+
+HS: Give users a tool to generate correct XML
+
+BM: Excel file with comments & VBS = Solution
+
+HS: Repository tool to validate input spreadsheets
+
+
+---+++1. Strategy
+
+MB: This is 100% technical
+
+BM: Is there any restriction in the checklist?
+
+MB: Use scientific name or common names + synonyms
+
+BM: There is variation in the use of names
+
+Best practices manuals
+
+
+MD: ABCD is different: Higher taxon
+
+MB: this is better.  Let's use ABCD Taxonomic type
+
+Add synonyms to the schema
+
+
+MB/BM: Biostatus could refer to the world
+
+MD: Can we add DateOfLastObservation (for extinct species)?
+
+MB: Please refer to ProjectOrCaseStudy
+
+
+BM: We should not specialized any of the types.  Leave them optional
+
+
+BM: biostatus & optional facts
+
+but biostatus is part of facts. Not a good idea
+
+MD: biostatus is generic?
+
+BM: We need to rearrange facts/biostatus ==> HS: later
+
+
+---+++Defer 1, 2 & 3
+
+SD: Strategy is done
+
+_HS: Need to look at use cases_
+
+_BM: need scenarios (several hundreds)_
+
+
+---+++DC/ABCD Extensions
+
+BM: No more primary data
+
+HS: Providers are keen to share primary data
+
+SD/MD/HS: Some special data
+
+HS: How do we support this additional unique information?
+
+_MD: It could be recorded as a fact_
+
+ABCD/EGS (Extended for GeoScientists)
+
+_MD: Extension to a fact_
+
+
+---+++Architecture
+
+MD: List of supported operations (TAPIR):
+
+- Get metadata about the host
+
+- Capabilities (more technical description of information/functions available)
+
+- Inventory operations (paging): list of distinct values / optional count/group by
+
+- Search (paging):
+
+- Get full / subset of schema
+
+- (HS) Statistics: could be interesting
+
+- Log request: proposal
+
+- Ping
+
+- Read/Only: only accept annotations
+
+
+There is existing software
+
+DIGIR does not support our schema
+
+
+HS: "BioCase" protocol
+
+MD: TAPIR is a messaging protocol
+
+
+BM: Document data quality
+
+
+SD: If I need to share a database
+
+With DIGIR/BioCase/TAPIR (HS: about an hour setup time)
+
+- Install PHP or other (ZOPE, Perl, XML, No ASP)
+
+- Install DIGIR / provider software
+
+- Define metadata for provider
+
+- Map local DB (R/W) to DC schema (internal mapping)
+
+- Register to GBIF UDDI (GISIN will be a new thematic network)
+
+- GBIF requests a confirmation from the node manager before indexing
+
+
+WA/MD: ODBC does not solve the differences in SQL syntax (ex. Group By problems)
+
+BM: someone will implement it under SQL Server 
+
+
+- ODBC to spreadsheet/Access option
+
+- MD: Easy
+
+- SD: Are you sure? What about MS-SQL, MS-Access?
+
+
+ODM: Could we port TAPIR to SOAP
+
+MD: requires work
+
+MD: SOAP does not bring a significant advantage
+
+HS/MD: TAPIR is another type of web service (HTTP GET)
+
+ 
+SD: We could think about simple Get Request/Response exchanges
+
+- Request information on a species
+
+- Parameters: Species, Location, ...
+
+
+---+++TAPIR vs SOAP
+
+_BM: DIGIR/TAPIR is the recommended approach_
+
+GBIF has addressed complex issues (caching/indexing) 
+
+*BM: TAPIR should be the transport mechanism*
+
+*Keep it open*
+
+*Adapt to MS world/SOAP ==> more development required*
+
+
+SD: Options to implement a data provider
+
+MD: Different ways to harvest data to populate GBIF central cache
+
+HS: ToR aim at an open architecture for GISIN
+
+In practice.  Ex. Malika in Morocco.
+
+Most developing countries will not implement a sophisticated data provider
+
+_GISIN will be an heterogeneous network_
+
+*There should be an easy implementation for each popular platform.*
+
+
+
+
+-- Main.AnnieSimpson - 14 Mar 2006
+
+@

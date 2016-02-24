@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+<body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<h2><a name="SDD_Part_0_Introduction_and_Prim"></a> SDD Part 0: Introduction and Primer to the SDD Standard </h2>
+<p />
+<h3><a name="3_17_Descriptive_concepts"></a><a name="3_17_Descriptive_concepts_"></a> 3.17 Descriptive concepts. </h3>
+<p />
+Descriptive Concepts in SDD comprise terminological and ontological elements used in descriptions that extend the simple characters and states defined in the &lt;Characters&gt; element. Core descriptive concepts include score modifiers, grouping concepts used in character trees, and "global" (re-useable) states.
+<p />
+Score modifiers are data elements used to modify a standard score (code) in a coded description. For example, flowers in <i>Viola odorata</i> are normally violet but rarely white. In a coded description, the state "white" of the character "Flower colour" can be annotated with the modifer "rarely". The modifer and its meaning are defined in &lt;DescriptiveConcepts&gt;.
+<p />
+Grouping concepts are used when characters (defined in &lt;Characters&gt;) are arranged into character trees (in &lt;CharacterTrees&gt;). For example, the characters "Eye colour" and "Eye shape" may be arranged under the grouping concept "Eyes". The concept is defined in &lt;DescriptiveConcepts&gt; and referenced in &lt;CharacterTrees&gt;.
+<p />
+Global states are states used in multiple places in a character list. For example, the states "blue" and "white" may be used to describe both scales and fins in descriptions of fish. The states may be defined in &lt;DescriptiveConcepts&gt; then referenced for several characters in &lt;Characters&gt;. 
+<p />
+<h4><a name="3_17_1_Data_modifiers"></a><a name="3_17_1_Data_modifiers_"></a> 3.17.1 Data modifiers. </h4>
+<p />
+In SDD all modifiers for probability (e.g. "possibly"), frequency (e.g. "rarely"), degree (e.g. "strongly"), timing (e.g. "when mature"), location (e.g. "at the base"), etc. are centrally managed using the &lt;Modifers&gt; element.
+<p />
+A simple SDD instance document for data modifiers (as used by Lucid (<a href="http://www.lucidcentral.org">www.lucidcentral.org</a>) has the basic structure shown below and in Example 3.17.1.1.
+<p />
+<img alt="modifier.gif" src="http://wiki.tdwg.org/twiki/static/_publish/modifier.gif" />
+<p />
+<h5><a name="Example_3_17_1_1_Describing_the"></a><a name="Example_3_17_1_1_Describing_the_"></a> Example 3.17.1.1 - Describing the Lucid scoring model using the &lt;modifiers&gt; element. </h5>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<tr>
+<td>
+<pre>
+    &#60;DescriptiveConcepts&#62;
+      &#60;DescriptiveConcept id&#61;&#34;dc0&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Fixed set of modifiers supported in Lucid3&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;Modifiers&#62;
+          &#60;Modifier id&#61;&#34;mod1&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;rarely&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;ModifierClass&#62;Frequency&#60;/ModifierClass&#62;
+            &#60;ProportionRange lowerestimate&#61;&#34;0.0&#34; upperestimate&#61;&#34;0.25&#34;/&#62;
+          &#60;/Modifier&#62;
+          &#60;Modifier id&#61;&#34;mod2&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;uncertain&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;ModifierClass&#62;Certainty&#60;/ModifierClass&#62;
+            &#60;ProportionRange lowerestimate&#61;&#34;0.0&#34; upperestimate&#61;&#34;0.5&#34;/&#62;
+          &#60;/Modifier&#62;
+          &#60;Modifier id&#61;&#34;mod3&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;misinterpreted&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;ModifierClass&#62;TreatAsMisinterpretation&#60;/ModifierClass&#62;
+          &#60;/Modifier&#62;
+          &#60;Modifier id&#61;&#34;mod4&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;unscoped&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;ModifierClass&#62;OtherModifierClass&#60;/ModifierClass&#62;
+          &#60;/Modifier&#62;
+        &#60;/Modifiers&#62;
+      &#60;/DescriptiveConcept&#62;
+    &#60;/DescriptiveConcepts&#62;
+</pre>
+<p />
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+<p />
+The &lt;Representation&gt; element provides a label for the set of modifiers. This may be useful if the instance document includes multiple sets of modifiers for different purposes.
+<p />
+&lt;ModifierClass&gt; is used where interoperable specifications are needed. There are currently 6 modifier classes available:
+<p /> <ul>
+<li> 1. Frequency (&lt;ProportionRange&gt; defines the frequency limits (between 0 and 1) for the modifier).
+</li> <li> 2. Certainty (&lt;ProportionRange&gt; defines the certainty limits (between 0 and 1) for the modifier. A range of 0 to 0 implies zero certainty = certainly false)
+</li> <li> 3. Seasonal (&lt;ProportionRange&gt; defines the range of dates for the modifier.)
+</li> <li> 4. Diurnal (&lt;ProportionRange&gt; defines the range of times for the modifier, using a 24 hour day).
+</li> <li> 5. TreatAsMisinterpretation. With this set, the current modifier becomes one of a special class of misinterpretation modifiers. States to which such modifiers are added are known to be intentionally wrongly scored to accomodate known misunderstandings of the character under study. For example, bracts of a dogwood (<i>Cornus</i>)look like petals; this taxon may be scored as Petals: present (by misinterpretation) to accommodate likely misinterpretation of this feature by a user.
+</li> <li> 6. OtherModifierClass (used for extensibility)
+</li></ul> 
+<p />
+Modifiers may be assigned language specific labels and assigned usage for generation of natural language descriptions. Using a very simple grammar, the concatenation of these phrases yields a simple natural language description. See the example below.
+<p />
+<h5><a name="Example_3_17_1_2_Language_specif"></a> Example 3.17.1.2 - Language specific labels and modifiers. </h5>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<p />
+<pre>
+&#60;DescriptiveConcept id&#61;&#34;dc40&#34;&#62;
+  &#60;Representation&#62;
+    &#60;Label&#62;Preferred certainty modifiers&#60;/Label&#62;
+  &#60;/Representation&#62;
+  &#60;Modifiers&#62;
+    &#60;Modifier id&#61;&#34;mc40&#34;&#62;
+      &#60;Representation&#62;
+        &#60;Label xml:lang&#61;&#34;en&#34;&#62;probably&#60;/Label&#62;
+        &#60;Label xml:lang&#61;&#34;de&#34;&#62;vermutlich&#60;/Label&#62;
+      &#60;/Representation&#62;
+      &#60;NaturalLanguage&#62;
+        &#60;Phrase xml:lang&#61;&#34;en&#34; role&#61;&#34;Before&#34;&#62;probably &#60;/Phrase&#62;
+        &#60;Phrase xml:lang&#61;&#34;de&#34; role&#61;&#34;Before&#34;&#62;vermutlich &#60;/Phrase&#62;
+      &#60;/NaturalLanguage&#62;
+      &#60;ModifierClass&#62;Certainty&#60;/ModifierClass&#62;
+      &#60;ProportionRange lowerestimate&#61;&#34;0.6&#34; upperestimate&#61;&#34;1&#34;/&#62;
+    &#60;/Modifier&#62;
+    &#60;Modifier id&#61;&#34;mc41&#34;&#62;
+      &#60;Representation&#62;
+        &#60;Label xml:lang&#61;&#34;en&#34;&#62;perhaps&#60;/Label&#62;
+        &#60;Label xml:lang&#61;&#34;de&#34;&#62;eventuell&#60;/Label&#62;
+      &#60;/Representation&#62;
+      &#60;NaturalLanguage&#62;
+        &#60;Phrase xml:lang&#61;&#34;en&#34; role&#61;&#34;Before&#34;&#62;perhaps &#60;/Phrase&#62;
+        &#60;Phrase xml:lang&#61;&#34;de&#34; role&#61;&#34;Before&#34;&#62;eventuell &#60;/Phrase&#62;
+      &#60;/NaturalLanguage&#62;
+      &#60;ModifierClass&#62;Certainty&#60;/ModifierClass&#62;
+      &#60;ProportionRange lowerestimate&#61;&#34;0&#34; upperestimate&#61;&#34;0.5&#34;/&#62;
+    &#60;/Modifier&#62;
+    &#60;Modifier id&#61;&#34;mc42&#34;&#62;
+      &#60;Representation&#62;
+        &#60;Label xml:lang&#61;&#34;en&#34;&#62;(by misinterpretation)&#60;/Label&#62;
+        &#60;Label xml:lang&#61;&#34;de&#34;&#62;(durch Fehlinterpretation)&#60;/Label&#62;
+      &#60;/Representation&#62;
+      &#60;NaturalLanguage&#62;
+        &#60;Phrase xml:lang&#61;&#34;en&#34; role&#61;&#34;After&#34;&#62;(by misinterpretation)&#60;/Phrase&#62;
+        &#60;Phrase xml:lang&#61;&#34;de&#34; role&#61;&#34;After&#34;&#62;(Fehlinterpretation)&#60;/Phrase&#62;
+      &#60;/NaturalLanguage&#62;
+      &#60;ModifierClass&#62;TreatAsMisinterpretation&#60;/ModifierClass&#62;
+      &#60;ProportionRange lowerestimate&#61;&#34;0&#34; upperestimate&#61;&#34;0&#34;/&#62;
+    &#60;/Modifier&#62;
+  &#60;/Modifiers&#62;
+&#60;/DescriptiveConcept&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+<p />
+<h4><a name="3_17_2_Grouping_concepts"></a> 3.17.2 Grouping concepts </h4>
+<p />
+Character hierarchies comprise a tree of nodes with characters at the end of each branch, as demonstrated in the example below.
+<p />
+<img alt="character_trees_example.gif" src="http://wiki.tdwg.org/twiki/static/_publish/character_trees_example.gif" />
+<p />
+Internal nodes in a character tree are not characters but grouping concepts. These are defined in the &lt;DescriptiveConcepts&gt; element and referenced within the &lt;CharacterTree&gt; element, as in the example below.
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<tr>
+<td>
+<pre>
+      &#60;DescriptiveConcepts&#62;
+      &#60;DescriptiveConcept id&#61;&#34;dc1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Flowers&#60;/Label&#62;
+        &#60;/Representation&#62;
+      &#60;/DescriptiveConcept&#62;
+      &#60;DescriptiveConcept id&#61;&#34;dc2&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Petals&#60;/Label&#62;
+        &#60;/Representation&#62;
+      &#60;/DescriptiveConcept&#62;
+                 ...etc
+      &#60;/DescriptiveConcepts&#62;
+</pre>
+</td>
+</tr>
+</table>
+<p />
+For more information on using groupinf concepts to build a character tree, see the topic <a href="characterhierarchies.html">Character Hierarchies</a>
+<p />
+<h4><a name="3_17_3_Concept_States"></a> 3.17.3 Concept States </h4>
+<p />
+SDD provides a mechanism for defining state values that are reusable in multiple characters. For example the concept state 'blue' may be applied to many different colour descriptors such as "Eye colour', 'Fin colour' and 'Tail colour'. Similarly, the state "ovate" may be used for "Leaf shape", "Petal shape", "Seed shape" etc.  Using concept states simplifies the management of terminology and improves data analysis, as states from different characters can be compared if they refer to identical concept states.
+<p />
+Concept states are defined in much the same way as local states (i.e. states defined within a character). Once defined, concept states are referenced in the definition of a character. The basic structure od SDD code for concept states has the basic structure shown below and in example 3.5.1.2.
+<p />
+<img alt="conceptstates.gif" src="http://wiki.tdwg.org/twiki/static/_publish/conceptstates.gif" />
+<p />
+<h5><a name="Example_3_17_3_1_SDD_representat"></a> Example 3.17.3.1 - SDD representation of the categorical characters in 3.5.1.1. </h5>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<tr>
+<td>
+<pre>
+ &#60;DescriptiveConcept id&#61;&#34;dc40&#34;&#62;
+   &#60;Representation&#62;
+     &#60;Label&#62;Preferred certainty modifiers&#60;/Label&#62;
+   &#60;/Representation&#62;
+   &#60;ConceptStates&#62;
+     &#60;StateDefinition id&#61;&#34;cs1&#34;&#62;
+       &#60;Representation&#62;
+         &#60;Label&#62;blue&#60;/Label&#62;
+       &#60;/Representation&#62;
+      &#60;/StateDefinition&#62;
+     &#60;StateDefinition id&#61;&#34;cs2&#34;&#62;
+       &#60;Representation&#62;
+         &#60;Label&#62;white&#60;/Label&#62;
+       &#60;/Representation&#62;
+      &#60;/StateDefinition&#62;
+      ...etc
+    &#60;/ConceptStates&#62;
+ &#60;/DescriptiveConcept&#62;
+
+ &#60;Characters&#62;
+   &#60;CategoricalCharacter id&#61;&#34;c1&#34;&#62;
+     &#60;Representation&#62;
+       &#60;Label&#62;Eye Colour&#60;/Label&#62;
+     &#60;/Representation&#62;
+     &#60;States&#62;
+       &#60;StateReference id&#61;&#34;s1&#34;&#62;
+         &#60;ConceptState ref&#61;&#34;cs1&#34;/&#62;
+       &#60;/StateReference&#62;
+       &#60;StateReference id&#61;&#34;s2&#34;&#62;
+         &#60;ConceptState ref&#61;&#34;cs2&#34;/&#62;
+       &#60;/StateReference&#62;
+     &#60;/States&#62;
+    &#60;/CategoricalCharacter&#62;
+    ...etc
+   &#60;/Characters&#62;
+</pre>
+</td>
+</tr>
+</table>
+<p />
+In this example, the states "blue" and "white" are defined in &lt;ConceptStates&gt;. When the categorical character "Eye Colour" is defined in &lt;Characters&gt;, the concepts states are referenced (using their ids cs1 and cs2), instead of local states being defined.
+<p />
+The &lt;Representation&gt; element provides a label for the description. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic <a href="sddlanguage.html">Language support in SDD</a>.
+<p />
+<p />
+<p />
+<p />
+-- DonovanSharp - 09 Jun 2006
+<p />
+<p />
+</body></html> 

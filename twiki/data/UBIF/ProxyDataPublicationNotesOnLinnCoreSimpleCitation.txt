@@ -1,0 +1,34 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258682524" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="ObsoleteTopicObsoleteTopicProxyDataModel"}%
+---+!! %TOPIC%
+
+This refers to the structure proposed by Jerry Cooper in his first draft of <nop>LinneanCore (a proposed standard for nomenclatorial data). For the sake of the discussion I first reproduce the <nop>SimpleCitation xml schema from Jerry's proposal. Being a first draft and call for discussion the comments below should not be misconstrued as criticism. Instead, I like to reproduce it here to capture the basic approach Jerry is taking, which is slightly different from my modified proposal in UBIF.ProxyDataPublication,
+
+<img src="%ATTACHURLPATH%/PublicationProxy_LC1.png" alt="PublicationProxy_LC1.png"  />
+
+Some minor comments on the proposed structure: 
+   * <nop>BookTitleEnglish should be a collection of translations, with language indicated as attribute on each translation. I think there is no such thing as a natural "English" book title of a Chinese Book. <nop>RomanTransliteration seems to be inconsistently provided. 
+   * The title/language/translation would benefit from typifying it. For example, in the series title the language is not expressed, but it is in the other elements.
+   * <nop>BookPublicationYear and <nop>ArticlePublicationYear seem to be redundant. I can not imagine how this can differ. A single <nop>PublicationYear/Date should be enough. 
+   * Also, it is unclear to me why only Articles may have a digital obj. id (= DOI). 
+   * Edition of book was missing. 
+   * Journal may better be named periodical, including newspapers and magazines as well as scientific journals. "Periodical" is used e.g. by reference manager.)
+   * There is no way yet to express Reprint data, which is especially important for the old taxonomic literature.
+   * Technically, the article type enumeration should better be a named enumerated simple type (currently anonymous type). In principle, I wonder however whether it is needed at all. I believe the type can be inferred from the combination of book/series/chapter/periodical/article blocks. Infering a type may be easier than mapping type concepts on each other. In my observation applications like <nop>ReferenceManager(TM), <nop>EndNote(TM) or <nop>ProCite(TM) all have different reference type concepts.
+
+To me the flat structure is a case where flat is more confusing than structured. I have tried to moderately restructure Jerry's proposal, take the comments above into account, and compared it with our own <nop>DiversityReferences structure. Please see  UBIF.ProxyDataPublication for the modified proposal! Please do critizise the details as well as discuss the fundamental difference of it being slightly more structured - would that already reduce acceptance?
+
+   * _Note on <nop>DiversityReferences_: This is a relational database model designed to provide simple mapping to <nop>ReferenceManager(TM). An overview over available html and sql documentation can be found at [[http://160.45.63.11/Workbench/References/Model/InformationModels.html][InformationModels]]. A (flat database!) xml schema is also available, see [[http://160.45.63.11/Workbench/References/Model/2003-09-24/DiversityReferencesModel.xsd][DiversityReferencesModel.xsd]]
+
+---
+
+In his notes for <nop>LinneanCore Jerry says: "Finally, I will make a prediction ... In two years time we will decide that we urgently need a standard for describing literature because that is where all the names come from, and name-uses in the literature form the basis of taxon concepts, and therefore we need a mechanism for sharing ‘literature objects’. The data structures for storing literature references in many databases are inadequate and people will have a lot of future work in order to standardise them. However, a standard already exists, MARC, and, although it is based on flat data, at least it atomizes and tags the components logically (and is actually quite easy to re-model into a hierarchical structure). We really do need to think about this now and be encouraging digitizers to treat literature data with respect and not dump it into a string! The ‘SimpleCitation’ object in this schema is a MARC subset."
+
+I can only endorse this! We should get together now. That means in the coming weeks, before three TDWG standards all including various versions of publication references are submitted to TDWG in beginning August in time for standard endorsement! 
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+
+---
+
+%META:FILEATTACHMENT{name="PublicationProxy_LC1.png" attr="h" comment="" date="1085518060" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\PublicationProxy_LC1.png" size="11472" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1089916034" from="SDD.ProxyDataPublicationNotesOnLinnCoreSimpleCitation" to="UBIF.ProxyDataPublicationNotesOnLinnCoreSimpleCitation"}%

@@ -1,0 +1,269 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.11.15.22.11.43;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.11.15.10.24.00;	author JessieKennedy;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.11.12.18.02.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.11.12.17.00.59;	author JessieKennedy;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.10.31.20.43.47;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.10.31.17.38.55;	author RichardPyle;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.10.31.08.06.00;	author RichardPyle;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.10.26.12.24.26;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1100556703" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="LinneanCoreUseCases"}%
+My use case scenarios where I see LinneanCore to be used are 
+
+1) Form the scientific name representation of future taxon concept exchange standards. Especially, in regard to TCS it should replace the ABCD-style name details used in TCS 0.80. This is based on an older version of ABCD (1.20?) and completely separates name data elements for Bacterial, Botanical, Zoological and Viral names. This separation may simplify the task of exporting names for those having names only of one major taxonomic groups, but any consumer dealing with several of Bacterial, Botanical, Zoological and Viral names either has to work against a super-wide structure, often using complex OR-queries to find a given name, or has to figure out the relationships between the different subtypes for names him- or herself. It is clear that some names specialities are limited to one area, but I believe these should be modeled as extensions from a common name-detail-supertype applicable to all kind of scientific names (perhaps with the exception of viral names?). 
+
+To avoid waiting for TCS to be finished, I believe it is acceptable to agree on a first version of LinneanCore quick, accepting the danger that together with TCS a modified version 2 of LC may have to appear. I do believe that Jessie Kennedy's arguments that standards that model current biological practices detracts from the power of introducing entirely new procedures into biology is not correct. Instead, LinneanCore may be the easy way for those not able or willing to deal with the problems in making taxon concepts explicit. However, I do believe that users of LinneanCore may find it easier to later upgrade to a TCS-style model. LC may pave a way to more complex and sophisticated models. 
+
+	* Richard: I don't think there is any need to wait for TCS to be finished before we are able to embed the entire LC schema within a simple TCS wrapper with no Vouchers, no Publications (at the TCS level), and no <nop>RelationshipAssertions. Within <nop>TaxonConcepts, there would be one <nop>TaxonConcept instance for each LC instance. These would each be of "Nominal" (TCS called it "Nomenclatural") Type, and would have no <nop>AccordingTo, no Relationships, no <nop>SpecimenCircumscriptions, no <nop>CharacterCircumscriptions, and may or may not have a Kingdom (<nop>NomenCode?) and/or a Rank. There would only be a Name, with <nop>SimpleName and <nop>NameDetailed (the latter would encompass the LC schema). Yes, it's a little extra baggage to include this wrapper on each LC dataset, but not that much. Nobody has to do any concept mapping or anything like that. And, I don't see why changes to TCS would affect the internal content of LC. -- 31 Oct 2004 
+	* Main.JessieKennedy - 12 Nov 2004: I find it strange that we can agree on a version of Linnean core quick but can't agree on a version of TCS quick... looks like so some can use names to label things instead of concepts.... which I thought we'd all agreed wasn't sensible... My argument is not to force people to do things they don't do but to ensure that the models can cope with new ways for improving taxonomy etc. and deal with the older work in a common framework - but yes it does involve everyone looking at their data in a slightly different way. Otherwise why not stick to what you've got at the moment - use your own schema to do it the way you want and then each of you worry about how to map between each other's data - not a good approach if the community is going to benefit from this work I think.
+
+For these reasons, I believe that a major design goal of LC should be to be as intuitive to biologists as possible. 
+
+*2)* Separate the issues of conveying hierarchical information from a standardized "canonical name" name used for comparing name equality. See the separate topic LinneanCoreDisentangle.
+
+*3)* Support collaboration and sharing of work. 
+	* Allow specialists to agree on the correct nomenclatural name for a set of homotypic names. Let them work out an agreed spelling of genus, epithet and authors - abbreviated or not. Let them work out the correct publication year. 
+	* On top of this nomenclatural resource, the collection may collaborate to link the known type species with this information by using GUID information provided by the nomenclator
+	* Separately, vernacular name use can be worked out
+	* Databases providing property (chemical/enzymatic, molecular like Genbank, morphological descriptions) can use the GUID and the canonical human readable spelling to improve their communication and relationship. 
+	* Do not waste the precious time of taxonomic experts - as it is often done right now! - to look up the correct author spelling of names in each property or specimen collection database!
+
+*4)* Perhaps a longer use case of the latter case: In our GLOPP database on fungal plant pathogens, we have ca. 190000 records. As of 2004-10-26, the raw name usage is 26418 fungal and 31139 plant "name strings". Our guess is that the number of names is much lower, perhaps a third of these numbers. Trying to find the fungi in Index fungorum yields less than a third of matching names. All other names would have to be manually corrected to provide a link. If Index fungorum correct a name, the link would be broken again. So instead of doing this, we attempt to use IDs from Index fungorum in our database. The linking effort is similar, but the result is more stable, and we can profit from both the homotypic synonymy information in Index fungorum and from improvements in the spelling of names and authors.
+
+To me an important side-aspect of this is, that although less than 30 % of names matched directly, using information from index fungorum and some rule-based algorithms based on empirically detected name-variant patterns, I have been able to create a name variant index for the Index fungorum, which is several times the size of it, but increases linkage to about 2/3. (I plan to do this again with the next version of Index fungorum which provides a better basis for this procedure, so I am reluctant to give more precise values here.)
+	* Richard:  I agree with essentially everything else above; and I don't see why embedding LC within an "empty" TCS wrapper would in any way obstruct the flow of purely nomenclatural information. -- 31 Oct 2004
+	* Gregor:  Let us postpone this and wait for the proposal how to express simple nomenclatural datasets in TCS. Also: SDD certainly struggles with similar "social" arguments about acceptability. My *feeling* is that TCS does not work for the kind of unsophisticated datasets GBIF/ECAT depends upon. I see however absolutely no harm in providing multiple options to data providers. I have no issues with outer structure wrappers, and if TCS is able to transport the information, I would be quite glad (I have some doubts about this from my own attempts to understand TCS). However, if social problems prevent this - note our own confusion about terminology, what is a name, what is authorship - then ECAT should offer an alternative. Basically what you say is that the alternative could also be expressed as TCS - in that case a simple XSLT transform should do the job, if the only problem is to use slightly more complicated structures in TCS. -- 31 Oct 2004
+	* Main.JessieKennedy - 12 Nov 2004: I originally thought Gregor's dislike of TCS was that it was a complex object (however to be honest I think it is the simplest of all the TDWG schemas being developed!), but as I read proposals for LC not to be a flat structure then I don't see the advantage for Gregor in using LC... I'm still waiting on data from some people to show how I could represent it in TCS - it's one thing asking us for examples but by giving us your data we would be able to provide more useful or understandable examples...
+	* Gregor: I have no such "dislike" for a complex TCS. Regarding examples: I am not sure what you ask - both IPNI and IndexFungorum are fully online available. The GLOPP use case is a consumer's use case - and I am not sure how GLOPP data help you but I can give them.
+
+For the last reason, I believe that the original authors orthography should be part of LC. I further believe, that listing known non-standard name variants would be extremely valuable and I propose to make this part of the "Core". Name variants may result from reasons discussed in LinneanCoreDisentangle, but also special situations like that a name has frequently erronously attributed to an author that did not publish it, or names that used to be valid under older versions of the code but are replaced with different names through changes in the rules (example: changing the starting date for fungi and the associated sanctioning mechanism).
+
+	* Richard:  I agree that a separate element should be included for original orthography (needs to be defined explicitly). I imagine three separate approaches to handling [[LinneanCoreDefinitions#VariantSpelling][variant spellings]].  One is to do as you suggest and enumerate them within the LC schema.  Another is to treat them as separate LC "units" (e. g., with their own GUIDs).  Another is to leave them to be tracked in the "<nop>NameSimple" element of TCS, and access them only through TCS instances of that sort. See also [[LinneanCoreDomain#VariantSpelling][LinneanCoreDomain]].
+	* Main.JessieKennedy - 12 Nov 2004: we seem to have another modelling issue that we need to address or understanding of it might allay some worries. Apart from preference and potentially performance issues in an implementation conceptually what's the difference between<br/>
+	object_a  relationship_x  object_b <br/>
+	and<br/>
+	object_a  has_attribute_x  object_b ?<br/>
+	purely a modeling issue and I think this is all you're discussing so a name_object has an attribute original orthography could easily be represented as name_object (or concept in TCS) has_original_orthography_relationship name_object<br/>
+The use of relationships is more flexible as you don't need to specify all the types of relationships in advance which you would need to do if you were to treat them as attributes. If you wanted an enumerated list of relationships then of course the list would have to be maintained but I believe this is simpler.
+	* Gregor: I am not thinking about performance. Problem 1: Above we talk about name-strings-with-author, for which I can find no relationship expressible in TCS 0.8, where relationships are all between concepts rather than between nomenclatural code objects and strings. Problem 2 (generalized relationships are simpler): Already now I feel that analysing which of the 1000 possible relationships types (5 x 5 concept types x 40 rel. types, compare LinneanCoreTCSInteraction) between TCS 0.80 records are reliable (and most likely which 90% should never exist) is too complicated. Such an analysis would be necessary to know which knowledge can be trusted if I want to share work with (or rather profit from) the reliable nomenclatural conclusions a nomenclator can research, and which relations are opinion that require me to revise my own taxon concepts. I think this is a question of typing relations and I think one does the same in type-safe programming; the generalized relationship is an object pointer, able to point to any memory location. -- 12. Nov. 2004
+	* Main.JessieKennedy - 15 Nov 2004: I don't know what you mean - can't you express a name string and author in the ABCD name element? The actual publication for that name string would be the publication in the taxon concept part - but that's because I've been trying to get people to think of modelling names as concepts (I presented this idea at TDWG) and then the name string becomes only that - a flat structure of strings as in ABCD. I've said many times we've not sorted out the list of possible relationships and how these relate to each other and that we need help in doing so - but that's mostly for system implementions using this information. Trust of data will be more than relationships and I've said that too - users will decide based on published protocols of providers (what they do to their data etc.) whether or not they will trust it and what the quality it is. Quality of data will be dependant on many factors something I've alluded to but have not fully worked out yet.
+	* Gregor: 1. With the relations above I mean you can express a relation between a single name string and a concept, but I do not know how I express the relation between the non-canonical name-strings (with author) and the canonical name-string. These are not different TCS-concepts (as I understand it), but this is what the use case is about: connecting name usage data among each other and with nomenclatural authority files. - 15 Nov 2004
+	* Gregor: 2. Regarding the "sorting the relations" I disagree that this is a system-implementor job. Perhaps so for the provider, but it will also be the job of every consumer of TCS data. And as I indicate above, it is a very difficult job that in my use case scenarios makes TCS data very hard to use. All this can be improved with documentation (I would be a fool to criticize bad documentation, see SDD!) and that is why I sometimes speak of "my feelings", funny as this may sound. But I do think defining the relations, and especially which relation is applicable to which combination of the five concept types must be the job of the TCS authors, not of the users. And the definitions of these types need revision, to me a botanical combination into a new genus could be any of  Original (it is the first representation of a name use in a nomenclatural-concept sense), Revision (it always revises the hierarchical concept of two genera, and it may or may not revise the circumscription concept), it could be Incomplete. At the moment to me it looks like the TCS "concept type" mixes things really belonging into separate attributes - but I may just not understand the definitions given. - 15 Nov 2004
+
+-- Main.GregorHagedorn - 26 Oct 2004
+
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JessieKennedy" date="1100514240" format="1.0" version="1.7"}%
+d7 1
+a7 1
+To avoid waiting for TCS to be finished, I believe it is very acceptable to agree on a first version of LinneanCore quick, accepting the danger that together with TCS a modified version 2 of LC may have to appear. I do believe that Jessie Kennedy's arguments that standards that model current biological practices detracts from the power of introducing entirely new procedures into biology is not correct. Instead, LinneanCore may be the easy way for those not able or willing to deal with the problems in making taxon concepts explicit. However, I do believe that users of LinneanCore may find it easier to later upgrade to a TCS-style model. LC may pave a way to more complex and sophisticated models. 
+d29 1
+d40 4
+a43 2
+	* Gregor: I am not thinking about performance. Problem 1: Above we talk about name-strings-with-author, for which I can find no relationship expressible in TCS 0.8, where relationships are all between concepts rather than between nomenclatural code objects and strings. Problem 2 (generalized relationships are simpler): Already now I think that analysing which of the 1000 possible relationships types (5 x 5 concept types x 40 rel. types, compare LinneanCoreTCSInteraction) between TCS 0.80 records are reliable (and most likely which 90% should never exist) is too complicated. Such an analysis would be necessary to know which knowledge can be trusted if I want to share work with (or rather profit from) the reliable nomenclatural conclusions a nomenclator can research, and which relations are opinion that require me to revise my own taxon concepts. I think this is a question of typing relations and I think one does the same in type-safe programming; the generalized relationship is an object pointer, able to point to any memory location. -- 12. Nov. 2004
+-- Main.JessieKennedy - 15 Nov 2004: I don't know what you mean - can't you express a name string and author in the ABCD name element? the actual publication for that name string would be the publication in the taxon concept part - but that's because I've been trying to get people to think of modelling names as concepts (I presented this idea at TDWG) and then the name string becomes only that - a flat structure of strings as in ABCD. I've said many times we've not sorted out the list of possible realtionships and how these relate to each other and that we need help in doing so - but that's mostly for system implementions using this information. Trust of data will be more than relationships and I've said that too - users will decide based on published protocols of providers (what they do to their data etc.) whether or not they will trust it and what the quality it is. Quality of data will be dependant on many factors something I've alluded to but have not fully worked out yet.
+d45 2
+a46 1
+-- Main.GregorHagedorn - 26 Oct 2004
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1100282520" format="1.0" version="1.6"}%
+d40 1
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JessieKennedy" date="1100278859" format="1.0" version="1.5"}%
+d3 1
+a3 2
+each LC dataset, but not that much.  Nobody has to do any concept mapping or anything like that. And, I don't see why changes to TCS would affect the internal content of LC.  -- 31 Oct 2004
+-- Main.JessieKennedy - 12 Nov 2004: I find it strange that we can agree on a version of Linnean core quick but can't agree on a version of TCS quick... looks like so some can use names to label things instead of concepts.... which I thought we'd all agreed wasn't sensible... My argument is not to force people to do things they don't do but to ensure that the models can cope with new ways for improving taxonomy etc. and deal with the older work in a common framework - but yes it does involve everyone looking at their data in a slightly different way. Otherwise why not stick to what you've got at the moment - use your own schema to do it the way you want and then each of you worry about how to map between each other's data - not a good approach if the community is going to benefit from this work I think.
+d5 1
+d7 6
+a12 1
+For these reasons, I believe that a major design goal of LC should be to be as intuitive to biologists as possible.
+d27 2
+a28 3
+	* Gregor:  Let us postpone this and wait for the proposal how to express simple nomenclatural datasets in TCS. Also: SDD certainly struggles with similar "social" arguments about acceptability. My *feeling* is that TCS does not work for the kind of unsophisticated datasets GBIF/ECAT depends upon. I see however absolutely no harm in providing multiple options to data providers. I have no issues with outer structure wrappers, and if TCS is able to transport the information, I would be quite glad (I have some doubts about this from my own attempts to understand TCS, and given your lists of things that should be removed from TCS). However, if social problems prevent this - note our own confusion about terminology, what is a name, what is authorship - then ECAT should offer an alternative. Basically what you say is that the alternative could also be expressed as TCS - in that case a simple XSLT transform should do the job, if the only problem is to use slightly more complicated structures in TCS. -- 31 Oct 2004
+-- Main.JessieKennedy - 12 Nov 2004: I'm interested in the list of things that should be removed from TCS - where are these please? I originally thought Gregor's dislike of TCS was that it was a complex object (however to be honest I think it is the simplest of all the TDWG schemas being developed!), but as I read proposals for LC not to be a flat structure then I don't see the advantage for Gregor in using LC... I'm still waiting on data form some people to show how I could represent it in TCS - it's one thing asking us for examples but by giving us your data we would be able to provide more useful or understandable examples...
+----------
+d32 6
+a37 8
+	* Richard:  I agree that a separate element should be included for original orthography (needs to be defined explicitly). I imagine three separate approaches to handling [[LinneanCoreDefinitions#VariantSpelling][variant spellings]].  One is to do as you suggest and enumerate them within the LC schema.  Another is to treat them as separate LC "units" (e. g., with their own GUIDs).  Another is to leave them to be tracked in the "<nop>NameSimple" element of TCS, and access them only through TCS instances of that sort. See also LinneanCoreDomain#VariantSpelling.
+-- Main.JessieKennedy - 12 Nov 2004: we seem to have another modelling issue that we need to address or understanding of it might allay some worries. Apart from preference and potentially performance issues in an implementation conceptually what's the difference between
+object_a  relationship_x  object_b 
+and
+object_a  has_attribute_x  object_b ?
+purely a modeling issue and I think this is all you're discussing 
+so a name_object has an attibute original othography could easily be represented as name_object (or concept in TCS) has_original_orthography_relationship name_object
+
+d39 1
+a39 1
+----------------------------
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099255427" format="1.0" version="1.4"}%
+d3 2
+a4 1
+My use case scenarios where I see <nop>LinneanCore to be used are
+a5 5
+*1)* Form the scientific name representation of future taxon concept exchange standards. Especially, in regard to TCS it should replace the ABCD-style name details used in TCS 0.80. This is based on an older version of ABCD (1.20?) and completely separates name data elements for Bacterial, Botanical, Zoological and Viral names. This separation may simplify the task of exporting names for those having names only of one major taxonomic groups, but any consumer dealing with several of Bacterial, Botanical, Zoological and Viral names either has to work against a super-wide structure, often using complex OR-queries to find a given name, or has to figure out the relationships between the different subtypes for names him- or herself. It is clear that some names specialities are limited to one area, but I believe these should be modeled as extensions from a common name-detail-supertype applicable to all kind of scientific names (perhaps with the exception of viral names?). 
+
+To avoid waiting for TCS to be finished, I believe it is very acceptable to agree on a first version of <nop>LinneanCore quick, accepting the danger that together with TCS a modified version 2 of LC may have to appear. I do believe that Jessie Kennedy's arguments that standards that model current biological practices detracts from the power of introducing entirely new procedures into biology is not correct. Instead, <nop>LinneanCore may be the easy way for those not able or willing to deal with the problems in making taxon concepts explicit. However, I do believe that users of <nop>LinneanCore may find it easier to later upgrade to a TCS-style model. LC may pave a way to more complex and sophisticated models.
+
+	* Richard: I don't think there is any need to wait for TCS to be finished before we are able to embed the entire LC schema within a simple TCS wrapper with no Vouchers, no Publications (at the TCS level), and no <nop>RelationshipAssertions.  Within <nop>TaxonConcepts, there would be one <nop>TaxonConcept instance for each LC instance. These would each be of "Nominal" (TCS called it "Nomenclatural") Type, and would have no <nop>AccordingTo, no Relationships, no <nop>SpecimenCircumscriptions, no <nop>CharacterCircumscriptions, and may or may not have a Kingdom (<nop>NomenCode?) and/or a Rank.  There would only be a Name, with <nop>SimpleName and <nop>NameDetailed (the latter would encompass the LC schema).  Yes, it's a little extra baggage to include this wrapper on each LC dataset, but not that much.  Nobody has to do any concept mapping or anything like that. And, I don't see why changes to TCS would affect the internal content of LC.  -- 31 Oct 2004
+d23 2
+d29 9
+d39 1
+a39 2
+-- Main.GregorHagedorn - 26 Oct 2004
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1099244335" format="1.0" version="1.3"}%
+d20 1
+a20 1
+	* Do not waste the precious time of experts - as it is often done right now! - to look up the correct author spelling of names in each property or specimen collection database!
+a24 1
+
+d26 1
+d30 1
+a30 1
+	* Richard:  I agree that a separtae element should be included for original orthography (needs to be defined explicitly). I imagine three separate approaches to handling [[LinneanCoreDefinitions#VariantSpelling][variant spellings]].  One is to do as you suggest and enumerate them within the LC schema.  Another is to treat them as separate LC "units" (e.g., with their own GUIDs).  Another is to leave them to be tracked in the "<nop>NameSimple" element of TCS, and access them only through TCS instances of that sort.  See also LinneanCoreDomain#VariantSpelling.
+d32 2
+a33 1
+-- Main.GregorHagedorn - 26 Oct 2004
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1099209960" format="1.0" version="1.2"}%
+d9 1
+a9 1
+	* Richard: I don't think there is any need to wait for TCS to be finished before we are able to embed the entire LC schema within a simple TCS wrapper with no Vouchers, no Publications (at the TCS level), and no <nop>RelationshipAssertions.  Within <nop>TaxonConcepts, there would be one <nop>TaxonConcept instance for each LC instance. These would each be of "Nominal" (TCS called it "Nomenclatural") Type, and would have no <nop>AccordingTo, no Relationships, no <nop>SpecimenCircumscriptions, no <nop>CharacterCircumscriptions, and may or may not have a Kingdom (<nop>NomenCode?) and/or a Rank.  There would only be a Name, with SimpleName and NameDetailed (the latter would encompass the LC schema).  Yes, it's a little extra baggage to include this wrapper on each LC dataset, but not that much.  Nobody has to do any concept mapping or anything like that. And, I don't see why changes to TCS would affect the internal content of LC.  -- 31 Oct 2004
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1098793466" format="1.0" version="1.1"}%
+d9 2
+d26 2
+d30 2
+@

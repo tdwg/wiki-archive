@@ -1,0 +1,13 @@
+---+ Multiple resource access points
+
+In this case, a service available through an access point (URL) would be associated to a general provider, which could potentially serve records from many resources (datasets). In order to address requests to a specific resource, the protocol would need a "destination" tag, and each resource would need a code (unique within the scope of a provider).
+
+*Impact*
+
+Consequences for the current DiGIR networks:
+
+   * None, since this is the current approach taken by the networks.
+
+Consequences for the BioCASE network:
+
+   * Each dataset would need an associated code (with no particular meaning, just an identifier) for compatibility with the protocol. Since each BioCASE access point is only associated to a single dataset, that identifier could be any value. Using the same identifier to all datasets would simplify the process - it could even be hardcoded. The PyWrapper would simply advertise its resource code through metadata responses and it could ignore the code from search or scan requests. That would keep the same functionality, but other networks could easily integrate BioCASE datasets. However, if BioCASE wants to integrate an external dataset, its components would need to know how to deal with resource codes.

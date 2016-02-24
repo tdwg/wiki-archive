@@ -1,0 +1,229 @@
+head	1.8;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.8
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2005.03.16.18.17.39;	author BobMorris;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2005.03.15.17.55.38;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2005.03.15.15.48.25;	author BobMorris;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.03.15.12.25.51;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.03.15.03.26.49;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2005.03.14.23.04.05;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.03.14.20.20.50;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1110997059" format="1.0" version="1.7"}%
+My present thinking is that indentifiers should be classified by the activity they support. So this is a reinterpretation of r1.12 of [[ObjectTypePattern#AnchorInstanceID][ObjectTypePattern.Instance ID vs. Abstract ID]] and probably doesn't add much substantive to it. It applies to r1.12 of that topic, and might become moot by revisions thereof. See also UriAndUrnAndUrl and UriAndUrnAndTag.
+
+There are (at least) these three, possibly related interfaces that would take an identifier as argument:
+
+* *refer* _refer(idvalue)_ does not return any information but rather its invoker signifies that human or software agents intends to make a reference to something with an identifier is _idvalue_. Its only contract is that if _idvalue1_ = _idvalue2_ then the objects having those values as identifier are the same.
+
+* *resolve* _resolve(idvalue)_ MAY return information but there is no guarantee that the information returned is the same across invocations. Exactly what information comes back is determined by the identifier mechanism itself. For URIs, it is determed by the uri _scheme_. See UriAndUrnAndUrl. The implementation of _resolve_ is loosely called a _resolution service_, though it might simply be some completely local method such as an  XPath or XQuery expression that results in a some fragment of the object being returned. A resolution service MIGHT be a retrieval service (See Below).
+
+* *retrieve* _retrieve(idvalue)_ MUST return a copy of the object specified by _idvalue_. An implementation of _retrieve_ is loosely called a _retrieval service_. A _resolution service_ MIGHT be a _retrieval service_., or have an associated retrieval service. A retrieval service MUST return the same object on every invocation, where "same" is defined by the definition of the idvalue mechanism. Normally, for retrieval services returning XML objects, "same" would mean that the objects are bytewise identical after XML Canonicalization. A retrieval service might be a purely local mechanisms such as an XPath or XQuery expression that returns exactly the XML element that represents the object. In particular, mutable data would never be returned by a retrieval service. LSIDs approach this issue by requiring that an LSID resolution service put mutable data in the LSID metadata, and that all LSID _data_ be persistent. In particular, the _retrieve_ operation against an LSID would frequently fail, at least in those (frequent) cases where the object given an LSID has most of its information of interest coming from something mutable, such as a specimen record database. If an LSID is issued to the specimen itself, the only meaningful---if far-fetched---implementation of _retrieve_ might be to automatically initiate a loan of the specimen. However, in this case, the retrieved object, being physical, could not be "inserted" into the information object containing the LSID, and the semantics of _retrieve_ might not be useful.  By contrast, _retrieve_ applied to an LSID on an image could result in the copy of the image available for insertion into an information object.
+
+*Instance Identifiers and Links* In the sense of [[ObjectTypePattern#AnchorInstanceID][InstanceID vs. Abstract ID]] we may say that an Instance ID MUST support _refer_. The proposal as of r1.12 of 
+ObjectTypePattern is that an Instance ID SHOULD NOT be an argument to a resolution or a retrieval service, but rather that any desire to express an argument for such a service should be implemented with an identifier attribute on a &lt;Link> element in a list immediately below the root of the object carrying the Instance ID.
+
+	* I think this is a misunderstanding, I probably need help in expressing myself better. Object references both with ref attribute (local, validated reference) and href (external references) in my thinking both imply a kind of retrieval service (document internal or external). My point is that the retrieval should be determinate, always retrieving identical instances, not a resolution where different kind of data (e.g. pointing to a form where a human may choose between !DarwinCore and ABCD level of detail, or just meta data about how to pay is displayed). I explicitly meant to support LSIDs for instance identifiers, provided they retrieve an instance object as data, and do not point to an abstract object for which representations need to be negotiated. -- Main.GregorHagedorn - 15 Mar 2005
+
+In the terminology above, we may say that the recommendation of [[ObjectTypePattern#AnchorInstanceIDRecommendation][ObjectTypePattern]] is that an identifier supporting _refer_, SHOULD NOT implement resolve or (implicitly) _retrieve_. Possibly this is necessary for XML schema validation but it is not enforceable because an XPath expression can always retrieve the entire object  carrying the the Instance ID. That is, XPath always provides an implementation of _retrieve_ for any reasonably unique attribute value whatsoever. Furthermore, XLink probably provides an external implementation of _retrieve_, or at the very least  a resolution service. Call this the _implicit retrieval service_ In the face of this, I am not sure what the recommendation accomplishes at its cost of a (minor?) increase in text size. I suppose the issue is this: if an Object Reference somewhere else in the document or externally tries to reference an Object by an Instance ID  which also has a pre-defined resolution service, e.g. LSID, then it is ambiguous whether that resolution service should be used or the implicit retrieval service defined by an XPath or or XLink expression. Hence, I change my mind and support the recommendation.
+
+*Object References*  I'm generally in agreement with [[ObjectTypePattern#AnchorObjectReferences][Object References]] on the use of references using identifiers, but I don't see whether it is possible to distinguish a reference to an identifier that has a resolution service from one that has a retrieval service. It doesn't appear to me that  [[http://www.faqs.org/rfcs/rfc3404.html][RFC3404]], the IETF Dynamic Delegation Discovery System (DDDS) makes this distinction. In particular, I suspect that composition of objects via retrieval may be difficult to specify well because it may be difficult to deduce and apply a retrieval service when most URIs specify only a resolution service if anything. Similarly, DOI whether via the doi URI scheme or not, does nothing toward retrieval of the object it identifies. I'm especially wary of object composition in the face of XInclude and XLink, though at the moment don't see any troublesome cases.
+
+I don't see a compelling case for distinguishing internal (attribute 'ref') from external (attirbute 'href') references, especially since XInclude could turn an external object into an internal object. In other words, 'href' has to support Instance IDs within the same document, just as it does in XHTML.
+
+I hate "Abstract ID" as the name for whatever is not an Instance ID, but don't have a good alternative.
+
+-- Main.BobMorris - 14 Mar 2005
+---
+
+I certainly agree that the distinctions of actions on identifiers made here are very helpful. Please see comment in the bullet above, where I think there is misunderstanding
+
+Re "Abstract ID": I welcome any good antonym pair, no problem. Good news: this name appears only in documentation, not in the xml schema (other than in annotation perhaps).
+
+More worrysome to me is the desire to _not_ distinguish between ref (within document) and href (to a retrieval-service outside of the document). My desire is to allow validation on internal references, which in many datasets are notoriously broken. Such validation is supported by w3c schema in the form of identity constraints, which are akin to referential integrity in databases. However, to make this work, I need different attribute names for those values that shall be validated and those which shall not be. In xhtml, the distinction is made by using "#" in front of the internal fragment references (since the anchors do not have a # in front of them, so no the validation depends on understanding the semantics implied in starting a href with the letter "#"). xml schema is not flexible enough to make a distinction based on the character with which the value starts.
+
+Is it more important to have one attribute name and:
+	* in the case of resolvable lsid let consuming software figure out whether the reference is resolvable/retrievable in the document or only externally
+	* let other validation services test whether the referenced data that are required to process the document are present or not (identity constraints/relational integrity)
+My conclusion was that two attribute names are acceptable. I am not sure where using XInclude could have a problem. Can you give a scenario? I believe that XInclude does not apply here, rather xslt + LSID retrieval may do the job, perhaps sometimes XSLT + XInclude retrieval, but never XInclude alone. Given that XSLT is involved, it would be easy to change href in ref, or more likely, change "Object href=" into "Object id=".
+
+-- Main.GregorHagedorn - 15 Mar 2005
+
+I accept the distinction, but worry about a social issue. If the pair "id/ref" is to be reserved for things with identity constraints, are we going to memorialize that in UBIF  (and is it actually enforcable that the attribute 'id' always comes with an identity constraint? even if it has to be global for reuse?)?  We know that the key/keyref mechanism is powerful and easy to use when set up, but we also know it can be hard to set up the identity constraints. We'll need a lot of samples, tutorials, tools like Jacob's refDebug, etc.  What I'm saying here is that there is a double-edged sword. If id/ref is reserved for something with an identity constraint and that is not enforceable at the UBIF schema level, then we have another instance of "secret constraints" I mention in WhatIsNotConstrained. On the other hand, if it is enforceable, we have a complex mechanism that needs developer support. Of course, as you know I always favor the encorceable constraints, and agree that the easiest route is different attribute names. It's also easier to remember.
+So I guess I am back on your side.
+
+As to XInclude, I have more of a feeling than a scenario...
+
+-- Main.BobMorris - 15 Mar 2005
+
+I think it is not necessary that "the attribute 'id' always comes with an identity constraint", "id" can occur elsewhere, even in compositions. Based on the object design pattern, however, the rules should say: use "ref" attributes only for instance references pointing to objects in the same document, and only those in the object collections immediately in Dataset.  As always, I probably don't say that very clearly.
+
+A shared development can only be governed by following such patterns - there is probably never an enforcement other than that. I did not say "use "ref" attributes only instance references pointing to objects in the same document" - AND make sure these are validated by identity constraints. But where this is not done, the design pattern allows to add this in later versions - possibly breaking compatibility with older instance documents, but these were invalid anyways.
+
+-- Main.GregorHagedorn - 15 Mar 2005
+---
+
+
+On the subject of names for these things, for the opposite of Instance ID using consider "Candidate ID". In the relational db world, a candidate key is anything that could qualify as a primary key. I'm told that it has no formal definition beyond this, and people use it loosely---which might mean it doesn't come with excessive social bagage. Is there anything in what is currently called an Abstract ID that would admit things that could not be an Instance ID even though it might be a Best Practice to not use such an identifier as an Instance ID for reasons Gregor raises here and in ObjectTypePattern? -- Main.BobMorris - 16 Mar 2005
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110909338" format="1.0" version="1.6"}%
+d55 3
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110901705" format="1.0" version="1.5"}%
+d34 1
+a34 1
+Is it more important to have one attribute name and 
+d41 1
+a41 1
+I accept the distinction, but worry about a social issue. If the pair "id/ref" is to be reserved for things with identity constraints, are we going to memorialize that in UBIF  (and is it actually enforcable that the attribute 'id' always come with an identity constraint? even if it has to be global for reuse?)?  We know that the key/keyref mechanism is powerful and easy to use when set up, but we also know it can be hard to set up the identity constraints. We'll need a lot of samples, tutorials, tools like Jacob's refDebug, etc.  What I'm saying here is that there is a double-edged sword. If id/ref is reserved for something with an identity constraint and that is not enforceable at the UBIF schema level, then we have another instance of "secret constraints" I mention in WhatIsNotConstrained. On the other hand, if it is enforceable, we have a complex mechanism that needs developer support. Of course, as you know I always favor the encorceable constraints, and agree that the easiest route is different attribute names. It's also easier to remember.
+d48 7
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110889551" format="1.0" version="1.4"}%
+d41 7
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110857209" format="1.0" version="1.3"}%
+d15 1
+a15 1
+In the terminology above, we may say that the recommendation of [[ObjectTypePattern#AnchorInstanceIDRecommendation][ObjectTypePattern]] is that an identifier supoporting _refer_, SHOULD NOT implement resolve or (implicitly) _retrieve_. Possibly this is necessary for XML schema validation but it is not enforceable because an XPath expression can always retrieve the entire object  carrying the the Instance ID. That is, XPath always provides an implementation of _retrieve_ for any reasonably unique attribute value whatsoever. Furthermore, XLink probably provides an external implementation of _retrieve_, or at the very least  a resolution service. Call this the _implicit retrieval service_ In the face of this, I am not sure what the recommendation accomplishes at its cost of a (minor?) increase in text size. I suppose the issue is this: if an Object Reference somewhere else in the document or externally tries to reference an Object by an Instance ID  which also has a pre-defined resolution service, e.g. LSID, then it is ambiguous whether that resolution service should be used or the implicit retrieval service defined by an XPath or or XLink expression. Hence, I change my mind and support the recommendation.
+d17 3
+a19 1
+*Object References*  I'm generally in agreement with [[ObjectTypePattern#AnchorObjectReferences][Object References] on the use of references using identifiers, but I don't see whether it is possible to distinguish a reference to an identifier that has a resolution service from one that has a retrieval service. It doesn't appear to me that  [[http://www.faqs.org/rfcs/rfc3404.html][RFC3404], the IETF Dynamic Delegation Discovery System (DDDS) makes this distinction. In particular, I suspect that composition of objects via retrieval may be difficult to specify well because it may be difficult to deduce and apply a retrieval service when most URIs specify only a resolution service if anything. Similarly, DOI whether via the doi URI scheme or not, does nothing toward retrieval of the object it identifies. I'm especially wary of object composition in the face of XInclude and XLink, though at the moment don't see any troublesome cases.
+d26 14
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="BobMorris" date="1110841445" format="1.0" version="1.2"}%
+My present thinking is that indentifiers should be classified by the activity they support. So this is a reinterpretation of r1.12 of [[ObjectTypePattern#AnchorInstanceID][ObjectTypePattern.Instance ID vs. Abstract ID]] and probably doesn't add much substantive to it. It applies to r1.11 of that topic, and might become moot by revisions thereof. See also UriAndUrnAndUrl and UriAndUrnAndTag.
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="BobMorris" date="1110831650" format="1.0" version="1.1"}%
+My present thinking is that there indentifiers should be classified by the activity they support. So this is a reinterpretation of r1.11 of ObjectTypePattern#AnchorInstanceID and probably doesn't add much substantive to it. It applies to r1.11 of that topic, and might become moot by revisions thereof.
+d8 1
+a8 1
+* *resolve* _resolve(idvalue)_ MAY return information but there is no guarantee that the information returned is the same across invocations. Exactly what information comes back is determined by the identifier mechanism itself. For URIs, it is determed by the uri _scheme_. See UriAndUrnAndUrl. The implementation of _resolve_ is loosely called a _resolution service_, though it might simply be some completely local method such as an  XPATH or XQUERY expression that results in a some fragment of the object being returned. A resolution service MIGHT be a retrieval service (See Below).
+d10 1
+a10 1
+* *retrieve* _retrieve(idvalue)_ MUST return a copy of the object specified by _idvalue_. An implementation of _retrieve_ is loosely called a _retrieval service_. A _resolution service_ MIGHT be a _retrieval service_., or have an associated retrieval service. A retrieval service MUST return the same object on every invocation, where "same" is defined by the definition of the idvalue mechanism. Normally, for retrieval services returning XML objects, "same" would mean that the objects are bytewise identical after XML Canonicalization. A retrieval service might be a purely local mechanisms such as an XPATH or XQUERY expression that returns exactly the XML element that represents the object. In particular, mutable data would never be returned by a retrieval service. LSIDs approach this issue by requiring that an LSID resolution service put mutable data in the LSID metadata, and that all LSID _data_ be persistent. In particular, the _retrieve_ operation against an LSID would frequently fail, at least in those (frequent) cases where the object given an LSID has most of its information of interest coming from something mutable, such as a specimen record database. If an LSID is issued to the specimen itself, the only meaningful---if far-fetched---implementation of _retrieve_ might be to automatically initiate a loan of the specimen. However, in this case, the retrieved object, being physical, could not be "inserted" into the information object containing the LSID, and the semantics of _retrieve_ might not be useful.  By contrast, _retrieve_ applied to an LSID on an image could result in the copy of the image available for insertion into an information object.
+d12 2
+a13 2
+*Instance Identifiers and Links* In the sense of ObjectTypePattern#AnchorInstanceID, we may say that an Instance ID MUST support _refer_. The proposal as of r1.11 of 
+ObjectTypePattern is that an InstanceID SHOULD NOT be an argument to a resolution or a retrieval service, but rather that any desire to express an argument for such a service should be implemented with an identifier attribute on a &lt;Link> element in a list immediately below the root of the object carrying the Instance ID.
+d15 1
+a15 1
+In the terminology above, we may say that the recommendation of ObjectTypePattern#AnchorInstanceIDRecommendation is that an identifier supoporting _refer_, never implement resolve or (implicitly) _retrieve_. Possibly this is necessary for XML schema validation if any XML inclusion mechanisms are to be supported, because without it there is no guarantee that an object arising from an inclusion would not have the same identifier string as one in the including document. In essence, the recommendation is that all identifiers meant to indicate that the object may have more information than is available without resolution or retrieval 
+d17 1
+d19 1
+a19 1
+*Object References* 
+d21 1
+@

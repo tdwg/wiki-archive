@@ -1,0 +1,78 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118875" format="1.1" version="1.12"}%
+%META:TOPICPARENT{name="SDD2004Berlin"}%
+---+!! %TOPIC%
+
+In its &lt;search&gt; request, the protocol part of [[http://digir.sourceforge.net/schema/protocol/2003/1.0/digir.xsd][DiGIR 1.5]] provides for the query agent to specify an XML Schema to which the payload of the <nop>DiGIR response should conform. (In the &lt;inventory&gt; request, fails to give a corresponding capability, but that is probably an oversight).
+
+This may not be enough for some aspects of BDI.SDD_, because the Schema only constrains _how_ you make Terminology, Descriptions, and the other things BDI.SDD_ concerns itself with. BDI.SDD_ Federation architecture proposals may need to need to distinguish requests for _what_ BDI.SDD_ objects are available from requests for underlying descriptive information that is held by data providers that can answer up with an BDI.SDD_ document. I think this means that in an BDI.SDD_ context, a <nop>DiGIR response to &lt;search&gt; looks more like an inventory does in existing <nop>DiGIR contexts.
+
+At the [[SDD2004Berlin][Berlin meeting]] I mean only to put this on the table. I think protracted discussion may need to take place here, perhaps with explicit use cases that would illuminate the difference between searches in a descriptive data context and searches in a collection record context.
+
+-- Main.BobMorris - 24 Apr 2004
+
+---
+
+I tried to read up on <nop>DiGIR (http://digir.sourceforge.net/schema/protocol/2003/1.0/schemaReadme.html -- any suggestions for other reading?). What I think I understood is that the <nop>DiGIR protocol provides a kind of generalized query language with boolean and comparison operators, and some part of query success and error reporting infrastructure similar to what SOAP provides. <strong>What else should we know about the protocol?</strong> -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 24.4.2004
+
+Not much except that there are two kinds of requests as mentioned above and perhaps to understand that much of the current <nop>DiGIR community thinks of the <nop>DiGIR portal as a typical client, and thinks of federation as simply surrounding all the satisfactory records from many sources in a container. -- Main.BobMorris - 25 Apr 2004
+
+Is it correct to say that the mental framework for <nop>DiGIR is a collection of a single type of objects that with no formal relations between these objects? -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 Apr 2004
+
+No, not at all, but, in my opinion that is the mental outlook of most of the present _users_ of <nop>DiGIR. Possibly the <nop>BioCase project, having looked carefully at where <nop>DiGIR doesn't quite meet their needs, could give more insight into this question. 
+-- Main.BobMorris - 27 Apr 2004: 
+
+---
+
+Regarding the the payload + conceptual = content schema (i.e. BDI.SDD_ if that is possible): It seems <nop>DiGIR requires the content schema to <em>"adhere to certain techniques of definition"</em>, among them that any element must be substitutionGroup = "digir:searchableReturnableData" (or returnableData or searchableData) and that nillable = "true" must be defined. 
+I am not sure how this could be done in BDI.SDD_, besides that at the moment we explicitly avoid the nillable = "true" mechanism. The reason for the latter is, that a) either you allow two kinds of "missing" status (for strings actually 3: element with empty content, no element, or element with xsi:nil="true"), or b) you make all elements required, which seemed to us to be counterproductive because the status of an element is no longer directly obvious, esp. it would be invisible in the schema diagrams for us. (Is this analysys correct?) But if this is the only reason that would prevent us from using <nop>DiGIR, we could change that. I am rather confused about requiring us to derive from their substitution groups, however. Is that technically combinable at all with our schema based on complex types and making heavy use of inheritance? -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 24.4.2004
+
+To me it looks like the requirement that data be nillable is not implied by the current schema. I have the slight feeling that it is imposed by their portal architecture. If that's correct then (a) it should be regarded as a restriction on that architecture, not on <nop>DiGIR and (b) we may not care. It won't surprise me if there is a lot lurking in the portal that assumes data is returned as <nop>DarwinCore. -- Main.BobMorris - 25 Apr 2004 
+---
+
+PS (Bob: you cite version 1.5, but refer to 1.0 according to its path? Well, the <nop>DiGIR main page does the same...) -- Gregor Hagedorn, 24.4.2004 -- Funny you should mention that, because earlier today I filed a <nop>DiGIR bug report to the effect that there are several different notions of version lying about. -- Main.BobMorris - 25 Apr 2004
+
+---
+
+The entire purpose of the use of the <nop>SubstitutionGroup is to tag the kind of data returned in a way that is subject to a validating parse (e.g. detect failure to put a data element in the data <nop>SubstitutionGroup and derive it from one of the abstract types declared in digir.xsd). There is a restriction on them which caused ABCD some trouble (I don't know the resolution). Namely the head element and the substitutable ones must all be at the top level of the scehma.
+
+Nillability is a separate issue, and I don't follow why it is much of an imposition on BDI.SDD_ (except for hassle editing the Schema). [Comment Gregor on this: I agree. My only concern is that interoperability suffers if providers think semantics are attached to missing versus empty element versus nil. In BDI.SDD_ only a single kind of "missing semantic" exists. If that is made clear, we may allow different methods to express this.]
+
+My original point might not hinge much on these two issues. It is that - I think - most people are going to want searches on things that are described in a Terminology, not by things that are described in the BDI.SDD_ Schema, which would be the thrust of <nop>DiGIR. I believe <nop>DiGIR would only support requests like "Give me records that have a Character in them". This is because, in order to make the response be parseable--remember it is of type xs:any in digir.xsd--the <nop>DiGIR &lt;search&gt; request must be accompanied by an attribute that identifies the federation schema. But for BDI.SDD_, that's not where the real reflection of the interesting information resides; it resides in an instance document.
+
+The "must be at top level" business _might_ be a problem for the (less interesting!) <nop>DiGIR queries that could be made against BDI.SDD_, because even interesting stuff is pretty far down.
+
+I might be wrong about my fundamental point. Maybe by the end of the [[SDD2004Berlin][Berlin meeting]] attendees who are <nop>DiGIR experts will also know enough about BDI.SDD_ to set us straight.
+
+-- Main.BobMorris - 25 Apr 2004
+---
+
+"most people are going to want searches on things that are described in a Terminology" -- yes and no... I am not sure that it makes sense to provide for a _generalized_ framework for the kind of identification queries like "give me all things that have red flowers and sepals between 3 and 10 mm". That does not mean that these queries are not important, but I rather imagine them being supported through the means of a web service that knows quite a bit about identification in general, about methods to decide comparability of character definitions (as will be defined by the federation options we plan to add to BDI.SDD_), etc. 
+
+On the other hand, the kind of "plain" queries for data elements defined in BDI.SDD_ may be quite valuable: Where can I find descriptions for a given taxon (= BDI.SDD_.Class) or specimen (= BDI.SDD_.Object)? Where are data that refer to a given publication? Or queries for metadata of projects (geographic, taxonomic scope, etc. So I think if the indirect terminology we use is not directly handled by <nop>DiGIR, it is still valuable to evaluate its use for such other purposes.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 Apr 2004
+
+---
+
+Is <nop>DiGIR important for us at all, or is it rather expected to be replaced by xquery mechanisms in the longer run? The problem <nop>DiGIR tries to solve seems so general that I would expect the database programmers themself to provide a standard solution for in the longer run.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 1 May 2004
+---
+
+Just to clarify the <nop>DiGIR - ABCD issue: due to the use of substitition groups within <nop>DiGIR every searchable element (of the content definition schema) has to be declared at root level. Also you will have to find a name for each of the concepts which might be ok for small element sets but ABCD produces 800 or so concepts so that the <nop>BioCASE group tried to find a different query protocol. Another (and may be less important) reason was that the ABCD group did not want to have anything protocol specific in the data defining schema.
+
+The <nop>BioCASE protocol (http://www.biocase.org/dev/protocol/index.shtml) works with any content schema which do not have to be aware of the protocol they are use by. It uses xpath-like expressions to identify concepts so that one does not have to invent names for them. It does not use substitution groups to validate concept-operator pairs. This means simply that the xml validation of a comparison like greaterthan('/xxx/yyy/zzz/Genus, 'Quercus') contained in a <nop>BioCASE protocol will not find that the comparison greaterthan is not applicable to the concept Genus (which is possible with <nop>DiGIR). This validation has to be done separately by the client or the database wrapper which is processing the query.
+
+-- Anton Güntsch - 3 May 2004
+
+(As an aside: I find nothing wrong with a query: Genus &gt; 'Fusa' and Genus &lt; 'Fut' to get a subset of genera... Is greater/smaller ever truly technically inapplicable? Clearly it is inappropriate semantically when used on unordered (nominal) categories. -- -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3 May 2004)
+
+---
+
+At the Berlin 2004 meeting we discussed <nop>DiGIR briefly and all agreed that BDI.SDD_ should not be constrained by <nop>DiGIR, that while <nop>DiGIR is a good solution at the moment, it will not be final solution. Many of the issues that prevent BDI.SDD_ from using <nop>DiGIR can be expected to be solved in a solution more along xquery + SOAP + <nop>DiGIR inherited functionality.
+
+Unless contradicted, I think this topic is resolved.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28. May 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085756487" from="SDD.IsDiGIRadequateForSDD" to="SDD.ResolvedTopicIsDiGIRadequateForSDD"}%

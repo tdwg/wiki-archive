@@ -1,0 +1,37 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741988" format="1.0" version="1.14"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an <nop>AudienceDefinition object has three required attributes:
+	* a key by which keyrefs can be used elsewhere to indicate that this <nop>AudienceDefinition is the one referenced
+	* a lang attribute. It is of type xs:language, which will require it (under validation) to have one of the ISO standard language abbreviations as required by xxxx
+	* an <nop>ExpertiseLevel  The value of this must be one of the integers 1-5 (this constraint is enforced by the schema by declaring a data type <nop>ExpertiseLevelType. That means future changes---hopefully backward compatible---could permit other values simply by changing that type.
+
+It is the attributes which most applications will find most useful, because they will use the latter two in tailoring user interfaces. A typical use of Audience references might be in a <nop>CharacterDefinition that has several different text parts, each with a different intended Audience. The application could select the accompanying text based on the Audience.
+
+In addition to those attributes there are two subelements - a label and a description, both strings. 0.62 ascribes no enforceable semantics to these,  but the intent is captured by the schemadoc entry:
+<verbatim>
+<xs:documentation source="G. Hagedorn" xml:lang="en">An audience is a combination of language (including dialect) and expertise (pupil, beginner, expert). Multiple audiences can be defined for the same language and expertise, distinguished only by their label.</xs:documentation>
+</verbatim>
+
+Presumably, the label and description of an audience would be in the language and perhaps presumed ability of the audience,  if an application is going to be able to make use of them for descriptions of the audience itself. However, such a description is not really within the scope of SDD, so there is no semantic recommendation at this writing.
+
+A documentation element in the 0.62 schema records the committee's design intention for the integers in the <nop>ExpertiseLevel. They are described by this schema doc element on the 
+<verbatim>
+<xs:documentation source="G. Hagedorn" xml:lang="en">ExpertiseLevel is restricted to values from 1-5. These categories allow to communicate expected expertise between different applications using the SDD schema. The recommended interpretation is:
+ 1 = elementary school (year 1 to 6);
+ 2 = middle school (year 7 to 10);
+ 3 = high school (year 11 above) and general public (trying to avoid any specialized terminology or jargon);
+ 4 = university students or (partly) trained personnel (using terminology, but avoiding or explaining problematic terminology);
+ 5 = experts (using the full range of terminology).</xs:documentation>
+</verbatim> 
+
+In 0.91, <nop>AudienceDefinitions are described in the <nop>GeneralDeclarations section and referenced in many places by keyrefs in attributes always of name "audience". 
+
+-- Main.BobMorris - 05 Oct 2003/ Gregor Hagedorn 28. May 2004
+
+---
+In 1.0 versions, <nop>AudienceRelationID, which defines the pattern for Audience keys, is defined by restriction from UBIF's <nop>RelationID. However, that must be an integer, whereas we intend(?) to have mnemonic audience keys in SDD, using some brief strings like en5. XML Spy2004v4 does not enforce this (undesirable) constraint, though Apache does (I think) and so does the embedded parser in Stylus Studio Home Edition
+-- Main.BobMorris - 17 Dec 2004 
+
+%META:TOPICMOVED{by="BobMorris" date="1065374722" from="SDD.AudienceDefinitionsAndUse" to="SDD.AudienceDefinitionAndUse"}%

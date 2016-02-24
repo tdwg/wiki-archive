@@ -1,0 +1,219 @@
+head	1.8;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.8
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.05.04.11.26.28;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.04.25.08.21.55;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.21.11.30.04;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2003.11.18.15.07.46;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2003.11.18.12.44.00;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.09.22.21.06.03;	author KevinThiele;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.09.22.08.24.00;	author KevinThiele;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1146741988" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+Currently wiped because out of sync with current schema release; see previsous versions for documentation of discussions in 2003.
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1145953315" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087817404" format="1.0" version="1.5"}%
+d3 1
+a3 31
+This is now a general discussion of optionality/requiredness in SDD. For proposals regarding specific elements, see SchemaProposals.
+
+There will be a tension between Bob and me over this, and I want to argue my case. In general, I look at elements in the schema and ask myself "Does this <i>really</i> need to be mandatory - and if I can't think of a <i>really</i> good reason I'm inclined to make it optional. Bob I think does the opposite (am I right?)
+
+There are two reasons why I like optional wherever possible - firstly it makes for a simple minimum instance document. That may only be important for pedagogy, and you may say that we only need to worry about pedagogy in the short period until we get up and running with programs and no-one ever needs to look at or manipulate an instance document again, but I'm not sure that it won't be ongoing as development of application proceeds.
+
+The second reason is one I've just realised bothers me. I'm planning to make Lucid SDD-compliant, and have just realised that, in order to do that I'm going to need to do a hell of a lot more application development before it can be so, in things other than SDD I/O. For instance, in Lucid2 there is currently nowhere for users to store authors, version history, initiation date, and that's just the project definition stuff so far. So, if someone has a Lucid2 project, I can't give them a new version of <nop>LucID that can write SDD, until I also do the work to store all this extra information that the user will need to fill in before they can make valid SDD. Sure, excellent reasons can be given for all these, and I'd expect that anyone writing new programs will take these on board, but legacy programs need to be able to get their data into SDD easily and quickly with a mimimum amount of redesign. The same goes for DELTA, Linnaeus, XID, in fact, most of the others (I'm not sure about DeltaAccess, but I'd imagine there's a fair bit there also).
+
+In the beginning, some people started with the idea that SDD would simply be an XML representation of DELTA. I argued, with others, that we do better than that. But we may have gone too far, and be making it too difficult for the current generation of application managers to comply with SDD. 
+
+Making things optional wherever possible is one way around this.
+
+-- Main.KevinThiele - 18 Nov 2003	
+---
+
+	* Re your point 1: It is _harder_ not easier for software to deal with optional objects. It requires defense against their absence in all code which attempts to process them.
+
+	* Re your point 2: (a). In consuming SDD, Lucid is going to have to deal with the new stuff and preserve it. Optionality doesn't help you avoid this. (b)One way to deal with such problems is with a wrapper and ancillary database, whether implemented in the native application (e.g. Lucid), or simply keyed by some document ID. How complicated such a solution is probably depends on how pervasive is the "missing" data in the application. 
+
+-- Main.BobMorris - 18 Nov 2003
+---
+
+I think that the <nop>ProjectDefinition stuff is already pretty optional. We can live without author/editor if that is really important, but it is easy to put in "anonymous" or "unknown". In beta 22 there are already two alternative creators types defined, currently the one requiring author or editor is used, but we can change that.
+
+However, I believe that export will occur in a dialog (or predefined values when exporting to web interfaces). The real question to me is: Does the export has to ask things that the user can not possibly answer? Is it worth it?
+
+On another topic, I can already name a number of places where even I would like to have things optional. One example is the key attribute on nodes in the concept trees. However, it is not possible to refer with a key/keyref identity constraint to some nodes and let only these have keys (which would make sense to me). That is really a constraint of xml schema, not our design. Basically the same applies to the audience references in Representation. Maybe somebody else knows how it works, I don't. 
+
+So, either we need to make a decision that the key/keyref is not controlled (which opens a huge hole for badly designed applications that they don't even realise their export is broken) or we have to live with key/keyref and audience (currently the only differently named key/keyref).
+
+Main.GregorHagedorn - 18 Nov 2003
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1069168066" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1069159440" format="1.0" version="1.3"}%
+d9 1
+a9 1
+The second reason is one I've just realised bothers me. I'm planning to make Lucid SDD-compliant, and have just realised that, in order to do that I'm going to need to do a hell of a lot more application development before it can be so, in things other than SDD I/O. For instance, in Lucid2 there is currently nowhere for users to store authors, version history, initiation date, and that's just the project definition stuff so far. So, if someone has a Lucid2 project, I can't give them a new version of Lucid that can write SDD, until I also do the work to store all this extra information that the user will need to fill in before they can make valid SDD. Sure, excellent reasons can be given for all these, and I'd expect that anyone writing new programs will take these on board, but legacy programs need to be able to get their data into SDD easily and quickly with a mimimum amount of redesign. The same goes for DELTA, Linnaeus, XID, in fact, most of the others (I'm not sure about DeltaAccess, but I'd imagine there's a fair bit there also).
+d24 11
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1064264762" format="1.0" version="1.2"}%
+d3 1
+a3 1
+We need to discuss which SDD elements are required and which are optional.
+d5 1
+a5 1
+To start, I'd like to suggest the following (this is of course a partial list only, so far only for fairly root-level elements of the schema - more will be added later). Required elements are in bold, optional elements in plaintext
+d7 1
+a7 10
+	* *&lt;ProjectDefinition&gt;* CommentOnOptionalityForProjectDefinitionElement
+		* *&lt;Title&gt;* CommentOnOptionalityForTitleElement
+		* *&lt;Authors&gt;* CommentOnOptionalityForAuthorsElement
+		* *&lt;FirstPublicationDate&gt;* CommentOnOptionalityForFirstPublicationDateElement
+		* *&lt;LastRevisionDate&gt;* CommentOnOptionalityForLastRevisionElement
+		* *&lt;Version&gt;* CommentOnOptionalityForVersionElement
+		* &lt;Rights&gt; CommentOnOptionalityForRightsElement
+	* *&lt;Terminology&gt;* CommentOnOptionalityForTerminologyElement
+	* &lt;Descriptions&gt; CommentOnOptionalityForDescriptionsElement
+	* *&lt;Resources&gt;* CommentOnOptionalityForResourcesElement
+d9 15
+a23 1
+-- Main.KevinThiele - 22 Sep 2003
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1064219040" format="1.0" version="1.1"}%
+d3 1
+a3 1
+We need to maintain and discuss a list of elements that are required vs optional.
+d5 1
+a5 1
+To start, I'd like to suggest the following
+d7 10
+a16 11
+Required:
+
+&lt;ProjectDefinition&gt; WhySo
+
+&lt;Terminology&gt; WhySo
+
+Optional:
+
+&lt;Descriptions&gt; WhySo
+
+(Bob - what's the best way to run this discussion? - we need to account for some elements being optional but a child element being required if the optional element is included in an instance document.)
+@

@@ -1,0 +1,63 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.2
+date	2010.09.08.13.27.47;	author JavierTorre;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2010.08.26.21.48.12;	author JoelSachs;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@none
+@
+text
+@%META:TOPICINFO{author="JavierTorre" date="1283952467" format="1.1" reprev="1.2" version="1.2"}%
+%META:TOPICPARENT{name="BioBlitz2010"}%
+Data validation; resolution of names to classifications; assignment of LSIDs or other GUIDs; publishing as Darwin Core or Linked Data; Integration with existing databases; etc.
+
+
+
+
+The data in Fusion Tables will get inserted by different programs. Apartly, there will be some "worker" programs, that will need to be continuously running checking the data. Some of this kind of "Fusion Tables workers" are described below:
+
+---++Data validation
+
+While we will ensure that only developers will have access to the Bioblitz Fusion Table, is likely some data will have problems. For example is missing some mandatory attribute. This worker will have a set of rules to check if a record is valid or not. If it finds an invalid record it can mark it as "invalid". This will help for example visualization tools to discard erroneous records.
+
+---++Name resolution
+
+Data gathering tools might only required users to insert the scientific name. This name will then need to be resolved taxonomically to find all its higher taxonomy. Additionally this service might resolve the name against the IDs inside GBIF in order to be able to compare it with it.
+The worker will look for records which has not not been taxonomically resolved, search for the name, and if it finds it then complete the rest of fields.
+
+ ---++ LSID assigment
+
+Not very clear to me. But the idea is that a worker could be assigning LSIDs to records, by taking the ROW_ID from the Fusion Tables API and generating the LSID string and storing it on a new column.
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JoelSachs" date="1282859292" format="1.1" version="1.1"}%
+d7 15
+@

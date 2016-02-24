@@ -1,0 +1,160 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.16.04.12.00;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.01.05.55.39;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Merge=
+
+Support for merging strings
+
+
+%TOC%
+
+---++ StaticMethod *merge2* <tt>($arev,$a,$brev,$b,$sep,$session,$info)</tt>
+
+   * =$arev= - rev for $a (string)
+   * =$a= - first ('original') string
+   * =$brev= - rev for $b (string)
+   * =$b= - second ('new') string
+   * =$sep= = separator, string RE e.g. '.*?\n' for lines
+   * =$session= - TWiki object
+   * =$info= - data block passed to plugins merge handler. Conventionally this will identify the source of the text being merged (the source form field, or undef for the body text)
+
+Perform a merge of two versions of the same text, using
+HTML tags to mark conflicts.
+
+The granularity of the merge depends on the setting of $sep.
+For example, if it is ="\\n"=, a line-by-line merge will be done.
+
+Where conflicts exist, they are marked using HTML &lt;del> and
+&lt;ins> tags. &lt;del> marks content from $a while &lt;ins>
+marks content from $b.
+
+Non-conflicting content (insertions from either set) are not
+marked.
+
+The plugins =mergeHandler= is called for each merge.
+
+Call it like this:
+<verbatim>
+$newText = TWiki::Merge::merge2(
+   $oldrev, $old, $newrev, $new, '.*?\n', $session, $info );
+</verbatim>
+
+
+
+---++ StaticMethod *simpleMerge* <tt>($a,$b,$sep) -> \@@arr</tt>
+
+Perform a merge of two versions of the same text, returning
+an array of strings representing the blocks in the merged context
+where each string starts with one of "+", "-" or " " depending on
+whether it is an insertion, a deletion, or just text. Insertions
+and deletions alway happen in pairs, as text taken in from either
+version that does not replace text in the other version will simply
+be accepted.
+
+The granularity of the merge depends on the setting of $sep.
+For example, if it is ="\\n"=, a line-by-line merge will be done.
+$sep characters are retained in the outout.
+
+
+
+---++ StaticMethod *merge3* <tt>($arev,$a,$brev,$b,$crev,$c,$sep,</tt>
+                          $session, $info )
+
+   * =$arev= - rev for common ancestor (id e.g. ver no)
+   * =$a= - common ancestor
+   * =$brev= - rev no for first derivative string (id)
+   * =$b= - first derivative string
+   * =$crev= - rev no for second derivative string (id)
+   * =$c= - second derivative string
+   * =$sep= = separator, string RE e.g. '.*?\n' for lines
+   * =$session= - TWiki object
+   * =$info= - data block passed to plugins merge handler. Conventionally this will identify the source of the text being merged (the source form field, or undef for the body text)
+
+Perform a merge of two versions (b and c) of the same text, using
+HTML &lt;div> tags to mark conflicts. a is the common ancestor.
+
+The granularity of the merge depends on the setting of $sep.
+For example, if it is =".*?\\n"=, a line-by-line merge will be done.
+
+Where conflicts exist, they are labeled using the provided revision
+numbers.
+
+The plugins =mergeHandler= is called for each merge.
+
+Here's a little picture of a 3-way merge:
+
+      a   <- ancestor
+     / \
+    b   c <- revisions
+     \ /
+      d   <- merged result, returned.
+
+call it like this:
+<verbatim>
+    my ( $ancestorMeta, $ancestorText ) =
+        $store->readTopic( undef, $webName, $topic, $originalrev );
+    $newText = TWiki::Merge::merge3(
+        $ancestorText, $prevText, $newText,
+        $originalrev, $rev, "new",
+        '.*?\n' );
+</verbatim>
+
+
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d9 1
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d8 8
+a15 1
+---++ StaticMethod *insDelMerge* <tt>($a,$b,$sep,$session,$info)</tt>
+d30 7
+a36 1
+The plugins mergeHandler is called for each merge.
+d43 1
+a43 1
+and array of strings representing the blocks in the merged context
+d55 44
+@

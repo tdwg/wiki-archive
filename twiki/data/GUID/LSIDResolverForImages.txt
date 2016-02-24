@@ -1,0 +1,86 @@
+%META:TOPICINFO{author="RicardoPereira" date="1170087412" format="1.1" version="1.14"}%
+---++ LSID Resolver for Images
+
+*Coordinator(s)*: Main.BobMorris
+
+*Participants*: Hui Dong, Greg Riccardi
+
+
+Main.HuiDong did the resolver service. All entries here are by Main.BobMorris unless otherwise indicated.  Please indicate when you contribute. Thanks.
+
+----
+---+++ Description
+This group will develop a prototype LSID resolver for images. 
+
+
+----
+---+++ Technical Information
+
+   * *URL for prototype user interface:* 
+   * *LSID authority(ies):* cs.umb.edu
+   * *LSID namespace(s):* Mass_invasive_plant
+   * *Hardware platform:* Sun Fire V250 8Gb ram, 180 Gb disk
+   * *Server platform:* Solaris 8 (sos5.8); Apache 2.0.54, Apache tomcat 5.0.28 java servlet container
+   * *LSID Software stack used:* IBM LSID Server stack ver 1.0.0
+   * *RDF/OWL ontology used for metadata:* A slight extension of http://www.w3.org/2003/12/exif/ (http://www.w3.org/2003/12/exif/ns) as we discuss below, for metadata for "byte stream objects" such as image files. Unlear what to do for conceptual objects; Possibilities include simple representation of DIG35 "THING" element, or a representation of SDD in RDF, which would be a major, major project and quite controversial.
+   * *Approximate number of LSIDs stored:* Right now, 2. Later this week(?) 12,000
+   * *Benchmarchs:*
+   * *Other resources:* http://esw.w3.org/topic/ImageDescription is an apparently defunct discussion at W3C. It points to several toy RDF examples.
+
+----
+---+++ Roadmap, Milestones, Timeline
+
+(Enter one task per line with estimated time for completion. Check tasks when completed, but leave all entries for logging purposes)
+Example:
+   * Mar/06 - Install web server. (COMPLETE March 1. Already in place.)
+   * Apr/06 - Install LSID server stack (COMPLETE March 20) and map data tables; Server stack in place March 20, 2006; objects are on file system. To be followed by sample service of 12,000 objects from our image store. 
+
+----
+---+++ Discussion, Implementation Issues
+
+(List issues, roadblocks, missing software components, etc)
+
+*Issues:*
+   * What to do about content descriptive metadata, which probably belong on the conceptual objects
+   * How to represent the relations between conceptual and bytestream objects. This must be an issue common to all digital objects.
+   * What do acquisition devices automate? Presently, mainly EXIF in JPEG files and perhaps in the vendor-specific "RAW" formats. Nothing(?) for scanners.
+   * Where are the image annotation tools and what do emit that will be helpful
+   * What are the widely used image servers and how do they fit in the picture, since many of them support annotation.
+
+*Roadblocks:*
+
+   *IBM LSID browser plugin for MSIE and for Firefox: *
+
+For both MSIE and Firefox it seems to require administrative privilege to run on WinXP by default. (It wants to write in its installation directories, which are normally privileged). Does anybody know what to do about this?
+
+The behavior of the IBM LSID plugin in Firefox is obscurely different from that on MSIE. We'll try to characterize this a little better.
+
+*Implementation:*
+
+These links [[foo][bar]]should resolve. 
+
+lsidres:urn:lsid:cs.umb.edu:Mass_invasive_plant:BeachRoseAbstract<br> 
+Here it is in [[http://linnaeus.zoology.gla.ac.uk/~rpage/lsid/tester/?q=urn%3Alsid%3Acs.umb.edu%3AMass_invasive_plant%3ABeachRoseAbstract&submit=Go][ Rod Page's LSID Tester]].
+
+lsidres:urn:lsid:cs.umb.edu:Mass_invasive_plant:beachrose_RosaRugosaWhiteWollRes2<br>
+Here it is in [[http://linnaeus.zoology.gla.ac.uk/~rpage/lsid/tester/?q=urn%3Alsid%3Acs.umb.edu%3AMass_invasive_plant%3Abeachrose_RosaRugosaWhiteWollRes2&submit=Go][ Rod  Page's LSID Tester]]
+We think a lot of discussion is necessary about what is appropriate to be behind image LSIDs. Just to get our toes wet, the LSIDs at cs.umb.edu as linked above, presently do this:
+
+   1.  For byte streams (presently only jpg files) the metadata is EXIF extracted from the file itself (which we don't think is that interesting), together with a list of LSIDs for some conceptual objects for which the service wishes to assert the relationship InstanceOf
+   1.  For byte streams, there is not presently any data, though the image pixels, plus some GUID identifying the encoding of them, is a possible candidate.
+   1.  For conceptual objects, no data; metadata is a list of LSIDs for which the conceptual object asserts a relation HasInstance. One would hope that If A HasInstance B then  B InstanceOf A, but this is not presently enforced. In fact, none of the LSIDs in the various lists are even presently guaranteed resolvable, though most if not all do.
+
+We are in the process of wrapping our biodiversity image store at http://efg.cs.umb.edu/gallery/, implemented in Menalto Gallery, so that it is actually the data store behind the LSID service. We may wait until we deploy Gallery2, which can store images as BLOBs in most RDBs, to do this. Or we may not.
+
+For what it is worth, attentive readers will find that our namespace choice directly contravenes the opinion I express at http://wiki.gbif.org/guidwiki/wikka.php?wakka=LSIDResolverNamespaces in opposition to KevinRichard's best practice recommendation of March 20, 2006. (In other words, we sort of follow his proposal, and, IMO is likely to lead us down a path of namespace proliferation since our image store is eclectic, and probably so is everybody else's.)
+   
+----
+---+++ Lessons Learned, Conclusions, Recommendations
+
+None yet.
+
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryPrototypingWG

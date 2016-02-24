@@ -1,0 +1,27 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1145953815" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="StoredIdentificationKeys"}%
+Identification keys provide an explicit Reticulation element pointing into any node in the same or other stored identification keys. Indirectly, identification keys are thus Directed Acyclic Graphs.
+
+These reticulations within a key are occasionally used in conventional keys in biology to either provide for abnormal individuals, or to catch known misinterpretations by the user and lead them back to the main track. The Reticulation element is different from the Subkey element, pointing to entire identification keys.
+
+These should not be used to create cycles, although this requires external (non-w3c xml-schema) validation. The main cost is that machine traversal will require cycle detection. This is not very deep- cycle detection algorithms are in most algorithm texts-but it is a bit of a nuisance and in any case, should be clearly signalled in the annotation.
+
+<p><b>Example:</b><br />
+A1<br />
+&nbsp; &nbsp;B1<br />
+&nbsp; &nbsp;B2<br />
+&nbsp; &nbsp; &nbsp; &nbsp;C1<br />
+&nbsp; &nbsp; &nbsp; &nbsp;C2<br />
+A2<br />
+&nbsp; &nbsp;D1<br />
+&nbsp; &nbsp;D2<br />
+&nbsp; &nbsp; &nbsp; &nbsp;E1<br />
+&nbsp; &nbsp; &nbsp; &nbsp;E2</p>
+  
+If at question A a user trying to identify a atypical individual goes to A1 although most individual would be under A2, this problem can be caught later on, e.g. by pointing from C2 back to the A2 node. Similarly, if many such reticulations are build into the tree, it would be possible to catch another case at E2 and lead back to A1. This would then no longer be directed acyclical graph. In biology this would probably not be a problem, since the following question would be answered differently, so that a true cyclical behaviour is unlikely, at least in a well designed key.
+
+(Topic based on discussion Bob, Jacob, Gregor, updated to conform with SDD 1.1) -- Main.GregorHagedorn - 25 Apr 2006
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1145954778" from="SDD.GuidedKeysCanRepresentArbitraryDirectedGraphs" to="SDD.StoredIdentificationKeysMayBeDirectedGraphs"}%

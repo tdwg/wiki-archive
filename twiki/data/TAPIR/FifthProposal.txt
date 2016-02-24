@@ -1,0 +1,51 @@
+---+ FifthProposal
+
+---+ General strategy
+Based on the FourthProposal this proposal tries to solve all inconsistencies discovered since the BerlinProtocolMeeting in the FourthProposal.
+
+Mainly concentrate on a FifthProposalDatasourceServiceProposal (see below).
+
+---+++++ Service Types
+
+   * FifthProposalDatasourceServiceProposal
+   * FifthProposalProviderServiceProposal
+   * FifthProposalBrokerServiceProposal
+
+Using the same specification to describe the all services would probably lack the desired clarity and simplicity. Ideally we would need 3 separate specifications and 3 separate protocols, but at the present moment it may not be possible to produce all of them.
+
+During all discussions, it became clear that we were always talking about at least 3 different types of services: DatasourceServices, ProviderServices and MessageBrokerServices. Even being similar in many aspects, they are not the same. Using the same protocol schema to validate messages from all services would certainly make the schema more complicated and probably less restrictive (allowing many unreal combinations of elements). Considering that there are 5 types of requests, a single specification for the 3 types of services would likely lack the desirable clarity. 
+
+Therefore we think the protocol specification should be more specific and define a separate protocol with its own namespace for each of the respective service types. These protocols are very similar to each other and are therefore based on a common core protocol schema.
+
+In this protocol proposal we are only considering DatasourceServices and ProviderServices as a limited form of MessageBrokerServices only. All efforts concentrate on the FifthProposalDatasourceServiceProposal first.
+
+Reasons for NOT addressing the ProviderService immediately:
+   * The capability to query more than one datasource at the same time is a new feature (not directly related to the integration of DiGIR and BioCASE, and not necessarily easy to implement).
+   * The capability of being a discovery service for local datasources is only being used by DiGIR and could be easily substituted by a UDDI service (either by creating new themes in the GBIF UDDI repository, or by installing a  free and open source repository like [[http://ws.apache.org/juddi/][jUDDI]]).
+
+Reasons for NOT addressing the MessageBrokerService now:
+   * Although the DiGIR protocol has some elements especifically related to that service (e.g. "responseWrapper" element and multiple destinations), it is not validating all messages exchanged between clients and "portal" engine, and it seems the protocol is not officialy supposed to specify these types of messages. BioCASE on its turn uses a java API for that purpose. Making the protocol compliant with MessageBrokers would not be a trivial task, and probably other more generic protocols would better support query distribution.
+
+
+---+++++ Record FifthProposal Document Based Approach
+A very essential discussion is whether the protocol is record/object based or document based.
+Please see the RecordVsDocumentApproach discussion for this.
+
+   * Until we can decide for one of them - which may take some time and even a test implementation - we propose to include both approaches as 2 different request types in a common protocol.
+   * The RecordBasedApproach will simply be called "search" as in the proposals before.
+   * Additionally there is now a search request called "docsearch" that serves the DocumentBasedApproach.
+
+---+++++ Header
+   * remove <type> element from the header and make the element following the header specify the kind of request. This allows validation of a request and response in contrast to NO validation using values in the header element.
+
+
+<a name="files"></a>
+---+ Files
+The schema for this proposal includes all the additional suggestions giving below unless otherwise stated.
+It contains seperate schemas for the different service types explained below.
+
+   * *Shared Core Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolCore.xsd
+   * *Datasource Service Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolDatasource.xsd
+   * *Provider Service Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolProvider.xsd
+
+

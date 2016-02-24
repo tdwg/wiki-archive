@@ -1,0 +1,60 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2005.10.18.13.53.27;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="BobMorris" date="1129643607" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="JPEG2000"}%
+JPEG2000 (“JPG2k”)  is a new standard adopted by the International Standards Organization (ISO). More precisely, it is a suite of standards describing new ways of encoding and decoding images, sound, and movies, which bring a number of advantages over the more classical JPEG format familiar to most scientists.  Most  parts of the suite has been through the ISO approval process and many of these parts are being adopted by camera manufacturers and image processing software vendors (for example, Adobe Photoshop CS supports some of them). The main JPG2k functionality of interest to scientists are that relating to the nature of the data compression scheme, that relating to support of  annotation and other metadata, and that relating to the support for interactive communication with JPG2k. We discuss each below. Later, we briefly describe the several different JPG2k file formats and which functionality they support.
+
+This introduction is slanted somewhat toward imaging for biodiversity information, e.g. specimen imaging and photography in the field. It is, however, applicable to all requirements to produce high quality, easily annotated images.
+
+%PUBURL%/%TWIKIWEB%/TWikiDocGraphics/wip.gif This is a work in progress. 
+
+
+---++ JPEG2000 data compression
+
+Many image (and other) data compression schemes proceed by presuming some kind of standard “basis” elements known to both encoding and decoding software and applying a mathematical transform that represents the total data object as a weighted sum of the basis elements. Some of the compression comes from the fact that the numerical weights require fewer bits than the basis elements themselves do, so that storing or transmitting just these weighting coefficients requires fewer bits than the entire image itself. Classical JPEG makes use of such a representation known as the Discrete Cosine Transform (DCT). Greatly oversimplified, DCT encoding breaks up the image into pieces that represent image features of different sizes, regardless of their location in the image. In addition to the weighting factors requiring less storage than the image, further data compression is achieved by discarding the encoding for features that are smaller than a desired threshold, typically below the acuity limits of human vision or of the target display or printing device. Obviously this is harmless for viewing the image, if the viewer doesn’t have sharper acuity than the assumed limits, and if the device does not have higher resolution than the intended one. If either of these assumptions fails, the image may be satisfactory only for some purposes. In its standard implementation, JPEG compression is “lossy” in that the discarded information is irrecoverable. By contrast, JPG2k compression rests on an encoding based on “wavelet encoding” which can give compression ratios of 2-3:1 for lossless compression and as much as 100:1 for lossy compression suitable for screen viewing. JPG2k simultaneously encodes the size and position of image features, supporting several capabilities not available in classical JPEG encoding, including:
+	* Decoding of “Regions of Interest”(ROIs) without decoding the entire image.
+	* Transparent decoding at different  resolutions, or different levels of quality. The former eliminates the need to store thumbnails separate from full resolution images and both capabilities support reduced bandwidth requirements for transmitting images. It is even possible to specify that regions of interest be decoded at one quality and other parts at, e.g., a lower quality, resulting in further communication bandwidth reduction.
+	* Cropping the encoded image without full decoding. For example, image processing software could display a file at reduced quality (and be correspondingly faster than showing all detail) but allow cropping without having to decode the entire image to its full lossless state
+
+---++ Embedded information
+
+Structured nested information containers, called boxes are defined for certain JPG2k file formats. Unlike the unstructured headers of classical JPEG files, these recursive containers are strongly typed, and users may introduce new types, which can be privately documented or submitted for adoption as a registered box type. One of the box types is XML, which is a convenient vehicle for biological annotations and standard metadata. For example, a specimen image could reasonably have an ABCD [[Jpeg2kXml][XML]] record {ABCD 2004 #1240} embedded in the file. It would then travel with the file, requiring no special coordination of the specimen record with the specimen image. 
+
+Image pixels (or audio or movie data) are themselves a special type of embedded information called a codestream. JPG2k files may have multiple codestreams. ROIs can be associated with each codestream and the XML boxes can refer to them, for example, illustrating descriptive character data for the taxa imaged in the codestream(s). It would be possible to have an illustrated taxonomic treatment, represented in XML, of an entire genus, including images of the type specimens, with the descriptive data carrying references to specific parts of specific images.  Metadata such as DIG35 or Z39.87 described elsewhere in this work [Need chapter reference here] could also reasonably be put in XML boxes. There is a special box type named UUID for user defined types of arbitrary data. To continue the example of a taxonomic treatment, PDF files of relevant digitized scientific literature could be stored in UUID boxes. In this way, a single JPEG2000 file could be regarded as a database about an entire taxonomic group and moved around the internet for local processing, or queried from a server.
+
+---++ File types
+
+The JPEG2000 suite provides for several file representations, beginning with the fundamental “JP2” format, rapidly being adopted by many vendors. JP2 supports the many variations of encoding beyond the scope of this survey, Regions of Interest and XML boxes, though it only supports a single code stream. The JPX (JPEG2000 eXtended format), generalizes JP2 to support multiple code streams, a mechanism for associating XML (and other) boxes with particular codestreams,  and support for backwards compatibility with JP2. It is more convenient with JPX to address ROIs and XML boxes with JPIP, described next.
+
+---++ JPIP, the JPEG2000 Interactive Protocol
+
+JPIP is a part of the ISO suite nearing final adoption at this writing in June 2005. It is designed to allow extraction of code streams, boxes, and ROIs by software agents either locally or across a network. Although it is independent of transport, the simplest (and perhaps the only) protocol to use for JPIP is http, so JPIP addresses usually are recognizable as URLs. For example,  jpip://XXXX, might be the address of an ROI bounding the thorax of an ant whose entire image is recoverable at jpip://YYYY/ At this writing, standard browsers do not recognize the JPIP protocol, so one must use special clients such as the kdu_show client from Kakadu Software {Kakadu Software 2005 #740}. However, the Kakadu software is embedded in recent releases of Apple Macintosh operating systems and native Apple applications may support the JPIP protocol.
+
+
+
+
+
+-- Main.BobMorris - 18 Oct 2005
+
+@

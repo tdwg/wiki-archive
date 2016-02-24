@@ -1,0 +1,20 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258682523" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="ObsoleteTopicObsoleteTopicProxyDataModel"}%
+---+!! %TOPIC%
+
+About Proxy Objects, this seems a fine concept for taxonomic names etc. However, I wonder what the practical implications are for using images? Caching/embedding images can potentially increase document size very rapidly, so I wonder what the Main.BDI opinion is on using embedded images? Also is it easy to store binary data in XML? Is there one way or more ways to do that? If there are multiple, which one does Main.BDI favour?
+
+-- Rob Buis - 25 May 2004
+
+Caching the image itself is supported, but not expected. I would not use it for my use cases, but for example the <nop>BioLink designers consider it a very important feature to keep all relevant data together. The use case is quite strong when you create identification keys that are intended to be used in the field without internet connections.
+
+Other may be better experts - I have no practical experience with embedding yet. Main.BDI specifies <nop>EncodedData as <nop>xs:base64Binary. I believe this unambiguosly defines the encoding to be used. I would expect this to be used for the image file directly, but if someone wants to wrap it first in MIME this can not be prevented other than by recommendation. I added such a note to the annotation. Is this necessary? If someone can improve the following annotation please do so: <em>"Optionally the full resource data may be embedded (as an alternative or in addition to defining a URI). Note: A resource like an image should be directly encoded, i.e. not wrapped into a MIME object first."</em>
+
+Although embedded images may make slow the direct usage of xml, I would not expect software to do this. Normally the software would probably "import" or "load" an identification package once, converting it to a native format and place image resources in the file system.
+
+-- Gregor Hagedorn - 25 May 2004
+
+Ah, well JPEG 2000 allows an inversion of this problem in a way that can make it moot. Namely, a JPG2K file can have within it (a)multiple images  and (b)multiple XML documents. The XML objects can refer to each other, and can refer to the embedded images. In a few weeks, and certainly by the time I talk at Hannu's informatics session at the Brisbane [[http://www.ccm.com.au/icoe/home/default.htm][ICE2004]] meeting, we expect to demonstrate JPG2K files in which there are Main.BDI descriptions of objects illustrated by the images in the same file. Nothing would prevent an entire Main.BDI key from being wrapped up thus, though at the moment interactive browser support for JPG2K is limited so in the near term an unwrapping application will be needed, making it not consequentially different from packaging the whole thing as zip, with the images packing on the file system. Our first target for this, though, is simply image libraries of individual taxa, each image containing the corresponding Main.BDI description, hopefully referring to a shared Terminology externally represented. The "boxes" in a JPG2K structure are individually addressable, so you don't necessarily need to unwrap what you don't need. For example, a query of the form "What are the larval host plants of _Ithomia patilla_?" could be answered by any copy of the _I. patilla_ JPG2K file. Until we build such things this summer, we won't know whether separating the XML from the pictures is better or worse than integrating them. We're building both kinds of systems.
+
+-- Main.BobMorris - 25 May 2004
+%META:TOPICMOVED{by="GregorHagedorn" date="1089974453" from="SDD.ProxyDataMediaResource" to="UBIF.ProxyDataMediaResource"}%

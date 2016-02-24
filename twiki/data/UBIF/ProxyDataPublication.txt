@@ -1,0 +1,254 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258682523" format="1.1" version="1.25"}%
+---+!! %TOPIC%
+
+I propose to use the <nop>PublicationProxy type derived from the <nop>ProxyBaseType as an example to evaluate the proxy architecture proposed for Main.BDI (see ObsoleteTopicObsoleteTopicProxyDataModel). To focus the discussion I have created a test schema containing only the proxy base type and the necessary infrastructure, and a test root element containing only publication proxies. See [[%ATTACHURL%/PublicationProxy01.zip][PublicationProxy01.zip]] for the schema and an xml example file.
+
+*History*: Up to the Berlin meeting the <nop>PublicationProxyType had no domain specific extensions - although clearly there should be some. We considered it someone-else's-problem. Jerry when proposing the first <nop>LinneanCore draft also provided a draft of a simple citation model and stressed the importance that we agree on it. The proposal attached below is a result of reviewing the <nop>LinneanCore (see ProxyDataPublicationNotesOnLinnCoreSimpleCitation for some detailed notes) and comparing it to the <nop>DiversityWorkbench <nop>DiversityReferences database model.
+
+   * In the meantime James Ytow sent me a copy of the SEEK/TaxonName strawman schema circulated before the <nop>TaxonNames meeting in Edinburgh (May 2004) containing a publication element proposal. Since this schema may be strongly modified after the meeting, it is probably not yet worth discussing it in detail. However, anybody from the SEEK/TaxonNames group reading this: I would need annotations especially on the following elements to understand their semantics: Number, Section, <nop>TypeWork, <nop>StartDate, <nop>EndDate.
+   * The publication schema is based on <nop>EndNote 7 (popular reference catalog software). Richard Pyle has a table containing the interpretation of the various fields on page 14-15 his Taxonomer paper at: http://phyloinformatics.org/pdf/1.pdf -- Main.RobertKukla - 04 Jun 2004
+   * Looking at this publication I would vote against using the model. The elements have very little semantic definition and are heavily redefined depending on the reference types as defined in <nop>EndNote 7. For example, a series title may appear in Secondary or <nop>TertiaryTitle or ISBN may contain report numbers - but only for specific reference types! Also, since we have studied <nop>ReferenceManager (incidentially distributed by the same company distributing <nop>EndNote!) I note that both the reference types and the fields differ strongly between these two products. A simplified MARC version I believe to be a better choice than a specific software product. -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3 June 2004
+
+The following are diagrams showing the proxy base type, and two alternative options of providing publication-specific extensions. Please use the space immediately after each diagram to insert your comments that address the individual parts!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+
+---
+
+<h4>Diagram 1: The base type with two tentative domain-specific extensions</h4>
+
+    <img src="%ATTACHURLPATH%/PublicationProxy1.png" alt="PublicationProxy1.png"  />
+
+The label on top is a kind of free-form, unconstrained text description. A problem is that in many proxy types it is language-specific. For people with a roman alphabet many forms of literature references are language independent. However, this is not the case in Cyrillic, Chinese, etc. where you would have to transliterate. Also some formats have language-specific elements, e.g. using non-latin abbreviations for "p.", "vol.", "in", "ed." (these happen to be Latin = English, so many English speakers will not notice whether they are using international or English style...).
+
+The <nop>ObjectLink below is a generalized attempt to provide object linking data in various formats. Multiple links may be given as a kind of failover mechanism. 
+
+The "annotation group" provides a developer annotation (single language, kind of "commenting" feature) and an extension mechanism to support application-specific extensions. The roundish "<nop>AnnotationGroup" icon itself represents nothing in the data. Such "model groups" are only a mechanism to construct xml schemata, so it can be ignored and works as if Annotation and <nop>CustomExtensions were immediately on the same level as Label and <nop>ObjectLink.
+
+Finally, the sequence icon at the bottom (with the many comments) is the place where the general <nop>ProxyBaseType is extended into the <nop>PublicationProxyType. (Background: Altova xmlspy displays extensions as a forking before the first sequence icon, so the topmost sequence keeps the base type elements together, and below a sequence icon keeps the extensions together.). The two elements shown (__Option1_DetailedAtomizedStructure, __Option2_SelectiveStructure) are introduced only for the purpose of the discussion. I would imagine that the extension elements appear immediately, without an additional container.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+---
+
+<h4>Discussion of Base Type</h4>
+
+The "failover" mechanism is a double-edged sword, but I support it anyway. If an application chooses to examine several of the ways to get the proxied information, who guarantees that all the results are comparable? Maybe this is part of the proxy contract, but it is also pretty hard to express unless the content of each kind of proxy is very strongly typed and comes equipped with a comparison function for the resolved objects. This is a big issue, well beyond the scope of Main.BDI. -- Main.BobMorris - 25 May 2004
+
+I think the problem is not specific to multiple IDs. It also happens if a object is retrieved again after a period of time - are the previous and the current object comparable? Changes may have occurred for good and accepted reasons, or the provider may have jumbled its IDs completely. This seems to be just as much a question of trust as the multiple ID/failover issue. -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 May 2004
+
+I think the usefulness of the 'failover' mechanism really depends on how this schema is to be used. If you want to catch all possible representations of the publication than fair enough. Currently you schema allows for multiple versions of the same ID type which IMO shouldn't be allowed for LSIDs and OIDs (debatable for URLs and web services). Use xs:sequence and optional elements for that instead? -- Main.RobertKukla - 04 Jun 2004
+
+Yes, I fully agree that LSID/OID should be single. I will change that if nobody argues against that. -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3. June 2004
+
+---
+
+<h4>Diagram 2: Expanded versions of the special types used in both proposals (see below) for publication extensions. These types are displayed collapsed in the following proposals.</h4>
+
+    <img src="%ATTACHURLPATH%/PublicationProxy3.png" alt="PublicationProxy3.png" />
+
+The general base proxy data are extended with domain-specific data. Please help in discussing the details of these proposals. A schema containing only the <nop>PublicationProxyType (i.e. everything else from Main.BDI thrown away!) is provided as an attachment at the end.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+---
+
+<h4>Discussion of Title &amp; Creator type</h4>
+
+... Do we agree on the structure of title/translation and the respective language attributes? Note that the attributes are not shown, but elements with <nop>StringLType have an language attribute. -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3. June 2004
+
+---
+
+<h4>Discussion of Date type</h4>
+
+I would place YYYY, MM, and DD pattern restrictions on the Year , Month, and Day to forestall collation nastiness by software that reads them as strings. Also, I wonder why you introduced the Y2.2K problem by making 2200 as the maximum year. -- Main.BobMorris - 26 May 2004
+
+The 2200 may be a stupid attempt to catch typing errors (in our experience it is very helpful, but perhaps this is not the task of the schema). On the other issue: I see no reason to change month/day to string, they are 1..12 and 1..31 respectively which is fully constrained. For year, your are right it is possible to enter 94 meaning 1994 but expressing 94 A.D. Can you add string patterns on numbers or do we have to change the year to string? Or should we just change min. value to 1000?-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 May 2004
+
+---
+
+What is the reason for breaking down dates into their components year/month/day? ABCD have a simpleType <nop>DataTimeISOType which is a restricted string and conforms to a subset of ISO 8601. This seems sufficient to me. -- Main.RobertKukla - 04 Jun 2004
+
+I have a problem understanding this ABCD-type. The documentation just says "The date and time expressed in a way conforming to a subset of ISO 8601" and it is defined as the pattern: &lt;xs:pattern value="\d\d\d\d(\-(0[1-9]|1[012])(\-((0[1-9])|1\d|2\d|3[01])(T(0\d|1\d|2[0-3])(:[0-5]\d){0,2})?)?)?|\-\-(0[1-9]|1[012])(\-(0[1-9]|1\d|2\d|3[01]))?|\-\-\-(0[1-9]|1\d|2\d|3[01])"/&gt;. This pattern is more complex than I can read ad-hoc, but I realize that it seems to provide ways to make parts of the date optional, e.g. have a year + month without a day. (Strangely, it seems not possible to have collection month, but not year, which is rather frequent in my data because people were interested in phenology).
+
+To me this seems to imply that I have to write specialized ABCD-serialization/deserialization code for my software. Especially writing the parser seems to me not trivial, esp. when timezones are considered. Main.BDI prefers xs:dateTime as a standard type because the programming framework will already provide the serialization. To me it seemed simpler to use 3 standard types - which has the advantage that I can use automatic generation of user interfaces with standard tools, I can very easily filter or calculate on the values. With the special purpose string this seems painfully difficult - e.g. trying to find out which publication was earlier, given that the elements are optional and putting in the case-constructs for all optional cases. -- I am quite willing to be told that the string with pattern is simpler than three parts, but do argue why.
+
+Quite separately - if left as three parts - I would vote for using attributes and remove the "Publication" prefix in front. Thus data might look like: &lt;TruePublicationDate year="1888" month="5" /&gt;
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3. June 2004
+
+---
+My general preference is always to have a validating parse detect any errors. Beyond that I am basically agnostic, aside from a minor preference for xs:date. However, I acknowledge that this doesn't support optional pieces, so if that is important, I remain neutral on the form. It is regrettable that the ABCD restriction doesn't (seem to) support time zones, and I don't see why they don't just use either xs:date or xs:dateTime.  My oft stated aversion to having to write string parsers is suspended in the case of either xs:date and xs:dateTime because parsers for them are generically useful (in fact, likely already supported in most XML APIs for most programming languages). I don't fully understand why http://www.w3.org/TR/2001/PR-xmlschema-2-20010316/datatypes is silent---or more precisely defers to 8601---on the pattern facet of xs:date and xs:dateTime. I'm mildly neutral on three vs. one part, but vote for the use of attributes in any case. If three, I would type them as xs:gYear, etc. -- Main.BobMorris - 04 Jun 2004
+
+---
+
+This is going backwards a bit but why not use the MODS date data type where the format is marked, see http://www.loc.gov/standards/mods/
+
+<verbatim>
+********** dateType definition  **********  
+<xsd:complexType name="baseDateType">
+ <xsd:simpleContent>
+  <xsd:extension base="xsd:string">
+   <xsd:attribute name="encoding" use="optional">
+    <xsd:annotation><xsd:documentation>if omitted, free text is assumed</xsd:documentation></xsd:annotation>
+     <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="w3cdtf" /> 
+        <xsd:enumeration value="iso8601" /> 
+        <xsd:enumeration value="marc" /> 
+      </xsd:restriction>
+     </xsd:simpleType>
+   </xsd:attribute>
+   <xsd:attribute name="qualifier" use="optional">
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="approximate" /> 
+      <xsd:enumeration value="inferred" /> 
+      <xsd:enumeration value="questionable" /> 
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:attribute>
+   <xsd:attribute name="point" use="optional">
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="start" /> 
+      <xsd:enumeration value="end" /> 
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:attribute>
+  </xsd:extension>
+ </xsd:simpleContent>
+</xsd:complexType>
+
+<xsd:complexType name="dateType">
+ <xsd:simpleContent>
+  <xsd:extension base="baseDateType">
+    <xsd:attribute name="keyDate" use="optional">
+     <xsd:simpleType>
+      <xsd:annotation><xsd:documentation>So that a particular date may be distinguished among several dates. Thus for example when sorting MODS records by date, a date with keyDate="yes" would be the date to sort on. It should occur only for one date at most in a given record.</xsd:documentation></xsd:annotation>
+       <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="yes" /> 
+       </xsd:restriction>
+     </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:extension>
+ </xsd:simpleContent>
+</xsd:complexType>
+</verbatim>
+
+-- Main.BryanHeidorn - 05 Jun 2004
+---
+
+I think the MODS publication type is probably a valid addition to the proposals, and I have slightly reformatted Bryan's original contribution as such (moved the date issue here, added the fundamental proposal for MARC at the end as Proposal 3. 
+
+On the date type issue alone I would feel uncomfortable using the MODS date. It seems complicated and difficult to implement, since any data exchange would have to support the three enlisted encodings plus the option that a date string is given without encoding specified. Also, I am not sure which of the three types would support incomplete dates, I believe w3cdtf and iso8601 don't (which is why ABCD created a local extension of iso8601). "marc" may support it. If not, and the only expression of incomplete dates is unconstrained text, this would forfeit the primary use case of the <nop>TruePublicationDate element, i.e. to compare dates for priority. This is quite simple with the three-attibute model (&lt;TruePublicationDate year="1888" month="5" /&gt;).
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 6 Jun 2004
+
+---
+
+<h4>Diagram 3: Proposal 1, Detailed and comprehensive publication representation</h4>
+
+    <img src="%ATTACHURLPATH%/PublicationProxy2-1.png" alt="PublicationProxy2-1.png" />
+
+The first proposal provides a well-structured information model for publications. It is based on Jerry Cooper's first draft of the <nop>LinneanCore. Jerry modeled that on a subset of the MARC standard - I am not sure how well my revision still conforms with it. Note, however, that the model is still essentially flat, the additional elements only provide grouping and can be easily flattened out with the exception of the title translations and creator lists (which were not flat in Jerry's proposal either). This model is more complex to implement, but quite satisfying when used in the absence of usable external literature source - which currently is still the rule.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+---
+
+<h4>Discussion of Proposal 1 (Comprehensive)</h4>
+
+
+It's unclear that we are going to handle epubs adequately, because it is presently unclear(?) what citation standards are emerging for them. For example, this barely handles http://www.ecologyandsociety.org/vol7/iss1/art3/index.html, which has a volume, issue and article number. -- Main.BobMorris - 26 May 2004 
+
+I agree there is a problem. In the citation type we already use Location as a more neutral expression, that possibly holds page numbers, but also figure, or html fragment identifiers. I find it difficult to find a more neutral _and intuitive_ to replace pages, however. It would be desirable to find a neutral expression here as well. Any suggestions? -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 May 2004
+
+---
+
+BTW: A book can have multiple ISBN! Books published by multinational publishers, what is common in scientific world, sometime hav two ISBN for single publication. I've ever see at least one title with two ISBNs; one of it starts with 0- and another starts with 3-, so I guess one  for US market while the other for EU (or German?) market. Of course one book may have both ISBN and ISSN. - James Ytow (by email) - 26 May 2004
+
+Did not know that. Should ISBN become a collection, or should it remain string, but annotated to allow multiple ISBN and avoiding a specifying ISBN-specific pattern? I would prefer the latter to keep it simple. It means less work for editing / reporting applications, but slightly more for applications trying to match objects. Those may have to parse out the multiple ISBNs. -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 26 May 2004
+
+---
+
+<h4>Some fundamental thoughts on Proposal 1 (Comprehensive)</h4>
+
+Some thoughts trying to further develop this... Any publication model today has to cover both conventional printed publications and digital publictions. Ideally it should be intuitive to use for both formats. From my limited knowledge of libraries I think I remember that their fundamental distinction is between dependent and independent publications - and they only care for the latter, like monographs, edited books, or peridical issues and volumes. This dichotomy to me seems inappropriate when moving into the digital future.
+
+In the model above we have immaterial entities: Series (= of singular publications) and Periodical (= series of regular publication), Chapter (= fragment of authored entity) and Article (= authored entity within an editing framework). Material entities are the book itself which I think is limited to a printed form and can either be a monograph or a collection of articles. Also the Periodical is somewhat dual-faced: the volume is normally a independent publication with a single publication date, but this the material side is not modeled, since it is split: the Digital publication is expressed already in the <nop>ProxyBaseType data
+
+Some results of this:
+   * Large and small digital publications of a single author team should all be considered articles, not book. Else I find it very difficult to tell when a publication is which.
+   * As a result, Chapter should be applicable both to Book and Article. Conventionally it would be considered only relating to books.
+   * A clarification of the term "chapter" is necessary: An "authored chapter" in an edited book is not a Chapter, but an Article.
+   * Possible combinations in the model are:
+      1 Book, Article
+      2 Book + Chapter, Article + Chapter
+      3 Series + Book, Series + Book + Article (both printed), Series + Article (each possibly with chapter, as above), 
+      4 Series ... combinations from above may all be combined with Chapter, as in rule 2.
+      5 Periodical + Article (each possibly with chapter, as above)
+
+<verbatim>
+A hypothetical alternative, more complete hierarchical model might be:
+(1) Series|Periodical|<nop>SingularPublication may optionally be
+(2)    Edited and contain 1-n
+(3)       Articles (author and title, in prop.-1-model 
+                    this would include book monographs)
+and level (1) and (3) may have print or digital publication data.
+Not sure how to turn this intuitive, though...
+</verbatim>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 27 May 2004
+
+---
+
+<h4>Diagram 4: Proposal 2, Summary/selective publication representation</h4>
+
+    <img src="%ATTACHURLPATH%/PublicationProxy2-2.png" alt="PublicationProxy2-2.png" />
+
+The second proposal provides only minimally structured information. It is designed to be satisfying when used to filter/search publications, and to reduce the amount of work necessary to link local data against an external database that is going online only at a later date. Furthermore, some essential extensions for use in combination with taxonomic data (especially the true publication date) are provided. It is much simpler to implement, but not very satisfying when used in the absence of usable external literature source - which currently is still the rule.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 May 2004
+---
+
+<h4>Discussion of Proposal 2 (Selective)</h4>
+
+...
+---
+
+<h4>Proposal 3 (MODS)</h4>
+
+In fact why not use MODS for all bibliographic references? See http://www.loc.gov/standards/mods/
+
+-- Main.BryanHeidorn - 05 Jun 2004
+---
+
+This is certainly a good third proposal. MODS is very significantly more complex than proposal 1 or 2, though, and especially rich in attributes. To clarify this for discussion, I have annotated the schema with the [ATTR: ...] annotation which we use in the Main.BDI schema and created a diagram.
+
+   * (Also, as of 6. June 2004 the MODS schema does not validate as xml Schema (duplicate type attributes in titleInfoType, nameType, unstructuredText, relatedItemType). I attach a version of this schema (mods-3-0_dupFixedGH.xsd) where the constrained type attribute name is changed to type_NameDuplicate. Furthermore, many elements that I would expect to contain xs:string are defined as empty elements. This refers to MODS Version 3.0 December 5, 2003, which may still be under development?)
+
+Both the <strong>diagram and the modified schema as a zip file</strong> are in the separate topic ProxyDataPublicationMODS. The diagram is so long that is would be very disruptive here. Please add your discussion points below, however!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 6 Jun 2004
+
+<h4>Discussion of Proposal 3 (MODS)</h4>
+
+...
+---
+
+---
+
+<h4>Proposal 4 (XOBIS)</h4>
+
+Ian Pettman (http://www.freshwaterlife.info) brought XOBIS into the discussion, see http://laneweb.stanford.edu:2380/wiki/medlane/schema. Who can comment on this? -- [[Main.GregorHagedorn][Gregor Hagedorn]] - 23 Jun 2004
+
+<h4>Discussion of Proposal 4 (XOBIS)</h4>
+
+...
+
+---
+
+%META:FILEATTACHMENT{name="PublicationProxy1.png" attr="h" autoattached="1" comment="" date="1146861232" path="PublicationProxy1.png" size="27143" user="GregorHagedorn" version="1.3"}%
+%META:FILEATTACHMENT{name="PublicationProxy2-1.png" attr="h" autoattached="1" comment="" date="1146861232" path="PublicationProxy2-1.png" size="19346" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="PublicationProxy2-2.png" attr="h" autoattached="1" comment="" date="1146861232" path="PublicationProxy2-2.png" size="10051" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="PublicationProxy3.png" attr="h" autoattached="1" comment="" date="1146861232" path="PublicationProxy3.png" size="8428" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="PublicationProxy01.zip" attr="" autoattached="1" comment="" date="1146861232" path="PublicationProxy01.zip" size="9410" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1089915741" from="SDD.ProxyDataPublication" to="UBIF.ProxyDataPublication"}%

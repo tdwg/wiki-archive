@@ -1,0 +1,933 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2005.03.19.14.24.06;	author GregorHagedorn;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2005.03.19.12.51.42;	author BobMorris;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2005.03.18.11.38.07;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2005.03.15.12.03.35;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2005.03.14.22.20.58;	author BobMorris;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2005.03.14.19.46.35;	author BobMorris;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2005.03.14.18.11.20;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2005.03.14.17.06.48;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2005.03.14.12.26.40;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2005.03.14.10.31.23;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2005.03.14.05.16.46;	author BobMorris;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2005.03.13.17.52.54;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.03.12.19.58.52;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.03.12.10.24.08;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2005.03.11.11.27.35;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.03.09.15.31.53;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.17
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1111242246" format="1.0" version="1.16"}%
+%META:TOPICPARENT{name="WebHome"}%
+<h2>Introduction</h2>
+
+This topic discusses the various forms in which an object type (such as taxon concept, geographical area, publication, etc.) may occur in a TDWG xml schema. The goal is to address the problem of object relations, object resolution, and persistence of object and relation semantics in a more general framework and allow the construction of truly modular and flexible TDWG schemata. The proposal is based on discussions between me, Gregor Hagedorn, Bob Morris, Donald Hobern, Jessie Kennedy and Markus Döring over the last months. It closely corresponds to Donald Hobern's message "[tcs-lc] Modularisation of standards, Tue, 8 Mar 2005 10:51:19 +0100". 
+
+-- Main.GregorHagedorn - 09 Mar 2005
+
+---
+
+<h2>Levels of detail and structure</h2>
+
+Traditionally, information models distinguish primarily between a singular object (instance of a class) and references to it. However, in the context of data interchange objects in many cases are only representation of richer objects available elsewhere (e.g. in a local institutional database). These representations may have different levels of detail and structure (compare first slide in DataModelMatrix). Levels of detail may be:
+	1 A short/concise human readable label (or "title"), possibly in multiple languages.
+		* Example: Publication references are currently mostly expressed through such human readable strings
+	2 A resolvable identifier such as url, lsid, doi that informs machines about where additional information can be found
+		* Example: Publication references using Pub-med URLs or the publishing industries DOI identifiers
+	3 A combination of the above
+	4 A free-form, unconstrained text 
+		* Example: A natural language description, a text listing and commenting distribution areas
+	5 Unconstrained text with additional semantic mark-up using xml or other methods
+		* Examples: html formatted text (mixed xml content); a natural language description with SDD markup (no mixed content)
+		* Note: plain text with no markup may evolve into text with partial markup, and complete markup. It is unclear whether different types are desirable, or whether the no-markup case should simply be considered a special case of partial markup. A possible name for these alternatives may be "BagType"
+		* Note: to avoid mixed content and mix a limited amount of formatting with semantic markup, the UBIF text formatting conventions may be used, see FormattedText
+	6 *CoreType* data: constrained, relatively flat content model (!DarwinCore, LinneanCore, AlexandriaCore, etc.)
+	7 *DetailType* data: detailed content model (ABCD, SDD, TCS-like)
+
+-- Main.GregorHagedorn - 09 Mar 2005
+---
+
+<h2>Other representation parameters</h2>
+
+In addition to representations of different level of detail and structure, an abstract (a character, a taxon name) or concrete (a specimen, a publication) object may have representations that differ in:
+	* Language (English, French, Chinese, etc.)
+	* Audience that is being addressed (school children, scientific experts, agricultural experts, farmers, etc.). Audience may include a notion of expertise level
+	* Version of data representation (error may be corrected, detail added to the digital information).
+	* Data retrieval protocols such as TDWG DiGIR or Tapir may further specify a subset of element from a level of detail, causing query-specific object representations.
+	* Issue of character encoding (ANSI, ISO xxxx, Unicode, etc.) and whitespace (including UNIX, MAX, Windows new line conventions) also exist, but should be minimal in the case of post-whitespace normalization xml documents.
+
+One result of this is that many of these representations (e.g. a resolvable id, with or without label or core-data) are at the same time object representations and links to further object representations. A representation without machine-readable links consisting only of a label addressing humans (Level 1, above) may be interpreted as a "human resolvable" link to resources found elsewhere (as in free-form textual publication references). Thus the conventional distinction between objects and references is blurred. 
+
+-- Main.GregorHagedorn - 09 Mar 2005
+---
+
+#AnchorInstanceID<h2>Instance ID versus abstract IDs</h2>
+
+Whether an "object ID" refers to an abstract/concrete object or to a specific representation is in many cases not clear. 
+	* <small>In the case of LSIDs it is explicit that digital identity is addressed, and the issue of versions is part of the LSID method. However, addressing language and audience issues requires secondary mechanisms. To identify a scientific taxon name, a canonical name may be considered data and all other information metadata (which may change for LSIDs), but for a descriptive character no language, audience, and level of detail invariant information remains. LSIDs can still be used, by representing empty data and using only metadata schemata with them.</small>
+
+Another aspect of id references is whether they are:
+	* Machine-resolvable within a document: to refer to id or guids of objects in the same document (i.e. in any dataset within the datasets collection). These references can often be validated using the xml schema identity constraint mechanism.
+	* Machine-resolvable on the internet (url, lsid, doi; resolution may occur through a uri-system or through web services)
+	* Not machine-resolvable (numeric guids).
+
+It seems appropriate to distinguish between the digital identifier of an object representation that is used for referencing it in its exact form ("instance id"), and digital identifiers of abstract or concrete concepts which the current object instance represents ("abstract IDs" such as DOI IDs). Proposal:
+
+1. The term *Instance ID* is used for values identifying a specific digital representation of an abstract or concrete object. In UBIF-conforming xml standards, this ID is expressed in an attribute with name "id" placed immediately in the element corresponding to the object type.
+	* The instance ID value must be locally unique within the context of the document
+	* The instance ID value may be temporary (persistent only within a given element) or permanent (an object has the same id value in repeated requests).
+	* The instance ID value may be unique within a larger domain, for example locally among all objects of the same type delivered by the data provider document, or even globally.
+	* Example: &lt;Publication id="239987234"&gt; ... element content ... &lt;/Publication&gt;
+	* The instance ID must be referrable, and it may be resolvable.
+#AnchorInstanceIDRecommmendation	
+	* Recommendation: To avoid confusion between instance IDs and abstract IDs (especially when later referring to instance IDs), a resolvable identifier (such as an LSID) should _only_ be used if retrieval return objects identical to that in the current instance, and repeated resolutions return identical data. Identity does not have to be byte-wise and not for the entire stream returned:
+		* the envelope may differ (e.g. SOAP or not); identity is only required for the element that has the id attribute that is being resolved
+		* the identity is evaluated after xml canonicalization (http://www.w3.org/TR/xml-c14n, http://www.w3.org/TR/xml-exc-c14n, affecting whitespace, order of attributes and element, character entities, etc.).
+		* Example: the two documents: <br/>&lt;Root&gt;&lt;Publication id="urn:lsid:gbif.net:namespace:239987234"&gt;&lt;SomeElement attr2="2"&nbsp;&nbsp;&nbsp;attr1="1" /&gt;&lt;/Publication&gt;&lt;/Root&gt; and<br/>&lt;Envelope&gt;&lt;Publication id="urn:lsid:gbif.net:namespace:239987234"&gt;&lt;SomeElement attr1="1" attr2="2" /&gt;&lt;/Publication&gt;&lt;/Envelope&gt;<br/>are considered identical
+
+2. Relations to fundamental physical or abstract objects, of which the current instance is a representation are expressed as *Abstract IDs. These should be expressed in elements "Link" within objects corresponding to concepts found in XLink.
+	* Example: <br/>&lt;Publication id="239987234"&gt;<br/>&lt;Link href="doi:10.3333/99999" /&gt; <br/>&lt;Link href="urn:lsid:gbif.net:namespace:21987329" /&gt; <br/>&lt;/Publication&gt; <br/>Here "doi:10.3333/99999" is a uri of a publication, but resolving this uri may return only the abstract, or the full text in pdf or other formats (usually after paying for it...). Clearly, DOI is the id of the abstract publication concept, but no instance object in data interchange would have an attribute "id='doi:10.3333/99999' ".
+	* Although these abstract IDs are most useful when they are resolvable, it is not neccessary that they be so. Many useful purposes only require comparison of identity, which can be achieved with abstract IDs such as numeric GUIDs or non-resolvable URNs.
+	* It is desirable to be able to express multiple _abstract IDs_ for the fundamental object a) to support multiple resolution mechanisms (e. g., when offering LSIDs in addition to urls). The Link element should thus be repeated.
+	* It is desirable to express some semantics of the Link href in another attribute "rel", see separate topic LinkingRelEnum.
+
+_*(the use of further [[http://www.w3.org/TR/xlink/][XLink]]  attributes needs to be investigated!!!)*_
+
+#AnchorObjectReferences 
+3. *Object references*. The link information is considered a form of possible object representation, since it will often occur together with any level of detail, as discussed above. This is different from a form of reference referring by _instance ID_ to a specific representation of an object, either within the same document (as used, e.g. in xml schema, where elements, attributes, etc. may either be defined locally or by reference), or on the internet, e.g. through lsids. Since both the abstract ID link and the instance reference are a form of reference, the latter may be used "instance reference".
+	* _Instance references_ in UBIF use a "ref" attribute for document-internal references, and a "href" attribute for external references. If only a single attribute name would be used for both purposes, consuming application could still detect which kind of reference is implied. However, this may require additional computation, and it would prevent the use of xml schema mechanisms to validate internal references (identity constraints). 
+	* Examples: &lt;Publication ref="239987234" /&gt;,  &lt;Publication ref="urn:lsid:gbif.net:namespace:239987234" /&gt;,  &lt;Publication href="urn:lsid:gbif.net:namespace:239987234" /&gt;. In the second case, an element &lt;Publication id="urn:lsid:gbif.net:namespace:239987234" /&gt; must be present within the document, in the third case it may or may not be present.
+
+
+-- Main.GregorHagedorn - 13 Mar 2005
+
+%GREEN% See IdentifierFunctionality for my take on this. A few minor points of disagreement, but maybe not enough to justify how much I wrote there :-) -- Main.BobMorris - 14 Mar 2005	  %ENDCOLOR%
+---
+
+<h2>Semantic persistence</h2>
+
+Some kinds of digital identifiers (resolvable or not) are in practice only in temporary use, spanning perhaps several years, the most notorious example being standard internet urls. This is no problem for many commercial uses, but it is a serious problem for scientific use. In taxonomy, the expected life time of information is often centuries, but even in new fields like molecular biology decade-old information may be highly relevant. The problem of changing technologies and the possibility of consequential breaking of id-resolution contracts can not be overcome, but it need not be. For the purpose of science a human readable semantic equivalent, similar to the object identification methods used in conventional printed publications is fully sufficient. 
+	<small>In principle, it is possible to embed such information into a machine-readable identifier. However, the fact that urls are usually at least partly overloaded with semantics is a major reason for their instability. Part of this is habitual (semantic values lead to their use in debugging, and having erratically misleading semantics because concepts change may be worse than having no semantics at all), part of this is based in legal reasons (an former employee is usually legally prevent from continuing to use institutional or product terms). The identifier (urn, lsid, etc.) itself should therefore not contain any semantics. </small>
+
+*Conclusion:* At places where an identifier for an object is used, a second attribute should preserve the semantics of the object in human readable form. The proposed name for this attribute is either "label" or "title", please vote on this! 
+	* %GREEN% I vote 'label'  -- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%
+	* %GREEN% I vote 'label' as well. "title" seems perhaps to be used more frequently. LSID has title. [[http://www.w3.org/TR/xlink/][XLink]] uses "title" with a semantics close to the one intended here for type="simple, extended, locator, arc, resource", and the "label" attribute with probably different semantics for type="locator, resource"). XLink says: "The title attribute is used to describe the meaning of a link or resource in a human-readable fashion, along the same lines as the role or arcrole attribute." and "The traversal attributes are label, from, and to. The label attribute may be used on the resource- and locator-type elements. The from and to attributes may be used on the arc-type element.". -- On the other hand, RDF uses "rdfs:label"!  -- Main.GregorHagedorn - 14 Mar 2005 %ENDCOLOR%
+
+Uniqueness: It is recommended that the text in this "label" attribute should be as uniquely identifying the object as possible. The uniqueness is, however, not subject to strict validation. Requiring scientists to achieve strict uniqueness would consume an inadequate amount of time and effort.
+
+-- Main.GregorHagedorn - 09 Mar 2005
+---
+
+<h2>Social and technical issues regarding size of xml document</h2>
+
+In certain cases truly large data sets may have to be transferred. For example, in the main dataset behind www.lias.net contains 250&nbsp;000 descriptive records. To attempt a lichen identification without knowledge of family, it may be necessary to obtain the entire data set. SDD attempts already to balance readability against size in this case and still needs about 50 Unicode character per such statement, resulting in a file size of ca. 12 MB (plus data for terminology with lesser scaling problems). Such file sizes still do cause some problems in which size matters. To achieve a relatively modest file size, SDD defines the character and states only once, and then uses these objects in the description by (mostly document-internal) reference. Requiring internal references to also bear semantic information, despite the fact that such information is available in the same document (and the link can therefore not possibly break) is not desirable. On the other hand, for the purpose of debugging it may be desirable to enrich internal cross-reference with human-readable text. This has been tested successfully in SDD (@@debugkey/ref, add link!!).
+
+*Conclusion:* Whereas for most objects, a human readable label (preserving the semantics of the scientific data) should be provided, an exception should be made for document-internal cross-references. No label should be required here. For the purpose of debugging, optional attributes may be provided the content of which may be dynamically filled or deleted.
+
+-- Main.GregorHagedorn - 09 Mar 2005
+
+%GREEN% Standard compression techniques such as gzip seem to give compression rations of 2-3:1 easily. See [[http://www-106.ibm.com/developerworks/xml/library/x-tipcomp.html][ Compress XML files for efficient transmission]] at the ibm developerworks. Various claims turned over by google claim 20-30:1 with various techniques-- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%
+
+---
+
+<h2>Design pattern for object types</h2>
+
+From the above, a fundamental pattern for xml object types in UBIF (and in fact outside of biosciences) can be derived. *XML Object types* may occur as: 
+	* *Fully Structured*
+		* Contains only element and attribute content, no mixed content
+		* A required "Label" contains free-form text, guaranteeing persistence of object semantics for human readers and providing a minimal object representation appropriate for many data consumers.
+			* I believe that Label has to be an element collection rather than an attribute, to allow multilingual representations, rather than allowing only single-language representations. In SDD we use multilingual labels for characters, etc., i.e. a single concept object already contains translations in multiple languages.
+		* The "id" attribute for the _instance ID_ is optional. Instance references (using "ref" attribute) require its presence.
+		* The presence of a Link elements (containing _abstract IDs_ of the object from for which the current instance is a representation) is optional. 
+		* Example: &lt;Publication id="239987234" idtype="local" label="Smith & al. 2005. Biologists are stupid. Journal of improbably research 8 (8): 888." xml:lang="en" &gt; <br/>&lt;Link href="doi:10.3333/99999" /&gt; <br/>&lt;Author&gt;Smith, J.&lt;/Author&gt;&lt;Author&gt;Jones, J.&lt;/Author&gt;&lt;Author&gt;Henry, J.&lt;/Author&gt;<br/>&lt;Year&gt;2005&lt;/Year&gt; [etc.]<br/>&lt;/Publication&gt;
+	* *Unstructured or mixed*
+		* Contains either plain text or mixed content.
+		* The label is not required, but may be optional.
+		* The rules for instance and abstract IDs should be as similar to structured types as possible. 
+		* Example 1: &lt;Publication&gt;<br/>Smith & al. 2005. Biologists are stupid. Journal of improbably research 8 (8): 888. An abstract, comments, or even the full text of the publication may also follow here<br/>&lt;/Publication&gt;
+		* Example 2: &lt;Publication&gt;<br/>&lt;Author&gt;Smith&lt;/Author&gt; & al. &lt;Year&gt;2005&lt;/Year&gt;. Biologists are stupid. Journal of improbably research 8 (8): 888. An abstract, comments, or even the full text of the publication may also follow here<br/>&lt;/Publication&gt;
+	* *Instance references* take the general form:
+		* Example 1: &lt;Publication ref="239987234" /&gt;
+		* Example 2: &lt;Publication ref="239987234"  debugref="Smith & al. 2005. Biologists are stupid. Journal of improbably research 8 (8): 888." /&gt;
+
+-- Main.GregorHagedorn - 09 Mar 2005
+---
+
+<h2>Naming pattern for xml elements</h2>
+
+My personal preference would be to use only a single element name for each domain type like "publication".  For example I find it desirable to have Publication id="11" and Publication ref="11" for object definition and reference, and distinguish the type by the presence of id or ref attribute. However, this is not possible in w3c schema, which is largely unable to recognize a type based on element attribute and complex content (the first particle encountered must be able to distinguish the types, which is very difficult for attributes which may occur in any order, and it seems even required single attributes are not used for this purpose).
+
+It is possible to design a schema that uses the same element name for different types, but this implies that the schema must be fully prescriptive whether an object composition or a object reference, and which level of detail or kind of reference is to be used. The believe of the current proposal is that it is desirable to create xml schemata that leave the user some choice as to which level of detail can be supplied. To our knowledge, this implies that different types must use different element names. 
+
+Below is an attempt to propose a possible naming pattern. "{Object}" would be replaced with "Publication", "Agent", "TaxonName", "TaxonConcept", "Specimen", etc.
+
+	* *Fully Structured*
+		* _{Object}Base_ for minimal representations, containing only attributes, multilingual Labels, and Link (rel, href, etc.)
+		* _{Object}Core_ for relatively flat and minimalized representations of objects. Core-representations are similar to DarwinCore or AlexandriaCore. They may be viewed as an "interface definition" that is intended to give consuming applications a simplified and stable representation of the object.
+			* <small>The core definition will usually contain only a few required and many optional elements. It is therefor currently considered unlikely that a level of detail between core and base would be required. Where this is the case, one might use  _"{Object}MicroCore"_.</small>
+		* _{Object}_ itself for a complex object representation on the level of ABCD, SDD, etc. 
+			* <small>It is conceivable that multiple detailed standard may arise in the future. Should the object names already now be qualified with a pre- or suffix, or should the first UBIF-compatible standard be allowed to grab the base name, and only later use different names? Perhaps yes, because it is hoped that in the future the support of namespace issues in tools will be mature enough to distinguish element names by namespace rather than by unqualified element names?</small>
+	* *Unstructured or mixed*
+		* Perhaps _{Object}Markup_ for plain text or mixed content?
+	* *Instance references*
+		* <small>If all kinds of references (internal, uri, human-readable labels) should go into one type, the following attribute combinations may appear: a) only have a "label" ("human-resolvable"), b) a "ref" (local document) plus optional label, c) a "href" (retrievable from internet, no local object present) plus a required "label". With a single Element name {Object}Ref this can only be modeled by making all three attributes optional, i.e. both &lt;PublicationRef ref="239987234" href="urn:lsid:gbif.net:namespace:239987234" label="Smith & al. 1999. Crusade against Santa Rosalia." /&gt; and the empty &lt;PublicationRef /&gt; would be valid. Especially the latter would forfeit any attempts in the schema to declare an object reference required, because that could formally be fullfilled with such an empty element. Therefore the following pattern is proposed:</small>
+		* _{Object}Ref_ ref =""  for references to object instance in the same document<br/>
+		&lt;PublicationRef ref="239987234" /&gt; 
+		* _{Object}XRef_ ref  for hyperlinks to retrievable instance data<br/>
+		&lt;PublicationXRef ref="urn:lsid:gbif.net:namespace:239987234" label="Smith & al. 1999. Crusade against Santa Rosalia." /&gt;, where label would be recommended or even required. I tend to consider it required, else any consuming application addressing humans fails in the absence of an internet connection; also the "Semantic persistence" discussed above would not be guaranteed.
+		* _{Object}Simple_ for plain string human readable references, with the equivalent to the label attribute as element content.<br/>
+		&lt;PublicationSimple&gt;Smith & al. 1999. Crusade against Santa Rosalia.&lt;/PublicationSimple&gt;<br/>
+		!PublicationSimple is perhaps on the border between considering it the simplest possible object type and a human readable reference. For the example of publications, it is what e.g. ABCD uses.
+
+<small>Aside: In addition to the _{Object}Ref_ pattern, schema designers may use a different pattern for references that is based on a abbreviations. In some cases, including SDD, reference names should be as short as possible, considering the social problems with document size. Thus instead of "Character" and "Publication", "Char" and "Pub" may be used. The important point in the pattern is that these abbreviations need to be different from the names of elements they refer to.</small>
+
+<small>(Part of naming pattern is the agreement between SDD, ABCD, TCS to use !CamelCase for elements and complete lowercase for attributes.)</small>
+
+-- Main.GregorHagedorn - 18 Mar 2005
+---
+
+<h2>Rules governing placement and relations of objects</h2>
+
+Most objects may occur either in object collections defined in the root of the dataset, or as part of the composition of another object.
+	* *Root level collections:*
+		* For each knowledge domain, separate root level collections are being defined
+		* In each such root level collection, object representations may of any level of detail are permitted. However, no instance cross-references (using the Object ref="" or Object href="" pattern are permitted here.
+		* Instances of objects in root level collections may be anonymous, lacking an instance ID (have no "id" attribute).
+		* Where present, the values of the "id" attribute must be unique within each root level collection. Objects in different collections (e.g. specimens and publications) may have the same "id" value. 
+			* This differs from the XML ID/IDRef mechanisms that requires document-wide global ids, but closely corresponds with the w3c xml schema mechanism of identity constraints. It is often very advantageous for data providers, which typically use identifier methods unique only within an object class (e.g. primary keys in relational databases).
+		* It is possible that multiple representations (having different level of detail, e.g. !DarwinCore and ABCD) may occur in a single UBIF document. These representations would have different instance IDs (= values in "id" attributes), but may share the same abstract IDs in Link href attributes.
+			* If desired, an application may want to test that the Link href values from separate objects types are distinct. Having the same href in different object types is clearly an error.
+	* *Object composition: (objects embedded in another object)*
+		* Both object types and instance references are permitted. 
+		* Object types may be anonymous or with instance id (attribute "id"). 
+		* In principle, it would thus be possible to have an embedded instance reference referring to an embedded object type elsewhere having this instance ID. For performance reasons and to simplify the consumption of UBIF documents, however, instance references may only refer to non-anonymous objects in a root level collection, not to objects placed in composition. This greatly simplifies the xpath in which instance IDs can be expected (otherwise this depends partly on a knowledge of all standards that are combinable in UBIF, or an additional rule would be necessary to limit the use of element names (an element name would have to strictly correspond to a type). Furthermore, under these rules (references pointing only to root level collections, and no references in root level collections) the possbility of infinite recursion can be excluded.
+		* An embedded object carrying an id may occur in multiple places in the document (in other compositions or in a root level collection). The id of embedded objects is not required to be unique within a document. %GREEN% -- This smells analogous to the "duplicate particle" restriction in XML Schema and might lead to the necessity to some kind of look-ahead to determine what a reference is actually referencing. Not sure about this... -- Main.BobMorris - 14 Mar 2005 %ENDCOLOR% -- I don't think so, since object in compositions are never referenced, according to the rule above -- Gregor.
+		* Consumers of information are free to choose whether they want to combine the potentially overlapping information of an object representation occurring multiple times in compositions and the root level collection, or not.
+
+---
+
+<h2>Examples</h2>
+
+######## needs revision ###########
+
+<verbatim>
+<Object id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="@@@@@@ remove this?">
+  <Label xml:lang="en">... probably still multilingual ...</Label>
+  <Label xml:lang="fr">francais</Label>
+  <Link rel="alternate" title="IPNI version" href="http://www.ipni.org/xyz/?id=2349872" />
+  <Link rel="meta"		  title="abstract and copyright"		href="../Help/xxx"  />
+  ...
+</Object> 
+</verbatim>
+######## needs revision ###########
+---
+
+
+-- Main.GregorHagedorn and Bob Morris - 09-14 Mar 2005
+---
+
+Updates to UBIF:
+
+Following the example of TCS (Jessie Kennedy et al.), UBIF now also allows multiple object collections in the root of the data set. In the case of validated reference, the object may be in any dataset within the datasets collection. It is thus possible to have one object type as "payload" of each dataset as previously, but it is also possible to have multiple objects all from the same provider with the same metadata, similar to the previous use of proxy objects. 
+
+%GREEN% We should worry a bit about whether this inhibits desired capability in &lt;xs:import>. Do global things suddenly become non-global? Actually, in general, I don't even see how you can support multiple root collections at all in XML Schema, so maybe my point is moot. All in all, I am nervous about what happens under XML inclusions of stuff that tries to xi:include something that tries to make a reference into multiple object collections	-- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%
+
+CURRENTLY UNFINISHED - I still need some feedback on how to do it!
+
+To achieve this object model, we also need an ontology of knowledge domains and corresponding object types, see ObjectOntology. How shall the totality of biodiversity information be subdivided into object classes?
+
+Part of this is also touched in ObjectIdentifierPattern (which needs revision and discusses in details the questions how to represent object identifiers and identifier references).
+
+-- Main.GregorHagedorn - 09 Mar 2005
+---
+
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.15
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1111236702" format="1.0" version="1.15"}%
+d139 1
+a139 1
+My personal preference would be to use only a single element name for each domain type like "publication".  For example I find it desirable to have Publication id="11" and Publication ref="11" for object definition and reference, and distinguish the type by the presence of id or ref attribute. However, this is difficult to validate in w3c schema, which is largely unable to recognize a type based on element attribute and complex content (the first particle encountered must be able to distinguish the types, which is very difficult for attributes which may occur in any order).
+d141 1
+a141 4
+
+This leaves two options: 
+	* define only a single type, into which the various levels of detail and perhaps alternative representation models are "wrapped"
+	* different types must use different element names. 
+a146 1
+		* _{Object}MicroCore_ where a reduced set of elements compared with the core version is desired (rare)
+d148 3
+a150 1
+		* _{Object}_ for a complex object representation on the level of ABCD, SDD, etc.
+d153 2
+a154 7
+	* *Instance references* take the general form:
+		* _{Object}Ref_ for a reference that may eitherwhere a reduced set of elements compared with the core version is desired (rare)
+			* Example 1: &lt;PublicationRef ref="239987234" /&gt;
+		* A problem here is that references may have the following attribute combinations: a) only have a "label" ("human-resolvable"), b) a "ref" (local document) plus optional label, c) a "href" (retrievable from internet, no local object present) plus a required "label". With a single Element name {Object}Ref this can only be modeled by making all three attributes optional, i.e. both &lt;PublicationRef ref="239987234" href="urn:lsid:gbif.net:namespace:239987234" label="Smith & al. 1999. Crusade against Santa Rosalia." /&gt; and the empty &lt;PublicationRef /&gt; would be valid.
+
+## Should the pattern be changed, e.g. remove ref and href distinction as Bob already proposed, and use the element name for distinction instead?
+
+d158 4
+a161 5
+		&lt;PublicationXRef ref="urn:lsid:gbif.net:namespace:239987234" label="Smith & al. 1999. Crusade against Santa Rosalia." /&gt;, where label would be either recommended or even required. I tend to make it required, else any consuming application addressing humans fails in the absence of an internet connection, and the Semantic persistence discussed above would not be present.
+		* _{Object}Inf_ label for human readable references? Inf could stand for informal reference. ("HRef" would be confusing: human or hyper?).<br/>
+		&lt;PublicationRef label="Smith & al. 1999. Crusade against Santa Rosalia." /&gt; 
+
+The last point may sound slightly silly to some, but in fact this is what almost all current TDWG models do. In ABCD any publication is represented by such a human readable reference. I dont like {Object}Inf too much, though... Any better ideas?
+d163 1
+a163 1
+<small>Aside: In addition to following the pattern, schema designers may use a different pattern for references that is based on a abbreviations. In some cases, including SDD, reference names should be as short as possible, considering the social problems with document size. Thus instead of "Character" and "Publication", "Char" and "Pub" may be used. The important point in the pattern is that these abbreviations need to be different from the names of elements they refer to.</small>
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1111145887" format="1.0" version="1.14"}%
+d146 1
+a146 1
+Below is an attempt to propose a possible naming pattern. "Object" would be replaced with "Publication", "Agent", "TaxonName", "TaxonConcept", "Specimen", etc.
+d149 4
+a152 4
+		* _ObjectBase_ for minimal representations, containing only attributes, multilingual Labels, and Link (rel, href, etc.)
+		* _ObjectMicroCore_ where a reduced set of elements compared with the core version is desired (rare)
+		* _ObjectCore_ for relatively flat and minimalized representations of objects. Core-representations are similar to DarwinCore or AlexandriaCore. They may be viewed as an "interface definition" that is intended to give consuming applications a simplified and stable representation of the object.
+		* _Object_ for a complex object representation on the level of ABCD, SDD, etc.
+d154 1
+a154 1
+		* Perhaps _ObjectMarkup_ for plain text or mixed content?
+d156 1
+a156 1
+		* _ObjectRef_ for a reference that may eitherwhere a reduced set of elements compared with the core version is desired (rare)
+d158 1
+a158 1
+		* A problem here is that references may have the following attribute combinations: a) only have a "label" ("human-resolvable"), b) a "ref" (local document) plus optional label, c) a "href" (retrievable from internet, no local object present) plus a required "label". With a single Element name ObjectRef this can only be modeled by making all three attributes optional, i.e. both &lt;PublicationRef ref="239987234" href="urn:lsid:gbif.net:namespace:239987234" label="Smith & al. 1999. Crusage against Santa Rosalia." /&gt; and the empty &lt;PublicationRef /&gt; would be valid.
+d162 1
+a162 1
+		* _ObjectRef_ ref =""  for references to object instance in the same document<br/>
+d164 4
+a167 4
+		* _ObjectXRef_ ref  for hyperlinks to retrievable instance data<br/>
+		&lt;PublicationXRef ref="urn:lsid:gbif.net:namespace:239987234" label="Smith & al. 1999. Crusage against Santa Rosalia." /&gt;, where label would be either recommended or even required. I tend to make it required, else any consuming application addressing humans fails in the absence of an internet connection, and the Semantic persistence discussed above would not be present.
+		* _ObjectInf_ label for human readable references? Inf could stand for informal reference. ("HRef" would be confusing: human or hyper?).<br/>
+		&lt;PublicationRef label="Smith & al. 1999. Crusage against Santa Rosalia." /&gt; 
+d169 1
+a169 1
+The last point may sound slightly silly to some, but in fact this is what almost all current TDWG models do. In ABCD any publication is represented by such a human readable reference. I dont like ObjectInf too much, though... Any better ideas?
+d173 1
+a173 1
+<small>(Part of naming pattern is the agreement between SDD, ABCD, TCS to use CamelCase for elements and complete lowercase for attributes.)</small>
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110888215" format="1.0" version="1.13"}%
+d70 1
+a70 1
+	* Example: <br/>&lt;Publication id="239987234"&gt;<br/>&lt;Link href="doi:10.3298/21987329" /&gt; <br/>&lt;Link href="urn:lsid:gbif.net:namespace:21987329" /&gt; <br/>&lt;/Publication&gt; <br/>Here "doi:10.3298/21987329" is a uri of a publication, but resolving this uri may return only the abstract, or the full text in pdf or other formats (usually after paying for it...). Clearly, DOI is the id of the abstract publication concept, but no instance object in data interchange would have an attribute "id='doi:10.3298/21987329' ".
+d119 2
+a120 2
+		* A required "label" attribute contains free-form text, guaranteeing persistence of object semantics for human readers and providing a minimal object representation appropriate for many data consumers.
+		* ###point for discussion: I think that label might have to be an element collection rather than an attribute, to allow representations that in themself are multilingual, rather than allowing only multilingual underlying objects which have single-language representations. In SDD we use multilingual labels for characters, etc.
+d123 1
+a123 1
+		* Example: &lt;Publication id="239987234" idtype="local" label="Smith & al. 2005. Biologists are stupid. Journal of improbably research 8 (8): 888." xml:lang="en" &gt; <br/>&lt;Link href="doi:10.3298/21987329" /&gt; <br/>&lt;Author&gt;Smith, J.&lt;/Author&gt;&lt;Author&gt;Jones, J.&lt;/Author&gt;&lt;Author&gt;Henry, J.&lt;/Author&gt;<br/>&lt;Year&gt;2005&lt;/Year&gt; [etc.]<br/>&lt;/Publication&gt;
+d134 34
+a167 1
+Problem with object and references: It would be desirable to choose the same element name and distinguish them by the presence of a ref attribute. However, this is difficult to validate in w3c schema. If validation is desired, different element names are needed! The reference name should be as short as possible, considering the social problems with document size. "ObjectRef" may be acceptable. Anything shorter?
+d169 7
+a175 1
+-- Main.GregorHagedorn - 09 Mar 2005
+a202 6
+  <link rel="alternate" type="text/html" title="HTML version" href=",html" />
+  <link rel="alternate" type="application/xhtml+xml" title="XHTML version" href=",xhtml" />
+  <link rel="help" href="../Help/siteindex" title="Site Index" />
+</verbatim>
+
+<verbatim>
+d206 2
+a207 9
+  <Link id="http://www.ipni.org/ ..." idtype="url" >
+  <Link id="238723" idtype="local"><!-- = "human resolvable" -->
+
+Examples from xhtml:
+
+  <Link rel="alternate" type="text/html" title="HTML version" href=",html" />
+  <Link rel="alternate" type="application/xhtml+xml" title="XHTML version" href=",xhtml" />
+  <Link rel="help" href="../Help/siteindex" title="Site Index" />
+
+d211 1
+a211 2
+
+##########
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110838858" format="1.0" version="1.12"}%
+a54 2
+	* ## Perhaps better: distinguish between referrable, resolvable, retrievable (= get digital instance, uris to physical specimens are never retrievable but may be resolvable, i.e. metadata inform about them. An LSID to concrete physical things must be abstract ...? Bob proposed this. I think any identifier is by definition referrable.  ##
+
+d63 2
+a64 1
+#AnchorInstanceIDRecommmendation	* Recommendation: To avoid confusion between instance IDs and abstract IDs (especially when later referring to instance IDs), a resolvable identifier (such as an LSID) should _only_ be used if retrieval return objects identical to that in the current instance, and repeated resolutions return identical data. Identity does not have to be byte-wise and not for the entire stream returned:
+d73 1
+a73 1
+	* It is desirable to express some semantics of the Link href in another attribute "rel", see separate topic ObjectLinkingRoleEnum.
+d77 2
+a78 1
+#AnchorObjectReferences 3. *Object references*. The link information is considered a form of possible object representation, since it will often occur together with any level of detail, as discussed above. This is different from a form of reference referring by _instance ID_ to a specific representation of an object, either within the same document (as used, e.g. in xml schema, where elements, attributes, etc. may either be defined locally or by reference), or on the internet, e.g. through lsids. Since both the abstract ID link and the instance reference are a form of reference, the latter may be used "instance reference".
+d85 1
+a85 1
+%GREEN% See IdentifierFunctionality for my take on this. A few minor points of disagreement, but maybe not enough to justify how much I wrote there :-) -- Main.BobMorris - 14 Mar 2005  	%ENDCOLOR%
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110829595" format="1.0" version="1.11"}%
+d78 1
+a78 1
+3. *Object references*. The link information is considered a form of possible object representation, since it will often occur together with any level of detail, as discussed above. This is different from a form of reference referring by _instance ID_ to a specific representation of an object, either within the same document (as used, e.g. in xml schema, where elements, attributes, etc. may either be defined locally or by reference), or on the internet, e.g. through lsids. Since both the abstract ID link and the instance reference are a form of reference, the latter may be used "instance reference".
+d84 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110823880" format="1.0" version="1.10"}%
+d45 1
+a45 1
+<h2>Instance ID versus abstract IDs</h2>
+d65 1
+a65 1
+	* Recommendation: To avoid confusion between instance IDs and abstract IDs (especially when later referring to instance IDs), a resolvable identifier (such as an LSID) should _only_ be used if retrieval return objects identical to that in the current instance, and repeated resolutions return identical data. Identity does not have to be byte-wise and not for the entire stream returned:
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110820008" format="1.0" version="1.9"}%
+d55 1
+a55 1
+	* Perhaps better: distinguish between referrable, resolvable, retrievable (= get digital instance, uris to physical specimens are never retrievable but may be resolvable, i.e. metadata inform about them. An LSID to concrete physical things must be abstract ...? Bob ...
+d73 2
+a74 1
+	* It is desirable to express multiple _abstract IDs_ for the fundamental object a) to support multiple resolution mechanisms (e. g., when offering LSIDs in addition to urls). 
+d76 1
+a76 1
+_*(the use of further XLink attributes needs to be investigated!!!)*_
+d93 1
+a93 1
+	* %GREEN% I vote 'label' as well, but the general practice (e.g. LSID, [[http://www.w3.org/TR/xlink/][XLink]]) seems to prefer "title" -- Main.GregorHagedorn - 14 Mar 2005 %ENDCOLOR%
+d157 1
+a157 1
+One thing needs perhaps to be clarified: If the id is one of "temp", "local", or "guid", then the only resolution mechanism is in Links, and if this is missing the object is only "human resolvable". If however, the id type itself is already url, doi or lsid, one resolution mechanism is through the id attribute in the object element itself, others are under Links.
+d159 1
+a159 1
+I feel uncomfortable both about this choice, but the alternative would be to repeat the stuff under link.
+a160 1
+And another second thought: "Link" is used in (x)html head both to *cross-reference* other relevant information and for alternative representations. Example:
+a161 10
+  <link rel="stylesheet" type="text/css" href="markup.css" />
+  <link rel="bookmark" href="#top" title="Page top" />
+  <link rel="start" href="../" title="W3C Home Page" />
+  <link rel="contents" href="#navbar" title="Navigation" />
+  <link rel="appendix" href="Activity" title="Activity Statement" />
+  <link rel="appendix" href="xhtml-roadmap/" title="Roadmap" />
+  <link rel="appendix" href="2004/xhtml-faq" title="FAQ" />
+  <link rel="help" href="../Help/siteindex" title="Site Index" />
+  <link rel="glossary" href="../2001/12/Glossary" title="Glossary" />
+  <link rel="copyright" href="#copyright" title="Copyright" />
+d164 1
+a166 1
+So is the general term "Link" appropriate here? My current feeling is that in contrast to xhtml, for the biosciences domain we would rather like to distinguish between alternate id/resolution mechanisms (which are easily generalizable) and cross-reference kind of links, which are very specific to the exact subdomain (taxonomic names, specimens, descriptive data, etc.). So here only alternative representations are intended. We could follow the xhtml style and use both rel, type, href. Or perhaps the following pattern is more precise: 
+d168 12
+a179 8
+<Object id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="lsid">
+  <Label>
+	  ... probably still multilingual ...
+  </Label>
+  <Alternate>
+	 <Link id="http://www.ipni.org/ ..." idtype="url" >
+	 <Link id="238723" idtype="local"><!-- = "human resolvable" -->
+  </Alternate>
+d184 1
+a184 3
+What do you think?
+
+
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110803200" format="1.0" version="1.8"}%
+d139 5
+a143 5
+	* *Root collections:*
+		* For each knowledge domain, separate root collections are being defined
+		* In each such root collections, object representations may of any level of detail are permitted. However, no instance cross-references (using the Object ref="" or Object href="" pattern are permitted here.
+		* Instances of objects in root collections may be anonymous, lacking an instance ID (have no "id" attribute).
+		* Where present, the values of the "id" attribute must be unique within each root collection. Objects in different collections (e.g. specimens and publications) may have the same "id" value. 
+d145 1
+a145 1
+		* It is possible that multiple representations (at different level of details, e.g. !DarwinCore and ABCD) may occur in a single UBIF document. These representations would have different instance IDs (= values in "id" attributes), but may share the same abstract IDs in Link href attributes.
+d150 45
+a194 3
+		* In principle, it would thus be possible to have an embedded instance reference referring to an embedded object type elsewhere having this instance ID. For performance reasons and to simplify the consumption of UBIF documents, however, instance references may only refer to non-anonymous objects in a root collection, not to objects placed in composition. This greatly simplifies the xpath in which instance IDs can be expected (otherwise this depends partly on a knowledge of all standards that are combinable in UBIF, or an additional rule would be necessary to limit the use of element names (an element name would have to strictly correspond to a type). Furthermore, under these rules (references only to root, and no references in root collections) the possbility of infinite recursion can be excluded.
+		* An embedded object carrying an id may occur in multiple places in the document (in other compositions or in a root collection). The id of embedded objects is not required to be unique within a document. %GREEN% -- This smells analogous to the "duplicate particle" restriction in XML Schema and might lead to the necessity to some kind of look-ahead to determine what a reference is actually referencing. Not sure about this... -- Main.BobMorris - 14 Mar 2005 %ENDCOLOR% -- I don't think so, since object in compositions are never referenced, according to the rule above -- Gregor.
+		* Consumers of information are free to choose whether they want to combine the potentially overlapping information of an object representation occurring multiple times in compositions and the root collection, or not.
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110796283" format="1.0" version="1.7"}%
+d16 1
+a16 1
+	2 A resolvable link such as url, lsid, doi that informs machines about where additional information can be found
+d40 2
+d45 1
+a45 1
+<h2>Instance ID versus link or relation</h2>
+d55 1
+a55 1
+It seems appropriate to distinguish between the ID of an object representation that is used for referencing it in its exact form ("instance id"), and IDs of abstract or concrete concepts which the current object instance represents. Proposal:
+d57 6
+a62 4
+1. The term *Instance ID* is used for ID values identifying a specific digital representation of an abstract or concrete object. In UBIF-conforming xml standards, this ID is expressed in an attribute with name "id" placed immediately in the element corresponding to the object type.
+	* The ID value must be locally unique within the context of the document
+	* The ID value may be temporary (persistent only within a given element) or permanent (an object has the same id value in repeated requests).
+	* The ID value may be unique within a larger domain, for example locally among all objects of the same type delivered by the data provider document, or even globally.
+d64 2
+a65 1
+	* Recommendation: To avoid confusion between instance ID and other IDs, a resolvable identifier (such as an lsid) should _only_ be used if repeated resolutions return identical data. Identity does not have to be byte-wise and not for the entire stream returned:
+d67 1
+a67 1
+		* the identity is evaluated after whitespace normalization and xml normalization (affecting order of attributes and element where order is undefined by schema).
+d70 10
+a79 4
+2. Relations to fundamental physical or abstract objects, of which the current instance is a representation are expressed as links, corresponding to concepts found in XLink.
+	* Example: &lt;Publication id="239987234"&gt;<br/>&lt;Link href="doi:10.3298/21987329" /&gt; <br/>&lt;Link href="urn:lsid:gbif.net:namespace:21987329" /&gt; <br/>&lt;/Publication&gt;
+
+One result of this is that many of these representations (e.g. a resolvable id, with or without label or core-data) are at the same time object representations and links to further object representations. A representation without machine-readable links consisting only of a label addressing humans (Level 1, above) may be interpreted as a "human resolvable" link to resources found elsewhere (as in free-form textual publication references). Thus the conventional distinction between objects and references is blurred. 
+d87 2
+a88 2
+Some kinds of IDs, resolvable or not are in practice only in temporary use, spanning perhaps several years, the most notorious example being standard internet urls. This is no problem for many commercial uses, but it is a serious problem for scientific use. In taxonomy, the expected life time of information is often centuries, but even in new fields like molecular biology decade-old information may be highly relevant. The problem of changing technologies and the possibility of consequential breaking of id-resolution contracts can not be overcome, but it need not be. For the purpose of science a human readable semantic equivalent, similar to the object identification methods used in conventional printed publications is fully sufficient. 
+	<small>In principle, it is possible to embed such information into a machine-readable id. However, the fact that urls are usually at least partly overloaded with semantics is a major reason for their instability. Part of this is habitual (semantic values lead to their use in debugging, and having erratically misleading semantics because concepts change may be worse than having no semantics at all), part of this is based in legal reasons (an former employee is usually legally prevent from continuing to use institutional or product terms). The id (urn, lsid, etc.) itself should therefore not contain any semantics. </small>
+d90 1
+a90 1
+*Conclusion:* At places where an id for an object is used, a second attribute should preserve the semantics of the object in human readable form. The proposed name for this attribute is either "label" or "title", please vote on this! 
+d114 1
+a114 1
+	* Fully Structured
+d117 8
+a124 17
+		* All ID attributes are optional. {%GREEN% I don't follow. I don't understand the example below which does not seem to be about multiple IDs. Nowhere here has it been said explicitly that ids are implemented as attributes on a single XML element. Among other things, if that is done there is no notion of "first" as required below unless it is an attribute distinguished by its name. In addition, putting multiple IDs as attributes thus fixes the number of IDs and thereby requires schema evolution if new ones are to be added. I would rather see something like
+<verbatim>
+<Object id="whatever">
+	<secondaryID id="whateverNext"/>
+	<secondaryID id="yetAnother"/>
+	...
+	{rest of Object}
+</Object>
+</verbatim>
+
+  -- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%}
+		* Multiple ID elements are desirable (e.g. when offering lsids in addition to urls). However, for the purpose of cross-referencing, the first ID is special and is the only ID to which linking may occur. %GREEN% {This is probably not enforceable in XML Schema  -- Main.BobMorris - 14 Mar 2005 }%ENDCOLOR%
+		* Example: &lt;Publication id="239987234" idtype="local" label="Smith & al. 2005. Biologists are stupid. Journal of improbably research 8 (8): 888." xml:lang="en" &gt;<br/>&lt;Author&gt;Smith, J.&lt;/Author&gt;&lt;Author&gt;Jones, J.&lt;/Author&gt;&lt;Author&gt;Henry, J.&lt;/Author&gt;<br/>&lt;Year&gt;2005&lt;/Year&gt; [etc.]<br/>&lt;/Publication&gt;
+	* Unstructured or mixed
+		* Contains either plain text or mixed content
+		* The label is not required, but may be optional
+		* The ID rules should be as similar to structured types as possible. 
+d127 1
+a127 1
+	* Object references take the general form:
+d140 7
+a146 3
+		* All object types are permitted, but no cross-references. %GREEN% {What's a cross-reference? I suppose you mean that a global element can not be a reference to another global element  -- Main.BobMorris - 14 Mar 2005 }%ENDCOLOR%
+		* Objects in root collections may be anonymous (have no id).
+		* The primary id of objects in root collections must be unique. It is not possible to place the same object, with the same id, but at different levels of detail in a root collection.
+d148 4
+a151 4
+		* Both full object types and object cross-references are permitted. 
+		* Full object types may be anonymous or with id. 
+		* In principle, it would thus be possible to have an embedded cross-reference referring to an embedded full object type that has an appropriate ID. For performance reasons and to simplify the consumption of UBIF documents, however, object cross-references may only refer to non-anonymous objects in a root collection, not to objects in composition. %GREEN% {Infinite recursion is also possible under this principle (and possibly any other...)  -- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%}
+		* An embedded object carrying an id may occur in multiple places in the document (in other compositions or in a root collection). The id of embedded objects is not required to be unique within a document.%GREEN% {This smells analogous to the "duplicate particle" restriction in XML Schema and might lead to the necessity to some kind of lookahead to determine what a reference is actually referencing. Not sure about this... -- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%}
+d154 1
+a154 1
+-- Main.GregorHagedorn - 09 Mar 2005
+d159 3
+a161 1
+Following the example of TCS (Jessie Kennedy et al.), UBIF now also allows multiple object collections in the root of the data set. In the case of validated reference, the object may be in any dataset within the datasets collection. It is thus possible to have one object type as "payload" of each dataset as previously, but it is also possible to have multiple objects all from the same provider with the same metadata, similar to the previous use of proxy objects. %GREEN% {We should worry a bit about whether this inhibits desired capability in &lt;xs:import>. Do global things suddenly become non-global? Actually, in general, I don't even see how you can support multiple root collections at all in XML Schema, so maybe my point is moot. All in all, I am nervous about what happens under XML inclusions of stuff that tries to xi:include something that tries to make a reference into multiple object collections	-- Main.BobMorris - 14 Mar 2005 %ENDCOLOR%}
+d165 1
+a165 1
+To achieve this object model, we need an ontology of knowledge domains and corresponding object types, see ObjectOntology. How shall the totality of biodiversity information be subdivided into object classes?
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110777406" format="1.0" version="1.6"}%
+d37 1
+d40 4
+a43 1
+Whether an object ID is specific to an abstract/concrete object or to a representation is in many cases not clear. In the case of LSIDs it is explicit that digital identity is addressed, and the issue of versions is part of the LSID method. However, addressing language and audience issues requires secondary mechanisms. To identify a scientific taxon name, a canonical name may be considered data and all other information metadata (which may change for LSIDs), but for a descriptive character no language, audience, and level of detail invariant information remains. LSIDs can still be used, by representing empty data and using only metadata schemata with them.
+d45 2
+a46 1
+One result of this is that many of these representations (e.g. a resolvable id, with or without label or core-data) are at the same time object representations and links to further object representations. A representation without machine-readable links consisting only of a label addressing humans (Level 1, above) may be interpreted as a "human resolvable" link to resources found elsewhere (as in free-form textual publication references). Thus the conventional distinction between objects and references is blurred. 
+d50 1
+a50 1
+	* Machine-resolvable on the internet (url, lsid, doi; note that doi uses a web service, not a uri-type mechanism) %GREEN% {doi also has a uri scheme submitted to IANA and has an http resolution service. See [[UriAndUrnAndUrl#AnchorDOI][URiAndUrnAndUrl]] -- Main.BobMorris - 14 Mar 2005 }%ENDCOLOR%
+d53 19
+a71 1
+-- Main.GregorHagedorn - 09 Mar 2005
+d79 3
+a81 1
+*Conclusion:* At places where an id for an object is used, a second attribute should preserve the semantics of the object in human readable form. The proposed name for this attribute is either "label" or "title", please vote on this! %GREEN%{ I vote 'label'  -- Main.BobMorris - 14 Mar 2005} %ENDCOLOR%
+d96 1
+a96 1
+%GREEN% {Standard compression techniques such as gzip seem to give compression rations of 2-3:1 easily. See [[http://www-106.ibm.com/developerworks/xml/library/x-tipcomp.html][ Compress XML files for efficient transmission]] at the ibm developerworks. Various claims turned over by google claim 20-30:1 with various techniques-- Main.BobMorris - 14 Mar 2005} %ENDCOLOR%
+d105 1
+a105 1
+		* A required "label" attribute contains free-form text, guaranteeing persistence of object semantics for human readers and providing a minimal object representation for many data consumers.
+d129 1
+a129 1
+Problem with object and references: It would be desirable to choose the same element name and distinguish them by the presence of a ref attribute. However, this is difficult to validate in w3c schema. If validation is desired, different element names are needed! The reference name should be as short as possible, considering the social problems with document size. ObjectRef may be acceptable. Anything shorter?
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110736374" format="1.0" version="1.5"}%
+d45 1
+a45 1
+	* Machine-resolvable on the internet (url, lsid, doi; note that doi uses a web service, not a uri-type mechanism)
+d56 1
+a56 1
+*Conclusion:* At places where an id for an object is used, a second attribute should preserve the semantics of the object in human readable form. The proposed name for this attribute is either "label" or "title", please vote on this! 
+d65 1
+a65 1
+In certain cases truly large data sets may have to be transferred. For example, in the main dataset behind www.lias.net contains 250&nbsp;000 descriptive records. To attempt a lichen identification without knowledge of family, it may be necessary to obtain the entire data set. SDD attempts already to balance readability against size in this case and still needs about 50 Unicode character per such statement, resulting in a file size of ca. 12 MB (plus data for terminology with lesser scaling problems). Such file sizes still do cause some problems in which size matters. To achieve a relatively modest file size, SDD defines the character and states only ones, and then uses these objects in the description by (mostly document-internal) reference. Requiring internal references to also bear semantic information, despite the fact that such information is available in the same document (and the link can therefore not possibly break) is not desirable. On the other hand, for the purpose of debugging it may be desirable to enrich internal cross-reference with human-readable text. This has been tested successfully in SDD (@@debugkey/ref, add link!!).
+d67 1
+a67 1
+*Conclusion:* Whereas for most objects, a human readable label (preserving the semantics of the scientific data) should be provided, an exceptions should be made for document-internal cross-references. No label should be required here. For the purpose of debugging, optional attributes may be provided the content of which may be dynamically filled or deleted.
+d70 3
+d81 12
+a92 2
+		* All ID attributes are optional.
+		* Multiple ID elements are desirable (e.g. when offering lsids in addition to urls). However, for the purpose of cross-referencing, the first ID is special and is the only ID to which linking may occur.
+d113 1
+a113 1
+		* All object types are permitted, but no cross-references. 
+d119 2
+a120 2
+		* In principle, it would thus be possible to have an embedded cross-reference referring to an embedded full object type that has an appropriate ID. For performance reasons and to simplify the consumption of UBIF documents, however, object cross-references may only refer to non-anonymous objects in a root collection, not to objects in composition.
+		* An embedded object carrying an id may occur in multiple places in the document (in other compositions or in a root collection). The id of embedded objects is not required to be unique within a document.
+d128 1
+a128 1
+Following the example of TCS (Jessie Kennedy et al.), UBIF now also allows multiple object collections in the root of the data set. In the case of validated reference, the object may be in any dataset within the datasets collection. It is thus possible to have one object type as "payload" of each dataset as previously, but it is also possible to have multiple objects all from the same provider with the same metadata, similar to the previous use of proxy objects.
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110657532" format="1.0" version="1.4"}%
+d3 1
+a3 1
+This topic discusses the various forms in which an object type (such as taxon concept, geographical area, publication, etc.) may occur in a TDWG xml schema. The goal is to address the problem of object relations, object resolution, and persistence of object and relation semantics in a more general framework and allow the construction of truly modular and flexible TDWG schemata.
+d5 1
+a5 1
+The proposal is based on discussions between me, Gregor Hagedorn, Bob Morris, Donald Hobern, Jessie Kennedy and Markus Döring over the last months. It closely corresponds to Donald Hobern's message "[tcs-lc] Modularisation of standards, Tue, 8 Mar 2005 10:51:19 +0100". Please also refer to ObjectIdentifierPattern which discusses in details the questions how to represent object identifiers and identifier references, and ObjectOntology which discusses how to subdivide the totality of biodiversity information into object classes.
+d11 1
+a11 1
+Traditionally, information models distinguish primarily between a singular object (instance of a class) and references to it. However, in the context of data interchange objects in many cases are only representation of richer objects available elsewhere (e.g. in a local institutional database). These representations may have different levels of detail and structure (compare first slide in DataModelMatrix).
+d13 1
+a13 1
+These levels of detail may be:
+d17 1
+a17 1
+		* Example: Publication references using Pub med URLs or the publishing industries DOI identifiers
+d23 1
+a23 1
+		* Note: plain text with no markup may evolve into text with partial markup, and complete markup. It is unclear whether different types are desirable, or whether the no-markup case should simply be considered a special case of partial markup. A possible name for these alternatives may be "<nop>BagType"
+d28 16
+a43 1
+One result of this is that many of these representations (e.g. a resolvable id, with or without label or core-data) are at the same time object representations and links. Even an object without machine-readable links and only with a label addressing humans is often in some sense a "human resolvable" link to resources found elsewhere (as in free-form textual publication references). Thus the conventional distinction between objects and references is blurred. Another aspect of id references is whether they are:
+d45 1
+a45 1
+	* Machine-resolvable on the internet (url, lsid, doi; note that doi uses a webservice, not a uri-type mechanism)
+d48 9
+a56 1
+##Below is very vague - input is welcome!
+d58 4
+a61 5
+Object references take the general form:
+	&lt;Object 
+	  ref="id-value that can be validated within the document" 
+	  gref="non-validated global id" 
+	  label="text attempting to communicate the semantics of a link to a human reader; ideally unique but not required to be so" xml:lang="language of label"&gt;
+d63 1
+a63 1
+ref and gref should be considered alternatives, but this is difficult to validate in w3c schema. If validation is desired, different element names are needed! Perhaps the pattern for element names in xml could be Object, <nop>ObjectRef, <nop>ObjectRel? Or perhaps it should be way more often just id, and only in document-internal cross-references "ref"?
+d65 1
+a65 1
+--
+d67 30
+a96 1
+An important question is whether all attributes in a reference shall be optional, or whether is is reasonable to require the presence of the label. I currently prefer requiring a label for gref, but make it optional for local ref elements.
+d100 9
+a108 3
+		* All object types are permitted, but no references. Objects in root collections may be anonymous (have no id).
+	* *Object composition:*
+		* Both object types and object references are permitted. Object types may be anonymous or with id. However, for performance reasonse and to simplify the consumption of UBIF documents, references may only refer to non-anonymous objects in the root collection, not to objects in composition (even if they carry an appropriate id).
+d111 1
+d113 1
+a113 1
+---
+d117 5
+a121 1
+To achieve this object model, we need an ontology of knowledge domains and corresponding object types, see ObjectOntology.
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110623048" format="1.0" version="1.3"}%
+d25 2
+d28 6
+a33 10
+		* <nop>CoreType: constrained, relatively flat content model (<nop>DarwinCore, LinneanCore, AlexandriaCore, etc.)
+		* <nop>DetailType: detailed content model (ABCD, SDD, TCS-like)
+	These objects types have different levels of detail, as illustrated in the slide on DataModelMatrix.
+
+	All objects may optionally have one or several ids (or "links") .
+
+	* *Object references may be:*
+		* Human-readable: containing only a free-form text label
+		* Validated: to refer to id or guids of objects in the same document (i.e. in any dataset within the datasets collection)
+		* Non-validated: to refer guids (url, lsid, etc.) of objects not in the same document
+d41 1
+d43 1
+a43 7
+An interesting aspect of viewing objects not as a singular reality, but as having multiple representations of different detail, is that the conventional distinction between the object and a reference to an object is blurred. See ObjectTypePattern for further discussion of this.
+
+
+
+ref and gref should be considered alternatives, but this is difficult to validate in w3c schema. If validation is desired, different elementnames are needed
+
+Perhaps the pattern for element names in xml could be Object, <nop>ObjectRef, <nop>ObjectRel?
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110540455" format="1.0" version="1.2"}%
+d3 1
+a3 1
+This topic attempts to discuss, for a given object type (such as taxon concept, geographical area, publication, etc.) the various forms in which an object may occur in a TDWG xml schema. The goal is to address the problem of object relations, object resolution, and persistence of object and relation semantics in a more general framework and allow the construction of truly modular and flexible TDWG schemata.
+d11 15
+a25 3
+In general, several kinds of object types and object reference types are being defined.
+	* *Objects may be:*
+		* <nop>BagType: especially for markup of otherwise unstructured text. Ultimately, different types must probably be defined for plain text (perhaps with UBIF text formatting) and mixed content such as html with further markup.
+d28 3
+a30 2
+	These objects types have different levels of detail, as 
+	All objects may optionally have an id and labels (or "titles") in multiple languages.
+d43 5
+d52 1
+a52 2
+An important question is whether all attributes in a reference shall be optional, or whether is is reasonable to require the presence of the label. I prefer 
+requiring a label for gref, but make it optional for local ref elements.
+d64 1
+a64 3
+Following the example of TCS (Jessie Kennedy et al.), UBIF now also allows multiple object collections in the root of the data set. In the case of validated 
+reference, the object may be in any dataset within the datasets collection. It is thus possible to have one object type as "payload" of each dataset as previously,
+but it is also possible to have multiple objects all from the same provider with the same metadata, similar to the previous use of proxy objects.
+a67 2
+Test: Test [[Sandbox.Simple_word][display text]]
+
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110382313" format="1.0" version="1.1"}%
+d53 2
+@

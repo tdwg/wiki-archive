@@ -1,0 +1,327 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2010.03.25.16.25.57;	author JohnWieczorek;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.10.07.00.13.54;	author StephenLong;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.10.06.18.36.08;	author StephenLong;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="JohnWieczorek" date="1269534357" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+!! Historical <noautolink>%WEB%</noautolink> wiki site. Deprecated.
+------
+
+*Note*: These Wiki pages are for historical purposes, they *do not* reflect the content of the current standard, which can be found at
+
+* http://rs.tdwg.org/dwc/index.htm
+------
+
+
+This is a discussions page for <noautolink> *Darwin Core and Extensions (Concepts)* </noautolink>.
+
+-- Main.StephenLong - 06 Oct 2006
+
+---++++ Open Questions:
+
+See Open Discussion at: [[http://circa.gbif.net/Public/irc/tdwg/dwcrev/newsgroups?n=dwcrev][GBIF Circa Registries, etc.]]
+
+
+---++++ Change Log:
+
+
+---+++ Comments 
+Use the space below to make comments about this page. -- Main.StephenLong - 06 Oct 2006
+
+------
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Donald Hobern [mailto:dhobern@@gbif.org]  Date: Wed, 19 Sep 2005, 20:39:27
+
+>Renato wrote:
+>&#8220;However, the curatorial extension seems to be a real !DarwinCore
+>extension (or would it make sense to use its concepts without using
+>!DarwinCore?).&#8221;
+
+I firmly believe that we should leave all &#8220;extension&#8221; schemas as separate modules that allow providers to select the set that best meets their needs without having to worry about import relationships.  This is very much in the spirit of !DiGIR and TAPIR and will allow the greatest flexibility.  It allows for the possibility of picking up upgrades to Darwin Core without having to reversion the curatorial extension.  It also allows for the possibility that the curatorial extension may be used alongside alternate representations such as some of the ABCD elements.
+
+I think that Steven Ginzberg&#8217;s idea is also important.  As Renato noted, the existing &#8220;extensions&#8221; are really modules in Steven&#8217;s sense.  In the long run TDWG should develop a set of schemas of this type, but also publish documents and/or schemas that define recommended uses of these different schemas for different communities and different purposes.
+
+Donald </DL>
+------
+
+<DL><DD>%ICON{bubble}%
+*Re: modules vs extensions*
+Posted by: Donald Hobern [mailto:dhobern@@gbif.org]  Date: Wed, 19 Sep 2005, 20:39:27
+
+>Steve wrote:
+> If a community schema wanted to support both specimen and
+> observational data they would import both the Curatorial and
+> Observation/Monitoring modules and would end up with two
+> copies of the core elements.
+
+Precisely. If we keep all modules at the same level, as proposed sets of attributes that applications may then choose to use, we avoid any problems
+with multiple imports (potentially of different versions) and with versioning in general.
+
+Different communities then define the sets of modules that they wish to use for their data exchange.
+
+The current use of Darwin Core follows exactly this model. Darwin Core is not a definition of a specimen record. It is the definition of a set of attributes which are useful when describing most specimens. The inclusion of these attributes and of other attributes from the various extensions (or better, modules) takes place in another block of schema definition when a format for the !DiGIR/TAPIR response record is defined.
+
+To illustrate this, the Darwin Core 1.2 schema is at: http://digir.sourceforge.net/schema/conceptual/darwin/2003/1.0/darwin2.xsd
+
+One popular schema that uses the Darwin Core 1.2 attributes to define a specimen record is at: http://digir.sourceforge.net/schema/conceptual/darwin/full/2003/1.0/darwin2full.xsd
+
+The beauty of !DiGIR/TAPIR (and of this type of XML data exchange in general) is that different communities can construct their own record definitions bringing together Darwin Core, any of the standard modules, and any locally-defined modules in any way that will meet their purposes. Their data providers will then be exposing a corresponding set of attributes.  Other communities (which may use different record definitions and a different set of modules) will still be able to query these providers for whatever subset of the data interests them both.
+
+Provided we build the tools correctly (and especially if we back them up with an ontology into which the attributes from the modules get defined), we will all be able to discover and use data from a bewildering range of sources. I believe that modularisation of content attributes is essential to making us really successful in developing biodiversity informatics and that it can open up really exciting networking possibilities for us all.
+
+Donald </DL>
+------
+%ICON{bubble}%
+Posted by: Donald Hobern [mailto:dhobern@@gbif.org]  Date: Thu, 29 Sep 2005, 07:44:01
+
+Stan has just circulated an explanation of the postponement of voting on Darwin Core.  I have a couple of comments I would like to add.
+
+   1. I believe that there are excellent architectural reasons for supporting the separation of the geospatial elements from the core.  If we consider our data as a web of interrelated information that could be represented efficiently by a set of data objects, it seems clear that one of the key object classes of interest would be the Locality.  Separation of the geospatial component of !DwC into an extension allows us to be much more flexible in the future about how we model the relationship between a taxon occurrence and its locality.  Right now the debate is around replacing proprietary elements with GML replacements, but still largely seeing these as attributes of the occurrence.  In the future we may prefer to use the restricted Darwin Core and a much simpler extension schema which might contain little more than a single element serving to identify a Locality object served by some external gazetteer service.  It is only by making this (eminently logical) separation that we can really start to experiment seriously with new and possibly more powerful ways to relate our specimens and observations to the wider world of GIS.
+   1. In his message, Stan mentions &#8220;a situation in which version dependencies among schemas could require them to be upgraded simultaneously, which effectively eliminates the main benefit of separating them in the first place&#8221;.  This is certainly a general issue for us to debate in regard to TDWG standards in general, but it should be completely irrelevant here.  The beauty of the !DiGIR record-based approach to data exchange is that our record structures are effectively envelopes which can transfer data using concepts from any appropriate schema.  The schemas concerned do not need to be aware of each other at all.  I would not expect the geospatial extension in any way to reference !DwC or vice versa.
+
+Donald Hobern; 
+Programme Officer for Data Access and Database Interoperability; 
+Global Biodiversity Information Facility Secretariat; 
+Universitetsparken 15, DK-2100 Copenhagen, Denmark; 
+Tel: +45-35321483   Mobile: +45-28751483   Fax: +45-35321480
+------
+
+<DL><DD>%ICON{bubble}% *modules vs extensions*
+Posted by: Steven Ginzbarg [mailto:sginzbar@@biology.as.ua.ed]   Date: Wed, 19 Oct 2005, 17:37:52
+
+>John Weiczorek wrote:
+>"The basic idea is to create reusable schemas - schemas that can be used in more than one place,
+>thereby promoting true standardization rather than re-creation based on a model. The intention is
+>to create modules based on different classes of questions that one might want to ask of the
+>underlying data."
+
+An idea: What if instead of using extensions which both inherit elements and define new elements, there were modules which define elements but do not inherit them and community schemas which inherit elements but do not define them? There could be two classes of modules:
+   1. Core modules, _e.g._ the Geospatial module and the !DarwinCore module, would be modules which all communities would inherit.
+   1. Class modules, _e.g._ the Curatorial module could be inherited by communities sharing the same type of data, in this case specimen data.
+
+
+If botanists wanted a profile they could use to provide data to a portal specifically for botanical data they would first create a class module, the Botanical module, which would contain elements specific to botanical data.  Then, if their portal would be dealing only with specimen data, they could create a schema which would inherit the elements of the core modules, the curatorial module and the botanical module.  If both observational and specimen data would be provided to their portal, they could create a schema which would inherit the elements of the core modules, the observation/monitoring module, the curatorial module and the botanical module.
+
+I first thought of having a third class of modules, community modules which would be the terminal "extensions". The problem is, how do you know when a module is terminal? The phycologists (algal names are also governed by the ICBN) might decide to set up their own portal. They would create a phycological module and write a schema which would which would inherit the elements of the core modules, the curatorial module, the botanical module and the phycological module.  For each module the type of data handled by its elements would be clearly described. Examples could be given of which modules a community schema might want to inherit its elements from.  However the only requirement would be the inheritance of the core modules.
+</DL>
+------
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Renato De Giovanni [mailto:renato@@cria.org.br]   Date: Wed, 19 Oct 2005, 20:19:58
+
+Steven,
+
+I agree with your comments, but I think there's a naming problem here. The current "geospatial extension" does not inherit anything from !DarwinCore, so actually it should be better called "geospatial module" as you said, or something else. It could definitely be used in conjunction with other sets of concepts completely different from !DarwinCore.
+
+However, the curatorial extension seems to be a real !DarwinCore extension (or would it make sense to use its concepts without using DarwinCore?). If that's true, I've just noticed that the curatorial XML Schema lacks an "import" statement to indicate that.
+
+When you say "community schema", if I understood well you mean a schema that simply imports a set of schemas which are related to a specific community. So for instance, if a member of that community wants to configure a data provider, she could simply choose that community schema and the software should be able to automatically present data mappings associated to all underlying schemas.If that's what you meant, I think it's perfectly valid.
+
+Regards, -- Renato </DL>
+------
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Renato De Giovanni [mailto:renato@@cria.org.br]   Date: Thu, 20 Oct 2005, 17:28:34
+
+On 19 Oct 2005 at 22:39, Donald Hobern wrote:
+
+>I firmly believe that we should leave all extension schemas as
+>separate modules that allow providers to select the set that best
+>meets their needs without having to worry about import relationships.
+>This is very much in the spirit of DiGIR and TAPIR and will allow the
+>greatest flexibility. It allows for the possibility of picking up
+>upgrades to Darwin Core without having to reversion the curatorial
+>extension. It also allows for the possibility that the curatorial
+>extension may be used alongside alternate representations such as some
+>of the ABCD elements.
+>
+>I think that Steven Ginzberg's idea is also important. As Renato
+>noted, the existing extensions are really modules in Steven's sense.
+>In the long run TDWG should develop a set of schemas of this type, but
+>also publish documents and/or schemas that define recommended uses of
+>these different schemas for different communities and different
+>purposes.
+>
+>Donald
+
+Hi Donald,
+
+That's a very important point. Inheritance relationships will force reversioning of all "sub modules" when a "module" changes.
+So I tend to agree with you that loose coupling here could bring significant benefits.
+
+Regards, 
+Renato
+------
+
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Renato De Giovanni [mailto:renato@@cria.org.br]   Date: Thu, 20 Oct 2005, 18:26:23
+
+Hi Steve,
+
+The import statement you pasted refers to the !DiGIR schema, not !DarwinCore. Importing from !DarwinCore would be a way of indicating the inheritance I mentioned.
+
+So community schemas would actually be a kind of data profile for specific groups. Even if those schemas will need to be revisioned after any change in one of the imported modules, they could definitely help to keep things organized and to ease data providers life. But data providers could still be free to individually pick up the modules they want and build the puzzle from scratch, which is also OK, I think.
+
+Regards,  
+Renato </DL>
+
+------
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Steven Ginzbarg [mailto:sginzbar@@biology.as.ua.ed]   Date: Thu, 20 Oct 2005, 19:42:55
+
+>Renato wrote:
+>"The import statement you pasted [from the Curatorial
+>Extension] refers to the !DiGIR schema, not
+>!DarwinCore. Importing from !DarwinCore would be a way
+>of indicating the inheritance I mentioned."
+
+There may be community schemas that import the Observation/Monitoring module and do not import the Curatorial module. To insure that these community schemas also received the core elements (!DarwinCore and Geospatial modules), they would have to be imported by the Observation/Monitoring module as well as by the Curatorial module.
+
+I suggested that only the !DarwinCore and Geospatial modules be required. If these are imported by the Curatorial and Observation/Monitoring modules rather than directly by community schemas then the Curatorial and Observation/Monitoring modules would become a new class of module, one of which would be required.
+
+If a community schema wanted to support both specimen and observational data they would import both the Curatorial and Observation/Monitoring modules and would end up with two copies of the core elements.
+
+Steve </DL> 
+------
+
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Steven Ginzbarg [mailto:sginzbar@@biology.as.ua.ed]   Date: Fri, 21 Oct 2005, 18:01:54
+
+>Donald Hobern wrote:
+>"The current use of Darwin Core follows exactly this model. Darwin Core is not a definition of a
+>specimen record. It is the definition of a set of attributes which are useful when describing most
+>specimens. The inclusion of these attributes and of other attributes from the various extensions
+>(or better, modules) takes place in another block of schema definition when aformat for the
+>!DiGIR/TAPIR response record is defined. To illustrate this, the Darwin Core 1.2 schema is at: >http://digir.sourceforge.net/schema/conceptual/darwin/2003/1.0/darwin2.xsd
+>One popular schema that uses the Darwin Core 1.2 attributes to define a specimen record is at: >http://digir.sourceforge.net/schema/conceptual/darwin/full/2003/1.0/darwin2f ull.xsd"
+
+The first schema is what I am calling a module. It defines elements but doesn't import any other modules.
+
+The second schema is what I am calling a community schema. It imports modules (in this case one module) and doesn't define any new elements. The community schema imports the module: http://digir.net/schema/conceptual/darwin/2003/1.0.
+schemaLocation=http://digir.sourceforge.net/schema/conceptual/darwin/2003/1.0/darwin2.xsd/.  It assigns the alias "darwin" to the imported namespace: xmlns:darwin=http://digir.net/schema/conceptual/darwin/2003/1.0.
+
+The block of schema definition where the format for the !DiGIR/TAPIR response record is defined contains no references to newly described elements. It contains only references to elements in the imported module. These are preceded by the alias "darwin":  The separation of module import from element definition maximizes flexibility for community standards in selecting elements which meet the needs of their community.
+
+In this case all elements of the module are included in the format of the response record except for the !BoundingBox element.
+
+The author of the community schema could have also omitted the element !ScientificName from the format of the response record. The author didn't do so because he/she knew that !ScientificName was not nullable. No import specification forced the inclusion of !ScientificName in the format of the the response record.
+Similarly, I think that a simple statement that the !DarwinCore module and the Geospatial module are core modules which will be imported by all !DarwinCore community schemas will be sufficient without invoking import specifications to force their inclusion.
+
+"Provided we build the tools correctly (and especially if we back them up with an ontology into which the attributes from the modules get defined), we will all be able to discover and use data from a bewildering range of sources." Can you explain what you have in mind by an ontology? Versioning?
+</DL>
+------
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Steven Ginzbarg [mailto:sginzbar@@biology.as.ua.ed]   Date: Fri, 21 Oct 2005, 18:01:54
+
+>Renato De Giovanni wrote: "... the curatorial extension seems to be a real 
+>!DarwinCore extension (or would it make sense to use its concepts without
+>using !DarwinCore?)."
+
+No, it wouldn't make sense. It wouldn't make sense to use it without the Geospatial module either.  I suggested that the Darwin Core module and the Geospatial module be considered core modules which would be required to be inherited. The inheritance would be directly by a community schema rather than second hand because they were inherited by the Curatorial module. Just as certain elements in a profile are not nullable, certain modules, the core modules, Geospatial and DarwinCore, could be required to be inherited.
+
+>"If that's true, I've just noticed that the curatorial XML Schema lacks an
+>"import" statement to indicate that."
+
+The current Curatorial XML Schema, v.1.4 does have an import statement: http://digir.net/schema/protocol/2003/1.0
+schemaLocation= http://digir.sourceforge.net/schema/protocol/2003/1.0/digir.xsd/
+
+I'm suggesting that it not have one.
+
+>"When you say "community schema", if I understood well you mean a
+>schema that simply imports a set of schemas which are related to a
+>specific community. So for instance, if a member of that community
+>wants to configure a data provider, she could simply choose that community
+>schema and the software should be able to automatically present data
+>mappings associated to all underlying schemas.
+>If that's what you meant, I think it's perfectly valid."
+
+That is what I meant. In addition, the community schema would only import modules and would not define any additional elements. For instance, if I wanted to set up a portal for botanical data, I would first create a botanical module containing the new elements needed to supplement those of existing modules. Then I would create a community schema which only imported modules, _e.g._ Geospatial, !DarwinCore, Curatorial, and Botanical.
+
+If I had defined the supplemental fields and imported modules in the same community schema, a phycological portal that wanted to inherit the supplemental botanical fields would be forced to also inherit the same modules as the botanical schema did. I think keeping element definitions and import of modules separate will allow for greater flexibility.
+
+Steve </DL>
+------
+
+<DL><DD>%ICON{bubble}% *Re: modules vs extensions*
+Posted by: Donald Hobern [mailto:dhobern@@gbif.org]   Date: Fri, 21 Oct 2005, 21:39:06
+
+>I wrote:
+>"Provided we build the tools correctly (and especially if we back
+>them up with an ontology into
+>which the attributes from the modules get defined), we will all
+>be able to discover and use datafrom a bewildering range of sources."
+
+>Steve replied:
+>"Can you explain what you have in mind by an ontology? Versioning?"
+
+By an ontology I mean an external queriable system which provides machine-readable information about the classes of object of interest to our community and the relationships between them, as well as their attributes. Such a system would allow us to define that a _specimen_ belongs-to a _collection_ and that _specimens_ have an _identification_ and that an _identification_ can be realised as a Darwin Core !ScientificName (or some other representation). This allows software applications to reason about the relationships between data from different sources and determine the applicability of data for their needs. It would allow us to model the relationships between the objects of interest to different sub-communities. I hope this clarifies a little.
+
+Donald </DL>
+------
+------
+%ICON{bubble}%
+
+------@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1160180034" format="1.1" version="1.2"}%
+d3 7
+a9 1
+This is a discussions page for <noautolink> *Darwin Core and Extensions (Concepts)* </noautolink>.
+d12 1
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1160159768" format="1.1" version="1.1"}%
+d22 42
+d79 177
+d258 1
+@

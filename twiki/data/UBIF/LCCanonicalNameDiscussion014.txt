@@ -1,0 +1,117 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1102953843" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="LinneanCoreCanonicalName"}%
+Discussion of Proposal 1 versus 2. 
+
+Note: Proposal 1 is identical with the one uploaded by Sally Hinchcliffe in <nop>LinnaeanCoreV01_3.zip. It is contained unchanged in the newly uploaded <nop>LinneanCore_01.4.zip, in which also the alternative Proposal 2 can be found.
+---
+
+First, I vote in favor of separating the Monomial (see also LCMonomialDiscussion) from those names starting with a Genus. However, after thinking about it for the weekend, I more and more dislike the separation between Binomial and Trinomial in Sally's proposals. I basically agree that it makes sense to have a sequence of mono/bi/trinomial, and also it has advantages for some consumers. I can see diadvantages for the consumer as well, however - see below.
+
+The main discomfort I have, is, however, that I hope that the proposed LC structure would be simple enough to be created even from flat-file (single table/Excel spreadsheet) data. Choices in the schema make this more difficult, and it appears to me especially so if "container-elements" depend on such choices. An export for proposal 1 can be easily written by a programmer, but is not really easily with built-in or hand-made export functions.
+
+In the alternative Proposal 2 I tried to draw up, it is easier to flatten the schema to columns. The schema still has the choices in it, and these choices are almost identical to those in Proposal 1. However, the Binomial and Trinomial container elements are left away. The advantage is, that it is possible to create a second low-validating alternative schema, with which some could provide data. It would be easy to validate the data separately, and perhaps remove the data that do not fit canonicalization. For example, in the proposed flat-LC schema, you would be able to give a Genus, infragenus and species epithet. In this case, validation could detect this, and the redundant infrageneric epithet could be removed.
+
+Furthermore, I see another problem with the infraspecific (Trinomial) model. First, positively, it is structurally very logical to hang the infraspecific epithet off a species and allow the species to be either a full label string or an id. The proposed model requires the label, with optional id. Still, somehow it does not work well for me... Perhaps we need a set of requirements which operations we think are important. The two operations I have in mind that work poorly with the currently proposed model are:
+	1 Recombining atomized into full names. If within Trinomial, Species/FullName if intended to be a unique pointer to the species it must be a name-string-with-authors. This makes recombining the atomized elements difficult, since the authors would have to be stripped off before adding infraspecific epithet. In addition, having authors there is unenforcable, and many data providers will not be able to provide species with authros for infraspecific taxa. On the other side, I would find it acceptabel to have the string to be without authors, and making the id the only way to state exactly which species is meant. Doing so, however cannot be enforced by the schema - some may provide species name-string-with-author and consumers will always have to test which is the case. Furthermore, the elegance of the label/id linking system is lost, since some labels will thus prefer to be with, others without authors. That was almost two reasons I dislike the system.
+	2 Trying to find all records with a given species epithet. This is straightforward for the Binomial species case, it involves searching: Binomial/SpecificEpithet=$searchterm. For the trinomial case, however, you have to use in-string processing to find the species epithet in Trinomial/Species/FullName. Note that this is the only required data item - and I agree that hte id can not be made required, because that would exclude many data providers.
+
+Partly, the problem with Trinomials is a general question about how many different methods of atomization shall be supported. I rather vote for a more strict either single-string, or following a proposed atomization model. The proposal 1 allows (or even recommends) for infraspecific ranks a infraspecific epithet + ("Genus + Species as a full string") model. 
+
+*Summary:* I do not argue for a super-flattened all-element schema like the old <nop>DarwinCore versions. Containers are fine. However, a combination of container elements with choices I find less desirable in a "core" schema that intends to be simple. It should be used carefully. Moreover, I believe the atomization should be complete in the case of infraspecific taxa (trinomials) rather than preferring an atomized infraspecific epithet plus Genus and species string combined, without the ability to validate for presence absence of authors on the species part.
+
+I think Sally did a great job in sorting out the issues. Essentially, the model I propose has the same choice structure and optional id-refs as hers, only on different levels, and I leave away the Binomial/Trinomial containers. Some examples for comparison follow:
+
+<verbatim>
+*Examples 1. Binomials:*
+
+*Original Proposal 1 (vers. 0.1.3 = schema 2c):*
+<CanonicalName>
+ <Binomial>
+  <Genus>
+	 <FullName>Caesia</FullName> 
+	 <LinkId type="Human Resolvable" id="IpniCitation 24085-1 version 1.1.2.1" /> 
+  </Genus>
+  <InfraGenericEpithet>Crinagrostis</InfraGenericEpithet> 
+ </Binomial>
+</CanonicalName>
+<CanonicalName>
+ <Binomial>
+  <Genus>
+	 <FullName>Caesia</FullName> 
+	 <LinkId type="Human Resolvable" id="IpniCitation 24085-1 version 1.1.2.1" /> 
+  </Genus>
+	
+ </Binomial>
+</CanonicalName>
+
+*Alternative Proposal 2 (= see in ver. 0.1.4):*
+<CanonicalName>
+  <Genus reftype="Human Resolvable" ref="IpniCitation 24085-1 version 1.1.2.1">Caesia</Genus>
+  <InfragenericEpithet>Crinagrostis</InfragenericEpithet> 
+</CanonicalName>
+<CanonicalName>
+  <Genus reftype="Human Resolvable" ref="IpniCitation 24085-1 version 1.1.2.1">Caesia</Genus>
+  <SpecificEpithet>spiralis</SpecificEpithet> 
+</CanonicalName>
+
+Examples 2. Trinomials: 
+("Chrysomyxa ledi de Bary var. cassandrae (Peck et Clinton) Savile")
+
+*Original Proposal 1 (vers. 0.1.3 = schema 2c):*
+<CanonicalName>
+ <Trinomial>
+  <Species>
+	 <FullName>Chrysomyxa ledi de Bary</FullName> 
+	 <LinkId type="Human Resolvable" id="IndexFungorum 999999" /> 
+  </Species>
+  <InfraspecificEpithet>cassandrae</InfraGenericEpithet> 
+ </Trinomial>
+</CanonicalName>
+<!-- (Peck et Clinton) Savile follow under Canonical authors, not shown here -->
+<Rank code="var" />
+
+OR (species may be without authors) 
+[...] <Species>
+	 <FullName>Chrysomyxa ledi</FullName> 
+[...]
+
+
+*Alternative Proposal 2 (= see in ver. 0.1.4):*
+<CanonicalName>
+  <Genus reftype="Human Resolvable" ref="IndexFungorum 99999997">Chrysomyxa</Genus>
+  <Species reftype="Human Resolvable" ref="IndexFungorum 99999998">ledi</Species>
+  <InfraspecificEpithet>cassandrae</InfraGenericEpithet> 
+ </Trinomial>
+</CanonicalName>
+<Rank code="var" />
+</verbatim>
+
+---
+
+To immediately admit two weaknesses of the alternative proposal:
+	1 Adding the optional Genus ref is possible in proposal 2 for a species/infraspecific record that also should have a species ref. It is then either redundant or may even be inconsistent. I view this as a minor problem, easily checked by external validation through xslt code.
+	2 Very similarly: The schema does not prevent in the case of a species record, to add a ref attribute on the species element. If that ref points to the id of the record itself it would be redundant, else inconsistent.
+
+Both points are willingly accepted by me. Validating them in the schema will not be possible due to limitations of xml-schema. The easiest way out would be to provide the ID-refs in separate elements rather than in attributes on the string elements. This makes instance documents less compact and intuitive, but would allow some degree of validation with xml schema. At the moment my feeling is that enforcing this by schema validation is not necessary. For example, the xhtml schema does *not* prevent you from having a name and href attibute on the same anchor link - although in practice &lt;a href=""&gt; and &lt;a name=""&gt;/&lt;a id=""&gt; are used as alternatives.
+
+---
+Aside: I believe "InfraGenericEpithet" should be "InfragenericEpithet" (yes, you're right Gregor, I am a programmer and like to put random capitals in - Sally)
+
+-- Main.GregorHagedorn - 08 Nov 2004
+
+Having looked at the examples I think your proposal is simpler to read and probably easier to produce - it's certainly cleaner. My main concern was enforcing the structure of binomials/trinomials as far as is possible in XML - and yours does that. I included the containers to make parsing easier, potentially. If the benefits of cleaner parsing don't outweigh the disadvantages of a simpler easier to read structure, then I suggest we go with Gregor's proposal.
+
+-- Main.SallyHinchcliffe - 09 Nov 2004	
+
+I tend to agree with both Sally and Gregor that "Proposal2" is preferred.  I do not understand XML well enough yet to understand the differences between Proposal 2's hierarchical version, and the flat version (with "###" comment). [Gregor: the instance documents look the same, but the proposed schema does not allow all combinations. The flattened version does.]  I assume that most of the discussion above refers to the hierarchical version?  [Gregor: Yes] Also, I think we still need to discuss Hybrids, which should probably be done on a different page: LinneanCoreHybridNothotaxa.  [Gregor: Absolutely - neither Sally's nor my proposal does anything meaningful to them]
+
+-- Main.RichardPyle - 09 Nov 2004
+
+Hmm. I may be off beam here but... The schema above do not permit the encoding of any fuzzy information. Suppose you wanted to encode a search on partial information about a name. What if you come across a name in the literature or on a specimen and you do not know the rank so you do not know which tag should surround the name so you can not use the schema. How about a repeating number of &lt;name&gt; tags (as many as you like but probably no more than 3) and a single &lt;rank&gt; tag that has a range of possible values including 'unknown'. This covers all possible naming conventions present and future I think and only two tags! Conversion is easy as an example an xslt sheet could have a template for each of the known ranks. Just a thought.
+
+
+-- Main.RogerHyam - 30 Nov 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1102953843" from="UBIF.LCCanonicalNameDiscussionGH" to="UBIF.LCCanonicalNameDiscussion014"}%

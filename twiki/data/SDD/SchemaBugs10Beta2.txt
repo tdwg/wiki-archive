@@ -1,0 +1,78 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118876" format="1.1" version="1.19"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+---+!! %TOPIC%
+
+<h2>Conceptual bugs</h2>
+
+As Jacob notes, the Publication element in Citation should be required. The next beta version released will incorporate this minor change.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 08 Sep 2004
+
+The character modifiers were present in Coded, but forgotten in the Natural language descriptions.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 Sep 2004
+
+---
+
+<h2>Technical bugs</h2>
+
+<strong>The changes and problems discussed below are quite important for implementations, but not for architectural/structural discussions. I believe those interested in "understanding" SDD can ignore the discussion below. (Gregor)</strong>
+
+Jacob Asiedu writes: Xerces 2.6.2(the latest version), does not validate the SDD schema. The following are two errors I have come across so far. 
+
+1. Fatal error when minOccurs is associated with a sequence. -- Gregor: This is a cosmetic issue. I believe that xmlspy is correct in allowing  optionality on sequences, but since it has no relation to programming, I never really used it seriously (this is one reason why we have a number of additional compositor elements rather than flatter structures!). If Xerxes has a problem with it, I will certainly avoid it. In the meantime in UBIF.xsd please change &lt;xs:sequence minOccurs="0"&gt; to &lt;xs:sequence&gt;.
+
+2. Fatal error " derivation-ok-restriction.2.1.2: Error for type 'CreatorContributorRef'. An attribute use in this type has a type which is not validly derived from the type of the matching attribute use in the base type." -- Gregor: This may well be a true design error, since the xmlspy does not seem to correctly validate the restriction derivation - so it is my job to do it and I may have failed. Here it seems there is a problem with the fact that for enumeration types, union should be the opposite of restriction, but xerces gets caught somehow. "RichAgentRef" has a "role" attribute of type "AgentRoleEnum". "CreatorContributorRef" has role attribute of type "AgentCreatorContribRoleEnum". "RichAgentRef" is supertype of "CreatorContributorRef", and "AgentRoleEnum" is a superset of "AgentCreatorContribRoleEnum". So far all the requirements are fullfilled, it is impossible to create an instance document where "CreatorContributorRef" cannot be treated as its supertype. However, the enumerations are composed through union, whereas the complex types are xml-schema-restrictions. -- Jacob: It went away after I made the changes you requested (= delete the 'CreatorContributorRef' in the indirect case). -- Gregor: So it seems that Xerxes cannot deal with indirect unions - it can however understand a single union step as being valid in the restriction case. See also UBIF.AgentRoleEnumXerces262Problem!
+
+3. "derivation-ok-restriction.2.1.1: Error for type 'Certainty'.  The attribute use 'ref' in this type has a 'use' value of 'optional', which is inconsistent with the value of 'required' in a matching attribute use in the base type." -- Comments Gregor: The type "Certainty" is a restriction of "CharacterModification", and in both cases in XML spy the attribute is required. So either Xerces or Spy has a bug here. Spy assumes that if nothing is said in a schema attribute in a restriction-derived type, that the information from the schema attribute in the base type applies, Xerxes assumes the default value for the attribute as defined for xml-schema (i.e. as if there would be no schema inheritance). I cannot tell which is correct. It does not hurt to add the inherited information in the restriction case explicitly to the schema, which should keep Xerces happy... (Note - we talk about the schema files here, this has no bearing on UBIF or SDD instance documents.)
+
+4. "derivation-ok-restriction.2.1.2: Error for type 'MeasurementUnitRef'.  The attribute use 'ref' in this type has type 'anySimpleType', which is not validly derived from 'RelationID', the type of the matching attribute use
+in the base type." -- Gregor: very similar to above, different interpretation and implementation of schema inheritance. Here it affects the type rather than the minOccurs. The same solution used above should work.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 01 Sep 2004
+
+5. Another error noted by Jacob is that the Sample/@id and <nop>SampleRef (element "BasedOnSample") had no key/keyref identity constraints. These have been added, starting with "SDD 1.0 beta 3b". This improves validation, but otherwise does not change the schema.
+
+6. Several other Xerces-related problems could be fixed in the file attached under CurrentSchemaVersion. However, a major problem with Xerces remains. It rejects repeated choice (i. e. a maxOccurs="unbounded" on a choice model), and I see not solution for this. We have been using this all the time in SDD and it seems strange that it surfaces only now. The cardinality constraints on choice are legal to my knowledge. They are supported in Altova XML spy, and see e.g. http://www.dcs.napier.ac.uk/~andrew/xml/xsd/x1q6-ans.htm and http://www.google.com/search?q=%22choice+maxoccurs%22. I suspect this is a bug in Xerces 2.6.2?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 12 Sep 2004
+
+7. It took us a while working together (well, mostly Jacob and some mail to xml-dev). The last part of Sec 3.7.2 of http://www.w3.org/TR/xmlschema-1/#element-group is: "The name of this section is slightly misleading, in that the second, un-named, case above (with a ref and no name) is not really a named model group at all, but a reference to one. Also note that in the first (named) case above no reference is made to <nop>minOccurs or <nop>maxOccurs: this is because the schema for schemas does not allow them on the child of <nop><group> when it is named. This in turn is because the {min occurs} and {max occurs} of the particles which refer to the definition are what count"
+
+It appears that the recommended usage is to make the content of groups be by ref in the schema, and put the occurrence counts on the refs or perhaps wrap the sequence or choice element inside another sequence or choice element with no <nop>minOccurs and <nop>maxOccurs as attributes. This shouldn't change instance docs.
+
+Jacob observes that the following definition of "<nop> &lt;xs:complexType name="namedGroup"&gt;" in the normative schema for schemas at the end of http://www.w3.org/TR/xmlschema-1 is the specification of this. Jacob found that the MS parser also enforces this as does xerces. Spy is wrong in permitting it. Simple examples are attached  [[%ATTACHURL%/samples.zip][samples.zip]]
+
+A little scouting on the net suggests that others occasionally bump into this, and that even schema experts can't necessarily explain why the design is this way. See http://lists.w3.org/Archives/Public/xmlschema-dev/2004Jul/0063.html. In particular, it would be nice to have a justification for the sentence:  "This in turn is because the {min occurs} and {max occurs} of the particles which refer to the definition are what count." 
+
+Arguments about reusability might /favor/ using a ref in an instance document, but that would hold for lots of other things too. So this smells a little like it comes from "design by committee" and that somebody's design ideas made it into this bit, but not other places in the schema for schemas. My guess is that xerces has fewer bugs than Spy just because it is open source.
+
+Main.BobMorris<br/>
+Main.JacobAsiedu
+
+---
+
+Referring to the Xerces maxOccurs-unbounded problem discussed above: I am confused about the discussion. The section 3.7.2 you are citing refers to element *group* (xs:group), not to the compositor *xs:choice* element where Xerces reports an error that no maxOccurs may be present. I believe we have the problem on the *compositor* (xs:sequence, xs:choice, xs:all), not on the xs:group element.
+
+I easily find an example in http://www.w3.org/TR/xmlschema-1 where exactly this is present: "xs:choice minOccurs="0" maxOccurs="unbounded"" (see immediately above chapter "3.4.3 Constraints on XML Representations"). In "3.8.2 XML Representation of Model Group Schema Components" the syntax seems to explicitly allow the maxOccurs="unbounded" for xs:choice.
+
+It is true, that in SDD these repeated choices are usually inside a model group - but I cannot see why this should matter. If it is legal to have xs:sequence( xs:choice (unbounded, some elements), xs:choice (unbounded, other elements) ), why would it not be legal to have xs:sequence( xs:choice (unbounded, some elements), xs:group (ref="g1") ) where xs:group (name="g1", choice (unbounded, other elements))?
+
+Note that the model groups used are only used to keep the discussion about using xsi:type or choice alive. They allow a replacement, and highlight all places where a polymorphic design is intended. They have no bearing on the behavior of the schema - which is the expected use of element groups...
+
+Can you perhaps show which changes to the SDD schema would make it legal under Xerces?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 Sep 2004
+
+Xerces throws an exception not because we are using minOccurs/maxOccurs with choice/sequence but because we are using choice/sequence with the min/maxOccurs as an immediate child element of the group element( which is not allowed by W3C schema even though XMLSPY allows it. I have filed a bug report with Altova)<br/>.
+Xerces does not throw an exception if one uses minOccurs/maxOccurs with sequence/choice if they are not immediate child elements of a group element.
+
+Gregor writes: "If it is legal to have ... , why would it not be legal to have ...?" My reponse: Well, the documentation says it is not allowed and they do not give a reason for it.
+
+-- Main.JacobAsiedu
+
+Great job making me understand, thanks a lot! I think I have (understood and solved) it now! Starting with [[CurrentSchemaVersion][SDD 1.0 beta 3d]] (those who are watching please excuse the small beta steps!) SDD should be more valid and work with Xerces. The changes involved required a bit of type name changes and annotation changes - and I am certain something missed will be picked up later - but no changes to the fundamental model and instance documents. Thus the conceptual discussion can still be based on beta 2.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 Sep 2004
+
+%META:FILEATTACHMENT{name="samples.zip" attr="h" comment="" date="1095289628" path="samples.zip" size="911" user="JacobAsiedu" version="1.2"}%

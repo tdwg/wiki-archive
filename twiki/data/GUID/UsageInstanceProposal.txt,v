@@ -1,0 +1,465 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2007.05.24.16.51.14;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.05.24.01.36.08;	author RichardPyle;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.05.23.22.03.15;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.05.23.02.45.52;	author RichardPyle;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.05.14.23.17.43;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.03.08.00.06.47;	author RichardPyle;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.03.06.16.49.12;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.03.06.11.59.13;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.03.06.08.56.36;	author RichardPyle;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GregorHagedorn" date="1180025474" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="GUIDsForZoologicalNames"}%
+(NOTE: this is probably in the wrong wiki web and should be ported to TAG ontology or similar)
+
+---++!! Usage Instances:  The Common Denominator
+
+The following diatribe is founded on this basic principle:  Organism names _do not exist outside the context of a usage instance_.  That is, organism names (including taxonomic names) only exist, and only have meaning, when they are used in some context.
+
+Traditionally, such contexts included publications and other paper-based forms of documentation, but for the purposes of this discussion, a "usage instance" is interpreted much more broadly -- to include any documentable instance of the use of a name as applied to living organisms.
+
+[See also the NameUsageRebuttal page - with pictures ;) ]
+
+---+++ 1. The problem with the idea of a "Name Object".
+
+Taxonomists, and people who develop databases to manage taxonomic information, find it convenient to treat organism names as "objects" (in the data management sense), to which attributes (and GUIDs) can be assigned. This fact is evident from the observation that almost all physical databases pertaining to biodiversity in general, and nomenclator databases in particular, have within them some sort of "name" table where each record in the table is intended to represent "one name". However, because "names", by themselves, do not really exist as objects in any tangible sense, and because there is no broadly established standard for what constitutes a "name object", it is not surprising that different database systems have defined their own notion of a "name object" differently.
+
+For example, the uBio NameBank system defines each "name" strictly as a unique text string, inclusive of authorship.  Thus, the following examples all represent separate and discrete "name objects" from the uBio/NameBank perspective:
+
+   1. _Genusname speciesname_
+   1. _Genusname speciesnam_
+   1. _Genusnam speciesname_
+   1. _G. speciesname_
+   1. _speciesname_ [i.e., epithet only]
+   1. _Genusname speciesname_ L.
+   1. _Genusname speciesname_ Linn.
+   1. _Genusname speciesname_ Linnaeus
+   1. _Genusname speciesnam_ Linnaeus
+   1. _Genusname speciesname_ Linnaeus, 1758
+   1. _Genusname speciesname_ Smith, 1955 [Homonym]
+   1. _G. speciesname_ L.
+   1. _G. speciesname_ Linn.
+   1. _G. speciesname_ Linnaeus
+   1. _Genusname_ (_Subgenusname_) _speciesname_ L.
+   1. _Genusname_ (_Subgenusname_) _speciesname_ Linn.
+   1. _Genusname_ (_Subgenusname_) _speciesname_ Linnaeus
+   1. _G_. (_S._) _speciesname_ L.
+   1. _G_. (_S._) _speciesname_ Linn.
+   1. _G_. (_S._) _speciesname_ Linnaeus
+   1. _Anothergenusname speciesname_ (L.)
+   1. _Anothergenusname speciesname_ (Linn.)
+   1. _Anothergenusname speciesname_ (Linnaeus)
+   1. _Anothergenusname speciesname_ (Linnaeus, 1758)
+   1. _Anothergenusname speciesname_ (Linnaeus) Jones
+   1. _Yetanothergenusname speciesname_ (Linnaeus) Brown
+   1. ...and so on.
+
+[[http://www.itis.gov/][ITIS]], on the other hand, applies a more restrictive definition of a "name" when assigning taxonomic serial numbers (TSNs).  Although its primary focus is to index names in current use (i.e., "valid" names), it does assign different TSNs to Homonyms, alternate combinations, and alternate spellings; though not to different renderings of authorship text strings for what would otherwise be regarded as the "same name", or for standard abbreviations and other variants. Thus, a list of unique ITIS records might include:
+
+   1. _Genusname speciesname_ Linnaeus, 1758
+   1. _Genusname speciesname_ Smith, 1955 [Homonym]
+   1. _Genusname speciesnam_ Linnaeus, 1758
+   1. _Genusnam speciesname_ Linnaeus, 1758
+   1. _Anothergenusname speciesname_ (Linnaeus) Jones
+   1. _Yetanothergenusname speciesname_ (Linnaeus) Brown
+
+
+Subgenera may also be included, but generally only when all species for a given genus have been assigned to one or another subgenus.  And their inclusion would not cause a new TSN to be assigned; rather, the subgenus would be considered an attribute of the pre-existing TSN.
+
+IPNI and Index Fungorum, as I understand them, define name objects in the botanical tradition.  That is, basionyms and new combinations (as well as a few other code-mandated name events) are each treated as new "name objects" worthy of a GUID, but alternate spellings are not regarded as distinct name objects.  Hence, these nomenclators would define the set of "name objects" as follows:
+
+   1. _Genusname speciesname_ Linnaeus, 1758
+   1. _Genusname speciesname_ Smith, 1955 [Homonym]
+   1. _Anothergenusname speciesname_ (Linnaeus) Jones
+   1. _Yetanothergenusname speciesname_ (Linnaeus) Brown
+
+That is, similar to the ITIS definition, except without assigning new ID numbers to alternate spellings.
+
+Because the zoological (ICZN) Code does not treat new combinations as Code-governed acts, zoological databases (such as the Catalog of Fishes) tend to define "name objects" more restrictively -- more or less the same as botanical basionyms:
+
+   1. _speciesname_ [Originally placed in _Genusname_ of Linnaeus] Linnaeus, 1758
+   1. _speciesname_ [Originally placed in _Genusname_ of Smith] Smith, 1955 [Homonym]
+
+While this "name object" would have an "Original Genus" attribute, subsequent combinations (e.g., _Anothergenusname speciesname_, _Yetanothergenusname speciesname_) and alternate spellings (_Genusname speciesnam_, _Genusnam speciesname_) would not be regarded as distinct "Name Objects", but rather as subsequent usage instances of the "same" name object -- not unlike the way botanical databases might treat alternate spellings.
+
+It's important to understand this ambiguity about what constitutes a "name object" is not simply a problem related to the different Codes of nomenclature.  That there is currently an active effort to normalize the way that botany names (e.g., through IPNI and IF) and zoology names (e.g., through ZooBank) are accessed has certainly cast light on the issue in the context of the different Codes of nomenclature; but this is more an artifact of where biodiversity informatics happens to be right now (e.g., with efforts to develop a "Global Names Architecture").  But resolving the issue for the Codes is only the beginning -- resolving it among all the different name databases (both as nomenclators per se, and as metadata for other biodiversity data domains, like specimen data) still lies ahead.
+
+---+++ 2. A non-Trivial Issue
+
+The tendency so far (e.g., with the development of the TCS, and for the two TDWG/GBIF GUID workshops) has generally been to "agree to disagree" and move on, without teasing apart the essence of the problem (if it even really exists as a problem, from a biodiversity data architecture perspective). There has also been a tendency to try to choose one approach or the other, and encourage others to conform.  Everyone seems to agree that there is an urgent need to "make a decision and move on", so we can focus on other biodiversity informatics issues.  However, given that names underlie the interlinking of biodiversity data in such a fundamental way, it seems to be an issue that we really ought to "get right"  -- one worthy of as much attention as, say, which GUID technology to use.
+
+Perhaps, as long as we have a common ontology/vocabulary (which seems within our grasp), there may be no harm in serving botanical names the way that the botanical Code defines them, and serving zoological names the way the zoological Code defines them, and serving bacteriological names the way the bacteriological Code defines them (as, presumably, they already are being served). Perhaps zoologists will "see the light" and realize that the botanical way of doing things is fundamentally superior. Perhaps botanists will "see the light" and realize that the zoological way of doing things is fundamentally superior.  Both approaches have their justifications, and those justifications appear to be equally compelling on both sides.  But even if the "Code Camps" can come to consensus, this is only the start of the problem, as has already been mentioned.  There are still many other ways that a "name" has been defined in different biodiversity databases.
+
+At the very least, for something as fundamental as a "Name" in biodiversity informatics, the issues of going it differently vs. going it cohesively ought to be fully explored, identified, and articulated.
+
+---+++ 3. Common Ground
+
+Luckily, there seems to be *much* more area of agreement, than disagreement, among the various aspects of biodiversity data architecture.  It is likely that a consensus view of a "publication" (or "documentation" or "reference") object can be achieved.  The same can probably be said for Agents, and perhaps other domains such as Specimens, Observations, Images and such (with greater or lesser details yet to be sorted out).  Within nomenclature, there seems to be little disagreement about the notion of a "usage instance".  Even if we do not share a common sense for how to uniquely identify a "name object", we probably all would recognize the same "usage" objects.
+
+As stated earlier, "names" do not exist outside the context of usage instances. They are labels invented by humans, to serve the needs of communication amongst humans.  Though the potential scope of name usages is *extremely* broad, there are certain "special case" usage instances of particularly high value.  For example, it is probably true that every nomenclatural "act", as governed by the various Codes of nomenclature, takes place within the context of a publication or a publication-like venue.  This includes both the acts that create new names (registration for bacteriological names, original descriptions for zoological names, protologues for botanical names, etc.), as well as secondary Code-governed nomenclatural acts, such as Emendations, typifications, etc.  Thus, it is conceivable that all nomenclatural acts that need to be managed the various nomenclators could be represented by a series of special-case (i.e., Code-governed) usage instances. The same could also be said of taxonomic concepts, which are vertically defined in the sense of "Name SEC Publication" (=usage instance).
+
+This doesn't avoid the "name" definition problem, but it does point to a possible architectural solution that could be equally palatable to all taxonomic name domains.  In the case of Code-governed names, the basionym (and its bacteriological and zoological counterparts) could be deemed special-case usage instances that represent place-holders for "name objects".  New combinations for botanical names could be treated in the same way -- as special-case usage instances.  For example, the name  " _Anothergenusname speciesname_ (Linnaeus) Jones" is a shorthand way of stating the following:
+
+"With regard to the basionym originally established in a publication by Linnaeus for the species epithet _speciesname_, which Linnaeus originally placed in the genus _Genusname_, Jones published a paper placing the the species epithet in combination with the genus _Anothergenusname_...[etc]"
+
+By designating usage instances involving Code-governed acts (particularly the establishment of new names) as GUID-bearers for what we might otherwise be tempted to think of as "name objects", we can completely avoid the whole "what is a 'name object'" issue and converge on a set of usage instances as our "currency" of nomenclatural data exchange.
+
+Moreover, these usage instance objects have much broader application than names (e.g., all taxon concept definitions are anchored to specific usage instances).
+
+The bottom line is that name objects do not current exist as clearly defined objects in biodiversity informatics, and therefore should not be the GUID-bearers of what may prove to be the most fundamental and important unit of biodiversity data exchange.  Instead, a more clearly-defined and universally-applicable (not to mention "real") unit of information -- the usage instance -- should be the object to which GUIDs are assigned, and certain subsets of these usage instances can then be used as representatives for key nomenclatural entities (such as what we might otherwise think of as a "name object").
+
+---+++ 4. Attributes of a Name Usage Instance
+
+Name-usage instances have a clear set of attributes.  The first Name usage attribute would be a pointer to a special-case name-usage instances (registration usage GUIDs for bacteriological names, basionym- and new combination-usage GUIDs for botanical names, and the basionym-equivalent for zoological names).  This pointer "anchors" any particular usage instance to a Code-governed Usage Instance that represents the original usage instance of the name.  This would be optional -- allowing for dealing with Name Usage Instances that have not yet been mapped to the correct special-case name-usage instance (e.g., unresolved homonyms), or in cases where the corresponding special-case Code-governed name-usage instance has not yet been created.
+
+The second attribute of a usage instance would be a GUID pointing to a "documentation object" (e.g., a publication).  This represents the documented context in which the name was used (i.e., appeared).
+
+Other attributes would include:
+
+Spelling (the exact and most complete character string used to represent the name -- probably not inclusive of authorship, pending discussion among name data management specialists)
+
+Rank (the rank at which the specific usage treated the name)
+
+Parent (a GUID pointer to the name usage instance of the next higher-rank name, within the same publication/documentation instance**)
+
+!ValidName (a GUID pointer to the name usage instance of valid name to which the current name is treated as a junior synonym of, within the same publication/documentation instance**)
+
+**These require a bit of elaboration.  If Jones (2000) treated the name _Anothergenusname speciesname_ (basyonim = _Genusname speciesname_ Linnaeus), then there would also be a usage instance for the name _Anothergenusname_ tied to Jones (2000), with its own usage GUID.  It is this GUID that the "Parent" attribute of the usage instance for Jones' (2000) usage instance of "_speciesname_" would point to.
+
+Similarly, if Jones (2000) treated _Anothergenusname anotherspeciesname_ as a junior synonym of _Anothergenusname speciesname_, then the "ValidName" attribute for the usage instance of _A. anotherspeciesname_ within Jones (2000) would point to the GUID of Jones (2000) usage instance of his valid treatment of _Anothergenusname speciesname_.
+
+There are other attributes of name-usage instances that could be discussed, but these are the core attributes of interest from the perspective of people used to dealing with name data.
+
+---+++ 5. The Role of Nomenclators
+
+In this paradigm, the role of the Code-associated nomenclators, such as the bacteriological registry, IPNI & IF, and ZooBank would be less to define their own flavor of "name objects" and assign GUIDs to them, but rather to define the set of name-usage instances that fall within their Code governance, and be responsible for ensuring the quality of the metadata associated with those special-case usage instances.  But in terms of their data structure, properties, attributes, and behavior within the broader biodiversity informatics realm would be just as any other usage instances -- whether they come from other special-case realms (e.g., taxon concepts), or simply represent normal name-usage instances (e.g., in the form of a BHL index to scanned literature, or to EoL's cross-linking of "Layer 1" to "Layers 3 & 4").
+
+---+++ 6. Not as Earth-Shattering as it May Seem
+
+This proposal does not really depart from the state of things as they currently are -- with nomenclators wishing to server GUIDs for "name objects".  Indeed, most such name-objects could be automatically treated as usage-instances, because in most cases there is at least an implied reference to the authorship of a name.  Thus, there's very little in the way of change to how these data are managed -- just a slightly different way of understanding what, exactly, the GUID is supposed to represent (i.e., rather than as a name object with an attribute of "original description" publication, it would simply refer to the "original description" usage instance of that name).  The data, once flattened, would be essentially identical.
+
+But the difference is that treating it as a usage instance, rather than as a name object, makes a whole suite of "headaches" disappear, and normalizes a fundamental unit of biodiversity information that has vastly broad applicability (concepts, specimen identifications, etc., etc.).  And in cases where there is a legitimate need to reference a "name" via a GUID without knowing any specific usage instance, there is nothing stopping a user from establishing a surrogate or "placeholder" value for the attribute of the usage instance that cites the documentation for that name.  Indeed, in such cases, the original source of the name could cite itself as a name-usage instance for that name.
+
+---+++ 7. Maximally Inclusive
+
+What gives this approach its greatest strength, in terms of long-term applicability within the current and future biodiversity informatics universe, is that it is a fundamentally inclusive unit of information.  It has use well beyond the sphere of nomenclaturalists and taxonomists, and extends into all realms of biological science and popular culture.  The usage unit is equally applicable to vernacular and surrogate names as it is to scientific names (after all, as with scientific names, vernaculars and surrogate names also do not exist outside the context of a usage instance).  It is the most "natural" and fundamental unit of name-related data exchange.
+
+
+[Comment:  I wrote this in essentially one sitting, straight through.  There is no doubt that I have added confusion in places, rather than clarified.  But I hope at least the core notion of the point I am trying to make emerges somehow.  We don't need to argue on and on (as we have been doing already for several years) about how to define a "name".  The reason we can't converge on a single definition is that no such definition exists, nor will it likely exist anytime soon.  This is because the "name object" is itself an artificial construct (at least more artificial than a usage instance, which has at least some "real", physical manifestation).]
+
+[ I am not sure how I can comment on this in detail. Main.RogerHyam ]
+
+-- Main.RichardPyle - 05 Mar 2007
+
+I am rather in favor of !NameObjects in the sense that their existence is due to publication events governed by the code (although the result of code rules may be an invalid name). But you are covering this. Still, I fail to really see what your proposal is about. Lets have a name for the code-legalistic object, which happens to also have a name string. What do you suggest for this? This object may not be as general as !UsageInstance (which should probably be renamed to !TaxonNameUsageInstance...), but it has unique properties that allow to solve a large class of name-canonicalization and data comparability issues. I use to call the !NameStrings "!NameVariant" - but I see that this may have too much a perspective of composition inside !NameObject. !TaxonNameUsageInstance is better. But why not distinguish a subclass for the nomenclator-objects? They do have plenty of unique attributes not found elsewhere.
+
+In 6. you mention: "makes a whole suite of "headaches" disappear". What are these headaches, and how do they disappear?
+
+Also, at the start you say: "Organism names do not exist outside the context of a usage instance", but when listing the attributes not name usage, you have a "pointer to a name". What is this name?
+
+-- Main.GregorHagedorn - 14 May 2007
+
+Thanks Gregor.  I'll deal with each of your comments individually below:
+
+  "I am rather in favor of !NameObjects in the sense that their existence is due to publication events governed by the code (although the result of code rules may be an invalid name). But you are covering this."
+
+The way I am covering this is that all nomenclatural acts, as governed by the Codes, occur in the form of Usage Instances.  That is, names are created, emmended, lectotypified, etc. all in the context of specific publication acts, which means in the context of specific usage instances.  Thus, refering to the "NameObject" _Genusname speciesname_ is accomplished by refering to the Code-governed act of creating that name, which is represented by the Usage instance of _Genusname speciesname_ as it appears within the pubication, "Linnaeus, 1758".
+
+  "Still, I fail to really see what your proposal is about."
+
+My proposal is basically this:  Do NOT create GUIDs for Names _per se_ -- only create them for Name Usage Instances. As far as I can see, there is nothing to be gained in the short term by creating GUIDs for Names, but something to be lost -- both in the short term (endless arguments about what a "Name" is, and what "names" should get GUIDs and what should not) and in the long term (incongruence between what a "Name" GUID refers to between different communities; cluttering the bioinformatisphere with superfluous GUIDs; encouraging data providers to link to "names" when they really should be linking to usage instances; etc.).
+
+  "Lets have a name for the code-legalistic object, which happens to also have a name string. What do you suggest for this?"
+
+My suggestion is to have the major Nomenclators (IPNI, IF, !ZooBank, Bacterial Registry) each manage the metadata associated with the subset of usage instances that represent Code-Governed acts (all of which are rooted in specific usage instances), under each of the respective Codes . The broader set of other Usage Instances (i.e., those that do not constitute Code-governed acts) would then cross-reference to the Code-governed usage instances to establish various connections (e.g., basionym relationships, etc.).
+
+  "But why not distinguish a subclass for the nomenclator-objects? They do have plenty of unique attributes not found elsewhere."
+
+We're getting close!  Maybe not a "subclass", but a "subset".  That is, everything is ultimately anchored to a usage instance, but some fraction of usage instances happen to represent Code-governed acts.  Instead of creating a whole new class of object (!NameObject) with it's own GUID domain; we would instead have a single class of object (!TaxonNameUsageInstance) with a single GUID domain; and a subset of those objects represent Code-governed nomenclatural acts, and thus have additional attributes included in their metadata.  By cross-linking non-Code-governed !TaxonNameUsageInstances to their root Code-governed !TaxonNameUsageInstance, the former could inherit the attributes of the latter, if desired.
+
+  "In 6. you mention: 'makes a whole suite of 'headaches' disappear'. What are these headaches, and how do they disappear?"
+
+The main headache is the fact that almost no two databases define a "Name" object the same way.  This is certainly true of Zoological Code vs. Botanical Code, but extends much further into other nomenclatural databases (e.g., ITIS) and non-nomenclatural databases (e.g., GenBank).  So, !ZooBank could define it one way, and IPNI/IF could define it another way, and now we already have two distinct classes of !NameObject, that need to be treated in case-specific ways.  Amplify that out to all the other datasets involving taxon names, and the headaches increase dramatically.  Converging on the !TaxonNameUsageInstance as the core "unit" or "currency" of taxonomic data exchange makes these headaches go away, because it is much easier to define what a "usage instance" is -- accross different Codes and different databases.
+
+Another headache is that there are many cases where databases will (want to) link to a Taxon Name Object, when they should link to a Taxon Concept Object (same discussion we've had many times before).  This goes away because !TaxonNameUsageInstances are at the center of both (in my proposal).
+
+Another headache is dealing with Names-oriented data that have not already been "fleshed out" in terms of basionyms, etc.  A system based on !TaxonNameUsageInstances allows us to create the "thin" Usage Instance records and GUIDs immediately, and then sort out relationships (e.g., basionyms) later but establishing cross-references from the new !TaxonNameUsageInstances back to the corresponding Code-governed !TaxonNameUsageInstances (where applicable).
+
+And, of course, there is simply the "overhead" headaches associated with dealing with three classes of objects (Names, Sources/Publications, and Usages) as opposed to two classes (Sources/Publications, and Usages).
+
+There are other headaches, but that's enough for now.
+
+  "Also, at the start you say: 'Organism names do not exist outside the context of a usage instance', but when listing the attributes not name usage, you have a 'pointer to a name'. What is this name?"
+
+Good catch! I've clarified that in the first paragraph under item number 4 above.  The phrase 'pointer to a name' should be 'pointer to a Usage Instance representing the Code-Governed original usage/creation instance of the name'.
+
+I hope this helps clarify things.
+
+-- Main.RichardPyle - 22 May 2007
+
+Thanks Richard! With regard to "nomenclator-objects" you say "Maybe not a subclass, but a subset"  but agree that "thus have additional attributes included in their metadata". In my understanding that implies needing a subclass. And we do need a name for this subclass. I find your need to use "pointer to a name' should be 'pointer to a Usage Instance representing the Code-Governed original usage/creation instance of the name" quite convincing that this needs a name -- it is almost a pre-Linnean phrase :-). You also convinced me that "NameObject" is a poor name for this subclass, likely to cause confusion. How about *NomenclaturalName*? I am interpreting your model as having:
+
+*TaxonNameUsage*
+   * Spelling
+   * Publication
+   * Rank (the rank at which the specific usage treated the name)
+   * Parent (a GUID pointer to the name usage instance of the next higher-rank name, within the same publication/documentation instance)
+   * !ValidName -- not completely sure whether it belongs here, but lets agree for the moment
+
+and derive from this class two subclasses:<br />
+*NomenclaturalName*
+   * (Inheriting: Spelling, Publication, Rank, etc. from superclass)
+   * !CorrectedCanonicalSpelling
+   * !NomenclaturalStatus
+   * Etc. pp.
+
+*TaxonConcept*
+   * (Inheriting: Spelling, Publication, Rank, etc. from superclass)
+   * (something unique for them, not sure there is something other than the concept relations)
+   * Etc. pp.
+
+Having this, the headaches you describe should be gone. At any point you can be general. In all object-oriented technologies I am aware of, you can always substitute a subclass where something is typed to the superclass - only not the other way round. That is, you can say: Refer to a !TaxonNameUsage and enter the GUID of an instance of !NomenclaturalName or !TaxonConcept - or a naked !TaxonNameUsage. I do think you make a very good point about this form of polymorphism required here!
+
+Minor points: What do you mean with "!NameObject with it's own GUID domain" - I think there are no domains here. Also, I propose to change !UsageInstance to !TaxonNameUsage, we are talking here about a class definition, each instance of this class will be a "!TaxonNameUsageInstance" as you envision.
+
+-- Main.GregorHagedorn - 23 May 2007
+
+Thanks, Gregor.  Regarding Subclass/Subset -- maybe we're bogged down in semantics; but my main point is that they are all different "flavors" (to try a new term) of usage instances.  Other flavors would include new combinations (as governed by the ICBN Code), usages that contain full-blown Concept Definitions, etc.  Whether you refer to these as different "subclasses" vs. "subsets" vs. "subtypes" vs. "flavors"; whatever -- they are all still rooted in the treatment (=usage) of a text string intended to represent a scientific name within the context of some sort of documentation (e.g., publication).  To me, an Agent is a different class of object from a Publication, and both are different classes from a Specimen. Within Publications, we have subclasses/subsets/subtypes for books, articles, chapters, etc.  In the case of !TaxonNames/TaxonConcepts; I see both as being subclasses/subsets/subtypes of usage instances.  Just as we don't want different kinds/pools of GUIDs for books vs. journal articles vs. other kinds of publications, my argument is that we don't want different types/pools of GUIDs for names vs. concepts vs. usage instances. I believe the best approach is to represent them as fundamentally as usage instances (!TaxonNameUsage), with slightly different attributes (e.g., a book has a publisher and a city, whereas a journal generally article does not; but both are fundamentally publications).  
+
+As for the name of the subclass, I have previously proposed "Protonym" (="The first person or thing of the name; that from which another is named"); but it also has a competing definition, as you well know (http://glossary.lias.net/wiki/Protonym).  "Basionym" is not quite right, for reasons articulated many times on other wikis and discussion lists.  Whatever it is, it should not be "NameObject" or "Name" or "ScientificName", "NomenclaturalName" or just about anything else ever suggested along these lines, because all of these betray the fundamental aspect of "name as appears in some citable documentation".  The best I could suggest would be "OriginalNameUsage"; but even that leaves open for interpretation whether it includes or excludes usage instances constituting new combinations under the ICBN Code.
+
+Attributes like  !CorrectedCanonicalSpelling and !NomenclaturalStatus are not inherently attributes of a !NomenclaturalName (to follow your term) -- they are derived from cross-links to other !TaxonNameUsage instances.  Sure, we might "cheat" that inferred metadata as cached/derived attributes, but they are not fundamentally attributes of that particular name usage (i.e., they often involve information contained in later usage instances).  In fact, the only attributes of the "name" that I am aware of are things like !NomenclaturalCode (Code under which the name is governed -- although this could arguably be derived), word form (noun, adjective, genitive, etc.), and perhaps a few others that relate more to the text string than to any specific usage of the name.
+
+Let me ask you this question:  do you see the distinctions between names/usages/concepts as being more like the distinction between agents/publications/specimens; or more like the distinction between books/chapters/journal articles?
+
+-- Main.RichardPyle - 23 May 2007
+
+I see it as the latter. First, however, I think there are no "different types/pools of GUIDs" as you argue. Their is one pool, and as the name says, that is global. If you like LSIDs, you give your objects LSIDs, if you don't then you give them the XIDs to be introduced in two years :-). Still all are in the pool of the GUIDs. The "different types" is in the semantic or class definition. So, to stay with the books/chapters/journal articles, the important thing is not that it is doi:, but that all are subclasses of a superclass, and that if I make a reference to a publication I type that reference attribute to the superclass (in RDF that would probably be called "Range"). I think that addresses a lot of the headaches.
+
+If we don't like !NomenclaturalName we need something better. I find "OriginalNameUsage" highly ambiguous because the context is unclear. Any name usage is original with respect to that publication. Nomenclatural seems to me to clarify that, it really is short for !NomenclaturalNameUsage,
+
+-- Main.GregorHagedorn - 24 May 2007@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1179970568" format="1.1" reprev="1.8" version="1.8"}%
+d192 1
+a192 1
+!TaxonNameUsage
+d208 1
+a208 1
+   * !ConceptRelations
+d221 1
+a221 3
+Attributes like  !CorrectedCanonicalSpelling and !NomenclaturalStatus are not inherently attributes of a *NomenclaturalName* (to follow your term) -- they are derrived from cross-links to other !TaxonNameUsage instances.  Sure, w might "cheat" that inferred metadata as cached/derived attributes, but they are not fundamentally attributes of that particular name usage (i.e., they often involve information contained in later usage instances).  In fact, the only attributes of the "name" that I am aware of are things like !NomenclaturalCode (Code under which the name is governed -- although this could arguably be derived), word form (noun, adjective, genitive, etc.), and perhaps a few others that relate more to the text string than to any specific usage of the name.
+
+As for *TaxonConcept* -- things like !ConceptRelations are not really attributes of the Usage instance per se, but rather are the product of cross-linking among multiple usage instances.
+d226 6
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1179957795" format="1.1" reprev="1.7" version="1.7"}%
+d216 12
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1179888352" format="1.1" reprev="1.6" version="1.6"}%
+d3 2
+a82 1
+
+d89 1
+a89 1
+As stated earlier, "names" do not exist outside the context of usage instances. They are labels invented by humans, to serve the needs of communication amongst humans.  Though the potential scope of name usages is *extremely* broad, there are certain "special case" usage instances of particularly high value.  For example, it is probably true that every nomenclatural "act", as governed by the various Codes of nomenclature, takes place within the context of a publication or a publication-like venue.  This includes both the acts that create new names (registration for bacteriological names, original descriptions for zoological names, protologues for botanical names, etc.), as well as secondary Code-governed nomenclatural acts, such as Emendations, typifications, etc.  Thus, it is conceivable that all nomenclatural acts that need to be managed the various nomenclators could be represented by a series of special-case (i.e., Code-governed) usage instances. The same could also be said of taxonomic Concepts, which are vertially defined in the sense of "Name SEC Publication" (=usage instance).
+d184 1
+a184 1
+Good catch! I've clarified that in the first paragraph under item number 4 above.  The phrase 'pointer to a name' should be 'pointer to a Usage Instance representing the Code-Governed original usage/creation instance of the name.
+d189 27
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1179184663" format="1.1" reprev="1.5" version="1.5"}%
+d102 1
+a102 1
+Name-usage instances have a clear set of attributes.  The first Name usage attribute would be a pointer to a "name".  As discussed above, these pointers can come in the form of GUIDs to special-case name-usage instances (registration usage GUIDs for bacteriological names, basionym- and new combination-usage GUIDs for botanical names, and the basionym-equivalent for zoological names).  
+d114 1
+a114 1
+ValidName (a GUID pointer to the name usage instance of valid name to which the current name is treated as a junior synonym of, within the same publication/documentation instance**)
+d150 38
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1173312407" format="1.1" version="1.4"}%
+d141 9
+a149 1
+-- Main.RichardPyle - 05 Mar 2007@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1173199752" format="1.1" reprev="1.3" version="1.3"}%
+a2 1
+
+d7 1
+a7 1
+Traditioinally, such contexts included publications and other paper-based forms of documentation, but for the purposes of this discussion, a "usage instance" is interpreted much more broadly -- to include any documentable instance of the use of a name as applied to living organisms.
+d13 1
+a13 1
+Taxonomists, and people who develop databases to manage taxonomic information, find it convenient to treat organism names as "objects" (in the data management sense), to which attributes (and GUIDs) can be assigned. This fact is evident from the observation that almost all physical databases pertaining to biodiversity in general, and nomenclator databases in particular, have within them some sort of "name" table where each record in the table is intended to represent "one name". However, because "names", by themselves, do not really exist as objects in any tangible sense, and because there is no broadly established standard for what constitutes a "name object", it is not surprizing that different database systems have defined their own notion of a "name object" differently.
+d15 1
+a15 1
+For example, the uBio NameBank system defines each "name" strictly as a unique text string, inclusive of authorship.  Thus, the following examples all represenent separate and discrete "name objects" from the uBio/NameBank perspective:
+d73 1
+a73 1
+It's important to understand this ambiguity about what constitutes a "name object" is not simply a problem related to the different Codes of nomenclature.  That there is currently an active effort to normalize the way that botany names (e.g., through IPNI and IF) and zoology names (e.g., through ZooBank) are accessed has certainly cast light on the issue in the context of the different Codes of nomenclature; but this is more an artifact of where biodiveristy informatics happens to be right now (e.g., with efforts to develop a "Global Names Architecture").  But resolving the issue for the Codes is only the beginning -- resolving it among all the different name databases (both as nomenclators per se, and as metadata for other biodiversity data domains, like specimen data) still lies ahead.
+d77 1
+a77 1
+The tendency so far (e.g., with the development of the TCS, and for the two TDWG/GBIF GUID workshops) has generally been to "agree to disagree" and move on, without teasing apart the essense of the problem (if it even really exists as a problem, from a biodiversity data architecture perspective). There has also been a tendency to try to choose one approach or the other, and encourage others to conform.  Everyone seems to agree that there is an urgent need to "make a decision and move on", so we can focus on other biodiversity informatics issues.  However, given that names underlie the interlinking of biodiversity data in such a fundamental way, it seems to be an issue that we really ought to "get right"  -- one worthy of as much attention as, say, which GUID technology to use.
+d79 1
+a79 1
+Perhaps, as long as we have a common ontology/vocabulary (which seems within our grasp), there may be no harm in serving botanical names the way that the botanical Code defines them, and serving zoological names the way the zoological Code defines them, and serving bacteriological names the way the bacteriological Code defines them (as, presumably, they aready are being served). Perhaps zoologists will "see the light" and realize that the botanical way of doing things is fundamentally superior. Perhaps botanists will "see the light" and realize that the zoological way of doing things is fundamentally superior.  Both approches have their justifications, and those justfications appear to be equally compelling on both sides.  But even if the "Code Camps" can come to consensus, this is only the start of the problem, as has already been mentioned.  There are still many other ways that a "name" has been defined in different biodiversity databases.
+d82 1
+a82 1
+At the very least, for something as fundamental as a "Name" in biodiversity informatics, the issues of going it differntly vs. going it cohesively ought to be fully explored, identified, and articulated.
+d88 1
+a88 1
+As stated earlier, "names" do not exist outside the context of usage instances. They are labels invented by humans, to serve the needs of communication amongst humans.  Though the potential scope of name usages is *extremely* broad, there are certain "special case" usage instances of particularly high value.  For example, it is probably true that every nomenclatural "act", as governed by the various Codes of nomenclature, takes place within the context of a publication or a publication-like venue.  This includes both the acts that create new names (registration for bacteriological names, original descriptions for zoological names, protologues for botanical names, etc.), as well as secondary Code-goverened nomenclatural acts, such as Emmendations, typifications, etc.  Thus, it is conceivable that all nomenclatural acts that need to be managed the various nomenclators could be represented by a series of special-case (i.e., Code-governed) usage instances. The same could also be said of taxonomic Concepts, which are vertially defined in the sense of "Name SEC Publication" (=usage instance).
+d90 1
+a90 1
+This doesn't avoid the "name" definition problem, but it does point to a possible architectural solution that could be equally palitable to all taxonomic name domains.  In the case of Code-governed names, the basionym (and its bacteriological and zoological counterparts) could be deemed special-case usage instances that represent place-holders for "name objects".  New combinations for botanical names could be treated in the same way -- as special-case usage instances.  For example, the name  " _Anothergenusname speciesname_ (Linnaeus) Jones" is a shorthand way of stating the following:
+d98 1
+a98 1
+The bottom line is that name objects do not current exist as clearly defined objects in biodiversity informatics, and therefore should not be the GUID-bearers of what may prove to be the most fundamental and important unit of biodiversity data exchange.  Instead, a more clearly-defined and unversally-applicable (not to mention "real") unit of information -- the usage instance -- should be the object to which GUIDs are assigned, and certain subsets of these usage instances can then be used as representatives for key nomenclatural entities (such as what we might otherwise think of as a "name object").
+d128 1
+a128 1
+This proposal does not really depart from the state of things as they currently are -- with nomenclators wishing to server GUIDs for "name objects".  Indeed, most such name-objects could be automatically treated as usage-instances, because in most cases there is at least an implied reference to the authorship of a name.  Thus, there's very little in the way of change to how these data ae managed -- just a slightly different way of understanding what, exactly, the GUID is supposed to represent (i.e., rather than as a name object with an attribute of "original description" publication, it would simply refer to the "original description" usage instance of that name).  The data, once flattened, would be essentially identical.
+d130 1
+a130 1
+But the difference is that treating it as a usage instance, rather than as a name object, makes a whole suite of "headaches" disappear, and normalizes a fundamental unit of biodiversity information that has vastly broad applicability (concepts, specimen identificantions, etc., etc.).  And in cases where there is a legitimate need to reference a "name" via a GUID without knowing any specific usage instance, there is nothing stopping a user from establishing a surrogate or "placeholder" value for the attribute of the usage instance that cites the documentation for that name.  Indeed, in such cases, the original source of the anem could cite itself as a name-usage instance for that name.
+d137 1
+a137 1
+[Comment:  I wrote this in essentially one sitting, straight through.  There is no doubt that I have added confusion in places, rather than clarified.  But I hope at least the core notion of the point I am trying to make emerges somehow.  We don't need to argue on and on (as we ahve been doing already for several years) about how to define a "name".  The reason we can't converge on a single definition is that no such definition exists, nor will it likely exist anytime soon.  This is because the "name object" is itself an aritficial construct (at least more artifical than a usage instance, which has at least some "real", physical manifestation).]
+d141 1
+a141 1
+-- Main.RichardPyle - 05 Mar 2007
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1173182353" format="1.1" reprev="1.2" version="1.2"}%
+d3 1
+d10 2
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1173171396" format="1.1" reprev="1.1" version="1.1"}%
+d52 1
+d79 1
+d135 3
+a137 1
+[Comment:  I wrote this in essentially one sitting, straight through.  There is no doubt that I have added confusion in places, rather than clarified.  But I hope at least the core notion of the point I am trying to make emerges somehow.  We don't need to argue on and on (as we ahve been doing already for several years) about how to define a "name".  The reason we can't converge on a single definition is that no such definition exists, nor will it likely exist anytime soon.  This is because the "name object" is itself an aritficial construct (at least more artifical than a usage instance, which has at least some "real", physical manifestation).
+@

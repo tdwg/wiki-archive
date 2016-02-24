@@ -1,0 +1,29 @@
+<?php
+
+// parse_CoL_output
+
+// get the tab-separated outputfile from Catalogue of Life and 
+// parse the fields
+
+$inputfile = fopen("CoL_output.txt", "r");
+
+while (($data = fgets($inputfile)) !== FALSE) {
+
+// the CoL file has got 6 data fields, separated by tabs (\t) 
+// we split them apart with the "explode" function, and then
+// we put them into a list of aptly named variables
+list($name, $rank, $name_status, $language, $accepted_name, $source) 
+     = explode("\t", $data);
+     
+   // we print only the accepted names, at species level  
+	if ($rank="species" and $name_status="accepted name") {
+	
+		echo $name;
+		echo "<br/>";
+		
+	}
+}
+
+fclose($inputfile);
+
+?> 

@@ -1,0 +1,13 @@
+%TMPL:DEF{"oopsmoresetparent"}%
+<form name="main" action="%SCRIPTURLPATH{"edit"}%/%WEB%/%TOPIC%">
+<input type="hidden" name="t" value="%GMTIME{"$epoch"}%" />
+---+++++ %ICON{"arrowup"}% *%MAKETEXT{"Set new topic parent"}%*
+   * %MAKETEXT{"Current parent:"}% %IF{'NONE%SEARCH{ "^%TOPIC%$" scope="topic" regex="on" nosearch="on" nototal="on" format="$parent" }%=NONE' then='(none)' else='%SEARCH{ "^%TOPIC%$" scope="topic" regex="on" nosearch="on" nototal="on" format="$parent" }%' }%
+   * %MAKETEXT{"Step 1: Select topic parent:"}% %BR%
+     <select class="twikiSelect" name="topicparent" size="10">
+     <option value="none">%MAKETEXT{"none (remove topic parent)"}%</option>
+        %TOPICLIST{"<option $marker value='$name'>$name</option>" separator=" " selection="%SEARCH{ "^%TOPIC%$" scope="topic" regex="on" nosearch="on" nototal="on" format="$parent" }%"}%
+     </select>
+   * %MAKETEXT{"Step 2: Continue to <input type='submit' class='twikiButton' value='Edit' /> and save [_1] to activate the new parent" args="<nop>%TOPIC%"}%
+     <input type="hidden" name="t" value="%SERVERTIME{$year$mo$day$hour$min$sec}%" />
+</form>%TMPL:END%

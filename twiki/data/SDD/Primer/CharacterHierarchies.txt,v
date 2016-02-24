@@ -1,0 +1,746 @@
+head	1.18;
+access;
+symbols;
+locks; strict;
+
+
+1.18
+date	2007.07.27.10.54.29;	author HeleneFradin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2006.09.07.01.30.40;	author DonovanSharp;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2006.08.30.01.45.24;	author DonovanSharp;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2006.07.11.05.55.53;	author DonovanSharp;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2006.07.11.03.39.34;	author KevinThiele;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2006.07.11.02.28.02;	author DonovanSharp;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2006.07.11.01.55.07;	author DavidDickson;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.07.10.07.35.31;	author DonovanSharp;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.07.07.01.02.47;	author DonovanSharp;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.07.06.02.30.12;	author DonovanSharp;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.07.05.02.12.15;	author DonovanSharp;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.06.21.01.27.30;	author DonovanSharp;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.06.19.04.13.32;	author DonovanSharp;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.06.15.05.11.54;	author DonovanSharp;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.06.09.05.03.14;	author DonovanSharp;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.06.07.04.20.50;	author DonovanSharp;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.06.02.07.35.21;	author DonovanSharp;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.06.01.06.07.51;	author DonovanSharp;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.18
+log
+@none
+@
+text
+@%META:TOPICINFO{author="HeleneFradin" date="1185533669" format="1.1" version="1.18"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++3.8 Character hierarchies
+
+The &lt;characters&gt; element in SDD is used to define a flat, unordered list of characters and states. However, some consuming applications may require characters to be ordered and/or to be arranged into hierarchies to, for example, enable easier navigation of characters in interactive keys, provide grouping mechanisms in listings and reports, and provide headers in natural language descriptions. 
+
+An example of a simple character tree is given below.
+
+%ATTACHURL%/character_trees_example.gif
+
+In this example there are eight characters (Petal number, Petal shape, Leaf length etc) arranged into four (nested) groups (Flowers, Petals, Sepals and Leaves).
+
+In SDD, a character tree is created using three elements:
+   * Characters are defined in &lt;Characters&gt;
+   * Grouping concepts (such as the grouping nodes above) are defined in [[DescriptiveConcepts][&lt;DescriptiveConcepts&gt;]]
+   * One or more character trees are defined, using the characters and concepts defined above, in &lt;CharacterTrees&gt;
+
+%ATTACHURL%/charactertrees.gif
+
+---++++Example 3.8.1 - A simple character hierarchy
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+    <Characters>
+      <QuantitativeCharacter id="c1">
+        <Representation>
+          <Label>Petal Number</Label>
+        </Representation>
+      </QuantitativeCharacter>
+      <CategoricalCharacter id="c2">
+        <Representation>
+          <Label>Petal Shape</Label>
+        </Representation>
+        <States>
+          <StateDefinition id="s1">
+            <Representation>
+              <Label>ovate</Label>
+            </Representation>
+          </StateDefinition>
+          <StateDefinition id="s2">
+            <Representation>
+              <Label>linear</Label>
+            </Representation>
+          </StateDefinition>
+        </States>
+            ... etc (for more detail see the topic <Characters>)            
+    </Characters>
+
+     <DescriptiveConcepts>
+      <DescriptiveConcept id="dc1">
+        <Representation>
+          <Label>Flowers</Label>
+        </Representation>
+      </DescriptiveConcept>
+      <DescriptiveConcept id="dc2">
+        <Representation>
+          <Label>Petals</Label>
+        </Representation>
+            ... etc (for more detail see the topic <DescriptiveConcepts>)
+    </DescriptiveConcepts>
+
+       <CharacterTrees>
+      <CharacterTree id="ct1">
+        <Representation>
+          <Label>Default Feature Tree</Label>
+        </Representation>
+        <DesignedFor>
+          <Role>InteractiveIdentification</Role>
+        </DesignedFor>
+        <Nodes>
+          <Node id="cn1">
+            <DescriptiveConcept ref="dc1"/>
+          </Node>
+          <Node id="cn2">
+            <Parent ref="cn1"/>
+            <DescriptiveConcept ref="dc2"/>
+          </Node>
+          <CharNode>
+            <Parent ref="cn2"/>
+            <Character ref="c1"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn2"/>
+            <Character ref="c2"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn2"/>
+            <Character ref="c3"/>
+          </CharNode>
+          <Node id="cn3">
+            <Parent ref="cn1"/>
+            <DescriptiveConcept ref="dc3"/>
+          </Node>
+          <CharNode>
+            <Parent ref="cn3"/>
+            <Character ref="c4"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn3"/>
+            <Character ref="c5"/>
+          </CharNode>
+          <Node id="cn4">
+            <DescriptiveConcept ref="dc4"/>
+          </Node>
+          <CharNode>
+            <Parent ref="cn4"/>
+            <Character ref="c6"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn4"/>
+            <Character ref="c7"/>
+          </CharNode>
+          <CharNode>
+            <Parent ref="cn4"/>
+            <Character ref="c8"/>
+          </CharNode>
+        </Nodes>
+      </CharacterTree>
+    </CharacterTrees>
+</verbatim>
+</td>
+</tr>
+</table>
+
+The first node in this tree, node "cn1" references the descriptive concept "dc1" (Flowers). The second node, "cn2",  references the descriptive concept "dc2" (Petals). The third node, "cn3", references the first true character in the hierarchy, "c1" (Petal number). Each node references it's parent (the node supporting the character "Petal number" references the descriptive concept "Petals" which is its immediate parent) and the character or concept which is tied to it. If a descriptive concept is tied to a node this is declared within the &lt;Node&gt; element, if a character is tied to a node this is declared in a &lt;CharNode&gt; element, which references its supporting node.
+
+
+The &lt;Representation&gt; element provides a label for the character tree. This may be useful if the instance document includes multiple trees for different purposes, or is intended for publication in multiple languages (see the topic Language support in SDD).
+
+&lt;DesignedFor&gt; specifies this character tree's purpose. Important roles are interactive identification, natural language reporting, or filtering.
+
+The &lt;Nodes&gt; element is used to define the structure of the character tree. It contains an unordered list of &lt;Node&gt; and &lt;Char&gt; elements, each of which specifies a parent &lt;Node&gt;. The list can be used by a consuming application to construct a character tree.
+
+The &lt;CharacterTrees&gt; element is also used to declare [[SddDependencies][dependencies]]
+
+-- Main.DonovanSharp - 01 Jun 2006
+
+%META:FILEATTACHMENT{name="character_trees_example.gif" attr="" autoattached="1" comment="" date="1152596762" path="character_trees_example.gif" size="3298" user="Main.DonovanSharp" version="5"}%
+%META:FILEATTACHMENT{name="charactertrees.gif" attr="" autoattached="1" comment="" date="1157592036" path="charactertrees.gif" size="8781" user="Main.DonovanSharp" version="6"}%
+@
+
+
+1.17
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1157592640" format="1.1" reprev="1.17" version="1.17"}%
+d5 1
+a5 1
+---+++3.8 Character heirarchies
+@
+
+
+1.16
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1156902324" format="1.1" version="1.16"}%
+d68 1
+a68 1
+    <CharacterTrees>
+d71 1
+a71 1
+          <Label>Default Character Tree</Label>
+d84 1
+a84 1
+          <Node id="cn3">
+d86 3
+a88 5
+          </Node>
+          <Char ref="c1">
+            <Parent ref="cn3"/>
+          </Char>
+          <Node id="cn4">
+d90 3
+a92 5
+          </Node>
+          <Char ref="c2">
+            <Parent ref="cn4"/>
+          </Char>
+          <Node id="cn5">
+d94 3
+a96 5
+          </Node>
+          <Char ref="c3">
+            <Parent ref="cn5"/>
+          </Char>
+          <Node id="cn6">
+d100 9
+a108 13
+          <Node id="cn7">
+            <Parent ref="cn6"/>
+          </Node>
+          <Char ref="c4">
+            <Parent ref="cn7"/>
+          </Char>
+          <Node id="cn8">
+            <Parent ref="cn6"/>
+          </Node>
+          <Char ref="c5">
+            <Parent ref="cn8"/>
+          </Char>
+          <Node id="cn9">
+d111 12
+a122 18
+          <Node id="cn10">
+            <Parent ref="cn9"/>
+          </Node>
+          <Char ref="c6">
+            <Parent ref="cn10"/>
+          </Char>
+          <Node id="cn11">
+            <Parent ref="cn9"/>
+          </Node>
+          <Char ref="c7">
+            <Parent ref="cn11"/>
+          </Char>
+          <Node id="cn12">
+            <Parent ref="cn9"/>
+          </Node>
+          <Char ref="c8">
+            <Parent ref="cn12"/>
+          </Char>
+d131 1
+a131 1
+The first node in this tree, node "cn1" references the descriptive concept "dc1" (Flowers). The second node, "cn2",  references the descriptive concept "dc2" (Petals). The third node, "cn3", references the first true character in the hierarchy, "c1" (Petal number). Each node references it's parent (the node supporting the character "Petal number" references the descriptive concept "Petals" which is its immediate parent) and the character or concept which is tied to it. If a descriptive concept is tied to a node this is declared within the &lt;Node&gt; element, if a character is tied to a node this is declared in a &lt;Char&gt; element, which references its supporting node.
+d145 1
+a145 2
+%META:FILEATTACHMENT{name="charactertrees.gif" attr="" autoattached="1" comment="" date="1152588550" path="charactertrees.gif" size="8154" user="Main.KevinThiele" version="5"}%
+%META:FILEATTACHMENT{name="charactertreeelements.gif" attr="" autoattached="1" comment="" date="1152234071" path="charactertreeelements.gif" size="19922" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.15
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152597353" format="1.1" reprev="1.15" version="1.15"}%
+d5 1
+a5 1
+---+++3.9 Character heirarchies
+d22 1
+a22 1
+---++++Example 3.9.1 - A simple character hierarchy
+@
+
+
+1.14
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1152589174" format="1.1" reprev="1.14" version="1.14"}%
+d147 3
+d160 1
+a160 1
+%META:FILEATTACHMENT{name="character_trees_example.gif" attr="" autoattached="1" comment="" date="1152587571" path="character_trees_example.gif" size="2558" user="Main.KevinThiele" version="4"}%
+@
+
+
+1.13
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152584882" format="1.1" reprev="1.13" version="1.13"}%
+d7 1
+a7 1
+A single flat list of characters can be confusing and difficult for users to manage. Character hierarchies enable characters to be ordered into logical groups, making navigation of character lists more intuitive. Character hierarchies define operational hierarchies for listing characters in a character definition report, in interactive keys, or in natural language reports. Character trees define both a hierarchy and an order for the unstructured and unordered list of characters. An example of a simple character tree is given below.
+d9 2
+d13 1
+a13 1
+In the example above, "Flowers" and "Leaves" are not characters as such, but placeholders which exist solely to define the hierarchy. Similarly with "Petals" and "Sepals" which simply define the second level in the tree and are not themselves characters. These placeholders are defined using the SDD element [[DescriptiveConcepts][&lt;DescriptiveConcepts&gt;]].
+d15 4
+a18 1
+Character heirarchies are represented using the element &lt;CharacterTrees&gt;. Character trees are presented as an ordered list. Alternative wording of elements in the list is available to facilitate natural language descriptions.
+a19 2
+A character hierarchy requires references to the [[SddCharacters][Characters]] element. A simple SDD code fragment for the above character hierarchy has the basic structure shown below and in Example 3.9.1.
+a21 1
+a29 14
+     <DescriptiveConcepts>
+      <DescriptiveConcept id="dc1">
+        <Representation>
+          <Label>Flowers</Label>
+        </Representation>
+      </DescriptiveConcept>
+      <DescriptiveConcept id="dc2">
+        <Representation>
+          <Label>Petals</Label>
+        </Representation>
+
+            ... etc (for more detail see the topic <DescriptiveConcepts>)
+
+    </DescriptiveConcepts>
+d33 1
+a33 1
+          <Label>Number</Label>
+d38 1
+a38 1
+          <Label>Shape</Label>
+a51 1
+d53 1
+d55 13
+a67 1
+    </Characters>
+a142 1
+a144 1
+d147 1
+a147 1
+The &lt;Representation&gt; element provides a label for the description. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic Language support in SDD.
+a148 2
+&lt;Scope&gt; describes the taxon or set of taxa to which the description applies. For more information see the topic [[SddScope][&lt;Scope&gt;]].
+d151 1
+a151 1
+&lt;Nodes&gt; define the structure of the character tree with an ordered list of characters and concepts.
+a154 3
+
+
+d157 2
+a158 2
+%META:FILEATTACHMENT{name="character_trees_example.gif" attr="" autoattached="1" comment="" date="1152514307" path="character_trees_example.gif" size="3898" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="charactertrees.gif" attr="" autoattached="1" comment="" date="1152583239" path="charactertrees.gif" size="10201" user="Main.DonovanSharp" version="3"}%
+@
+
+
+1.12
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DavidDickson" date="1152582907" format="1.1" version="1.12"}%
+d11 2
+d15 1
+a15 1
+A character hierarchy requires references to the [[SddCharacters][Characters]] element. A simple SDD code fragment for character hierarchy data has the basic structure shown below and in Example 3.9.1.
+d28 40
+d71 1
+a71 1
+          <Label>Default Feature Tree</Label>
+d82 1
+d84 1
+a84 1
+          <Char ref="c1">
+a85 3
+          </Char>
+          <Node id="cn3">
+            <Parent ref="cn1"/>
+d87 1
+a87 1
+          <Char ref="c2">
+d91 1
+a91 1
+            <DescriptiveConcept ref="dc2"/>
+d93 3
+d97 1
+a97 1
+            <Parent ref="cn4"/>
+d103 2
+a104 1
+            <Parent ref="cn4"/>
+d106 3
+d110 3
+d114 3
+d118 21
+d149 1
+a149 1
+The <Representation> element provides a label for the description. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic Language support in SDD.
+d151 1
+a151 1
+<Scope> describes the taxon or set of taxa to which the description applies. For more information see the topic [[SddScope][&lt;Scope&gt;]].
+d155 1
+a155 1
+---++++3.9.4 [[SddNodes][&lt;Nodes&gt;]]
+a156 4
+An ordered list of nodes with optional concepts (inner or terminal) plus character references (terminal only). The structure of the Character tree is defined here.
+
+	
+d165 1
+a165 1
+%META:FILEATTACHMENT{name="charactertrees.gif" attr="" autoattached="1" comment="" date="1152516229" path="charactertrees.gif" size="9585" user="Main.DonovanSharp" version="2"}%
+@
+
+
+1.11
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152516931" format="1.1" reprev="1.11" version="1.11"}%
+a93 1
+%META:FILEATTACHMENT{name="charactertrees.jpg" attr="" autoattached="1" comment="" date="1152516117" path="charactertrees.jpg" size="8689" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.10
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152234167" format="1.1" reprev="1.10" version="1.10"}%
+d7 4
+d13 2
+a14 2
+These define operational hierarchies for listing characters in a character definition report, in interactive keys, or in natural language reports. The nodes may be labeled by reference to descriptive concepts. Character trees define both a hierarchy and an order for the unstructured and unordered list of characters.
+d106 1
+d75 1
+d77 1
+a77 1
+Within the &lt;CharacterTrees&gt; element are several elements specific to Character trees.
+d79 1
+a79 1
+%ATTACHURL%/charactertreeelements.gif
+a80 13
+
+---++++3.9.1 [[SddScope][&lt;Scope&gt;]]
+
+Scope of character tree, currently only taxonomic scope is supported. Defines the group of taxa for  which this CharacterHierarchy is relevant. Taxon names and citation for the source of the information.
+
+---++++3.9.2 &lt;DesignedFor&gt;
+
+What is this Character tree's purpose. Important roles are interactive identification, natural language reporting, or filtering.
+
+---++++3.9.3 &lt;ShouldContainAllCharacters&gt;
+
+True if the intention of the designer of a concept tree is that all characters should be included in the tree. A terminology editing application may issues warnings about missing characters or directly offer inserting newly created characters in all such trees.
+d94 1
+d96 1
+a96 1
+%META:FILEATTACHMENT{name="charactertrees.gif" attr="" autoattached="1" comment="" date="1152234054" path="charactertrees.gif" size="8909" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.9
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152153012" format="1.1" reprev="1.9" version="1.9"}%
+d11 1
+a11 1
+%ATTACHURL%/charactertrees.jpg
+a12 1
+Within the &lt;CharacterTrees&gt; element are several elements specific to Character trees.
+a13 19
+%ATTACHURL%/charactertreeelements.jpg
+
+
+---++++3.9.1 [[SddScope][&lt;Scope&gt;]]
+
+Scope of character tree, currently only taxonomic scope is supported. Defines the group of taxa for  which this CharacterHierarchy is relevant. Taxon names and citation for the source of the information.
+
+---++++3.9.2 &lt;DesignedFor&gt;
+
+What is this Character tree's purpose. Important roles are interactive identification, natural language reporting, or filtering.
+
+---++++3.9.3 &lt;ShouldContainAllCharacters&gt;
+
+True if the intention of the designer of a concept tree is that all characters should be included in the tree. A terminology editing application may issues warnings about missing characters or directly offer inserting newly created characters in all such trees.
+
+---++++3.9.4 [[SddNodes][&lt;Nodes&gt;]]
+
+An ordered list of nodes with optional concepts (inner or terminal) plus character references (terminal only). The structure of the Character tree is defined here.
+d71 22
+d74 1
+a74 1
+%ATTACHURL%/charactertreeelements.jpg
+d102 2
+a103 2
+%META:FILEATTACHMENT{name="charactertrees.jpg" attr="" autoattached="1" comment="" date="1150348314" path="charactertrees.jpg" size="10987" user="Main.DonovanSharp" version="1"}%
+%META:FILEATTACHMENT{name="charactertreeelements.jpg" attr="" autoattached="1" comment="" date="1150852256" path="charactertreeelements.jpg" size="16467" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.8
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152065535" format="1.1" version="1.8"}%
+d36 5
+a40 1
+    
+d86 4
+@
+
+
+1.7
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150853250" format="1.1" reprev="1.7" version="1.7"}%
+d7 1
+a7 1
+Character heirarchies are represented using the element &lt;CharacterTrees&gt;. CharacterTrees are presented as an ordered list. Alternative wording of elements in the list is available to facilitate natural language descriptions.
+d13 1
+a13 1
+Within the CharacterTrees element are several elements specific to CharacterTrees.
+d18 1
+a18 1
+---++++3.9.1 [[SddScope][Scope]]
+d22 1
+a22 1
+---++++3.9.2 DesignedFor
+d24 1
+a24 1
+What is this CharacterTree's purpose. Important roles are InteractiveIdentification, NaturalLanguageReporting, or Filtering.
+d26 1
+a26 1
+---++++3.9.3 ShouldContainAllCharacters
+d30 1
+a30 1
+---++++3.9.4 [[SddNodes][Nodes]]
+d32 1
+a32 1
+An ordered list of nodes with optional concepts (inner or terminal) plus character references (terminal only). The structure of the CharacterTree is defined here.
+d85 1
+a85 1
+The CharacterTrees element is also used to declare [[SddDependencies][dependencies]]
+@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150690412" format="1.1" version="1.6"}%
+d13 21
+d92 2
+a93 1
+%META:FILEATTACHMENT{name="charactertrees.jpg" attachment="charactertrees.jpg" attr="" comment="" date="1150348313" path="charactertrees.jpg" size="10987" stream="charactertrees.jpg" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1150348314" format="1.1" reprev="1.5" version="1.5"}%
+d20 1
+a20 1
+          <Label xml:lang="en-us">Default Feature Tree</Label>
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149829394" format="1.1" reprev="1.4" version="1.4"}%
+d71 1
+a71 1
+%META:FILEATTACHMENT{name="charactertrees.jpg" attachment="charactertrees.jpg" attr="" comment="" date="1149654049" path="charactertrees.jpg" size="11124" stream="charactertrees.jpg" user="Main.DonovanSharp" version="1"}%
+@
+
+
+1.3
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149654050" format="1.1" reprev="1.3" version="1.3"}%
+d7 3
+a9 1
+Character heirarchies are represented using the element &lt;CharacterTrees&gt;. CharcterTrees are presented as an ordered list. Alternative wording of elements in the list is available to facilitate natural language descriptions.
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149233721" format="1.1" reprev="1.2" version="1.2"}%
+d7 1
+a7 1
+CharcterTrees are presented as an ordered list. Alternative wording of elements in the list is available to facilitate natural language descriptions.
+d9 2
+d68 2
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149142071" format="1.1" version="1.1"}%
+d3 1
+d5 1
+a5 1
+SDD Part 0: Introduction and Primer to the SDD Standard 
+d7 1
+a7 2
+3.9 Character heirarchies
+Charcter trees are presented as an ordered list. Alternative wording of elements in the list is available to facilitate natural language descriptions.
+d9 1
+a9 1
+Example 3.9.1 - A simple character hierarchy
+d12 1
+a12 1
+d55 1
+a57 1
+d60 1
+d60 1
+a60 2
+The CharacterTrees element is also used to declare dependencies
+The <CharacterTrees> element is also used to declare dependencies
+d66 1
+@
+

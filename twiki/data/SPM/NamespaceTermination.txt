@@ -1,0 +1,45 @@
+%META:TOPICINFO{author="BobMorris" date="1221933004" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="PlaziEOLProject"}%
+Copied verbatim from the [[http://www.adobe.com/devnet/xmp/pdfs/xmp_specification.pdf Adobe XMP Specification]], pp. 29-30: :
+
+<table>
+<tr>
+<td width="30"/><td width="300">
+The formal definition of RDF transforms the XML representation into triples in a manner 
+that catenates XML namespace URI strings with the local part of XML element and attribute 
+names. This can lead to ambiguities if the URI does not end in separator such as '/' or '#'. This 
+is not a problem for Adobe software, which does not utilize the triple representation. But it 
+could be a problem in other implementations of XMP, or if the RDF form of XMP were fed to 
+a traditional RDF processor.<br/>
+Here is an artificial example of RDF that produces ambiguities in the triples:
+</td>
+</tr>
+<tr>
+<td width="30"/><td>
+<verbatim>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+       <rdf:Description rdf:about="bogus:example"
+            xmlns:ns1="bogus:namespace" xmlns:ns2="bogus:name">
+              <ns1:ship>value of ns1:ship</ns1:ship>
+              <ns2:spaceship>value of ns2:spaceship</ns2:spaceship>
+       </rdf:Description>
+</rdf:RDF>
+</verbatim>
+</td></tr>
+<tr>
+<td width="30"/><td width="300">
+Here are the ambiguous RDF triples, notice that the two predicates are the same:
+</td></tr>
+<tr>
+<td width="30"/><td>
+Subject: bogus:example<br/>
+  Predicate: bogus:namespaceship<br/>
+  Object: "value of ns1:ship"<br/><br/>
+  Subject: bogus:example<br/>
+  Predicate: bogus:namespaceship<br/>
+  Object: "value of ns2:spaceship"<br/>
+</td></tr>
+</table>
+
+
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="---++Linking Topics" format="   * $topic" nosearch="on" nototal="on" }%

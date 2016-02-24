@@ -1,0 +1,100 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@Currently concepts can be referenced by filters as they are also considered a "simpleExpression" through substitutionGroup. To make it work for properties, it will be necessary to:
+
+   * Remove the global element <concept> and the conceptType definition.
+   * Make the global element <property> a substitutionGroup of simpleExpression, as it can be seen at ProposedChangesToOutputModelMapping.
+   * unaryCOPType, binaryCOPType and multiCOPType will need to reference <property> instead of <concept>.
+
+However, sometimes it could be interesting for clients to specify additional relationship conditions. One way to achieve this would be to define a new relationship element/type and a new class element/type (for classes participating in a relationship). The new relationship element would be a substitutionGroup of booleanOP so it could be used directly by filters, unaryLOPs and multiLOPs.
+
+One condition would be that each class specified in a filter relationship would need to be: 
+
+ 1 present in the output model, or
+ 2. directly or indirectly related to a class that is present in the output model
+
+Properties would also need to reference classes in the same conditions.
+
+The new element definitions could be:
+
+<verbatim>
+<xsd:element name="classInRelationship" type="classInRelationshipType"/>
+
+<xsd:complexType name="classInRelationshipType">
+  <xsd:complexContent>
+    <xsd:extension base="classType">
+      <xsd:attribute name="role" type="xsd:String" use="required"/>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:element name="relationship" type="relationshipType" substitutionGroup="booleanOP"/>
+
+<xsd:complexType name="relationshipType">
+  <xsd:complexContent>
+    <xsd:extension base="qualifiedConceptReferenceType">
+       <xsd:sequence>
+          <xsd:element ref="classInRelationship" minOccurs="1"/>
+          <xsd:element ref="classInRelationship" minOccurs="1"/>
+       </xsd:sequence>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+</verbatim>
+
+Note: Since supported booleanOperators are part of the capabilities response, a new element <relationship> would need to be included there (with <logical> and <comparative>).
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d42 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+However, sometimes it could be interesting for clients to specify additional relationship conditions.
+d9 33
+a41 1
+To be continued...
+@

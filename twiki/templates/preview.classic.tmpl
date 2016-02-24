@@ -1,0 +1,47 @@
+%TMPL:INCLUDE{"twiki.classic"}%
+%TMPL:DEF{"footernote"}%<div class="TWikiFooterNote">
+   &nbsp; &nbsp;
+  </td><td valign="top">
+%IF{ "context RevCommentPluginEnabled" then="&nbsp; &nbsp; <label for='comment'>Summary of changes: </label> <a target='RevComment' onclick='return launchWindow(\"%TWIKIWEB%\",\"RevComment\")' href='#%MAKETEXT{Opens page in new window}%' >%MAKETEXT{help}%</a> <input type='hidden' name='t' value='%URLPARAM{t}%' /><input class='twikiEditComment' type='text' name='comment' value='%URLPARAM{comment}%'><br />" }%
+   &nbsp; &nbsp;
+   <input type="checkbox" name="dontnotify" %DONTNOTIFYCHECKBOX% /> Minor changes, don't notify <br />
+   &nbsp; &nbsp;
+   <input type="checkbox" name="forcenewrevision" %FORCENEWREVISIONCHECKBOX% /> Force new revision
+   <font size="-1">(<a target="DontNotify" onclick="return launchWindow('%TWIKIWEB%','DontNotify')" href="#%MAKETEXT{"Opens page in new window"}%" rel='nofollow'>help</a>)</font>
+   </div>%TMPL:END%
+
+%TMPL:DEF{"bodystart"}%<body bgcolor="#ffffff" background="%PREVIEWBGIMAGE%">
+#PageTop
+%TMPL:END%
+
+%TMPL:DEF{"titleaction"}%(preview) %TMPL:END%
+%TMPL:DEF{"headerhelp"}% <font size="-2">
+  <ul>
+  <li> To <b>save</b> changes: Press the [Save Changes] button.</li>
+  <li> To make <b>more changes</b>: Go back in your browser.</li>
+  <li> To <b>cancel</b>: Go back twice.</li>
+  </ul>
+  </font> %TMPL:END%
+%TMPL:DEF{"webaction"}%  <b><font color="#FF0000">Note:</font></b>
+  This is a preview. <b><font color="#FF0000">Do not forget</font></b> to save your changes. %TMPL:END%
+
+%TMPL:DEF{"topicaction"}% <input type="submit" class="twikiSubmit" value=" Save Changes " /> %FORMFIELDS% %TMPL:END%
+
+%TMPL:DEF{"content"}%<br />
+%TEXT%
+%META{"form"}%
+%META{"attachments"}%
+<form name="main" action="%SCRIPTURLPATH{"save"}%/%WEB%/%TOPIC%" method="post">
+<input type="hidden" name="originalrev" value="%URLPARAM{"originalrev"}%" />
+<input type="hidden" name="redirectto" value="%REDIRECTTO%" />
+<input type="hidden" name="text" value="%HIDDENTEXT%"/>
+<input type="hidden" name="cmd" value="%CMD%" />
+<input type="hidden" name="formtemplate" value="%FORMTEMPLATE%" />
+<input type="hidden" name="topicparent" value="%TOPICPARENT%" />
+%TMPL:P{"topicinfo"}%</form>%TMPL:END%
+
+%TMPL:P{"htmldoctype"}%
+%TMPL:P{"head"}%
+%TMPL:P{"bodystart"}%
+%TMPL:P{"main"}%
+%TMPL:P{"bodyend"}%

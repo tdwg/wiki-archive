@@ -1,0 +1,67 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2006.02.22.14.25.32;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1140618332" format="1.1" version="1.1"}%
+%META:TOPICPARENT{name="RequirementsElicitation"}%
+---+ <nop>%TOPIC%
+
+
+
+It must be possible to collect data from multiple data sources and combine it in some meaningful way.
+
+Steve Perry gave a good example:-
+
+Portions of the TCS data model describe specimens, publications, and 
+other things that are not names or concepts.  In a perfect world, TCS 
+would not define it's own data model for specimens but would instead use 
+an existing model designed by the curators of collections (perhaps with 
+Darwin Core as a starting point).  The same is true for publications.  
+Instances of TCS should then use GUIDs to point to instances of Specimen 
+and Publication. 
+
+Now, imagine a hypothetical system that provides for visualization of 
+TCS, a Taxon Concept Browser that allows researchers to search for and 
+view TCS instances in order to select a set of concepts to use in their 
+own work.  At some point, this system will have to have an in-memory 
+graph of data objects of different types including TCS, Specimen, and 
+Publication.  This graph could be constructed in a variety of ways, but 
+the most likely method will start by parsing a TCS document that 
+contains several taxon concept instances.  Each instance will be 
+examined for references to other objects named by LSID.  Each of these 
+LSIDs will be resolved (with care so as to not create cycles), resulting 
+in a chunk of serialized data which will be turned into an in-memory 
+instance and inserted into the graph.  This is at heart the merge case I 
+was talking about above.
+
+---++ Subcases
+There are three subcase of the merge data case:
+
+   1. Merge data about the same kinds of object from different data sources but in exactly the same format e.g. specimen data in the same version of the sames schema.
+   1. Merge data about the same kinds of object from different data sources but in different formats e.g. specimen data but in different versions of the same schema (ABCD & ABCD2) or different schemas completely (ABCD, ABCD2 & DiGIR).
+   1. Merge data about different kinds of objects from different data sources. e.g. TaxonConcept data with literature data, specimen data and descriptive data.
+
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@

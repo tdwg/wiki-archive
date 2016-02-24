@@ -1,0 +1,24 @@
+A short list of changes suggested during the documentation and implementation process. This is just a temporary page. As soon as a change is accpeted, its description should move from this page to the changelog.
+
+   * _Policy for concept identifiers_
+   * Concept identifiers are just strings for TAPIR, so the protocol does not enforce any pattern. However it is recommended to use globally, resolvable and permanent unique identifiers for them. It is also recommended to avoid using characters that are not allowed in the "query" term of URLS, since concepts can be referenced there by many TAPIR parameters. When defining concepts based on xml schemas we recommend to simply concatenate the namespace of the schema with the local xpath to the instance element. For example ImplementationAndDocumentationChangesDataSets/DataSet/Units/Unit/InstitutionID in abcd becomes http://www.tdwg.org/schemas/abcd/2.06/DataSets/DataSet/Units/Unit/InstitutionID
+   * _Make dct:modified optional in metadata responses_
+   * Motivation: not all providers will have that information.
+   * _Include optional dct:created in metadata responses_
+   * Motivation: there's no way to tell now when a provider has been created.
+   * _Include optional attribute "wsdl" to element <template> in capabilities responses_
+   * Motivation: This can provide an interesting bridge between TAPIR and other tools that support wsdl.
+   * _Include new response <logged> for logOnly requests_
+   * Motivation: Current approach is confusing and not symmetric across operations. It can take some time for users to realize that an empty <search> response is actually caused by the logOnly attribute being set to true. Entire metadata responses consume unecessary bandwidth (even if they can be sent out quickly due to caching). On the other hand, <logged> is very clear about what happened on the server side, all operations could use it, and it would keep the response small.
+   * _Allow inline output model definition in templates_
+   * Motivation: Now clients can only point to existing output models (as an URL) in requests. This completely eliminates one of the current functionalities provided by DiGIR networks which is to define record structures on the fly. This change would allow two ways of defining an output model (as it happens with templates): URI or inline definition. Only providers that can parse "anyOutputModels" would be able to handle this new kind of definition.
+   * _Drop "view" operation and rearrange definitions of templates and output models_
+   * Motivation: the current name can bring confusion considering what was initially considered a "view" in the integration document, and the same functionality can be achieved with searches if new options are added to capabilities. The position of templates and output models inside capabilities could also lead to confusion.
+   * Related changes (see also CapabilitiesReview for details and an example):
+      * _Include a <templates> section under inventory and search capabilities._
+      * _Include option <anyConcepts> under inventory to be advertised when the provider accepts inventories on any available concept (this will require that the provider understands filters)._
+      * _Have a single <outputModels> optional element inside search, with optional subelements <knownOutputModels> and <anyOutputModels>. The first indicates one or more output models advertised by the provider (this will require that the provider understands filters, partial selection and order by). The second one indicates that the provider accepts searches involving any output model, as soon as it references mapped concepts._
+      * _Include new section called <requests>, with sub sections <encoding> (with options kvp and xml), <globalParameters> (with options logOnly, and xslt), and also the filter section._
+   * _New definitions for the request encodings_
+   * _KVP requests:_ Available through GET or POST with the regular KVP parameters for each operation.
+   * _XML requests:_ Available through POST without specifiying any parameters, when the HTTP Content-Type should be "text/xml" and the XML should go directly in the content. Also available through GET with a single parameter called "request" whose value should be either a URL pointing to an XML or the URL encoded XML itself.

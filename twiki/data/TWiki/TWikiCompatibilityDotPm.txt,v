@@ -1,0 +1,140 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.11.57;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Compatibility=
+
+Support for compatibility with old TWiki versions. Packaged
+separately because 99.999999% of the time this won't be needed.
+
+
+%TOC%
+
+---++ StaticMethod *upgradeCategoryTable* <tt>($session,$web,$topic,$meta,$text) -> $text</tt>
+
+Upgrade old style category table
+
+May throw TWiki::OopsException
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@a5 83
+=end
+
+sub _upgradeCategoryItem {
+    my ( $catitems, $ctext ) = @@_;
+    my $catname = '';
+    my $scatname = '';
+    my $catmodifier = '';
+    my $catvalue = '';
+    my @@cmd = split( /\|/, $catitems );
+    my $src = '';
+    my $len = @@cmd;
+    if( $len < '2' ) {
+        # FIXME
+        return ( $catname, $catmodifier, $catvalue )
+    }
+    my $svalue = '';
+
+    my $i;
+    my $itemsPerLine;
+
+    # check for CategoryName=CategoryValue parameter
+    my $paramCmd = '';
+    my $cvalue = ''; # was$query->param( $cmd[1] );
+    if( $cvalue ) {
+        $src = "<!---->$cvalue<!---->";
+    } elsif( $ctext ) {
+        foreach( split( /\r?\n/, $ctext ) ) {
+            if( /$cmd[1]/ ) {
+                $src = $_;
+                last;
+            }
+        }
+    }
+
+    if( $cmd[0] eq 'select' || $cmd[0] eq 'radio') {
+        $catname = $cmd[1];
+        $scatname = $catname;
+        #$scatname =~ s/[^a-zA-Z0-9]//g;
+        my $size = $cmd[2];
+        for( $i = 3; $i < $len; $i++ ) {
+            my $value = $cmd[$i];
+            $svalue = $value;
+            if( $src =~ /$value/ ) {
+               $catvalue = $svalue;
+            }
+        }
+
+    } elsif( $cmd[0] eq 'checkbox' ) {
+        $catname = $cmd[1];
+        $scatname = $catname;
+        #$scatname =~ s/[^a-zA-Z0-9]//g;
+        if( $cmd[2] eq 'true' || $cmd[2] eq '1' ) {
+            $i = $len - 4;
+            $catmodifier = 1;
+        }
+        $itemsPerLine = $cmd[3];
+        for( $i = 4; $i < $len; $i++ ) {
+            my $value = $cmd[$i];
+            $svalue = $value;
+            # I18N: FIXME - need to look at this, but since it's upgrading
+            # old forms that probably didn't use I18N, it's not a high
+            # priority.
+            if( $src =~ /$value[^a-zA-Z0-9\.]/ ) {
+                $catvalue .= ", " if( $catvalue );
+                $catvalue .= $svalue;
+            }
+        }
+
+    } elsif( $cmd[0] eq 'text' ) {
+        $catname = $cmd[1];
+        $scatname = $catname;
+        #$scatname =~ s/[^a-zA-Z0-9]//g;
+        $src =~ /<!---->(.*)<!---->/;
+        if( $1 ) {
+            $src = $1;
+        } else {
+            $src = '';
+        }
+        $catvalue = $src;
+    }
+
+    return ( $catname, $catmodifier, $catvalue )
+}
+d7 1
+a8 2
+
+%TOC%
+@

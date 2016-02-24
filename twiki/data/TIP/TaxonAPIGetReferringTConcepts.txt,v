@@ -1,0 +1,138 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@o@;
+
+
+1.3
+date	2006.01.25.09.32.32;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.01.20.09.42.50;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.11.24.17.30.10;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1138181552" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="TaxonAPI"}%
+---+ <nop>GetReferringTConcepts Method of TaxonAPI
+
+---++ Description
+The TaxonConcepts that refer, through a TaxonRelationship, to the ids of the TaxonConcepts passed in. This method enables traversal of the TaxonConcept graph. There are currently 22 possible relationship types listed in the TaxonConceptSchema.
+
+There is an optional parameter to restrict the call to a subset of relationship types. This would make it possible to retrieve only "is parent taxon of" and "is child taxon of" relationships for example if the client were building a taxonomic tree structure.
+
+There are currently 22 relationship type in TCS:
+
+   * is congruent to
+   * is not congruent to
+   * includes
+   * does not include
+   * excludes
+   * is included in
+   * is not included in
+   * overlaps
+   * does not overlap
+   * is child taxon of
+   * is parent taxon of
+   * is anamorph of
+   * is teleomorph of
+   * is second parent of
+   * is female parent of
+   * is first parent of
+   * is male parent of
+   * is hybrid parent of
+   * is hybrid child of
+   * is ambiregnal of
+   * is vernacular for
+   * has vernacular
+   * has synonym
+
+
+---++ Parameters
+|*Name*|*TCS Concept*|*Type*|*Default*|*Description*|
+|ids|/Dataset/TaxonConcepts/TaxonConcept@@id|Array of Strings| none|A list of the ids of TaxonConcepts that the requested names refer to.|
+|relationships| - | Array of Strings | null | A list of relationship types to restrict the search to.|
+| start | - | int | 0 | The index of the first record to be returned. Defaults to zero |
+| limit | - | int | - | The maximum number of results to be returned. Default is publisher dependent |
+
+---++ Returns
+A valid TCS document containing TaxonConcept objects that refer to one of the IDs in the array supplied or an empty XML document if none are found. Supporting objects, such as Specimen and Reference structures that are referred to by the TaxonConcepts may also be included.
+
+---++ Notes
+Paging is supported by this method (TaxonAPIPaging).
+
+
+
+
+
+
+
+-- Main.RogerHyam - 24 Nov 2005
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1137750170" format="1.1" version="1.2"}%
+d39 1
+a39 1
+|ids|/Dataset/TaxonNames/TaxonName@@id|Array of Strings| none|A list of the ids of TaxonNames that the requested names refer to.|
+d45 1
+a45 1
+A valid TCS document containing TaxonConcept objects that refer to one of the IDs in the array supplied or an empty XML document if none are found. Supporting objects, such as Specimen and Reference structures that are referred to by the TaxonNames may also be included.
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1132853410" format="1.1" version="1.1"}%
+d10 26
+a35 7
+TaxonNames may refer to those passed in in the following ways:
+   * SpellingCorrectionOf
+   * Basionym
+   * BasedOn
+   * ConservedAgainst
+   * LaterHomonymOf
+   * ReplacementNameFor
+d40 3
+d45 1
+a45 1
+A valid TCS document containing TaxonName objects that refer to one of the IDs in the array supplied or an empty XML document if none are found. Supporting objects, such as Specimen and Reference structures that are referred to by the TaxonNames may also be included.
+d48 1
+a48 2
+There is no paging supported by this method. Clients may request as long a list of ids as they like. Data publishers may, of course, refuse to respond. Generally nomenclatural relationships do not lead to large sets of objects. A name may be recombined a dozen times or mispelled half a dozen ways.
+
+d56 1
+a56 1
+-- Main.RogerHyam - 24 Nov 2005@

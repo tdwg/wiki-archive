@@ -1,0 +1,588 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147252436" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="SDD.WebHome"}%
+---+SDD Part 0:  Introduction and Primer to the SDD Standard
+
+*NOTE: this version is referring to an older version of SDD and is currently being reworked. Please come back later!*
+
+Gregor: I have renamed this page to !PrimerHome and propose to trim it down to a shorter size and branch out to multiple pages, all starting with "Primer". Examples: PrimerIntroduction, PrimerCodedDescriptions or PrimerForCodedDescriptions, PrimerNaturalLanguageDescriptions PrimerForNaturalLanguageDescriptions, PrimerIdentificationKeys or PrimerForDichotomousKeys, etc.
+
+Also, when reworking, please try to avoid html. Html is legal and ok if truly needed (e.g. for complex tables), but otherwise makes future edits and commenting difficult. For the examples, please use <verbatim></verbatim> rather than encoding the greater/less than characters.
+
+---+++Abstract
+
+SDD Part 0 is a non-normative introduction to the <a href="http://www.tdwg.org">Taxonomic Databases Working Group</a> SDD 
+(Structure of Descriptive Data) Standard. Its intention is to provide a background, introduction and primer to the SDD Standard, with examples.  Since the SDD Standard is a work-in-progress, this document will be updated from time to time.
+
+---+++Status of this document
+
+Version: 17 Oct. 2004
+
+Edited: [[Kevin.Thiele][Kevin Thiele]] (Centre for Biological Information Technology, University of Queensland), with financial support from the Gordon and Betty Moore Foundation (<a href="http://www.moore.org">www.moore.org</a>).
+
+To contribute to the discussion on the SDD Standard and to comment on this 
+document, please use this Wiki or the MailingList
+
+---+++Relationship between SDD and other TDWG standards
+
+TDWG maintains and is developing other standards that relate to the SDD standard, including the <a href="http://www.bgbm.org/TDWG/CODATA/Schema/default.htm">Access to Biological Collections Data (ABCD)</a> and <a href="http://www.soc.napier.ac.uk/tdwg/index.php">Taxonomic Concept Names</a> standards. TDWG is developing a common, shared base schema for SDD and these related schemas, called <a href="http://wiki.cs.umb.edu/twiki/bin/view/UBIF">UBIF</a>.
+
+---+++SDD Version History
+
+<a href="http://160.45.63.11/Projects/TDWG-SDD/Minutes/2003Lisbon_schema/SDD_09_DocuOverview.html">
+Version 0.9 beta</a>: released for comment December 2003.<br>
+<a href="http://160.45.63.11/Projects/TDWG-SDD/Minutes/2004NZ_schema/DocuOverview.html">Version 1.0 
+beta</a>: released August 2004</p>
+
+---++1.0 Introduction
+
+---+++1.1 Background to the TDWG-SDD Subgroup
+
+In September 1998 the <a href="http://www.tdwg.org">Taxonomic Databases Working Group</a> (TDWG) of the <a href="http://www.iubs.org">International Union of Biological Sciences</a> (IUBS) established the Structure of Descriptive Data 
+(SDD) subgroup. TDWG&#65533;s role is to facilitate and manage the development of international standards in the taxonomic domain. The SDD subgroup was established to develop an international XML-based standard for capturing and managing descriptive data for organisms.
+
+Development of the SDD standard was initiated in response to recognition that the existing standard previously endorsed by TDWG &#65533; the
+<a href="http://delta-intkey.com/">DELTA</a> data standard developed at CSIRO in Canberra from 1971 and adopted by TDWG as a descriptive data standard in 1991 &#65533; had become inadequate (<a href="SDD_FAQ.htm#FAQ_DELTA">FAQ: 
+Why not continue to use DELTA?</a>).
+
+The SDD subgroup began discussing and scoping a standard through an email discussion group in November 1999 (see the <a href="http://listserv.nhm.ku.edu/archives/tdwg-sdd.html">SDD email list archives</a>).  Considerable progress has been made at face-to-face meetings amongst a small group of core contributors, in Nov. 2001 (Canberra), Oct. 2002 (Sao Paulo), Feb. 2003 (Paris), October 2003 (Lisbon), May 2004 (Berlin) and Oct. 2004 (Christchurch).
+
+---+++1.2 The nature of descriptive data in taxonomy
+
+In taxonomy, descriptive data takes a number of very different forms.
+
+Natural-language descriptions (Box 1.2.1) are semi-structured, semi-formalised descriptions of a taxon (or occasionally of an individual specimen). They may be simple, short and written in plain language (if used for a popular field guide), or long, highly formal and using specialised terminology when used in a taxonomic monograph or other treatment.
+
+<div class="Example">
+  <div class="exampleHeader">Box 1.2.1 -  Typical natural language descriptions</div>
+  <p align="left">
+  <b>Red Knot (Calidris canutus)</b><br>
+  Stout wader with bill same length as head, crown unstreaked, narrow white bar 
+   in wing, pale rump with grey barring, shortish olive legs. Non-breeding: 
+   grey above with narrow pale edging to feathers, pale eyebrow, smudged sides 
+   to neck with faint spotting. Juvenile: feathers of back edged white with 
+   dark subterminal bar, breast more heavily spotted pale buff and flanks 
+   barred, crown faintly streaked. Breeding: rufous underparts, feathers of 
+   back rufous patterned with black. Voice: 'knut-knut', `nyui , high-pitched `toowit-wit'.</p>
+  <p align="right">
+from Slater, P., Slater, P. &amp; Slater, R. (2001) The Slater Field Guide to 
+Australian Birds&nbsp; (Reed New Holland: Sydney)</p>
+  <p>
+  <b>Discaria pubescens (Brongn.) Druce<br>
+</b>Rigid, spreading shrub to c. 1 m high and wide; stems glabrous. Leaves soon 
+  deciduous, c. oblong, to 10 mm long, 3 mm wide, obtuse or minutely mucronate 
+  within an apical notch, margins minutely toothed, surfaces glabrous or a few 
+  hairs present near tip; stipules dark reddish-brown, c. 1 mm long, often 
+  shallowly joined around the node, pubescent on inner face; spines stout, 1.5-4 
+  cm long. Flowers white, solitary or in few-flowered axillary cymes, sometimes 
+  congested on short apical shoots; pedicels 2-3 mm long; hypanthium c. 1.5 mm 
+  long; sepals somewhat spreading, 1-1.5 mm long; petals attached at throat of 
+  hypanthium, c. 1 mm long; stamens subequal to and weakly hooded by petals; 
+  disc prominent, lining base of hypanthium, obscurely 5-angled; style minute. 
+  Capsule prominently 3-lobed, 4-5 mm diam., the valves separating incompletely 
+  at maturity and splitting dorsally and medially.</p>
+  </p>
+  <p align="right">
+from Walsh, N.G. (1999) Rhamnaceae, in N.G.Walsh &amp; T.J.Entwisle, 
+Flora of Victoria Volume 4, Dicotyledons, Cornaceae to Asteraceae (Inkata 
+Press: Melbourne)</div>
+
+
+&nbsp;<p>Dichotomous keys (Box 1.2.2) are specialised identification tools 
+comprising fragments of descriptive data arranged in couplets forming a 
+branching tree. Each fragment (lead) comprises a small (occasionally verbose) 
+natural-language description.</p>
+
+<div class="Example">
+  <div class="exampleHeader">Box 1.2.2 - Typical dichotomous keys</div>
+   <br>
+   <div align="center">
+      <table border="0" cellpadding="5" style="border-collapse: collapse" bordercolor="#111111" width="80%" >
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px; border-top-style: solid; border-top-width: 1px">
+            <b>Key to Ascomycete genera</b></td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px">&nbsp;</td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">
+            <br>
+            Ascus unitunicate</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">&nbsp;</td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp; 
+            Clypeus present around ostiolar neck</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">&nbsp;</td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Clypeus poorly developed</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">
+            <i>Glomerella</i></td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Clypeus well developed</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">
+            <i>Hyllachora</i></td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp; 
+            Clypeus lacking</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">&nbsp;</td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Ascus widest in middle</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">
+            <i>Physalospora</i></td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Ascus clavate or cylindrical</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">
+            <i>Glomerella</i></td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">
+            Ascus bitunicate</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">&nbsp;</td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px">&nbsp;&nbsp;&nbsp; 
+            Ascostroma uniloculate</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px">
+            <i>Guignardia</i></td>
+         </tr>
+         <tr>
+            <td width="409" style="border-left-style: solid; border-left-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;&nbsp;&nbsp; 
+            Ascostroma muliloculate</td>
+            <td align="right" style="border-right-style: solid; border-right-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">
+            <i>Botryosphaeria</i></td>
+         </tr>
+      </table>
+   </div>
+   <br>
+   <div align="center">
+      <table border="1" cellpadding="5" style="border-collapse: collapse" bordercolor="#111111" width="80%" id="table3">
+         <tr>
+            <td width="50" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">1</td>
+            <td style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">Dark upper lateral zone with one or more distinct series of 
+            pale spots or blotches along the body</td>
+            <td width="114" valign="bottom" align="right" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-top-style: solid; border-top-width: 1px; border-bottom-style: none; border-bottom-width: medium">2</td>
+         </tr>
+         <tr>
+            <td width="50" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">1a</td>
+            <td style="border-style: none; border-width: medium">Dark upper lateral zone obscurely mottled or uniform with at 
+            most a few pale spots anteriorly</td>
+            <td width="114" valign="bottom" align="right" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">3</td>
+         </tr>
+         <tr>
+            <td width="50" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">2</td>
+            <td style="border-style: none; border-width: medium">Fewer than 25 lamellae under the fourth toe; supralabials 
+            7-8 (usually 7); prefrontals separated</td>
+            <td width="114" valign="bottom" align="right" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">
+            <i>C. arcanus</i></td>
+         </tr>
+         <tr>
+            <td width="50" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">2a</td>
+            <td style="border-style: none; border-width: medium">More than 25 lamellae under the fourth toe; supralabials 8-9 
+            (usually 8); prefrontals usually in contact</td>
+            <td width="114" valign="bottom" align="right" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">
+            <i>C. alleni</i></td>
+         </tr>
+         <tr>
+            <td width="50" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">3</td>
+            <td style="border-style: none; border-width: medium">Pale mid-lateral stripe passes over the hindlimb to continue 
+            along the tail </td>
+            <td width="114" valign="bottom" align="right" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: none; border-bottom-width: medium">
+            <i>C. inornatus</i></td>
+         </tr>
+         <tr>
+            <td width="50" style="border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: none; border-top-width: medium; border-bottom-style: solid; border-bottom-width: 1px">3a</td>
+            <td style="border-left-style: none; border-left-width: medium; border-right-style: none; border-right-width: medium; border-top-style: none; border-top-width: medium; border-bottom-style: solid; border-bottom-width: 1px">Pale mid-lateral stripe extends to groin, then continues 
+            along the front edge of the hindlimb</td>
+            <td width="114" valign="bottom" align="right" style="border-left-style: none; border-left-width: medium; border-right-style: solid; border-right-width: 1px; border-top-style: none; border-top-width: medium; border-bottom-style: solid; border-bottom-width: 1px">
+            <i>C. coggeri</i></td>
+         </tr>
+      </table>
+   </div>
+   <br></div>
+
+
+&nbsp;<p>Coded descriptions (Box 1.2.3) comprise highly structured data used in 
+computer identification and analysis programs such as Lucid (<a href="http://www.lucidcentral.org">www.lucidcentral.org</a>) , DELTA 
+(<a href="http://delta-intkey.com">delta-intkey.com</a>) and a suite of phylogenetic analysis programs such as PAUP 
+(<a href="http://http://paup.csit.fsu.edu/">http://paup.csit.fsu.edu/</a>).</p>
+<div class="Example">
+  <div class="exampleHeader">Box 1.2.3 -  Simple examples of coded descriptions</div>
+
+<table border="0" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111" width="90%" id="table1">
+  <tr>
+    <td width="50%">
+
+<div class="Example">
+  <div class="exampleHeader">
+
+Lucid Interchange Format (LIF) file</div>
+  <p>
+
+
+#Lucid Interchange Format File v. 2.1<br>
+<br>
+[..Character List..]<br>
+Distribution by region<br>
+&nbsp; Tropical North<br>
+&nbsp; Subtropical and Temperate East and South<br>
+&nbsp; South West<br>
+&nbsp; Arid &amp; Semi-arid (Central)<br>
+&nbsp; Island Territories<br>
+General habit<br>
+&nbsp; tree<br>
+&nbsp; shrub<br>
+&nbsp; climber (woody or herbaceous)<br>
+&nbsp; herb<br>
+&nbsp; grass- or sedge-like plant<br>
+Seasonal longevity<br>
+&nbsp; annual, biennial or ephemeral<br>
+&nbsp; perennial<br>
+<br>
+[..Taxon List..]<br>
+Acanthaceae<br>
+Aceraceae<br>
+Actinidiaceae<br>
+Agavaceae<br>
+Aizoaceae<br>
+Akaniaceae<br>
+Alangiaceae<br>
+Alismataceae<br>
+Aloaceae<br>
+Alseuosmiaceae<br>
+<br>
+[..Main Data (txs)..]<br>
+101101111111<br>
+100100000101<br>
+101000000010<br>
+011110111111<br>
+101111111111<br>
+100100000011<br>
+101101000011<br>
+011111011111<br>
+011100100111<br>
+101100000010</div>
+
+    </td>
+    <td width="50%">
+
+<div class="Example">
+  <div class="exampleHeader">
+
+DELTA file</div>
+  <p>
+
+*SHOW: Gentianella - character list. Last revised 16 April 1997.<br>
+<br>
+*CHARACTER LIST <br>
+<br>
+#1. plants/<br>
+1. monocarpic/<br>
+2. polycarpic/<br>
+<br>
+#2. &lt;plants lifecycle&gt;/<br>
+1. annual/<br>
+2. biennial/<br>
+3. perennial/<br>
+<br>
+#3. height in flower/<br>
+&lt;&gt; cm/<br>
+<br>
+#4. caudex/<br>
+1. unbranched/<br>
+2. branched/<br>
+<br>
+*ITEM DESCRIPTIONS <br>
+<br>
+# Gentianella amabilis/<br>
+1,2 2,3 3,3-13 4,1<br>
+<br>
+# Gentianella antarctica/<br>
+1,1 2,1&lt;Godley 1982&gt; 3,1.6-22.0&lt;Godley 1982&gt; 4,1<br>
+<br>
+# Gentianella antipoda/<br>
+1,1&lt;Godley 1982&gt; 2,2 3,3.5-9.8-24 4,1/2&lt;depends on size of plant&gt;<br>
+<br>
+# Gentianella astonii/<br>
+1,2 2,3 3,15 4,2<br>
+<br>
+# Gentianella cerina/<br>
+1,2 2,3 3,9-17 4,1/2<br>
+<br>
+#Gentianella concinna/<br>
+1,1 2,1 3,2.7-15.0 4,1<br>
+&nbsp;</div>
+
+    </td>
+    <td width="50%">&nbsp;<p>&nbsp;</td>
+  </tr>
+</table>
+
+</div>
+
+
+&nbsp;<p>Raw data descriptions (Box 1.2.4) usually comprise repeated 
+measurements of parts of individual specimens, and are the basis from which the 
+more abstracted descriptions in natural language and coded descriptions are 
+derived. Few taxonomists consistently record and archive their raw data in a 
+standardised format. </p>
+
+<div class="Example">
+  <div class="exampleHeader">Box 1.2.4 - Example of raw (specimen) descriptive 
+   data</div>
+  <br>
+  <div align="center">
+   <table border="1" width="80%" cellspacing="0" id="table5" cellpadding="0">
+      <tr>
+         <td rowspan="2" align="center">Specimen</td>
+         <td colspan="5" align="center">Spore length</td>
+         <td colspan="5" align="center">Spore width</td>
+         <td width="163" rowspan="2" align="center">Spore colour</td>
+      </tr>
+      <tr>
+         <td width="25" align="center">1</td>
+         <td width="25" align="center">2</td>
+         <td width="25" align="center">3</td>
+         <td width="25" align="center">4</td>
+         <td width="25" align="center">5</td>
+         <td width="25" align="center">1</td>
+         <td width="25" align="center">2</td>
+         <td width="25" align="center">3</td>
+         <td width="25" align="center">4</td>
+         <td width="25" align="center">5</td>
+      </tr>
+      <tr>
+         <td align="center">TJM45337</td>
+         <td width="25" align="center">12</td>
+         <td width="25" align="center">13</td>
+         <td width="25" align="center">12</td>
+         <td width="25" align="center">15</td>
+         <td width="25" align="center">11</td>
+         <td width="25" align="center">8</td>
+         <td width="25" align="center">8</td>
+         <td width="25" align="center">7</td>
+         <td width="25" align="center">6</td>
+         <td width="25" align="center">6</td>
+         <td width="163" align="center">brown</td>
+      </tr>
+      <tr>
+         <td align="center">TLM33466</td>
+         <td width="25" align="center">15</td>
+         <td width="25" align="center">18</td>
+         <td width="25" align="center">17</td>
+         <td width="25" align="center">17</td>
+         <td width="25" align="center">15</td>
+         <td width="25" align="center">10</td>
+         <td width="25" align="center">8</td>
+         <td width="25" align="center">9</td>
+         <td width="25" align="center">9</td>
+         <td width="25" align="center">10</td>
+         <td width="163" align="center">yellow</td>
+      </tr>
+   </table>
+   </div>
+   <br>
+</div>
+
+
+&nbsp;<h3>1.3 Goals of SDD</h3>
+
+<p>The goal of the SDD standard is to allow capture, transport, caching and 
+archiving of descriptive data in all the forms shown above, using a platform- 
+and application-independent, international standard. Such a standard is crucial 
+to enabling lossless porting of data between existing and future software 
+platforms including identification, data-mining and analysis tools, and 
+federated databases.</p>
+
+<p><b>The SDD Standard:</b></p>
+
+<ul>
+   <li>provides a flexible, platform-independent data structure for the capture 
+  and storage of taxonomic descriptions</li>
+   <li>comprises a superset of data requirements of all existing programs</li>
+   <li>provides extension beyond existing programs where data requirements can be 
+  predicted</li>
+   <li>is readily extensible to account for future developments and data 
+  requirements</li>
+   <li>is human-readable (although it is assumed that in almost all cases 
+  standard descriptions 
+  will be machine-generated and processed)</li>
+   <li>is XML-based, and provides a schema for validation of documents.</li>
+</ul>
+
+<p><b>It facilitates:</b></p>
+
+<ul>
+  <li>lossless porting of data between standard-aware applications</li>
+  <li>achievable progressive markup of legacy descriptions, particularly 
+  natural-language descriptions</li>
+  <li>comparability and, if possible, combinability of alternate descriptions of 
+  any one taxon</li>
+  <li>efficient multi-tasking of descriptions (one description serving alternate 
+  purposes)</li>
+   <li>archiving and sharing of raw and processed data</li>
+</ul>
+
+<h2>2.0 Basic structure of a simple SDD instance document</h2>
+
+<p>The simplest possible description comprises a single descriptive statement 
+about an organism, taxon or object. An example of such a description is given in Box. 
+2.0.1, 
+and its SDD representation in Example 2.0.1.</p>
+
+
+<div class="Example">
+  <div class="exampleHeader">Box 2.0.1 - A simple description</div>
+  <p>Viola hederacea Labill.<br>
+  Leaves simple</p>
+  </div>
+
+<p>
+
+&nbsp;<div class="Example">
+  <div class="exampleHeader">Example 2.0.1 - Description in Box 2.0.1 represented in SDD</div>
+  <p>
+  
+  <pre>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.tdwg.org/2004/UBIF" xsi:schemaLocation="http://www.tdwg.org/2004/UBIF SDD.xsd"&gt;
+  &lt;Dataset&gt;
+    &lt;Derivation datetime='2004-10-17T06:50:13'&gt;
+      &lt;Generator name='By Hand' version='1'/&gt;
+    &lt;/Derivation&gt;
+    &lt;ExternalDataInterface&gt;
+      &lt;ClassNames&gt;
+        &lt;ClassName id='1'&gt;
+          &lt;Label&gt;
+            &lt;Representation language='en'&gt;
+              &lt;Text&gt;Viola hederacea&lt;/Text&gt;
+            &lt;/Representation&gt;
+          &lt;/Label&gt;
+        &lt;/ClassName&gt;
+      &lt;/ClassNames&gt;
+      &lt;Agents&gt;
+        &lt;Agent id='1'&gt;
+          &lt;Label&gt;
+            &lt;Representation language='en'&gt;
+              &lt;Text&gt;A. Botanist&lt;/Text&gt;
+            &lt;/Representation&gt;
+          &lt;/Label&gt;
+        &lt;/Agent&gt;
+      &lt;/Agents&gt;
+    &lt;/ExternalDataInterface&gt;
+    &lt;Metadata&gt;
+      &lt;Description&gt;
+        &lt;Representation language='en'&gt;
+          &lt;Title&gt;Descriptive statement for a Viola&lt;/Title&gt;
+        &lt;/Representation&gt;
+      &lt;/Description&gt;
+    &lt;/Metadata&gt;
+    &lt;DescriptiveData&gt;
+      &lt;Terminology&gt;
+        &lt;Characters&gt;
+          &lt;CategoricalCharacter id='1'&gt;
+            &lt;Label&gt;
+              &lt;Representation language='en'&gt;
+                &lt;Text&gt;Leaf complexity&lt;/Text&gt;
+              &lt;/Representation&gt;
+            &lt;/Label&gt;
+            &lt;States&gt;
+              &lt;StateDefinition id='1'&gt;
+                &lt;Label&gt;
+                  &lt;Representation language='en'&gt;
+                    &lt;Text&gt;simple&lt;/Text&gt;
+                  &lt;/Representation&gt;
+                &lt;/Label&gt;
+              &lt;/StateDefinition&gt;
+            &lt;/States&gt;
+          &lt;/CategoricalCharacter&gt;
+        &lt;/Characters&gt;
+      &lt;/Terminology&gt;
+      &lt;CodedDescriptions&gt;
+        &lt;CodedDescription id='0'&gt;
+          &lt;Header&gt;
+            &lt;ClassName ref='1'/&gt;
+          &lt;/Header&gt;
+          &lt;SummaryData&gt;
+            &lt;Categorical ref='1'&gt;
+              &lt;State ref='1'/&gt;
+            &lt;/Categorical&gt;
+          &lt;/SummaryData&gt;
+        &lt;/CodedDescription&gt;
+      &lt;/CodedDescriptions&gt;
+    &lt;/DescriptiveData&gt;
+  &lt;/Dataset&gt;
+&lt;/Datasets&gt;
+</pre>
+</div>
+
+<p>
+
+In the SDD document in Box 2.0.1, data are wrapped in a
+<span class="element-mandatory">&lt;Dataset&gt;</span> element. Several datasets may 
+be wrapped in a single SDD document, in the <span class="element-mandatory">
+&lt;Datasets&gt;</span> container element.<p>
+
+The <span class="element-mandatory">&lt;Derivation&gt;</span> element provides 
+information about the way in which the data were created, including the date and time 
+stamp at 
+which the data was generated, and the application or other method by which the 
+document was created.<p>
+
+The <span class="element-mandatory">&lt;ExternalDataElement&gt;</span> is used to wrap 
+data that may be provided by an external web service (in this case, the data are 
+internal to the document). In this element, the name of the taxon (<i>Viola 
+hederacea</i>) is provided in the <span class="element-mandatory">&lt;Classes&gt;</span> 
+element, and the name of the author of the document in the
+<span class="element-mandatory">&lt;Agents&gt;</span> element<p>
+
+Metadata for the project that provided the data is given in the
+<span class="element-mandatory">&lt;Metadata&gt; </span>element. In this case, only a 
+title for the data set is provided.<p>
+
+The description is provided in the <span class="element-mandatory">&lt;DescriptiveData&gt;</span> 
+element, using a character and state (character = <i>Leaf complexity</i>; 
+state = <i>simple</i>) defined in the <span class="element-mandatory">
+&lt;Terminology&gt;</span> element. The <span class="element-mandatory">&lt;CodedDescription&gt;</span> 
+element contains the description itself, using references to identify the taxon 
+(class), character and state being described.<p>
+<a href="SDD_FAQ.htm#FAQ_Verbosity">FAQ: Why are SDD documents so verbose and 
+complex?</a></p>
+
+
+<h2><a name="Index">3.0 Beyond the simple instance...</a></h2>
+
+
+  <p>Example 2.0.1 describes only the most simple of SDD structures. To go 
+   further, the Primer provides several pathways or streams, depending on what 
+   you wish to use SDD for. On each stream, the Primer will introduce the basic 
+   concepts first, then branch to more complex examples. <br>
+   <br>
+   Before entering the first stream, you should understand the
+   <a href="Specifying%20Derivation%20Metadata.htm">&lt;Derivation&gt;</a> and
+   <a href="External%20Data%20References.htm">&lt;ExternalDataInterface&gt;</a> 
+   elements. </p>
+<p>For more information on the relationships between the SDD and UBIF schemas, 
+read the topic
+   <a href="SDD%20and%20UBIF%20Schemas.htm">SDD and UBIF Schemas</a>.</p>
+<p>The streams are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="Using%20SDD%20for%20coded%20data.htm">Using SDD for coded data</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp; 
+<a href="Using%20SDD%20for%20natural%20language%20descriptions.htm">Using SDD for natural language descriptions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="Using%20SDD%20for%20dichotomous%20keys.htm">Using SDD for dichotomous keys</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp; 
+<a href="Using%20SDD%20for%20raw%20observation%20data.htm">Using SDD for raw observation data
+</a> </p>
+
+<p align="right"><font size="1">KRT</font><font size="1"> Last Edit: 16 Jan 04</font></p>
+
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1147251845" from="SDD.SddPrimer" to="SDD.PrimerHome"}%

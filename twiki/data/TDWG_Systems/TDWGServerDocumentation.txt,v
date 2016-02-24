@@ -1,0 +1,420 @@
+head	1.13;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.13
+date	2009.05.05.09.07.46;	author PiersHiggs;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2009.04.28.00.46.10;	author LeeBelbin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2009.03.23.10.29.55;	author PiersHiggs;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2009.03.22.10.36.53;	author TimRobertsonGBIF;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2009.03.09.04.10.02;	author LeeBelbin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2009.02.26.05.14.08;	author LeeBelbin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2009.02.25.05.44.42;	author PiersHiggs;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2009.01.15.06.41.18;	author PiersHiggs;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2008.12.17.22.36.58;	author LeeBelbin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2008.10.09.23.25.53;	author PiersHiggs;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2008.10.09.11.30.05;	author PiersHiggs;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2008.10.09.00.00.33;	author PiersHiggs;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.10.01.03.36.56;	author PiersHiggs;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.13
+log
+@none
+@
+text
+@%META:TOPICINFO{author="PiersHiggs" date="1241514466" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="WebHome"}%
+This page details issues to do with the servers and the processes that run on them.
+
+---+BEFORE YOU START
+
+Directions from Cip:
+One last thing: on each of the machines we have a very useful admin-log....txt file in  /root. Everybody who does something to the box is supposed to write there so that the rest of us can trace what happened. I trust you to put the essential stuff (e.g. we list the updates so if any compat problem shows up we know "what we did last summer"). If you rebuild something for example just say "rebuilt XWZ into /var/www/typo3 with the following options --with-foobazor=/usr/sbin/perl  ; carefull, it depends on XMN lib". 
+
+---++Server Listing
+
+All are .tdwg.org.  Passwords are not here, you have to get them from someone "in the know" (i.e. Cip or Piers)
+
+*Through pinging the domain names Tim was able to guess what a few of the following machines might be serving - it is not known what server side redirects are running though to be 100% sure.*
+
+*It would be really helpful to have this section filled out with more information about the servers running (mysql etc) on each machine and their purpose.*
+
+tdwgbox (192.38.28.102)
+
+condor (192.38.28.104)
+
+falcon (192.38.28.103)
+   * www.tdwg.org - the Typ03 (PHP) system 
+   * mysql - the Typ03 database appears to be  running here
+   * OJS appears to also run here, unless server side redirects are happening
+
+harpy (192.38.28.109)
+
+owl (192.38.28.106)
+   * mail lists and distribution listings.  See below for Email Alias information
+   * wiki.tdwg.org - runs TWiki (PHP wiki)
+   * rs.tdwg.org - I *think* this is just a running SVN
+
+---++DNS Issues
+
+---+++DNS Down
+The Domain Name Server (DNS) has gone down in the recent past due to 0% free errors.  This has been caused by Ricardo's daily backup routines, which have now been switched off as the GBIF ones are more comprehensive, with the exception of the database backup (which "extracts the database data in a consistent state so it can be later stored on GBIF's backup later").
+
+_Ricardo's Cure_
+
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1240879570" format="1.1" version="1.12"}%
+a33 49
+---++Email Aliases
+
+---+++Editing email aliases
+
+Here's a crash course on editing tdwg.org email aliases. Feel free to use this documentation as a starting point for sysadmin wiki pages on TDWG alias management. So, all email aliases of the form <name>@@tdwg.org are set up in Postfix in owl (the server). Those are set via Postfix virtual alias table.
+
+These are the aliases I (Lee) know about-
+
+<verbatim>
+   * Executive Committee (exec@@tdwg.org (or executive@@tdwg.org if you wish) - All executive
+      * chairman@@tdwg.org w.berendsohn@@bgbm.org
+      * treasurer@@tdwg.org sblum@@calacademy.org
+      * secretary@@tdwg.org A.Rissone@@nhm.ac.uk
+      * webmaster@@tdwg.org A.Rissone@@nhm.ac.uk *(should be lee@@tdwg.org?)*
+   * Secretariat
+      * secretariat@@tdwg.org leebel@@netspace.net.au or lee@@tdwg.org
+      * editor@@tdwg.org WEITZMAN@@si.edu
+      * outreach@@tdwg.org leebel@@netscape.net.au
+   * Others
+      * conveners@@tdwg.org
+      * lee@@tdwg.org leebel@@netspace.net.au
+      * ricardo@@tdwg.org scachett@@gmail.com
+      * stan@@tdwg.org sblum@@calacademy.org
+      * roger@@tdwg.org roger@@hyam.net (needs to be removed)
+      * team@@tdwg.org leebel@@netspace.net.au, scachett@@gmail.com, (needs to be removed)
+      * stdtrack@@tdwg.org - editorial board of TDWG Standards Track
+      * charters@@tdwg.org - editorial board of TDWG Charters Track
+      * pc@@tdwg.org - TDWG Conference Programme Committee (setup 9/3/2009) - TDWG 2009-Annie Simpson, Pat Mergen, Elizabeth Arnaud, Joel Sachs, Adrian Rissone, Lee Belbin, Charles Kahindo and Helmut Knuepffer.
+   * Sysadmin
+      * root@@owl.tdwg.org - mail about Owl server sysadmin stuff
+      * accounts@@tdwg.org - this one is redirected to Adrian, Lee and the Gaia trinca
+      * webmaster@@tdwg.org - mail about the TDWG website
+</verbatim>
+
+To add, delete or modify aliases, edit file owl:/etc/postfix/virtual and run the commands:
+
+<verbatim>
+postmap /etc/postfix/virtual
+/etc/init.d/postfix restart
+</verbatim>
+
+Oh, and if you add a new alias, after you have edited the file, use
+
+<verbatim>
+postmap /etc/postfix/virtual
+</verbatim> 
+
+And it seems to just work... *sigh*
+
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1237804195" format="1.1" version="1.11"}%
+d61 1
+a61 1
+      * pc@@tdwg.org - TDWG Conference Programme Committee (setup 9/3/2009) - TDWG 2009-Annie Simpson, Pat Mergen, Elizabeth Arnaud, Joel Sachs, Adrian Rissone and Lee Belbin.
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TimRobertsonGBIF" date="1237718213" format="1.1" reprev="1.10" version="1.10"}%
+d75 8
+d90 1
+a90 1
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1236571802" format="1.1" version="1.9"}%
+d14 1
+a14 1
+TDWGBox
+d16 1
+a16 1
+Condor
+d18 1
+a18 1
+Falcon
+d20 1
+a20 1
+Harpy
+d22 11
+a32 1
+Owl - contains mail lists and distribution listings.  See below for Email Alias information
+d82 1
+a82 1
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1235625248" format="1.1" version="1.8"}%
+d51 1
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1235540681" format="1.1" version="1.7"}%
+d33 22
+a54 11
+accounts@@tdwg.org - newly created alias that gets applications for TDWG  accounts - redirected to Adrian, Lee and the Gaia trinca 
+stdtrack@@tdwg.org - editorial board of TDWG Standards Track 
+charters@@tdwg.org - editorial board of TDWG Charters Track
+conveners@@tdwg.org - all interest and task group conveners
+exec@@tdwg.org - executive committee
+chairman@@tdwg.org - TDWG Chairman
+secretary@@tdwg.org - TDWG Secretary
+treasurer@@tdwg.org - TDWG Treasurer
+root@@owl.tdwg.org - mail about Owl server sysadmin stuff 
+webmaster@@tdwg.org - mail about the TDWG website
+secretariat@@tdwg.org - directly points email to lee@@tdwg.org
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1232001678" format="1.1" reprev="1.6" version="1.6"}%
+d43 1
+d60 1
+a60 1
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1229553418" format="1.1" reprev="1.5" version="1.5"}%
+d5 19
+d48 2
+a49 2
+_postmap /etc/postfix/virtual(FIXME)_
+_/etc/init.d/postfix restart_
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1223594753" format="1.1" version="1.4"}%
+d9 1
+a9 1
+Here's a crash course on editing tdwg.org email aliases. Feel free to use this documentation as a starting point for sysadmin wiki pages on TDWG alias management.
+d11 14
+a24 1
+So, all email aliases of the form <name>@@tdwg.org are set up in Postfix in owl (the server). Those are set via Postfix virtual alias table.
+d28 1
+a29 1
+
+d31 1
+d40 1
+a40 1
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1223551805" format="1.1" reprev="1.3" version="1.3"}%
+a18 42
+---++Mailing Lists
+
+A number of mailing lists are run off the TDWG servers.
+
+---+++TDWG Mailing List down
+After a reboot of the Owl server, mailing lists did not run.
+
+_Ricardo's Cure_
+
+The mailman startup script was indeed not set to start at server boot time.  This is something that normally needs to be performed when mailman is installed (same as apache, mysql, etc.) using ntsysv or chkconfig --add.  This was done by Andrei on the 4th September, 2008.
+
+---+++New Mailing List
+Lee needed to create a new mailing list on the server.
+
+_Ricardo's Cure_
+
+Don't forget to append the appropriate redirection commands to /etc/aliases on server owl. Mailman will give you the commands to append after you create the list. The lines look like this:
+
+_taxon-model: "|/usr/lib/mailman/mail/mailman post tdwg-spm"_
+
+_taxon-model-admin: "|/usr/lib/mailman/mail/mailman admin tdwg-spm"_
+
+_taxon-model-bounces: "|/usr/lib/mailman/mail/mailman bounces tdwg-spm"_
+
+_taxon-model-confirm: "|/usr/lib/mailman/mail/mailman confirm tdwg-spm"_
+
+_taxon-model-join: "|/usr/lib/mailman/mail/mailman join tdwg-spm"_
+
+_taxon-model-leave: "|/usr/lib/mailman/mail/mailman leave tdwg-spm"_
+
+_taxon-model-owner: "|/usr/lib/mailman/mail/mailman owner tdwg-spm"_
+
+_taxon-model-request: "|/usr/lib/mailman/mail/mailman request tdwg-spm"_
+
+_taxon-model-subscribe: "|/usr/lib/mailman/mail/mailman subscribe tdwg-spm"_
+
+_taxon-model-unsubscribe: "|/usr/lib/mailman/mail/mailman unsubscribe tdwg-spm"_
+
+Those are for taxon-model mailing list. Then issue the newaliases and restart mailman and postfix.
+
+In case the password doesn't work, just reissue it using the appropriate mailman command (logged in as root on owl) using the command /usr/lib/mailman/bin/mmsitepass
+
+d26 1
+a26 1
+The trick is really just to free up disk space by deleting unused files (usually logs and temporary backup files).  The best place to look for files to delete is /var/www/backup/data. Since most (if not all) of that data is backed up by Cip and Andrei in another more efficient way, usually any sysadmin can come in and delete files that are more than a few days old.  That's all there is to know about it.
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1223510433" format="1.1" reprev="1.2" version="1.2"}%
+d15 1
+a15 1
+postmap /etc/postfix/virtual(FIXME)
+d17 1
+a17 1
+/etc/init.d/postfix restart
+d33 28
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PiersHiggs" date="1222832216" format="1.1" reprev="1.1" version="1.1"}%
+d5 14
+d30 3
+@

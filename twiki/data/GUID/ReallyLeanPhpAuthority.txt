@@ -1,0 +1,84 @@
+%META:TOPICINFO{author="RogerHyam" date="1194358893" format="1.1" reprev="1.1" version="1.1"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ Really Lean PHP LSID Authority
+
+This page is home to a demonstration LSID resolver written in PHP in February 2006. The idea behind the project was to demonstrate that LSID resolution was really very simple. The text below is from the readme.html file that comes with the zipped up code that can be downloaded from the bottom of the page.
+
+---++ Introduction
+
+On re-reading the LSID specification I spent some time thinking about just how simply I could implement an LSID Authority. This document and the accompanying code are the result of these efforts.
+
+What I have done is take the HTTP GET bindings of the LSID specification and interpret them from the point of view of some one who is comfortable with implementing web sites and applications in technologies like ASP, JSP, Python and PHP. I ignore anything to do with SOAP bindings and complex web service stuff. I assume here that we are using PHP an have a PHP enabled web server but porting the code to another technology would be trivial.
+
+This is not a software product but more of a demo. Please treat recommendations here with caution and test any ideas out before using them in production systems. Although I will answer questions on this it is not my core responsibility so I reserve the right to palm requests off. I would be very grateful for correction and suggestions.
+
+---++ How LSID Authorities Works
+
+LSID Authorities are quite simple. A client application "does something clever" with DNS in order to find an authority's domain (I'll talk about this a little later on). Once it has got the domain it appends "/authority/" to make a URL that it calls to retrieve a WSDL file. WSDL files can be quite complex but they have been written for us so we don't have to worry about them too much - we can use simple template files for them. The file the client gets back tells it how to access the getAvailableServices(LSID lsid) method. Because we are only dealing with the HTTP GET bindings here this means it contains the URL the client must call to invoke this method.
+
+The client calls the URL for the getAvailableServices(LSID lsid) method appending /authority/?lsid=<theLSID> and gets back another WSDL file. This file contains the URLs that must be called for each of the methods associated with the LSID it passed in. Once the client has this list of URLs it calls the ones it needs to do things like get the metadata or data associated with this LSID. The client passes values to these calls by tacking them onto the end of the URLs just like an HTTP form submit where the 'method' attribute is set to GET. If you can write code to handle form submits you can handle these calls. To summarise:
+
+   1. Stage 1: Client calls a script and gets a WSDL file with a URL in it.
+   2. Stage 2: Client calls the URL appending /authority/?lsid=XYZ and gets another WSDL file back with the URLs of the associated data and metadata access scripts in it.
+   3. Stage 3: Client calls the data and metadata access URLs passing ?lsid=XYZ plus other GET parameters for each script.
+
+It is not rocket science. It is just like writing regular interactive web pages.
+
+---++ Authority Setup
+
+   1. Create a directory in the root of your web server's document tree called '/authority/'
+   2. Put the files from this package in the directory.
+   3. Congratulations you have now set up an LSID authority!
+
+---++ Checking Responses
+
+We can now run through the three actions an LSID client will do but with our web browser to check we are getting the right responses.
+
+   1. Check the Authority Responses Visit the URL "http://<YourDomain.org>/authority/". You should see a small XML file that defines a thing called a wsdl:port that contains an address which is the full URL to index.php in the authority directory. This is the URL the client will call to get the services URLS. If you don't get an XML file then it may be that your web server does not have 'index.php' set up as a default index file for the directory. You need to look at your server config for this.
+   2. Check the Get Available Services Response Visit the URL "http://<YourDomain.org>/authority/?lisd=urn:lsid:YourDomain.org:apples:123". You should get a similar looking file but with two ports described.
+   3. Check the Metadata Response Call the URL given for the metadata port but append "?lisd=urn:lsid:YourDomain.org:apples:123". You should get back an RDF file containing a load of nonsense.
+
+---++ Check the Authority with Launchpad
+
+I assume you have installed IBM Launchpad in IE. In the configuration section of Launchpad set up an authority. This will need to be YourDomain.org (or whatever authority you want to use in your test LSIDs) and point to the URL we tested in point 1 above - "http://<YourDomain.org>/authority/". Now resolve an LSID of your choosing. Something like "lsidres:urn:lsid:<YourDomain.og>:apples:4399" should work OK.
+
+---++ LSIDs that Resolve Globally
+
+If you have got this far you have succeeded in setting up and testing an LSID. The LSIDs resolve to rubbish metadata but at least they do resolve to something. Unfortunately they only resolve if the client knows the URL of the Authority. We need to do something with DNS so that clients can discover the authority location automatically. This is the "something clever" mentioned above and I refer you to the relevant section in the Perl stack tutorial for this. If you have access to your own DNS server then it is just a matter of making a new entry for your authority as described. If you don't have direct access then it is a matter of writing to some one who can do it for you.
+
+This may take a while as you may have to get a systems administrator to set things up so once you have set it in motion you can think about the next stage - returning real data/metadata.
+
+---++ Moving to Real Data
+
+The code that accompanies this document consists of 4 things:
+
+   1. index.php This is the script that actually acts as the LSID Authority. Take a look at it. You should be able to understand it even if PHP is not your language as it is very simple and well commented. All it does is look to see if the client is passing an lsid parameter and either returns Authority.wsdl or DataServices.wsdl with the correct URLs written in.
+   2. Authority.wsdl and DataServices.wsdl The two template files used by index.php. You probably won't edit these unless you need to add other services.
+   3. Three other wsdl files. These files are supporting files for the two template files. You do not need to edit them.
+   4. metadata.php, data.php and monty_and_meg.jpg These are just demo files so that the data and metadata methods do something. You will either edit or delete all these files to get a system that returns real data/metadata.
+
+There are two basic ways you could start building a real application from these files:
+
+   1. Custom URL for Each LSID You could parse the LSID passed to index.php at stage 2 and make the service URLs point to custom destinations for the particular LSID. A set of regular expressions would handle this fine of you might want/need to do something more suffisticated.
+   2. Single URL for Multiple LSIDs As the LSID is passed into each of the service methods called you could just route each type of service call to its own URL (no matter what the LSID) and have the script parse the LSID and decide what to do with it.
+
+A combination of these two methods would also work. You could direct LSIDs for different name spaces in different directions etc.
+The Other Parameters
+
+I don't go into the other parameters that the client may pass to the service URLs along with the LSID here. You must refer to the LSID specification which is quite clear on these. Perhaps read the HTTP GET binding section first.
+Error Handling
+
+There is no error handling in this demo code. The specification explains how errors should be thrown in the HTTP GET binding and it is pretty simple - you just return them in the HTTP header. At a minimum you should return an error if the client requests your authority to serve an LSID it isn't responsible for. The first place to do this would be to throw an error in index.php if the LSID didn't match a regular expression that described your own LSIDs. i.e. if they had the wrong authority string or namespace.
+
+---++ Even Simpler Approach?
+
+There is an even simpler approach to implementing an LSID Authority! This may be appropriate if you don't have the ability to put dynamic code your institutions root server. You could simply have an index.html which IS the Authority.wsdl file and contains the hard coded location of the DataServices.wsdl which could be anywhere and which could also be hard coded with the locations of the services. This may be taking the simplification a little far as you then lose the ability throw errors when clients ask the Authority for services for LSIDs it doesn't know about.
+
+---++ Conclusions
+
+I hope I have demonstrated that setting up a custom LSID authority can be relatively simple for people with web site development skills. If I have encouraged you to have play with the technology when you have previously been intimidated by the library dependencies in the Perl and Java stacks then I have achieved my purpose. You may now find it easier to understand and work with these more mature software products or you may be able to fashion your own solution. - Good luck!
+
+
+-- Main.RogerHyam - 06 Nov 2007
+
+%META:FILEATTACHMENT{name="lsid_php.zip" attachment="lsid_php.zip" attr="" comment="Really Lean PHP Authority Code" date="1194358891" path="lsid_php.zip" size="101252" stream="lsid_php.zip" user="Main.RogerHyam" version="1"}%

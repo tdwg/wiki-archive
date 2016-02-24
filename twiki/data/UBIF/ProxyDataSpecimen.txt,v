@@ -1,0 +1,337 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2009.11.25.03.14.42;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2009.11.20.02.35.37;	author LeeBelbin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.05.08.10.42.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.11.01.11.22.14;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.08.04.08.41.10;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.07.16.10.40.36;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.07.15.18.06.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.06.11.10.15.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.06.10.07.02.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.06.09.22.04.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.05.28.14.05.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.12
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118882" format="1.1" version="1.12"}%
+%META:TOPICPARENT{name="ObsoleteTopicObsoleteTopicProxyDataModel"}%
+---+!! %TOPIC%
+
+This is about representing specimens / ABCD units / objects in non-biological museums like musical instruments or archeology items when they are referred to by other knowledge domains like taxon names, descriptive data, publication indexing, etc.
+
+The BDI.SDD_.CurrentSchemaVersion of BDI.SDD_ (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType. This is a very BDI.SDD_-centric view, however, that does not survive integration into UBIF.SchemaDiscussion. I agree with Walter's and Jessie's remarks at the Berlin meeting that BDI.SDD_ should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. Thus two issues (please discuss separate):
+
+---
+
+<h2>Naming</h2>
+
+Should it be <nop>Unit of type <nop>UnitProxyType? <nop>UnitProxy? <nop>ObjectUnitProxy? <nop>SpecimenProxy? What else?
+
+(A related question: If we follow a model as proposed by Donald and discussed in ClosedTopicTopLevelStructureDiscussions to have a domain specific container inside the Dataset, I believe the proxy name and the container name should be related. For BDI.SDD_ I currently propose <nop>DescriptiveData, which I consider very innovative. Would it be <nop>UnitData for ABCD?)
+
+(See also the discussion about the name of a common container for all different proxy types: ObsoleteProxyListsInAllTdwgGbifStandards!)
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+
+I discussed this with Walter Berendsohn in person and we thought about whether the term Unit (as used by ABCD) needs to and can be disambiguated. ABCD units refer to both observations / recordings of organisms in their natural environment, as well as to dead and living (fungal cultures, zoo animals, garden plants) collected specimens.
+
+Walter proposed BCUnits (= biol. collection units) as a possibility to restrict the scope of the overloaded term "unit" to only biodiversity. However, this seems contrary to the desire of BDI.SDD_ to have somewhat more general terms. At the moment I tend to use the term Unit without disambiguation. Please comment!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9 June 2004
+
+---
+
+<h2>Specific extensions of <nop>ProxyBaseType</h2>
+
+I assume we agree to use a - potentially improved - ObsoleteTopicObsoleteTopicProxyDataModel whenever specimens are referred to as external data. The proxy model assumes that external data are viewed through a reduced or even minimalized interface definition, to decouple development in different biodiversity knowledge domains as much as possible. Using full ABCD as the proxy representation for each external use is out of the question. This would put a huge load on anyone needing specimens to implement a large and detailed, and probably changing/versioned data model or not use it at all.
+
+So how rich should the specimen-specific extensions to the <nop>ProxyBaseType be? So far BDI.SDD_ has not much to say here. In the extension model we propose only a few ideas of what would be essential to descriptions. It would not hurt to extend this into a general model. Especially the taxon concept model is called here, I believe they have significantly richer requirements. In fact, I personally believe that the <nop>DarwinCore may be exactly what we need here as the common extension model for specimens. See image below for current status of BDI.SDD_ (we did not put much effort into this!):
+
+<p><img src="%ATTACHURLPATH%/ProxyTypeSpecimen.png" alt="ProxyTypeSpecimen.png"  /></p>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004   
+
+I think Abbreviation should be removed here. They make sense for class names, but I believe object-abbreviations would be too much work to introduce. So although they may be convenient for tabular reports, they make no sense.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 9 June 2004
+
+I have attempted to add as a discussion base something from <nop>DarwinCore. This primarily attempts to use some reusable complex types instead of the overly flattened <nop>DarwinCore. Beyond that, it is very tentative, however. Any discussion is welcome!
+
+See BDI.SDD_.CurrentSchemaVersion for a download of the UBIF schema.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 4 August 2004
+
+%META:FILEATTACHMENT{name="ProxyTypeSpecimen.png" attr="h" comment="" date="1085752939" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\ProxyTypeSpecimen.png" size="9817" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1089974436" from="SDD.ProxyDataSpecimen" to="UBIF.ProxyDataSpecimen"}%
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258684537" format="1.1" reprev="1.11" version="1.11"}%
+d7 1
+a7 1
+The BDI.SDD.CurrentSchemaVersion of BDI.SDD (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType. This is a very BDI.SDD-centric view, however, that does not survive integration into UBIF.SchemaDiscussion. I agree with Walter's and Jessie's remarks at the Berlin meeting that BDI.SDD should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. Thus two issues (please discuss separate):
+d15 1
+a15 1
+(A related question: If we follow a model as proposed by Donald and discussed in ClosedTopicTopLevelStructureDiscussions to have a domain specific container inside the Dataset, I believe the proxy name and the container name should be related. For BDI.SDD I currently propose <nop>DescriptiveData, which I consider very innovative. Would it be <nop>UnitData for ABCD?)
+d23 1
+a23 1
+Walter proposed BCUnits (= biol. collection units) as a possibility to restrict the scope of the overloaded term "unit" to only biodiversity. However, this seems contrary to the desire of BDI.SDD to have somewhat more general terms. At the moment I tend to use the term Unit without disambiguation. Please comment!
+d33 1
+a33 1
+So how rich should the specimen-specific extensions to the <nop>ProxyBaseType be? So far BDI.SDD has not much to say here. In the extension model we propose only a few ideas of what would be essential to descriptions. It would not hurt to extend this into a general model. Especially the taxon concept model is called here, I believe they have significantly richer requirements. In fact, I personally believe that the <nop>DarwinCore may be exactly what we need here as the common extension model for specimens. See image below for current status of BDI.SDD (we did not put much effort into this!):
+d45 1
+a45 1
+See BDI.SDD.CurrentSchemaVersion for a download of the UBIF schema.
+@
+
+
+1.10
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1147084970" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="ObsoleteTopicObsoleteTopicProxyDataModel"}%
+d7 1
+a7 1
+The SDD.CurrentSchemaVersion of SDD (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType. This is a very SDD-centric view, however, that does not survive integration into UBIF.SchemaDiscussion. I agree with Walter's and Jessie's remarks at the Berlin meeting that SDD should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. Thus two issues (please discuss separate):
+d15 1
+a15 1
+(A related question: If we follow a model as proposed by Donald and discussed in ClosedTopicTopLevelStructureDiscussions to have a domain specific container inside the Dataset, I believe the proxy name and the container name should be related. For SDD I currently propose <nop>DescriptiveData, which I consider very innovative. Would it be <nop>UnitData for ABCD?)
+d23 1
+a23 1
+Walter proposed BCUnits (= biol. collection units) as a possibility to restrict the scope of the overloaded term "unit" to only biodiversity. However, this seems contrary to the desire of SDD to have somewhat more general terms. At the moment I tend to use the term Unit without disambiguation. Please comment!
+d33 1
+a33 1
+So how rich should the specimen-specific extensions to the <nop>ProxyBaseType be? So far SDD has not much to say here. In the extension model we propose only a few ideas of what would be essential to descriptions. It would not hurt to extend this into a general model. Especially the taxon concept model is called here, I believe they have significantly richer requirements. In fact, I personally believe that the <nop>DarwinCore may be exactly what we need here as the common extension model for specimens. See image below for current status of SDD (we did not put much effort into this!):
+d45 1
+a45 1
+See SDD.CurrentSchemaVersion for a download of the UBIF schema.
+d48 1
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1099308134" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="UBIF.ProxyDataModel"}%
+d15 1
+a15 1
+(See also the discussion about the name of a common container for all different proxy types: UBIF.UseProxyListsInAllTdwgGbifStandards!)
+d29 1
+a29 1
+I assume we agree to use a - potentially improved - UBIF.ProxyDataModel whenever specimens are referred to as external data. The proxy model assumes that external data are viewed through a reduced or even minimalized interface definition, to decouple development in different biodiversity knowledge domains as much as possible. Using full ABCD as the proxy representation for each external use is out of the question. This would put a huge load on anyone needing specimens to implement a large and detailed, and probably changing/versioned data model or not use it at all.
+d35 1
+a35 1
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004	
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1091608870" format="1.0" version="1.7"}%
+d13 1
+a13 1
+(A related question: If we follow a model as proposed by Donald and discussed in UBIF.TopLevelStructure to have a domain specific container inside the Dataset, I believe the proxy name and the container name should be related. For SDD I currently propose <nop>DescriptiveData, which I consider very innovative. Would it be <nop>UnitData for ABCD?)
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089974436" format="1.0" version="1.6"}%
+d40 6
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089914760" format="1.0" version="1.5"}%
+d5 1
+a5 1
+The CurrentSchemaVersion of SDD (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType. This is a very SDD-centric view, however, that does not survive integration into UBIF.SchemaDiscussion. I agree with Walter's and Jessie's remarks at the Berlin meeting that SDD should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. Thus two issues (please discuss separate):
+d41 1
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1086948950" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="ProxyDataModel"}%
+d5 1
+a5 1
+The CurrentSchemaVersion of SDD (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType. This is a very SDD-centric view, however, that does not survive integration into UnifiedBioInfoFramework. I agree with Walter's and Jessie's remarks at the Berlin meeting that SDD should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. Thus two issues (please discuss separate):
+d13 1
+a13 1
+(A related question: If we follow a model as proposed by Donald and discussed in TopLevelStructure to have a domain specific container inside the Dataset, I believe the proxy name and the container name should be related. For SDD I currently propose <nop>DescriptiveData, which I consider very innovative. Would it be <nop>UnitData for ABCD?)
+d15 1
+a15 1
+(See also the discussion about the name of a common container for all different proxy types: UseProxyListsInAllTdwgGbifStandards!)
+d29 1
+a29 1
+I assume we agree to use a - potentially improved - ProxyDataModel whenever specimens are referred to as external data. The proxy model assumes that external data are viewed through a reduced or even minimalized interface definition, to decouple development in different biodiversity knowledge domains as much as possible. Using full ABCD as the proxy representation for each external use is out of the question. This would put a huge load on anyone needing specimens to implement a large and detailed, and probably changing/versioned data model or not use it at all.
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086850970" format="1.0" version="1.3"}%
+d5 1
+a5 1
+The CurrentSchemaVersion of SDD (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType. This is a very SDD-centric view, however, that does not survive integration into OverarchingPatternsForTdwgSchemata. I agree with Walter's and Jessie's remarks at the Berlin meeting that SDD should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. Thus two issues (please discuss separate):
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086818669" format="1.0" version="1.2"}%
+d35 3
+d39 1
+a39 1
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004	
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085753100" format="1.0" version="1.1"}%
+d3 1
+a3 1
+This is about how to represent specimens / ABCD units / objects in non-biological museums when they are referred to by other knowledge domains like taxon names, descriptive data, publication indexing, etc. 
+d5 1
+a5 3
+The CurrentSchemaVersion of SDD (at time of writing 0.91 beta 16) uses the term Object for biological specimens or other objects that are to be described. "Object" is a highly overloaded term. We try to disambiguate it at least with the type name by using <nop>DescribedObjectProxyType.
+
+I agree with Walter's and Jessie's remarks at the Berlin meeting that SDD should follow the leaders in the field both in terms of naming the object as well as the inner structure of it. So there are two things here (please discuss separate):
+d11 1
+a11 1
+Should it be <nop>UnitProxy? <nop>ObjectUnitProxy? <nop>SpecimenProxy? What else?
+d19 6
+d31 1
+a31 5
+So how rich should the specimen-specific extensions to the <nop>ProxyBaseType be? 
+
+So far SDD has not much to say here. In the extension model we propose only a few ideas of what would be essential to descriptions. It would not hurt to extend this into a general model. Especially the taxon concept model is called here, I believe they have significantly richer requirements. In fact, I personally believe that the <nop>DarwinCore may be exactly what we need here as the common extension model for specimens.
+
+See image below for current status of SDD (we did not put much effort into this!):
+@

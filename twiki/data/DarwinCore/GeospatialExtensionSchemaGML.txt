@@ -1,0 +1,158 @@
+%META:TOPICINFO{author="KathiSchleidt" date="1271085523" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="Trash.DarwinCoreDarwinCoreDoc"}%
+
+
+-- Main.StephenLong - 10 Aug 2006
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: geospatialGML.xsd, version 1.40 2005-07-09 Exp $ -->
+<xsd:schema targetNamespace="http://digir.net/schema/conceptual/darwin/extension/geospatial/1.0" 
+    xmlns="http://digir.net/schema/conceptual/darwin/extension/geospatial/1.0"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:gml="http://www.opengis.net/gml">
+    <xsd:annotation>
+        <xsd:documentation>History: version 0.2 2005-07-09 John Wieczorek. Based on DarwinCore2GML_draft01.xsd by Phillip Dibner, 2004-07-07. Removed temporal elements.</xsd:documentation>
+        <xsd:documentation>History: version 0.1 2005-07-07 Phillip Dibner. Based on geospatial.xsd by John Wieczorek, 2004-07-03</xsd:documentation>
+        <xsd:documentation/>
+        <xsd:documentation>GML Application Schema expressing a geospatial extension to Darwin Core 2 (DwC2) v1.4.</xsd:documentation>
+    </xsd:annotation>
+    <!-- ============================================================== -->
+    <!-- includes and imports                                           -->
+    <!-- ============================================================== -->
+    <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.0/base/gml.xsd" />
+    <!-- Note: import of the entire gml schema is indicated here as a matter of interim convenience.  The ultimate implementation need only import the minimal subset of gml required to define its vocabulary. -->
+    
+    <!-- ============================================================== -->
+    <!-- elements and types                                             -->
+    <!-- ============================================================== -->
+ 
+    <xsd:element name="GeoTemporalCollectionRecord" type="GeoTemporalCollectionRecordType"></xsd:element>
+    
+    <xsd:complexType name="GeoTemporalCollectionRecordType">
+        <xsd:complexContent>
+            <xsd:extension base="CollectionRecordType">
+                <xsd:sequence>
+        
+                    <xsd:element name="decimalLatitude" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>The latitude of the location from which the organism or observation was collected, expressed in decimal degrees.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="-90.0"/>
+                                <xsd:maxInclusive value="90.0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="decimalLongitude" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>The longitude of the location from which the organism or observation was collected, expressed in decimal degrees.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="-180.0"/>
+                                <xsd:maxInclusive value="180.0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="geodeticDatum" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>The geodetic datum to which the latitude and longitude refer. If not known, use "not recorded". This concept should be vocabulary-controlled.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="coordinateUncertaintyInMeters" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>The upper limit of the distance (in meters) from the given latitude and longitude describing a circle within which the whole of the described locality lies. Use NULL where the uncertainty is unknown, cannot be estimated, or is not applicable (because there are no coordinates). Zero is not a valid value for this element.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minExclusive value="0.0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="verbatimCoordinates" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>A text representation of the coordinate data (Latitude/Longitude, UTM, TRS, etc.) in its original format in the source database.</xsd:documentation>
+                            <xsd:documentation>Example: "470999 1234300"</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="verbatimCoordinateSystem" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>The name of the system in which the original geographic coordinates were recorded.</xsd:documentation>
+                            <xsd:documentation>Examples: "decimal degrees", "degrees minutes seconds", "degrees decimal minutes", "UTM"</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="georeferenceProtocol" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>A reference to the methods used for determining the coordinates and uncertainties.</xsd:documentation>
+                            <xsd:documentation>Example: "http://manisnet.org/GeorefGuide.html"</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="georeferenceSources" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>A list of maps, gazetteers or other resources used to georeference the locality. The content of this concept is meant to be specific enough to allow anyone in the future to use the same resource to georeference the same locality.</xsd:documentation>
+                            <xsd:documentation>Example: "USGS 1:24000 Florence Montana Quad"</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="georeferenceVerificationStatus" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>A categorical description of the extent to which the georeference has been verified to represent the location where the specimen or observation was collected. This element should be vocabulary-controlled.</xsd:documentation>
+                            <xsd:documentation>Examples: "requires verification", "verified by collector", "verified by curator"</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="georeferenceRemarks" type="xsd:string" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation>Comments about the spatial description determination, explaining assumptions made in addition or opposition to the those formalized in the method referred to in GeoreferenceProtocol.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+    
+                    <!-- ================================================================================================================================================================= -->
+                    <!-- GML property definitions                                                                                                                                                   -->
+                    <!-- In the examples below, dimension is assumed to be 2 and the coordinate reference system is assumed to be understood.  However, these can be specified explicitly. -->
+                    <!-- ================================================================================================================================================================= -->
+    
+                    <!-- Collection Location Geometric Properties -->
+                    <xsd:element name="gmlPointCollectionLocation" type="gml:PointPropertyType" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation> GML representation of a single-point designation of a collection location, expressed as an ordered pair.</xsd:documentation>
+<!--                            <xsd:documentation> Example: <gmlPointCollectionLocation><gml:Point><gml:pos>-134.2567801 38.6721569</gml:pos></gml:Point></gmlPointCollectionLocation> </xsd:documentation>
+-->
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="gmlPolygonalCollectionLocation" type="gml:SurfacePropertyType" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation> GML representation of a polygonal description of a collection location, expressed as an array of coordinate pairs.</xsd:documentation>
+                            <xsd:documentation> Example: <gmlPolygonalCollectionLocation><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>-134.256 38.672 -134.102 38.891 -133.603 38.893 -133.550 38.625</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gmlPolygonalCollectionLocation> </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="gmlPointWithErrorRadiusCollectionLocation" nillable="true">
+                        <xsd:annotation>
+                            <xsd:documentation> GML representation of a collection location designated as a point and an error radius.</xsd:documentation>
+                            <xsd:documentation> Example: <gmlPointWithErrorRadiusCollectionLocation><gml:CircleByCenterPoint><gml:pos>-134.2567801 38.6721569 </gml:pos><gml:radius>3.26</gml:radius></gml:CircleByCenterPoint></gmlPointWithErrorRadiusCollectionLocation> </xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element ref="gml:CircleByCenterPoint"></xsd:element>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <!-- NB: any GML element substitutable for gml:_Geometry can be added to this list or in an extension. -->
+        
+                    <!-- ============================================================== -->
+                    <!-- End GML definitions                                            -->
+                    <!-- ============================================================== -->
+    
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+</xsd:schema>
+
+</verbatim>
+
+
+
+---++ Comments 
+Use the space below to make comments about this page. -- Main.JohnWieczorek - 24 Aug 2006

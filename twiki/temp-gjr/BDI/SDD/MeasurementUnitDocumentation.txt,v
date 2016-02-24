@@ -1,0 +1,318 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2009.11.25.03.14.34;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2009.11.20.02.45.27;	author LeeBelbin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2005.09.30.05.54.10;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2005.07.08.13.29.17;	author JacobAsiedu;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.09.13.08.55.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.09.12.16.59.47;	author JacobAsiedu;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118874" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+---+!! %TOPIC%
+
+The Documentation on the <nop>MeasurementUnit element in BDI.SDD_ says that "Refers to ... definition in Terminology/General... "<br/>
+I am assuming this documentation comes from the old schema? , since the ref attribute points to <br/>
+<nop>ExternalDataInterface/MeasurementUnits/MeasurementUnit from <nop>UBIF.xsd -- Main.JacobAsiedu - 12 Sep 2004
+
+   * Thanks, your are guessing correctly; I will improve the annotation! These small corrections are very important to me! -- Main.GregorHagedorn - 13 Sep 2004
+
+The definition in <nop>UBIF.xsd has an <nop>InternationalAbbreviation element as a child node.
+However, the reference to <nop>MeasurementUnit in BDI.SDD_ also has an <nop>InternationalAbbreviation child node.
+Is this an error? If it is not,then does it make sense to define one or more  <nop>InternationalAbbreviation  for the same <nop>MeasurementUnit ? -- Main.JacobAsiedu - 12 Sep 2004
+
+   * This is a more general question, and I welcome a general thought. Currently, for Agents and Units tentatively the concept of <nop>MicroMeasurementUnit and <nop>MicroAgent types have been proposed. These allow a local definition as an alternative to a reference to a <nop>ExternalDataInterface proxy object. This makes it more convenient for people who are scared about all the relations in the model, if they use only a single string to define it locally. 
+   * I am not sure this is worth it - I put it in to keep the discussion/idea alive. We have strongly opposing critique here, and many claim with the relations it is too complicated.
+   * Would in general the <nop>MeasurementUnit be a place where to do this, or should we rather enforce the use by ref? Please comment - we need something like an opinion poll on this!
+   * A confusing problem is that xml schema to my knowledge does not allow to specify the two cases as an alternative - which is the design intention. That is, you cannot validate that either the local <nop>InternationalAbbreviation must be present and ref missing, or the ref present, and <nop>InternationalAbbreviation missing. The alternative would be possible if ref would be an element, but it seems impossible when it is an attribute. Any insight on this?
+   * -- Main.GregorHagedorn - 13 Sep 2004
+
+* I noticed that <nop>MeasurementUnit is on the <nop>Character reference. I think it should also be on <nop>PMeasure and <nop>Measure elements that way<br/> 
+when one has a <nop>QuantitativeCharacter with  its states(<nop>PMeasure and <nop>Measure) having polymorphic units(say mm and cm)  then one can easily associate each state with the right unit within one single <nop>QuantitativeCharacter element.<br/>
+Currently, in BDI.SDD_ one has to create a <nop>QuantitativeCharacter for each each state with a different unit of measure.<br/>
+An example, borrowed from Main.BryanHeidorn prairie plants data is:<br/>
+
+<nop>QuantitativeCharacter : "plant_height_when_mature"<br/>
+         <nop>State1 : 6 dm<br/>
+         <nop>State2 : 3 ft <br/>
+
+With the current BDI.SDD_ we coded it as follows:
+<verbatim>
+   <Quantitative ref="2758" debugref="plant height when mature">
+                  <Measure type="..." value="6.0"/>
+                  <MeasurementUnit>
+                     <InternationalAbbreviation>dm</InternationalAbbreviation>
+                  </MeasurementUnit>
+               </Quantitative>
+               <Quantitative ref="2758" debugref="plant height when mature">
+                  <Measure type="..." value="3.0"/>
+                  <MeasurementUnit>
+                     <InternationalAbbreviation>ft</InternationalAbbreviation>
+                  </MeasurementUnit>
+               </Quantitative>
+</verbatim>
+While in the proposed addition  we could  easily code it as:
+<verbatim>
+                                      <Quantitative ref="2758" debugref="plant height when mature">
+                  <Measure type="..." value="6.0">
+                      <MeasurementUnit>
+                     <InternationalAbbreviation>dm</InternationalAbbreviation>
+                      </MeasurementUnit>
+                                              </Measure>
+                                               <Measure type="..." value="3.0">
+                      <MeasurementUnit>
+                     <InternationalAbbreviation>ft</InternationalAbbreviation>
+                  </MeasurementUnit>
+                                           </MeasurementUnit>
+               </Quantitative>
+</verbatim>
+
+-- Main.JacobAsiedu - 08 Jul 2005        
+
+----
+
+Final note: At the root of this problem lies that some quantitative characters may span several orders of magnitude, depending on taxonomic scope of a dataset. For example plant hight may be 450 µm, 8 mm, 6 cm, 1.7 m, or 85 m. it is not desirable to express this as, e. g., 0.4500 mm, 8 mm, 60 mm, 1700 mm, and 85000 mm. Furthermore in data integration projects some data may be expressed in non-scientific local units like inch or feet.
+
+In BDI.SDD_ up to St. Petersburg meeting in 2005 it was possible to define measurement units both as a default at the character definition, and as "override" at character data in individual descriptions. Measurement Units where defined as first-class objects and they could, in both cases be used by reference. Measurement Units further contained a relation mechanism that provided for defining conversion factors between units. However, in an attempt to lower the usuage hurdle for BDI.SDD_, both at character definition and character data level it was possible NOT to use the ref-to-MeasurementUnit object method, but instead provide a simple string for unit.
+
+At TDWG St. Petersburg both Jacob and Kevin raised concern about this, since it is difficult to assess whether the necessary information for comparibility of quantitative characters that use measurement units at the character level is available. This problem occurs both in the simplified string and in the object reference case (in the latter no guarantee is given that the specific relation used in the data is present).
+
+In an attempt to solve the conflicting interest of flexibility, low entry level the final BDI.SDD_ 1.0 now proposes a different solution: MeasurementUnit is defined only at the character definition level. However, a scaling prefix may be defined at character definition (as default) and character data level (as override). Since the prefixes used in scientific SI units are completely enumerated (and provided as a UBIF enumeration), software can guarantee that it provides all necessary conversion methods.
+
+With this structure, the initial problem of "450 µm, 8 mm, 6 cm, 1.7 m, or 85 m" can be solved. However, it is no longer possible to use both inch and cm in a single character. They must either be converted upon or after data entry or two different characters in the same dataset may be used. Theoretically it is possible to provide a special inch-to-cm scaling prefix by extending BDI.SDD_, but this is not proposed generally because it is considered normally confusing (it would lead to reports like: 3 cm, 1 inch-to-cm, where the latter measurement would have to be understood by consumers as 2.54 cm.
+
+-- Main.GregorHagedorn - 30 Sep 2005@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685127" format="1.1" reprev="1.6" version="1.6"}%
+d5 1
+a5 1
+The Documentation on the <nop>MeasurementUnit element in BDI.SDD says that "Refers to ... definition in Terminology/General... "<br/>
+d12 1
+a12 1
+However, the reference to <nop>MeasurementUnit in BDI.SDD also has an <nop>InternationalAbbreviation child node.
+d23 1
+a23 1
+Currently, in BDI.SDD one has to create a <nop>QuantitativeCharacter for each each state with a different unit of measure.<br/>
+d30 1
+a30 1
+With the current BDI.SDD we coded it as follows:
+d67 1
+a67 1
+In BDI.SDD up to St. Petersburg meeting in 2005 it was possible to define measurement units both as a default at the character definition, and as "override" at character data in individual descriptions. Measurement Units where defined as first-class objects and they could, in both cases be used by reference. Measurement Units further contained a relation mechanism that provided for defining conversion factors between units. However, in an attempt to lower the usuage hurdle for BDI.SDD, both at character definition and character data level it was possible NOT to use the ref-to-MeasurementUnit object method, but instead provide a simple string for unit.
+d71 1
+a71 1
+In an attempt to solve the conflicting interest of flexibility, low entry level the final BDI.SDD 1.0 now proposes a different solution: MeasurementUnit is defined only at the character definition level. However, a scaling prefix may be defined at character definition (as default) and character data level (as override). Since the prefixes used in scientific SI units are completely enumerated (and provided as a UBIF enumeration), software can guarantee that it provides all necessary conversion methods.
+d73 1
+a73 1
+With this structure, the initial problem of "450 µm, 8 mm, 6 cm, 1.7 m, or 85 m" can be solved. However, it is no longer possible to use both inch and cm in a single character. They must either be converted upon or after data entry or two different characters in the same dataset may be used. Theoretically it is possible to provide a special inch-to-cm scaling prefix by extending BDI.SDD, but this is not proposed generally because it is considered normally confusing (it would lead to reports like: 3 cm, 1 inch-to-cm, where the latter measurement would have to be understood by consumers as 2.54 cm.
+d75 1
+a75 1
+-- Main.GregorHagedorn - 30 Sep 2005
+@
+
+
+1.5
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1128059650" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+The Documentation on the <nop>MeasurementUnit element in SDD says that "Refers to ... definition in Terminology/General... "<br/>
+d9 1
+a9 1
+	* Thanks, your are guessing correctly; I will improve the annotation! These small corrections are very important to me! -- Main.GregorHagedorn - 13 Sep 2004
+d12 1
+a12 1
+However, the reference to <nop>MeasurementUnit in SDD also has an <nop>InternationalAbbreviation child node.
+d15 5
+a19 5
+	* This is a more general question, and I welcome a general thought. Currently, for Agents and Units tentatively the concept of <nop>MicroMeasurementUnit and <nop>MicroAgent types have been proposed. These allow a local definition as an alternative to a reference to a <nop>ExternalDataInterface proxy object. This makes it more convenient for people who are scared about all the relations in the model, if they use only a single string to define it locally. 
+	* I am not sure this is worth it - I put it in to keep the discussion/idea alive. We have strongly opposing critique here, and many claim with the relations it is too complicated.
+	* Would in general the <nop>MeasurementUnit be a place where to do this, or should we rather enforce the use by ref? Please comment - we need something like an opinion poll on this!
+	* A confusing problem is that xml schema to my knowledge does not allow to specify the two cases as an alternative - which is the design intention. That is, you cannot validate that either the local <nop>InternationalAbbreviation must be present and ref missing, or the ref present, and <nop>InternationalAbbreviation missing. The alternative would be possible if ref would be an element, but it seems impossible when it is an attribute. Any insight on this?
+	* -- Main.GregorHagedorn - 13 Sep 2004
+d23 1
+a23 1
+Currently, in SDD one has to create a <nop>QuantitativeCharacter for each each state with a different unit of measure.<br/>
+d27 2
+a28 2
+			<nop>State1 : 6 dm<br/>
+			<nop>State2 : 3 ft <br/>
+d30 1
+a30 1
+With the current SDD we coded it as follows:
+d32 12
+a43 12
+	<Quantitative ref="2758" debugref="plant height when mature">
+						<Measure type="..." value="6.0"/>
+						<MeasurementUnit>
+							<InternationalAbbreviation>dm</InternationalAbbreviation>
+						</MeasurementUnit>
+					</Quantitative>
+					<Quantitative ref="2758" debugref="plant height when mature">
+						<Measure type="..." value="3.0"/>
+						<MeasurementUnit>
+							<InternationalAbbreviation>ft</InternationalAbbreviation>
+						</MeasurementUnit>
+					</Quantitative>
+d47 12
+a58 12
+												  <Quantitative ref="2758" debugref="plant height when mature">
+						<Measure type="..." value="6.0">
+							 <MeasurementUnit>
+							<InternationalAbbreviation>dm</InternationalAbbreviation>
+							 </MeasurementUnit>
+															 </Measure>
+															  <Measure type="..." value="3.0">
+							 <MeasurementUnit>
+							<InternationalAbbreviation>ft</InternationalAbbreviation>
+						</MeasurementUnit>
+														 </MeasurementUnit>
+					</Quantitative>
+d61 1
+a61 1
+-- Main.JacobAsiedu - 08 Jul 2005		  
+d67 1
+a67 1
+In SDD up to St. Petersburg meeting in 2005 it was possible to define measurement units both as a default at the character definition, and as "override" at character data in individual descriptions. Measurement Units where defined as first-class objects and they could, in both cases be used by reference. Measurement Units further contained a relation mechanism that provided for defining conversion factors between units. However, in an attempt to lower the usuage hurdle for SDD, both at character definition and character data level it was possible NOT to use the ref-to-MeasurementUnit object method, but instead provide a simple string for unit.
+d71 1
+a71 1
+In an attempt to solve the conflicting interest of flexibility, low entry level the final SDD 1.0 now proposes a different solution: MeasurementUnit is defined only at the character definition level. However, a scaling prefix may be defined at character definition (as default) and character data level (as override). Since the prefixes used in scientific SI units are completely enumerated (and provided as a UBIF enumeration), software can guarantee that it provides all necessary conversion methods.
+d73 1
+a73 1
+With this structure, the initial problem of "450 µm, 8 mm, 6 cm, 1.7 m, or 85 m" can be solved. However, it is no longer possible to use both inch and cm in a single character. They must either be converted upon or after data entry or two different characters in the same dataset may be used. Theoretically it is possible to provide a special inch-to-cm scaling prefix by extending SDD, but this is not proposed generally because it is considered normally confusing (it would lead to reports like: 3 cm, 1 inch-to-cm, where the latter measurement would have to be understood by consumers as 2.54 cm.
+a75 1
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1120829357" format="1.0" version="1.3"}%
+d59 15
+a73 1
+-- Main.JacobAsiedu - 08 Jul 2005  		
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1095065750" format="1.0" version="1.2"}%
+d3 58
+a60 16
+The Documentation on the <nop>MeasurementUnit element in SDD says that "Refers to ... definition in Terminology/General... "<br/>
+I am assuming this documentation comes from the old schema? , since the ref attribute points to <br/>
+<nop>ExternalDataInterface/MeasurementUnits/MeasurementUnit from <nop>UBIF.xsd -- Main.JacobAsiedu - 12 Sep 2004
+
+	* Thanks, your are guessing correctly; I will improve the annotation! These small corrections are very important to me! -- Main.GregorHagedorn - 13 Sep 2004
+
+The definition in <nop>UBIF.xsd has an <nop>InternationalAbbreviation element as a child node.
+However, the reference to <nop>MeasurementUnit in SDD also has an <nop>InternationalAbbreviation child node.
+Is this an error? If it is not,then does it make sense to define one or more  <nop>InternationalAbbreviation  for the same <nop>MeasurementUnit ? -- Main.JacobAsiedu - 12 Sep 2004
+
+	* This is a more general question, and I welcome a general thought. Currently, for Agents and Units tentatively the concept of <nop>MicroMeasurementUnit and <nop>MicroAgent types have been proposed. These allow a local definition as an alternative to a reference to a <nop>ExternalDataInterface proxy object. This makes it more convenient for people who are scared about all the relations in the model, if they use only a single string to define it locally. 
+	* I am not sure this is worth it - I put it in to keep the discussion/idea alive. We have strongly opposing critique here, and many claim with the relations it is too complicated.
+	* Would in general the <nop>MeasurementUnit be a place where to do this, or should we rather enforce the use by ref? Please comment - we need something like an opinion poll on this!
+	* A confusing problem is that xml schema to my knowledge does not allow to specify the two cases as an alternative - which is the design intention. That is, you cannot validate that either the local <nop>InternationalAbbreviation must be present and ref missing, or the ref present, and <nop>InternationalAbbreviation missing. The alternative would be possible if ref would be an element, but it seems impossible when it is an attribute. Any insight on this?
+	* -- Main.GregorHagedorn - 13 Sep 2004
+
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1095008387" format="1.0" version="1.1"}%
+d5 1
+a5 5
+<nop>ExternalDataInterface/MeasurementUnits/MeasurementUnit from <nop>UBIF.xsd <br/>
+The definition in <nop>UBIF.xsd has an <nop>InternationalAbbreviation element as a child node.<br/>
+However, the reference to <nop>MeasurementUnit in SDD also has an <nop>InternationalAbbreviation child node.<br/>
+Is this an error? <br/>
+If it is not,then does it make sense to define one or more  <nop>InternationalAbbreviation  for the same <nop>MeasurementUnit ?<br/>
+d7 1
+d9 3
+d13 5
+a18 2
+
+-- Main.JacobAsiedu - 12 Sep 2004
+@

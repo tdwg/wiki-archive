@@ -1,0 +1,29 @@
+---++ GUIDs for Taxon Names and Concepts
+
+RichardPyle on mailing list:
+
+_Is your data organised using taxon names or to taxon concepts?_
+
+I use Taxon concepts as the core unit, with only one series of ID #s (32-bit integers). Name IDs are derived from a defined subset of Concept IDs (the original description usage instance for each name). For a full explanation, see: www.phyloinformatics.org/pdf/1.pdf
+
+Note: I would NOT recommend this approach (names IDs derived from subset of concept IDs) for GUIDs.  It works WONDERFULLY and elegantly for my Taxonomer application, where ID numbers are always passed in context.  But for universally accessed GUIDs, there may be ambiguity whether ID#12345 references the concept asserted within the original description of a name, or just the concept-less name object.
+
+_Do you assign any reusable identifiers to taxon names or concepts (i.e. identifiers used in more than one database)?_
+
+I guess it depends on what you mean by "one database".  I think the best answer to your question for the "databases" I manage is "yes".
+
+_If so, what is the process in assigning new identifiers for additional taxa and for accommodating taxonomic change?_
+
+New names & concepts are created from multiple sources, and identifiers areassigned automatically within a single, common taxon data table accessed by all sources via the network.  Because records represent Name-usage instances, they never need to change (except for correcting data entry/transcription errors). Changing taxonomies are documented automatically simply by virtue of the fact that each usage is treated as a separate record, so the data table creates a history of alternate usages over time.  A single internal "current use" taxonomy is established by selecting a single usage record for each "Name" (sensu zoological perspective), representing the specific usage that we feel got it "right".
+
+_Where are these identifiers used (other organizations, databases, data exchange, recording forms, etc.)?_
+
+At this moment, they are used only internally within our institution. Soon, they will be shared among partners of the Pacific Basin Information Node (PBIN) -- part of the U.S. National Biological Information Infrastructure (NBII).
+
+_Do you use identifiers from any external classification within your database?_
+
+Not sure what this means, exactly, but we do cross-map our IDs to other IDs (e.g., ITIS TSNs, Catalog of Fishes ID numbers, etc.). And the nature of our data structure (tracking usage instances) automatically keeps track of multiple classifications. 
+
+_Would there be any social or technical roadblocks to replacing these identifiers with a single identifier that was guaranteed to be unique?_
+
+Not really -- depending on how a Name "unit" is scoped (as per my discussion above).

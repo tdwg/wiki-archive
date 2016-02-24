@@ -1,0 +1,197 @@
+%META:TOPICINFO{author="StanleyBlum" date="1372650856" format="1.1" reprev="1.37" version="1.37"}%
+%META:TOPICPARENT{name="WebHome"}%
+This page details a range of issues and solutions on Typo3
+
+---++!! Table of Contents
+
+%TOC%
+
+---+++Setting Up New TDWG Groups
+New Interest or Task Groups come into being via submitting an appropriate charter to TDWG Charters in OJS. Once a charter has been approved by the TDWG Executive Committee, it is published either as an Interest Group or Task Group 'journal', and then the basic online resources can be allocated.
+
+   * Set up TYPO3 base pages. Ricardo seems to have written plug-ins for most of this. Components include 
+      * Home page: Add the Convener with contact and summary of charter
+      * RHS navigation: Link to full charter, members, links to Wiki, mail list, document archive and news archive (most are plug-ins)
+   * Set up new definition of the group in the TYPO3 list backend
+      * Log on to the Typo3 backend (http://www.tdwg.org/typo3)
+      * Click the "List" menu on the left-hand side
+      * Select TDWG on the navigation pane (a gotcha!)
+      * Locate the 'Back-end User groups' list (the third table)
+      * Click the new record icon to the right of Grouptitle
+      * Fillin Grouptitle and select 'subgroup' from sub groups table
+      * Click the disk (save) icon at the top or bottom of the window
+   * Add registered users to the new group
+      * Assuming you are still logged into TYPO3 back-end, select List on the left and then click on TDWG at the root of the directory
+      * Go to the bottom of the page and enter part of the first name to be added in the search box and search away
+      * Click he Edit icon next to the matched name
+      * Navigate to the Table called Group and select the appropriate group from the right hand side of the table
+      * Click save
+      * Repeat for each group member 
+   * At this point, it is probably best to setup a group homepage structure
+      * There are templates for Interest and Task groups under the Actvities page. Best to do is to copy one of these and then move it to the right location (left click and 'move')
+      * Then it is a matter of editing the page names, content, plug ins etc. This is a big task unless you have experience.
+      * Select the home page of the group and add a Links and Latest News plug in by looking at the properties of other existing pages. Set the link page to do an automatic index of subpages. 
+      * Add content to the 'Normal' page. Suggest you add the title, conveners and summary from the charter here.
+      * The next page should be called Charter. There is a plug for TDWG Charters so copy the details from an existing group page where he charter is displayed. The charter is linked automatically from a published OJS charter but (I think) the format for the published galley MUST BE xhtml format. Somehow, TYPO3 and OJS are linked by Ricardo's code, but I don't know the mechanism. 
+      * Set to Page on the LHS and click on the Frontpage. 
+      * Select Edit page properties and set Type to Shortcut and then point it at the homepage of the group
+      * add other pages below the charter that act as direct links to priority pages for the group. These pages are created by editing their page properties. Set the type to External URL, give the page a title, Add the URL WITHOUT the http:// (that is selected below) and click save. Repeat for any subsequent pages.
+
+   * After doing the Phyloinformatics group, I now think you need to create a Website User group with a similar name
+      * Select List and Front-end user group
+      * The second table Website usergroup has the same icon to create a new group
+      * Enter a Group title
+      * Select TDWG subgroups from the groups selection
+      * Add an acronym and also mail list info and Wiki address 
+      * Select type of group (Interest or Task)
+      * If the home page has been created, point to the home page
+   * Add the new group to the TYPO3 Activities page with appropriate links as follows
+      * Log on to the Typo3 backend (http://www.tdwg.org/typo3)
+      * Click the "List" menu on the left-hand side
+      * Click the item "Front-end Users" on the website tree (down near the bottom of the tree)
+      * Scroll the contents panel all the way down to the "Search String" field, type the NAME of the group eg Literature and click "Search"
+      * Click on the pencil icon near the item "XXX e.g. Literature Interest Group" under the list of Website Usergroups.
+      * Click Edit in the pop-up
+      * Change the Wiki field accordingly.
+      * Click the "save" button.
+   * Setup permissions for Conveners to edit their TYPO3 pages
+      * Open Typo3, click List, then browse to the root of the page tree (called TDWG, near an little Earth icon). All registered users have a Typo3 backend account (listed under Backend user), but only a few have that account enabled. Only the 20 first users are listed at once, so you'll see on the second page of Backend users that AnnaWeitzman has a backend account (the icon next to her name is blue and not grayed out).
+      * To let someone in, first you need to locate them on that list by using the search field all the way at the bottom of the page. 
+      * Then you click the pencil icon and enable their backend account by unchecking the disable flag at the bottom of the form. I found (16/1/2011 for Rich Pyle for TNC pages) that if you set the DB Mount field to their home page, the Convener can edit the tree under this withoput having to be given admin access. *This is far wiser*
+      * Then you need to let them know they can access the backend at http://www.tdwg.org/typo3. They should use the same credentials they use everywhere on the site.
+   * See the http://wiki.tdwg.org/twiki/bin/view/TDWG_Systems/TDWGWikiDocumentation for setting up new group Wikis
+   * See the http://wiki.tdwg.org/twiki/bin/view/TDWG_Systems/TDWGMailmanDocumentation for setting up new mail lists
+
+---+++How to modify the TDWG Membership amounts and discounts
+
+   1. Log in to Typo3 back-end, click List, and then browse to the page Homepage->Membership->Financial Records
+   1. Down to the middle of the page you'll see a list of records called "Membership Pricing". These define the windows and prices for memberships. You'll see that those records a unit price, a type among two types available (individual and institutional membership) and a start and end dates. *Note* that there are 3 records for institutional membership, and these have defined start and stop dates. These define the windows in which the respective pricing is in effect. For example: Inst. membership up to 01-Jan-2008 was $225 Inst. membership from 01-Jan-2008 to 01-Mar-2008 was $400 Inst. membership from 01-Mar-2008 on was $500
+   1. I'm now adding a few more records to account for this and next year's discount. Just follow along to add more years. We are now good until 31-Dec-2011. Then we need to add more pricing records. 
+   1. The easiest way to add new records is to use Copy and Paste after the last record and then edit the dates and name.
+   1. I tried to edit a record when Stan suggested we accept discounts to March 31 2009 - and couldn't see how to get to the start and end dates. Here is Ricardo's response (thanks Ricardo!): "You need to check the box saying "Show secondary options (palettes)". That will let you see the start and stop dates." [This option occurs after selecting EDIT on a particular record.]
+   1. Notice also that the individual membership has no begin or end date, which means it's valid forever.
+   1. 2009_04_01_Lee. We had a bug in the form for institutional memberships. Overnight (my time) two people had tried to fill in the form but the amount field ($400) was blank. I changed the discount date till April 4 and then logged out and back in and this seemed to work. I don't know why the problem occurred but we may need to amend the discount dates in future to circumvent this problem. Superficially, it appears that there may be a problem on the changeover date? 
+   1. April 1, 2010: I just noted that the discounted and normal records overlapped in March. End date for discount was march 30 but start date for normal was March 1. Corrected.
+
+---+++Setting up the Annual Conference web pages (2009_03_12_Lee)
+   1. Sign into the back-end and set the previous years web site to hidden
+   1. Click on the root of the previous years site and select Copy and then select the root page again and press Insert Below. This will copy the complete structure [only main page] of the previous conference to a new page just after the old conference pages.  [ When I did this, I only got a copy of the main page, not the pages underneath it. Therefore, moving the old page is important, because only that page will take all the subpages to the new location.  --SB, 2012-04-22 ]
+   1. Click on the OLD conference page root and select More Options... and then select Move Page. A tree will be presented on the right hand side. Expand the Pages 'About TDWG' and 'Past Meetings' and select the position below the last conference entry. The old conference pages will then be MOVED to the new location.  The moved page should be renamed to match the convention for the old pages ("20NN Conference", instead of "Conference 20NN").
+   1. Edit the table on the page http://www.tdwg.org/about-tdwg/past-meetings/ and add a new line at the top of the table with the previous conference details. Just copy the line below and edit the details. The name of the old conference page will be something like http://www.tdwg.org/conference2008 conference. Dunno how this works but it does!
+   1. Select the new conference root (e.g. TDWG 2008 (copy 1)) and select Edit page properties and rename the page and add any other details as necessary.  Also uncheck the Hide Page checkbox near the top of the page properties.  To enable Conference_Editors to see the page, under "General options (continued)" the first item is "Access" and provides the ability to give members of one or more user groups read access when logged in.  [If General options (continued) is not visible, make sure the "include subpages" box is checked.]  See Creating Front End User Groups and visibility settings below.
+   1. Go through the structure, editing the page content and page names as required
+   1. You may want to enable someone associated with the local organizing committee to edit the content on the conference pages. If so, figure if front-end access is all that is required. If back-end access is needed for significant additions, then make sure they have some TYPO3 knowledge and first check with the sysadmins!
+   1. *NOTE* The TDWG conference programme is BEST done by using a copy of the table on a Wiki and then doing a complete SELECT and COPY, then paste it into the TYPO3 page over the top of any previous version. It is VERY difficult to edit complex tables in TYPO3! See http://wiki.tdwg.org/twiki/bin/view/Conferences/MeetingProgram2008 for an example. (Setup a PUBLIC Wiki page for the conference and add the programme table).   
+   1. See below about Correcting (Real) URLs!!  Real URLs translate to pageIDs.  Page titles might also translate/resolve to pageIDs.
+
+---+++Adding uploaded documents to a groups web page using a plug-in (2009_03_20_Lee)
+   1. Ricardo has I think added a 'Document' plug-in to a number of the groups web home page that will automatically pickup documents that are uploaded.
+   1. I wanted to add the LSID Applicability Statement to the GUIDs Document area and noted that viewing the properties of the pages didn't help. So I looked around and noted that one simply has use 'Filelist' on the LH menu of TYPO3 and then upload the relevant file.
+   1. The plug-in will display an image of the file type, the name of the document and the size of the document in a table (which I assume is 'Layout 2') under the properties of the Document page. 
+   1. I'm also guessing that 'fileadmin/subgroups/guid/||name' in the 'Read from path' is where the files will go with '||name' being how the files will use the uploaded name? Probably.   
+
+---+++Creating a new page in Typo3
+   1. Log into typo3 http://www.tdwg.org/typo3
+   1. Click on the "List" menu item
+   1. Click on the "Create New Record" icon at the top of the right-most frame (it looks like a document with an asterisk over it)
+   1. Click on the "Click here for wizard" link under Page
+   1. Choose the position in the hierarchy for this page
+   1. If you are don't want this to show up just yet, make sure you hide it in the menu and pages by selecting those checkboxes.  That way only the admin crew can see it until you are ready to release it.
+   1. Once saved, then right click on it and choose Edit, and then edit the page content through the various means that are provided within Typo3
+   1. Don't forget to save it!
+
+---+++Editing the plugin that controls OJS Standards Track dumps to the TDWG Standards pages
+   * Everything inside tdwg.org/standards is rendered using a plugin called tdwg: /var/www/typo3/tdwg/typo3conf/ext/tdwg/
+   * The plugin merges information from Typo3 configuration (the groups, etc) and from OJS. That's why it's difficult to see where things come from.
+   * The link the the review page has been removed by the lines commented at class.tx_tdwg_std_cover_page.php starting at line 303.
+   * The rendering of the reviews started at line 178 of pi_standards/class.tx_tdwg_pi_standards.php. These have been commented out as well.
+   * Take care when changing any of those files. It's often difficult to take things back to what they were once changed. But the whole thing in version control, so there's still hope ;). I hope this helps. Cheers, Ricardo
+
+---+++Correcting URLs and clearing cache
+I noted that the URLs for venue, maps and other subpages under conference2009/montpellier were showing as conference2009/fremantle. This is how this problem is corrected.
+   * You need to go to Real URL in the left-hand menu for the page you're interested in. 
+   * Click on the edit icon, confirm that you want to edit, then 
+   * Check edit full link (or whatever it actually says, I can't remember). The current URL appears in the box. 
+   * Check that it's correct, edit if it's not, and save (even if you don't change it). 
+   * Then go to the bottom of the left-hand menu and clear both of the caches.
+
+---+++Modifying TDWG Groups
+TDWG groups appear to be front-end groups in Typo3.  To change the membership you need to browse to each user and change them through the list management module in Typo3, then manually change each user's group memberships.
+As an example, to enable people to change pages, they need to be a Content Editor and Blog Author group member.
+
+---+++Modifying Secondary Institutional Members (see next for Primary)
+   * Log in (home page) and go to Membership | Membership management
+   * Identify the primary contact
+   * Log into TYPO3 back end
+   * Click List on the nav bar
+   * Click on the root of the directory tree
+   * Go to the bottom of the page and enter part of the primary contact's name and search
+   * Click on edit and get password
+   * Log out
+   * log in as Primary contact
+   * Nav to My Account
+   * Click on Edit next to the entry for the institution - DO NOT USE ENROL NEW contact!
+   * Select contact from drop down list and save (they must be registered!)
+   * Log out
+
+---+++Modifying the Primary or Secondary Contacts for an Institutional Member
+   * Log into the TYPO3 admin (back end)
+   * Select List from the functions
+   * Click on Front-end Users from the nav tree
+   * In the third list down, (Institutional Members), locate the name of the Institution or search for it down the bottom of the page
+   * Click on the edit icon 
+   * Nav to the Primary Contact box and enter the WIkiName of the Primary contact. I assume the system is smart enough to link this to a registered user.
+   * If needed, nav to the SEONDARY contact and make any changes as needed or the details of the institution
+   * Make any other changes necessary, SAVE and log out.
+
+---+++Changing a registered user profile to include Reviewer status for OJS
+   * Log into TYPO3 Admin
+   * Go to List and nav bar to Front End Users
+   * Down the bottom enter part of the user's name and search
+   * Click on edit icon next to name
+   * Get log in and password
+   * Log out
+   * Log in as user and change profile preference to include Reviewer (check box) - note an email will be sent to the registered user about an update in their profile so some email of warning would be appropriate.
+   * Log out.
+
+---+++Create a new Front-End User Group to have special access to otherwise hidden pages
+   * Log into TYPO3 admin
+   * Go to List and Nav bar to Front-end users near bottom of tree
+   * Click on New icon under Website usergroup
+   * Add the Group Title name of the new group
+   * Add a brief description of the reason for the new group
+   * Save the page (disc icon at top or bottom)
+   * Click back on Front-end users
+   * Down the bottom of the page search for any part of the names of the members of the new group
+   * Click on edit when the person's record is displayed
+   * Under the Groups heading, scroll down till you find the last group entered (this will be the group just created) and click on that group
+   * Save the record
+   * Repeat adding members
+   * Navigate to the page that you want to allow only this group to see
+   * Click on the page icon in the nav bar and select Visibility Settings from the list
+   * Under the Access heading, select from the Items list on the right, the group just created
+   * If appropriate check the box 'include sub pages'
+   * Save record (disk icon top or bottom)
+   * Log out and then log in as a member of that group and check the visibility. 
+
+---+++Setup the slides upload for TDWG conferences
+   * This assumes the prior years structure has been copied. This will mean that there is an upload page setup but with the wrong year
+   * Log into TYPO3 admin
+   * Click on List in the Nav bar [this is critical to have access to the code/template] and click on the upload page you want to modify
+   * You will see a number of sections on the page. Click on the edit icon next to the Presentations section and find the Section Read from path and update the path to reflect the latest year. You should only have to change the date as the rest of the path should be the same.  Save the change.
+   * Under the Template section there is a line +ext - click on the edit icon (left) and navigate in the displayed code line like 'plugin.tx_fileupload_pi1.path = fileadmin/2009conference/slides/', the upload directory and amend it to match the directory for the current year. You should only have to change the date. Save the change (just one).
+   * That's it.
+
+---+++Manually approve TDWG registration
+   * I got an email from someone who had registsred some time ago but was not approved. Odd - need to check if the notification for approval to lee@tdwg.org is sent and got through any filters.
+   * Anyway - here is what to do. Login to the TYPO3 back end and select List from the Nav bar. Go to Front-end Users and enter some of the name of the person. Edit the profile by clicking on the pen. Down the bottom of the profile there is a section called Gneral Option and it will have the Disable check box checked. Just uncheck it and Save. That should do it but test their login/pw.
+
+---+++Amend user details such as new email address
+   * From the annual OJS (all recipients) mailout about memberships, occasionally get an amendment to an email address. Here are the steps
+   * Log into TYPO3 admin (via Memberships on LHS)
+   * Click on Lists
+   * Search (down bottom) for old email address or name etc
+   * Click opn pencil next to relevant record
+   * Amend details
+   * Click save (floppy icon)
+   * Advise user

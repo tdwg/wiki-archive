@@ -1,0 +1,53 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258682523" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+---+!! %TOPIC%
+
+Previous versions of this topic discussed whether it would be appropriate to add special values to the xml language type to deal with situations where language is not appropriate at all (content is entirely language-neutral) or unknown. This was now resolved by using the extension mechanism defined in the xml language type itself!
+
+http://www.ietf.org/rfc/rfc1766.txt specifies that "x" is a reserved value for private use and that secondary codes of "x" will not be registered. Indeed, both xmlspy 2004 and 2005 accept a value like "x-unknown" as a valid value for the type xs:language. I have therefore removed the previous discussion and changed the UBIF schema to always use xs:language. 
+
+I propose that, by a UBIF convention, applications may desire to understand the following language codes:
+   * language=*"x-unknown"*: the language could not be defined, but the language attribute is required
+   * language=*"x-neutral"*: the content is language-neutral
+   * language=*"x-mixed"*: the content is a mixture of multiple languages<br/>(but in most cases a "dominant" language should be indicated, e.g. when other languages appear only in cited text)
+
+-- Gregor Hagedorn - 9 Nov. 2004
+
+The above is probably be obsolete. According to http://en.wikipedia.org/wiki/ISO_639, three special codes already exist in ISO 639-2:
+   * mul = Multiple languages / several languages used (defined in the normative text)
+   * und = Undetermined, language or languages cannot be identified (defined in the normative text)
+   * mis = Miscellaneous languages (defined in the list of codes).
+
+There seem to be no equivalent to language-neutral text, such as scientific organism names. Perhaps these should be registered as their own code?
+
+-- Main.GregorHagedorn - 14 Apr 2005
+
+---
+
+Javier de la Torre points out
+
+In a best practices document (http://www.ietf.org/rfc/rfc3066.txt) the following statements can be found:<br/>
+5 "You SHOULD NOT use the UND (Undetermined) code unless the protocol in use forces you to give a value for the language tag, even if the language is unknown. Omitting the tag is preferred."<br/>
+6. "You SHOULD NOT use the MUL (Multiple) tag if the protocol allows you to use multiple languages, as is the case for the Content-Language:  header.",<br/> where "SHOULD NOT" is defined as: "This phrase, or the phrase "NOT RECOMMENDED" mean that there may exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications should be understood and the case carefully weighed before implementing any behavior described with this label."
+
+I vote for making a language attribute required in the TDWG/GBIF data schemata in certain places, even if some providers have to choose the undefined value. I see our situation as "valid reasons in particular circumstances"...
+
+In GBIF we have a decidedly international agenda. This is currently building and therefore has not yet adequate enforcement mechanisms for practices. My personal estimate of realistic current practices is that for a while only required information will be given, and if a language attribute is not required it will be ignored -- even though most data providers could inform about language. The lack of language information may prevent the possibility to provide internationalized services, and the lack of services hinders non-schema social enforcement of providing language information (a hen or egg problem).
+
+In my experience the vast majority of html documents does not give any language information, even though it is obvious that almost all could and most should. The only chance there is to hope for the chinese to NOT use language tags as well, so people in English speaking countries will want to have those documents they can read tagged with a language code. Please add your vote as well.
+
+-- Main.GregorHagedorn - 14 Apr 2005
+
+---
+
+I also vote for making it mandatory. I fully agree with Gregor on the idea that things that are not requireed are just simple ignored. 
+With the actual configuration tool for the !BioCASe wrapper it is very easy to provide this information and I think it will not bother people to supply it because they know it.
+And if this help in the internationalization process asking the people to do it is worth.
+
+For some time I did not like the idea of forcing people to include metadata like this in their mappings, but I think it was just because of the lack of easy tools to provide it. Before it was rather complicate to provide this, you had to include it in your database and then map it. Now when it is so easy I fully agree on improving the quality of the documents the people create.
+
+Now I am a fan of mandatory metadata elements, like languages, measurement scale declaration, recordbasis, etc... We have to make the people clear that what is obvious for their single database in networks with so many sources we need to be much more explicit.
+
+-- Main.JavierTorre - 14 Apr 2005
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1089916489" from="SDD.ExtendLanguageWithNeutralAndUnknown" to="UBIF.ExtendLanguageWithNeutralAndUnknown"}%

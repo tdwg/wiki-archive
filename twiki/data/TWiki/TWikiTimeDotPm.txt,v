@@ -1,0 +1,157 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.12.05;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Time=
+
+Time handling functions.
+
+
+%TOC%
+
+---++ StaticMethod *parseTime* <tt>($szDate,$defaultLocal) -> $iSecs</tt>
+
+Convert string date/time string to seconds since epoch (1970-01-01T00:00:00Z).
+   * =$sDate= - date/time string
+
+Handles the following formats:
+   * 31 Dec 2001 - 23:59
+   * 2001/12/31 23:59:59
+   * 2001.12.31.23.59.59
+   * 2001/12/31 23:59
+   * 2001.12.31.23.59
+   * 2001-12-31T23:59:59
+ISO dates may have a timezone specifier, either Z or a signed difference
+in hh:mm format. For example:
+   * 2001-12-31T23:59:59+01:00
+   * 2001-12-31T23:59Z
+The default timezone is Z, unless $defaultLocal is true in which case
+the local timezone will be assumed.
+
+If the date format was not recognised, will return 0.
+
+
+
+---++ StaticMethod *formatTime* <tt>($epochSeconds,$formatString,$outputTimeZone) -> $value</tt>
+
+   * =$epochSeconds= epochSecs GMT
+   * =$formatString= twiki time date format, default =$day $month $year - $hour:$min=
+   * =$outputTimeZone= timezone to display, =gmtime= or =servertime=, default is whatever is set in $TWiki::cfg{DisplayTimeValues}
+=$formatString= supports:
+   | $seconds | secs |
+   | $minutes | mins |
+   | $hours | hours |
+   | $day | date |
+   | $wday | weekday name |
+   | $dow | day number (0 = Sunday) |
+   | $week | week number |
+   | $month | month name |
+   | $mo | month number |
+   | $year | 4-digit year |
+   | $ye | 2-digit year |
+   | $http | ful HTTP header format date/time |
+   | $email | full email format date/time |
+   | $rcs | full RCS format date/time |
+   | $epoch | seconds since 1st January 1970 |
+
+
+
+---++ StaticMethod *formatDelta* <tt>($s) -> $string</tt>
+
+Format a time in seconds as a string. For example,
+"1 day, 3 hours, 2 minutes, 6 seconds"
+
+
+
+---++ StaticMethod *parseInterval* <tt>($szInterval) -> [$iSecs,$iSecs]</tt>
+
+Convert string representing a time interval to a pair of integers
+representing the amount of seconds since epoch for the start and end
+extremes of the time interval.
+
+   * =$szInterval= - time interval string
+
+in yacc syntax, grammar and actions:
+<verbatim>
+interval ::= date                 { $$.start = fillStart($1); $$.end = fillEnd($1); }
+         | date '/' date          { $$.start = fillStart($1); $$.end = fillEnd($3); }
+         | 'P' duration '/' date  { $$.start = fillEnd($4)-$2; $$.end = fillEnd($4); }
+         | date '/' 'P' duration  { $$.start = fillStart($1); $$.end = fillStart($1)+$4; }
+         ;
+</verbatim>
+an =interval= may be followed by a timezone specification string (this is not supported yet).
+
+=duration= has the form (regular expression):
+<verbatim>
+   P(<number><nameOfDuration>)+
+</verbatim>
+
+nameOfDuration may be one of:
+   * y(year), m(month), w(week), d(day), h(hour), M(minute), S(second)
+
+=date= follows ISO8601 and must include hypens.  (any amount of trailing
+       elements may be omitted and will be filled in differently on the
+       differents ends of the interval as to include the longest possible
+       interval):
+
+   * 2001-01-01T00:00:00
+   * 2001-12-31T23:59:59
+
+timezone is optional. Default is local time.
+
+If the format is not recognised, will return empty interval [0,0].
+
+TODO: timezone
+      testing, especially on non valid strings
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d8 1
+a8 1
+---++ StaticMethod *parseTime* <tt>($szDate) -> $iSecs</tt>
+d10 1
+a10 1
+Convert string date/time to seconds since epoch.
+d19 3
+a21 1
+   * 2001-12-31T23:59:59Z
+d24 2
+a25 1
+   * 2001-12-31T23:59+01:00
+d32 1
+d54 1
+d96 1
+a96 1
+timezone is optional and not supported yet.
+@

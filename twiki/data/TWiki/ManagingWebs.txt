@@ -1,0 +1,99 @@
+%META:TOPICINFO{author="RicardoPereira" date="1178548916" format="1.1" reprev="1.31" version="1.31"}%
+%TOC%
+%STARTINCLUDE%
+---# Managing Webs
+
+_Adding, renaming and deleting webs are all web-based operations._
+
+---++ Overview
+
+A TWikiSite is divided into webs; each one represents one subject, one area of collaboration. Administrators (in the %MAINWEB%.TWikiAdminGroup) can add/rename/delete webs.
+
+#WebTemplate
+---++ Choose Web Template
+
+There are two methods used to create a new web.  First you can use a specially designed TemplateWeb.  This is an invisible web that begins with an underscore &quot;_&quot; character (for example =_default=).  All topics in the template web will be copied into your new web.
+
+The second method is to use an existing web as a template web.  This may be useful if you already have a web that you would like to use as a starting point.  Only topics that have names beginning with *Web...* (like "%HOMETOPIC%", "%NOTIFYTOPIC%", etc.) are copied.
+
+In either case you will want to be sure to verify that your new web has all the custom modifications that you desire.
+
+#CreateNewWeb
+---++ Adding a New Web
+
+<form name="admin" action="%SCRIPTURLPATH{manage}%/%WEB%/%TOPIC%" method="post">
+Create a new web by filling out this form.%BR%
+__%X% Note:__ *Keep the number of webs to a minimum!* It is not recommended to create a new web for each little project. You can organize content within a web using categories, TWikiForms and FormattedSearch. Cross-linking topics and search is easier if there are only a few larger webs.
+|  *Name of new web:* | <input name="newweb" type="text" value="%URLPARAM{"newweb"}%" size="16" /> | The name must start with an upper case letter, followed by upper or lower case letters or numbers. Specify a short name to avoid long URLs. |
+|  *Based on web:* | <select name="baseweb"> %WEBLIST{ "<option $marker>$name</option>" webs="webtemplate,public" selection="_default" separator=" "}% </select> | Select a TemplateWeb |
+|  *Web color:* | <input name="webbgcolor" type="text" value="#D0D0D0" size="16" /> | Enter a StandardColors code for the web |
+|  *Description:<br /> &nbsp;<br /> &nbsp;* | <input type="text" name="sitemapwhat" value="" size="60" /><br /> Enter a short description of the web. Write =Web.TopicName= instead of just =TopicName= if you include links. This will list the web in the %TWIKIWEB%.SiteMap (leave field empty if you prefer not to update the directory.) ||
+|  *Use to...<br /> &nbsp;* | <input type="text" name="sitemapuseto" value="...collaborate on" size="60" /><br /> Continue the sentence describing the intended use. This is also for the %TWIKIWEB%.SiteMap ||
+|  *Set NOSEARCHALL:* | <input type="radio" name="nosearchall" value="" checked="checked" /> No &nbsp; <input type="radio" name="nosearchall" value="on" /> Yes | Specify if you want to exclude the web from a "search all webs" search. *This will not prevent users accessing the web*. It will simply hide it from searches. |
+| *&nbsp;* | <input type="submit" class="twikiSubmit" value="Create new web" /> ||
+<input name="newtopic" type="hidden" value="%URLPARAM{"newtopic"}%" />
+<input name="action" type="hidden" value="createweb" />
+</form>
+
+__Notes:__
+   * You have to have =ROOTCHANGE= access to create a top-level web (one with no parent)
+   * Attachments will NOT get copied over along with their topics
+   * While creating the new web, TWiki will update the following variables in the %WEBPREFSTOPIC%: =WEBBGCOLOR=, =SITEMAPLIST=, =SITEMAPWHAT=, =SITEMAPUSETO= and =NOSEARCHALL=.  These variables are used to dynamically generate the SiteMap
+   * TWiki does not edit the [[%TWIKIWEB%.TWikiPreferences]] to update the =WIKIWEBLIST=.  This must be done by hand
+
+#Add Web to Homepage and Web List
+---++ Adding the New Web to the Homepage and Web List
+
+_Specific instructions for TDWG wiki, added by Main.RicardoPereira on 07-May-2007_
+
+After a web is created, references to it must be included on Main.WebHome and Main.SubgroupWebLeftBarWebList. Edit those two pages and follow the pattern used to present the other wiki webs.
+
+#RenameWeb
+---++ Renaming or Deleting a Web
+
+Rename a web via the Tools section in each web's %WEBPREFSTOPIC% topic.  You may delete a web by moving it into a Trash web.  
+
+---+++ Permissions
+
+You may only rename a web if you have permissions to rename all the topics within that web, including any topics in that web's subwebs.  You will also need permissions to update any topics containing references to that web.
+
+---+++ Edit Conflicts
+
+If anyone is editing a topic which requires updating, or which lives in the web being renamed, a second confirmation screen will come up which will indicate which topics are still locked for edit.  You may continue to hit the refresh button until an edit lease is obtained for each topic which requires updating (the "Refresh" button will change to "Submit"), or hit "Cancel", which will cancel your edit lease on all affected topics.
+
+---+++ Renaming the webs in the distribution
+
+If you plan to rename the %MAINWEB% web, remember that TWiki stores user and group topics in this web. That means that every WikiName signature - =%MAINWEB%.<nop>SomeUserName= - points to it and would need updating (unless the variable, =%<nop>MAINWEB%.<nop>SomeUserName=, is used throughout). This potentially large change can be performed automatically if you rename the web from the Tools section of %WEBPREFSTOPIC%, as described above.
+
+%X% If you want to rename the %TWIKIWEB% or %MAINWEB% webs, remember they are referred to in the TWiki configuration. You will need to change the ={SystemWebName}=, ={UsersWebName}= and/or ={LocalSitePreferences}= settings in the configuration using the [[%SCRIPTURL{configure}%][configure]] interface.
+
+---++ Hierarchical Webs
+
+Hierarchical web support is enabled by turning on the ={EnableHierarchicalWebs}= setting in [[%SCRIPTURLPATH{"configure"}%][configure]]. Without this setting, TWiki will only allow a single level of hierarchy (webs). If you set this, you can use multiple levels, like a directory tree, i.e. webs within webs.
+
+__%T% Note:__ You might not need hierarchical webs. TWiki topics already have a parent/child relationship within a web, which is shown in the breadcrumb. Try to keep the number of webs to a minimum in order to keep search and cross-referencing simple.
+
+You can create hierarchical webs via the _Adding a New Web_ form above, by using a slash- or dot-separated path name which is based on an existing web name in the _Name of new web:_ field.
+
+*Example:*
+
+To create a subweb named =Bar= inside a web named =Foo=, use =Foo/Bar= or =Foo.Bar= as the new web name in the form above.
+
+---+++ Subweb Preferences are Inherited
+
+The preferences of a subweb are inherited from the parent web and overridden locally.  Preferences are ultimately inherited from the [[%TWIKIWEB%.TWikiPreferences]] topic.
+
+*Example Preference Inheritance for =Sandbox/TestWeb/SubWeb.SubWebTopic= topic:*
+
+   1. =%TWIKIWEB%.TWikiPreferences= site-wide preferences
+   2. =Sandbox.%WEBPREFSTOPIC%= inherits from and overrides settings in =%TWIKIWEB%.TWikiPreferences=
+   3. =Sandbox/TestWeb.%WEBPREFSTOPIC%= inherits from and overrides settings in =Sandbox.%WEBPREFSTOPIC%=
+   4. =Sandbox/TestWeb/SubWeb.%WEBPREFSTOPIC%= inherits from and overrides settings in =Sandbox/TestWeb.%WEBPREFSTOPIC%= 
+   5. =Sandbox/TestWeb/SubWeb.SubWebTopic= inherits from and overrides settings in =Sandbox/TestWeb/SubWeb.%WEBPREFSTOPIC%= 
+
+---+++ Navigation
+
+The Pattern skin (default) indicates Subwebs by indenting them in the sidebar relative to their level in the hierarchy.
+
+
+__Related Topics:__ AdminDocumentationCategory, AdminToolsCategory

@@ -1,0 +1,146 @@
+head	1.5;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.5
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.04.25.08.30.15;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2003.11.17.15.08.18;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.11.14.12.21.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.11.13.17.30.46;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.5
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1145953815" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="StoredIdentificationKeys"}%
+Identification keys provide an explicit Reticulation element pointing into any node in the same or other stored identification keys. Indirectly, identification keys are thus Directed Acyclic Graphs.
+
+These reticulations within a key are occasionally used in conventional keys in biology to either provide for abnormal individuals, or to catch known misinterpretations by the user and lead them back to the main track. The Reticulation element is different from the Subkey element, pointing to entire identification keys.
+
+These should not be used to create cycles, although this requires external (non-w3c xml-schema) validation. The main cost is that machine traversal will require cycle detection. This is not very deep- cycle detection algorithms are in most algorithm texts-but it is a bit of a nuisance and in any case, should be clearly signalled in the annotation.
+
+<p><b>Example:</b><br />
+A1<br />
+&nbsp; &nbsp;B1<br />
+&nbsp; &nbsp;B2<br />
+&nbsp; &nbsp; &nbsp; &nbsp;C1<br />
+&nbsp; &nbsp; &nbsp; &nbsp;C2<br />
+A2<br />
+&nbsp; &nbsp;D1<br />
+&nbsp; &nbsp;D2<br />
+&nbsp; &nbsp; &nbsp; &nbsp;E1<br />
+&nbsp; &nbsp; &nbsp; &nbsp;E2</p>
+  
+If at question A a user trying to identify a atypical individual goes to A1 although most individual would be under A2, this problem can be caught later on, e.g. by pointing from C2 back to the A2 node. Similarly, if many such reticulations are build into the tree, it would be possible to catch another case at E2 and lead back to A1. This would then no longer be directed acyclical graph. In biology this would probably not be a problem, since the following question would be answered differently, so that a true cyclical behaviour is unlikely, at least in a well designed key.
+
+(Topic based on discussion Bob, Jacob, Gregor, updated to conform with SDD 1.1) -- Main.GregorHagedorn - 25 Apr 2006
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1145954778" from="SDD.GuidedKeysCanRepresentArbitraryDirectedGraphs" to="SDD.StoredIdentificationKeysMayBeDirectedGraphs"}%
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 3
+a3 31
+%META:TOPICINFO{author="BobMorris" date="1069081698" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="GuidedKeys"}%
+Is this a good thing? I wonder about graphs with cycles in them. More precisely, the keyrefs on <nop>KeyNode objects can point anywhere into any GuidedKey. I'd almost rather see only Directed Acyclic Graphs---though I can't defend it at the moment. 
+
+Main.JacobAsiedu thinks some work we do in neuroscience may need cycles. In keys to neural cell types, cells can be both presynaptic for one cell and postsynaptic for another cell. Until we try to make a cell guide with SDD, I am not sure this will cause cycles in the <nop>GuidedKey graph.
+
+-- Main.BobMorris - 13 Nov 2003
+
+<p>The KeyNode element provides for reticulations between arbitrary nodes of keys (rather than only pointers between entire subkeys as in the Subkey element). These reticulations within a key are occasionally used in conventional keys in biology to either provide for abnormal individuals, or to catch known misinterpretations by the user and lead them back to the main track.</p>
+
+<p>A potential problem with the proposal is that hte current solution provides for arbitrary directed graphs and is not restricted to acyclical directed graphs. In theory it is possible when traversing the tree of the guided key to run in a loop.</p>
+
+<p><b>Example:</b><br />
+A1<br />
+&nbsp; &nbsp;B1<br />
+&nbsp; &nbsp;B2<br />
+&nbsp; &nbsp; &nbsp; &nbsp;C1<br />
+&nbsp; &nbsp; &nbsp; &nbsp;C2<br />
+A2<br />
+&nbsp; &nbsp;D1<br />
+&nbsp; &nbsp;D2<br />
+&nbsp; &nbsp; &nbsp; &nbsp;E1<br />
+&nbsp; &nbsp; &nbsp; &nbsp;E2</p>
+  
+<p>If at question A a user trying to identify a atypical individual goes to A1 although most individual would be under A2, this problem can be caught later on, e.g. by pointing from C2 back to the A2 node. Similarly, if many such reticulations are build into the tree, it would be possible to catch another case at E2 and lead back to A1. This would then no longer be directed acyclical graph. In biology this would probably not be a problem, since the following question would be answered differently, so that a true cyclical behaviour is unlikely, at least in a well designed key.</p>
+
+What do we gain, if we restrict guided keys to acyclical graphs? 
+
+Main.GregorHagedorn - 14 Nov 2003
+
+The main cost is that machine traversal will require cycle detection. This is not very deep- cycle detection algorithms are in most algorithm texts-but it is a bit of a nuisance and in any case, should be clearly signalled in the annotation.
+d5 21
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1068812460" format="1.0" version="1.2"}%
+d30 3
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1068744646" format="1.0" version="1.1"}%
+d9 21
+@

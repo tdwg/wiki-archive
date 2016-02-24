@@ -1,0 +1,558 @@
+head	1.14;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.14
+date	2009.11.25.03.14.31;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2009.11.20.02.45.22;	author LeeBelbin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.05.04.11.26.31;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.06.21.11.29.59;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.06.10.06.40.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.05.03.15.05.53;	author BryanHeidorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.05.03.09.53.33;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.05.02.03.25.14;	author BobMorris;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.05.01.23.38.15;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.04.30.16.24.57;	author BryanHeidorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.04.20.12.25.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.04.19.23.31.11;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.04.19.18.47.11;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.14
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118871" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+(This is a probably short-lived, but <strong>urgent</strong> request for comment/opinion! Input is urgent because it currently prevents upload of a new beta version for BDI.SDD_ 0.91)
+
+In BDI.SDD_ 0.9 Document/Descriptions used to have an unbounded choice resulting in a sequence of <nop>NaturalLanguageDescription (NLD) and <nop>CodedDescription (CD), which could, e. g., be NLD, CD, CD, NLD, CD, NLD, NLD ... The reason is historical: there used to be an IPR/metadata envelope around multiple description which has now been "normalized" away. The unbounded choice has been a cause of misunderstanding and should go away. To clarify the differences and simplify applications interested only in one of these variants, separate containers for NLD and CD have now been introduced. We thus have three description containers in the wider sense (i.e. including Keys; the relation to terminology and entities is identical in Keys and <nop>NaturalLanguageDescriptions). 
+
+How should they be arranged? I believe we agree that the form of the schema is important for modularization and communication. I therefore ask: 
+
+<table><tr valign="top">
+<td>should we have:<pre>
+DataSet 
+  Terminology
+  Entities
+    Classes
+    Objects
+  Descriptions
+    CodedDescriptions
+    NaturalLanguageDescriptions
+    Keys </pre></td>
+<td>Or perhaps:<pre>
+DataSet
+  Terminology
+  Entities
+    Classes
+    Objects
+  CodedDescriptions
+  NaturalLanguageDescriptions
+  Keys </pre></td>
+<td>Or:<pre>
+DataSet
+  Terminology
+  Entities
+    Classes
+    Objects
+  Descriptions
+    CodedDescriptions
+    NaturalLanguageDescriptions
+  Keys </pre></td>
+</tr></table>
+
+Note: "DataSet" was named "Document" in BDI.SDD_ 0.9)
+
+I prefer the first because structural explanation of relations of parts of the schema are easiest. But is it sufficiently intuitive to consider a diagnostic key with statements as another form of description, or will this prevent people from finding what they are looking for? I wait for your social engineering input!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 19 Apr 2004
+---
+
+The main reason I don't like the first is that I think a description is one or more _paths_ through a guided key. While it is possible to argue that a guided key is a description of a superclass of the taxa described by paths therein, this class is not always part of any interesting hierarchy. Sometimes it has no better informal description than "the things described by this key". Examples for us include a key to the aquatic invertebrates of New England and a key to the invasive plants of New England. Somewhat characteristic of these keys is that the leaf nodes vary in their taxonomic rank for no other reason than lack of knowledge. Also we also sometimes mix life forms within the keys.
+
+As to the second, I wonder if it presents a problem in Descriptions which are part Coded and part <nop>NaturalLanguage. Hence, for the moment, I prefer the third, though maybe it still doesn't address my objection to the second.
+
+-- Main.BobMorris - 19 Apr 2004
+---
+
+The first argument is interesting, because it highlights a possible misunderstanding: I was thinking of keys as containing a number of descriptions of the classes/objects that are keyed out. These descriptions are not organized by class--but it is trivial to dynamically rearrange them in such a way. However, whereas the levels of Descriptions/CodedDescriptions/CodedDescription and Descriptions/NaturalLanguageDescriptions/NaturalLanguageDescription exactly correspond, Descriptions/Keys/Key is a different level.
+
+"Coded and part <nop>NaturalLanguage": Syntactically this does not exist in BDI.SDD_. Does anybody have a use case that requires it (or makes it desirable due to much simpler implementation)? Currently, natural language descriptions offer the full expressiveness of coded descriptions (but not all the validations and not the handling simplicity regarding rearranging data). The other way round, a coded description may contain fragments of free-form text (albeit without markup). So there are some limitations.
+
+BTW: I have less a problem with the structure of the third solution (I agree that CD and NLD are closer related than CD or NLD to Keys). It is more that the name "Descriptions" seems to imply that Keys are not class descriptions. I believe Keys are a special arrangement of descriptions, even though they are not normally called "descriptions" in biology. But perhaps we should stick to conventional use rather than inventing new terminology that may in the end be more appropriate?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 20 Apr 2004
+---
+
+The third option addresses the needs. The main distinction that I see between keys and coded descriptions is ordering constraints. 
+
+*Mixed CD and NLD:* We mark-up natural language descriptions at varying levels of detail including down to the character data. Thus we end up with mixed representations of CD and NLD. However, because of ordering constraints and other processing issues, we end up pulling the character data into other elements. In BDI.SDD_ I think we would end up with non-parallel CD NLD sections. I do not think this is a problem. Originally, I had envisioned that we might merge them in BDI.SDD_. For example, we can recognize that a sentence in a NLD is about the flower and marked up appropriately. We may recognize and markup that a clause in that sentence is about the sepals, another the petals, and another the bud. We may even markup that there is a bud tip shape character and the value is blunt. Having done this however it does not fit into the BDI.SDD_ structure at all for characters. It is better to move the bud tip shape=blunt up to the CD sections and leave the NL in an independent section. 
+
+-- Main.BryanHeidorn - 30 Apr 2004   
+
+Donald Hobern and Steve Shattuck whom I asked at GB8 were of the same opinion. I will use the third arrangement as proposed by each of you. This is also closest to our previous arrangement. 
+
+*Mixed CD and NLD:* I find it interesting and suprising that you have problems with ordering constraints in NLD. Clearly, the text that is being marked up in an NLD imposes ordering constraints, but there is the CD is intended as a completely unordered set. I am not clear what you are trying to achieve. Can you elaborate the example why "... it does not fit into the BDI.SDD_ structure at all for characters."?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 1 May 2004
+
+---
+
+In our own present EFG => BDI.SDD_ we have a mix for exactly these reasons as Bryan, and not very good, reasons. Doing no NLP (or more precisely, doing only static pattern recognition from metadata we produce by hand from the underlying data schema), we nevertheless have some fields that are easily, or with minor parsing, generated as CD. We deal with the rest verbatim. Hence it is not the case that we have a CD and an NLD that are the same as one another. Rather, they represent disjoint sets of characters, and the union of the two is the total description. I am fairly sure that this is not really what any of us on the committee envisioned, except as we thought of "partially coded" descriptions. OTOH, I prefer to think of them as "partially natural language". :-) 
+
+Jacob will talk about this briefly when in Berlin when he describes how our implementation was done. BTW, as I have been saying publicly for a long time, a great deal of the code is automatically generated, in his case by the Castor XML databinding framework which automatically generates marshalling/unmarshalling (i.e. Java->XML/XML->Java) code for each of the two schemas (EFG and BDI.SDD_). The main work is then deriving BDI.SDD_ Java objects from EFG Java objects.
+
+-- Main.BobMorris - 02 May 2004
+
+I see no problem in having part information in CD and part in NLD (with markup). Having overlapping or disjoint sets of information in multiple CD is in fact part of the design of BDI.SDD_, and the processors is expected to aggregate a "complete" description. I believe aggregating CD + NLD is a factual problem, but not a design problem for BDI.SDD_, right?
+
+Regarding the "dirty data" export problem, I think the best solution is in fact to export it all as NLD. In BDI.SDD_ the NLD is designed such that it can express as much as CD. If not that is a bug in BDI.SDD_... There is no requirement on NLD to have the same level of markup for all characters. So the "good" CD-enabled characters could be exported into NLD with full character state markup, the more difficult character only with a character bracket around the text.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3 May 2004
+ 
+Our difficulty with order is not in keeping order in the CD or in the NLP but in keeping order in the mix of the two. If for example the parsers recognize three CD level descriptions randomly distributed within a paragraph of text we would like to make those characters available for a different type of processing or use than the full text, a key for example. We wish to keep the NLP to use with different search parameters simultaneously. If we leave the CD characters imbedded in the NLP we have some redundancy.  I do not think this is a critical problem for BDI.SDD_.
+
+-- Main.BryanHeidorn - 03 May 2004   
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1086849525" from="SDD.AreKeysDescriptions" to="SDD.ClosedTopicAreKeysDescriptions"}%
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685122" format="1.1" reprev="1.13" version="1.13"}%
+d5 1
+a5 1
+(This is a probably short-lived, but <strong>urgent</strong> request for comment/opinion! Input is urgent because it currently prevents upload of a new beta version for BDI.SDD 0.91)
+d7 1
+a7 1
+In BDI.SDD 0.9 Document/Descriptions used to have an unbounded choice resulting in a sequence of <nop>NaturalLanguageDescription (NLD) and <nop>CodedDescription (CD), which could, e. g., be NLD, CD, CD, NLD, CD, NLD, NLD ... The reason is historical: there used to be an IPR/metadata envelope around multiple description which has now been "normalized" away. The unbounded choice has been a cause of misunderstanding and should go away. To clarify the differences and simplify applications interested only in one of these variants, separate containers for NLD and CD have now been introduced. We thus have three description containers in the wider sense (i.e. including Keys; the relation to terminology and entities is identical in Keys and <nop>NaturalLanguageDescriptions). 
+d43 1
+a43 1
+Note: "DataSet" was named "Document" in BDI.SDD 0.9)
+d59 1
+a59 1
+"Coded and part <nop>NaturalLanguage": Syntactically this does not exist in BDI.SDD. Does anybody have a use case that requires it (or makes it desirable due to much simpler implementation)? Currently, natural language descriptions offer the full expressiveness of coded descriptions (but not all the validations and not the handling simplicity regarding rearranging data). The other way round, a coded description may contain fragments of free-form text (albeit without markup). So there are some limitations.
+d68 1
+a68 1
+*Mixed CD and NLD:* We mark-up natural language descriptions at varying levels of detail including down to the character data. Thus we end up with mixed representations of CD and NLD. However, because of ordering constraints and other processing issues, we end up pulling the character data into other elements. In BDI.SDD I think we would end up with non-parallel CD NLD sections. I do not think this is a problem. Originally, I had envisioned that we might merge them in BDI.SDD. For example, we can recognize that a sentence in a NLD is about the flower and marked up appropriately. We may recognize and markup that a clause in that sentence is about the sepals, another the petals, and another the bud. We may even markup that there is a bud tip shape character and the value is blunt. Having done this however it does not fit into the BDI.SDD structure at all for characters. It is better to move the bud tip shape=blunt up to the CD sections and leave the NL in an independent section. 
+d74 1
+a74 1
+*Mixed CD and NLD:* I find it interesting and suprising that you have problems with ordering constraints in NLD. Clearly, the text that is being marked up in an NLD imposes ordering constraints, but there is the CD is intended as a completely unordered set. I am not clear what you are trying to achieve. Can you elaborate the example why "... it does not fit into the BDI.SDD structure at all for characters."?
+d80 1
+a80 1
+In our own present EFG => BDI.SDD we have a mix for exactly these reasons as Bryan, and not very good, reasons. Doing no NLP (or more precisely, doing only static pattern recognition from metadata we produce by hand from the underlying data schema), we nevertheless have some fields that are easily, or with minor parsing, generated as CD. We deal with the rest verbatim. Hence it is not the case that we have a CD and an NLD that are the same as one another. Rather, they represent disjoint sets of characters, and the union of the two is the total description. I am fairly sure that this is not really what any of us on the committee envisioned, except as we thought of "partially coded" descriptions. OTOH, I prefer to think of them as "partially natural language". :-) 
+d82 1
+a82 1
+Jacob will talk about this briefly when in Berlin when he describes how our implementation was done. BTW, as I have been saying publicly for a long time, a great deal of the code is automatically generated, in his case by the Castor XML databinding framework which automatically generates marshalling/unmarshalling (i.e. Java->XML/XML->Java) code for each of the two schemas (EFG and BDI.SDD). The main work is then deriving BDI.SDD Java objects from EFG Java objects.
+d86 1
+a86 1
+I see no problem in having part information in CD and part in NLD (with markup). Having overlapping or disjoint sets of information in multiple CD is in fact part of the design of BDI.SDD, and the processors is expected to aggregate a "complete" description. I believe aggregating CD + NLD is a factual problem, but not a design problem for BDI.SDD, right?
+d88 1
+a88 1
+Regarding the "dirty data" export problem, I think the best solution is in fact to export it all as NLD. In BDI.SDD the NLD is designed such that it can express as much as CD. If not that is a bug in BDI.SDD... There is no requirement on NLD to have the same level of markup for all characters. So the "good" CD-enabled characters could be exported into NLD with full character state markup, the more difficult character only with a character bracket around the text.
+d92 1
+a92 1
+Our difficulty with order is not in keeping order in the CD or in the NLP but in keeping order in the mix of the two. If for example the parsers recognize three CD level descriptions randomly distributed within a paragraph of text we would like to make those characters available for a different type of processing or use than the full text, a key for example. We wish to keep the NLP to use with different search parameters simultaneously. If we leave the CD characters imbedded in the NLP we have some redundancy.  I do not think this is a critical problem for BDI.SDD.
+@
+
+
+1.12
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1146741991" format="1.0" version="1.11"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+(This is a probably short-lived, but <strong>urgent</strong> request for comment/opinion! Input is urgent because it currently prevents upload of a new beta version for SDD 0.91)
+d7 1
+a7 1
+In SDD 0.9 Document/Descriptions used to have an unbounded choice resulting in a sequence of <nop>NaturalLanguageDescription (NLD) and <nop>CodedDescription (CD), which could, e. g., be NLD, CD, CD, NLD, CD, NLD, NLD ... The reason is historical: there used to be an IPR/metadata envelope around multiple description which has now been "normalized" away. The unbounded choice has been a cause of misunderstanding and should go away. To clarify the differences and simplify applications interested only in one of these variants, separate containers for NLD and CD have now been introduced. We thus have three description containers in the wider sense (i.e. including Keys; the relation to terminology and entities is identical in Keys and <nop>NaturalLanguageDescriptions). 
+d16 2
+a17 2
+	 Classes
+	 Objects
+d19 3
+a21 3
+	 CodedDescriptions
+	 NaturalLanguageDescriptions
+	 Keys </pre></td>
+d26 2
+a27 2
+	 Classes
+	 Objects
+d35 2
+a36 2
+	 Classes
+	 Objects
+d38 2
+a39 2
+	 CodedDescriptions
+	 NaturalLanguageDescriptions
+d43 1
+a43 1
+Note: "DataSet" was named "Document" in SDD 0.9)
+d59 1
+a59 1
+"Coded and part <nop>NaturalLanguage": Syntactically this does not exist in SDD. Does anybody have a use case that requires it (or makes it desirable due to much simpler implementation)? Currently, natural language descriptions offer the full expressiveness of coded descriptions (but not all the validations and not the handling simplicity regarding rearranging data). The other way round, a coded description may contain fragments of free-form text (albeit without markup). So there are some limitations.
+d68 1
+a68 1
+*Mixed CD and NLD:* We mark-up natural language descriptions at varying levels of detail including down to the character data. Thus we end up with mixed representations of CD and NLD. However, because of ordering constraints and other processing issues, we end up pulling the character data into other elements. In SDD I think we would end up with non-parallel CD NLD sections. I do not think this is a problem. Originally, I had envisioned that we might merge them in SDD. For example, we can recognize that a sentence in a NLD is about the flower and marked up appropriately. We may recognize and markup that a clause in that sentence is about the sepals, another the petals, and another the bud. We may even markup that there is a bud tip shape character and the value is blunt. Having done this however it does not fit into the SDD structure at all for characters. It is better to move the bud tip shape=blunt up to the CD sections and leave the NL in an independent section. 
+d70 1
+a70 1
+-- Main.BryanHeidorn - 30 Apr 2004	
+d74 1
+a74 1
+*Mixed CD and NLD:* I find it interesting and suprising that you have problems with ordering constraints in NLD. Clearly, the text that is being marked up in an NLD imposes ordering constraints, but there is the CD is intended as a completely unordered set. I am not clear what you are trying to achieve. Can you elaborate the example why "... it does not fit into the SDD structure at all for characters."?
+d80 1
+a80 1
+In our own present EFG => SDD we have a mix for exactly these reasons as Bryan, and not very good, reasons. Doing no NLP (or more precisely, doing only static pattern recognition from metadata we produce by hand from the underlying data schema), we nevertheless have some fields that are easily, or with minor parsing, generated as CD. We deal with the rest verbatim. Hence it is not the case that we have a CD and an NLD that are the same as one another. Rather, they represent disjoint sets of characters, and the union of the two is the total description. I am fairly sure that this is not really what any of us on the committee envisioned, except as we thought of "partially coded" descriptions. OTOH, I prefer to think of them as "partially natural language". :-) 
+d82 1
+a82 1
+Jacob will talk about this briefly when in Berlin when he describes how our implementation was done. BTW, as I have been saying publicly for a long time, a great deal of the code is automatically generated, in his case by the Castor XML databinding framework which automatically generates marshalling/unmarshalling (i.e. Java->XML/XML->Java) code for each of the two schemas (EFG and SDD). The main work is then deriving SDD Java objects from EFG Java objects.
+d86 1
+a86 1
+I see no problem in having part information in CD and part in NLD (with markup). Having overlapping or disjoint sets of information in multiple CD is in fact part of the design of SDD, and the processors is expected to aggregate a "complete" description. I believe aggregating CD + NLD is a factual problem, but not a design problem for SDD, right?
+d88 1
+a88 1
+Regarding the "dirty data" export problem, I think the best solution is in fact to export it all as NLD. In SDD the NLD is designed such that it can express as much as CD. If not that is a bug in SDD... There is no requirement on NLD to have the same level of markup for all characters. So the "good" CD-enabled characters could be exported into NLD with full character state markup, the more difficult character only with a character bracket around the text.
+d92 1
+a92 1
+Our difficulty with order is not in keeping order in the CD or in the NLP but in keeping order in the mix of the two. If for example the parsers recognize three CD level descriptions randomly distributed within a paragraph of text we would like to make those characters available for a different type of processing or use than the full text, a key for example. We wish to keep the NLP to use with different search parameters simultaneously. If we leave the CD characters imbedded in the NLP we have some redundancy.  I do not think this is a critical problem for SDD.
+d94 1
+a94 1
+-- Main.BryanHeidorn - 03 May 2004	
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 94
+a94 93
+%META:TOPICINFO{author="GregorHagedorn" date="1087817399" format="1.0" version="1.10"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+(This is a probably short-lived, but <strong>urgent</strong> request for comment/opinion! Input is urgent because it currently prevents upload of a new beta version for SDD 0.91)
+
+In SDD 0.9 Document/Descriptions used to have an unbounded choice resulting in a sequence of <nop>NaturalLanguageDescription (NLD) and <nop>CodedDescription (CD), which could, e. g., be NLD, CD, CD, NLD, CD, NLD, NLD ... The reason is historical: there used to be an IPR/metadata envelope around multiple description which has now been "normalized" away. The unbounded choice has been a cause of misunderstanding and should go away. To clarify the differences and simplify applications interested only in one of these variants, separate containers for NLD and CD have now been introduced. We thus have three description containers in the wider sense (i.e. including Keys; the relation to terminology and entities is identical in Keys and <nop>NaturalLanguageDescriptions). 
+
+How should they be arranged? I believe we agree that the form of the schema is important for modularization and communication. I therefore ask: 
+
+<table><tr valign="top">
+<td>should we have:<pre>
+DataSet 
+  Terminology
+  Entities
+	 Classes
+	 Objects
+  Descriptions
+	 CodedDescriptions
+	 NaturalLanguageDescriptions
+	 Keys </pre></td>
+<td>Or perhaps:<pre>
+DataSet
+  Terminology
+  Entities
+	 Classes
+	 Objects
+  CodedDescriptions
+  NaturalLanguageDescriptions
+  Keys </pre></td>
+<td>Or:<pre>
+DataSet
+  Terminology
+  Entities
+	 Classes
+	 Objects
+  Descriptions
+	 CodedDescriptions
+	 NaturalLanguageDescriptions
+  Keys </pre></td>
+</tr></table>
+
+Note: "DataSet" was named "Document" in SDD 0.9)
+
+I prefer the first because structural explanation of relations of parts of the schema are easiest. But is it sufficiently intuitive to consider a diagnostic key with statements as another form of description, or will this prevent people from finding what they are looking for? I wait for your social engineering input!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 19 Apr 2004
+---
+
+The main reason I don't like the first is that I think a description is one or more _paths_ through a guided key. While it is possible to argue that a guided key is a description of a superclass of the taxa described by paths therein, this class is not always part of any interesting hierarchy. Sometimes it has no better informal description than "the things described by this key". Examples for us include a key to the aquatic invertebrates of New England and a key to the invasive plants of New England. Somewhat characteristic of these keys is that the leaf nodes vary in their taxonomic rank for no other reason than lack of knowledge. Also we also sometimes mix life forms within the keys.
+
+As to the second, I wonder if it presents a problem in Descriptions which are part Coded and part <nop>NaturalLanguage. Hence, for the moment, I prefer the third, though maybe it still doesn't address my objection to the second.
+
+-- Main.BobMorris - 19 Apr 2004
+---
+
+The first argument is interesting, because it highlights a possible misunderstanding: I was thinking of keys as containing a number of descriptions of the classes/objects that are keyed out. These descriptions are not organized by class--but it is trivial to dynamically rearrange them in such a way. However, whereas the levels of Descriptions/CodedDescriptions/CodedDescription and Descriptions/NaturalLanguageDescriptions/NaturalLanguageDescription exactly correspond, Descriptions/Keys/Key is a different level.
+
+"Coded and part <nop>NaturalLanguage": Syntactically this does not exist in SDD. Does anybody have a use case that requires it (or makes it desirable due to much simpler implementation)? Currently, natural language descriptions offer the full expressiveness of coded descriptions (but not all the validations and not the handling simplicity regarding rearranging data). The other way round, a coded description may contain fragments of free-form text (albeit without markup). So there are some limitations.
+
+BTW: I have less a problem with the structure of the third solution (I agree that CD and NLD are closer related than CD or NLD to Keys). It is more that the name "Descriptions" seems to imply that Keys are not class descriptions. I believe Keys are a special arrangement of descriptions, even though they are not normally called "descriptions" in biology. But perhaps we should stick to conventional use rather than inventing new terminology that may in the end be more appropriate?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 20 Apr 2004
+---
+
+The third option addresses the needs. The main distinction that I see between keys and coded descriptions is ordering constraints. 
+
+*Mixed CD and NLD:* We mark-up natural language descriptions at varying levels of detail including down to the character data. Thus we end up with mixed representations of CD and NLD. However, because of ordering constraints and other processing issues, we end up pulling the character data into other elements. In SDD I think we would end up with non-parallel CD NLD sections. I do not think this is a problem. Originally, I had envisioned that we might merge them in SDD. For example, we can recognize that a sentence in a NLD is about the flower and marked up appropriately. We may recognize and markup that a clause in that sentence is about the sepals, another the petals, and another the bud. We may even markup that there is a bud tip shape character and the value is blunt. Having done this however it does not fit into the SDD structure at all for characters. It is better to move the bud tip shape=blunt up to the CD sections and leave the NL in an independent section. 
+
+-- Main.BryanHeidorn - 30 Apr 2004	
+
+Donald Hobern and Steve Shattuck whom I asked at GB8 were of the same opinion. I will use the third arrangement as proposed by each of you. This is also closest to our previous arrangement. 
+
+*Mixed CD and NLD:* I find it interesting and suprising that you have problems with ordering constraints in NLD. Clearly, the text that is being marked up in an NLD imposes ordering constraints, but there is the CD is intended as a completely unordered set. I am not clear what you are trying to achieve. Can you elaborate the example why "... it does not fit into the SDD structure at all for characters."?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 1 May 2004
+
+---
+
+In our own present EFG => SDD we have a mix for exactly these reasons as Bryan, and not very good, reasons. Doing no NLP (or more precisely, doing only static pattern recognition from metadata we produce by hand from the underlying data schema), we nevertheless have some fields that are easily, or with minor parsing, generated as CD. We deal with the rest verbatim. Hence it is not the case that we have a CD and an NLD that are the same as one another. Rather, they represent disjoint sets of characters, and the union of the two is the total description. I am fairly sure that this is not really what any of us on the committee envisioned, except as we thought of "partially coded" descriptions. OTOH, I prefer to think of them as "partially natural language". :-) 
+
+Jacob will talk about this briefly when in Berlin when he describes how our implementation was done. BTW, as I have been saying publicly for a long time, a great deal of the code is automatically generated, in his case by the Castor XML databinding framework which automatically generates marshalling/unmarshalling (i.e. Java->XML/XML->Java) code for each of the two schemas (EFG and SDD). The main work is then deriving SDD Java objects from EFG Java objects.
+
+-- Main.BobMorris - 02 May 2004
+
+I see no problem in having part information in CD and part in NLD (with markup). Having overlapping or disjoint sets of information in multiple CD is in fact part of the design of SDD, and the processors is expected to aggregate a "complete" description. I believe aggregating CD + NLD is a factual problem, but not a design problem for SDD, right?
+
+Regarding the "dirty data" export problem, I think the best solution is in fact to export it all as NLD. In SDD the NLD is designed such that it can express as much as CD. If not that is a bug in SDD... There is no requirement on NLD to have the same level of markup for all characters. So the "good" CD-enabled characters could be exported into NLD with full character state markup, the more difficult character only with a character bracket around the text.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3 May 2004
+ 
+Our difficulty with order is not in keeping order in the CD or in the NLP but in keeping order in the mix of the two. If for example the parsers recognize three CD level descriptions randomly distributed within a paragraph of text we would like to make those characters available for a different type of processing or use than the full text, a key for example. We wish to keep the NLP to use with different search parameters simultaneously. If we leave the CD characters imbedded in the NLP we have some redundancy.  I do not think this is a critical problem for SDD.
+
+-- Main.BryanHeidorn - 03 May 2004	
+---
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1086849600" format="1.0" version="1.9"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BryanHeidorn" date="1083596753" format="1.0" version="1.8"}%
+d45 1
+a45 1
+-- Gregor Hagedorn - 19 Apr 2004
+d61 1
+a61 1
+-- Gregor Hagedorn - 20 Apr 2004
+d74 1
+a74 1
+-- Gregor Hagedorn - 1 May 2004
+d88 1
+a88 1
+-- Gregor Hagedorn - 3 May 2004
+d94 1
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083578013" format="1.0" version="1.7"}%
+d90 3
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1083468314" format="1.0" version="1.6"}%
+d73 3
+d77 1
+a77 1
+-- Gregor Hagedorn - 1 May 2004
+d84 5
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1083454695" format="1.0" version="1.5"}%
+d73 5
+d79 4
+a82 3
+-- Gregor Hagedorn - 1 May 2004
+---
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BryanHeidorn" date="1083342297" format="1.0" version="1.4"}%
+d66 1
+a66 1
+Mixed CD and NLD: We make-up natural language descriptions at varying levels of detail including down to the character data. Thus we end up with mixed representations of CD and NLD however, because of ordering constraints and other processing issues, we and up pulling the character data into other elements. In SDD I think we would end up with non-parallel CD NLD sections. I do not think this is a problem. Originally, I had envisioned that we might merge them in SDD. For example, we can recognize that a sentence in a NLD is about the flower and marked up appropriately. We may recognize and markup that a clause in that sentence is about the sepals, another the petals, and another the bud. We may even markup that there is a bud tip shape character and the value is blunt. Having done this however it does not fit into the SDD structure at all for characters. It is better to move the bud tip shape=blunt up to the CD sections and leave the NL in an independent section. 
+d68 8
+a75 1
+-- Main.BryanHeidorn - 30 Apr 2004	
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082463900" format="1.0" version="1.3"}%
+d63 7
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082417471" format="1.0" version="1.2"}%
+d50 1
+a50 1
+As to the second, I wonder if it presents a problem in Descriptions which are part Coded and part <nop>NaturalLanguage.
+d52 4
+a55 1
+Hence, for the moment, I prefer the third, though maybe it still doesn't address my objection to the second.
+d57 5
+a61 1
+-- Main.BobMorris - 19 Apr 2004
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082400431" format="1.0" version="1.1"}%
+d46 10
+a55 2
+---
+
+@

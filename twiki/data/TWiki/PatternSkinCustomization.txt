@@ -1,0 +1,264 @@
+%META:TOPICINFO{author="TWikiContributor" date="1130019100" format="1.1" version="6"}%
+
+---+!! %TWIKIWEB%.PatternSkin Customization
+
+*Questions and answers on configuring page elements.* For styling your TWiki, see PatternSkinCssCookbook.
+
+%TOC%
+
+---++ First Read: How to modify !PatternSkin templates
+
+If you need to change any of the elements that are visible on the common 'view' pages, you need to change the 'view' _template_: =/templates/view.pattern.tmpl=. The quickest way would be to simply change the text in the template. A safer way -  strongly recommended, because it will survive a TWiki update - is to create your own custom skin. That may sound like an awful lot of work, but in reality a skin may be as much as 1 file that consists of only a few lines of code.
+
+*Example* %BR%
+Let's say you want to simplify the bottom toolbar and remove all links except for "More topic actions". You would need to target =%<nop>TMPL:DEF{"topicactionbuttons"}%=, which is located in =view.pattern.tmpl=.
+
+*The steps you would need:*
+   1 Think up a name for your skin. Let us use =myskin= for now.
+   1 Create a new (empty) view template file in =/templates= called =view.myskin.tmpl=.
+   1 In =view.myskin.tmpl= you write: %BR%
+   =%<nop>TMPL:INCLUDE{"view"}%= %BR%
+   =%<nop>TMPL:DEF{"topicactionbuttons"}%%<nop>TMPL:P{"activatable_more"}%%<nop>TMPL:END%=
+   1 Now the skin is set. For testing, view any topic and append to the topic name: =?cover=myskin=. You should see an effect now.
+   1 To make the changes visible on all pages, go to [[Main.TWikiPreferences]] (to keep %WIKIPREFSTOPIC% intact) and write:
+<blockquote><pre>
+   * <nop>Set COVER = myskin
+</pre>
+or write
+<pre>
+   * <nop>Set SKIN = myskin,pattern
+</pre></blockquote>
+
+
+---++ Logo
+
+---+++ How can I change the web logo?
+
+By default the logo at the top left of each web points to the image with name =logo.gif= that is attached to each web's WebPreferences. <br />
+The default variables that cause this behavior are defined in [[%WIKIPREFSTOPIC%]].
+
+Redefine your custom variables in [[%LOCALSITEPREFS%]] (to keep %WIKIPREFSTOPIC% intact):
+<blockquote><pre>
+   * Set <nop>WEBLOGONAME = logo.gif
+   * Set <nop>WEBLOGOIMG = %<nop>PUBURLPATH%/%<nop>BASEWEB%/%<nop>WEBPREFSTOPIC%/%<nop>WEBLOGONAME%
+   * Set <nop>WEBLOGOURL = %<nop>SCRIPTURLPATH{"view"}%/%<nop>BASEWEB%/%<nop>HOMETOPIC%
+   * Set <nop>WEBLOGOALT = Home
+</pre></blockquote>
+
+There are 2 ways to change the logo in a web:
+
+*Using logo.gif:*
+<blockquote>
+   * Create a new image named =logo.gif= and attach it to the web's WebPreferences topic. %TWIKIWEB%.PatternSkin's stylesheet assumes the logo is 40px high. More about that later.
+   * You can also upload the image with FTP to =/pub/YourWeb/WebPreferences/=.
+   * Copy the above instructions ("Redefine your custom variables") and insert your logo name.
+</blockquote>
+*Using a new filename:*
+<blockquote>
+   * Attach whatever image and attach it to the web's WebPreferences topic. Then add to the WebPreferences (under _Custom web preferences_):
+<pre>
+      * Set <nop>WEBLOGONAME = your-logo-name.gif-or-png
+</pre>
+   * Copy the above instructions ("Redefine your custom variables") and insert your logo name.
+</blockquote>
+
+---+++ How do I set a site-wide logo?
+
+There is a bunch of site-wide logo variables in [[%LOCALSITEPREFS%]]: =WIKILOGOIMG=, =WIKILOGOURL= and =WIKILOGOALT=.
+To change only the web logo image to site-wide, in [[%LOCALSITEPREFS%]] set:
+<blockquote><pre>
+   * Set <nop>WEBLOGOIMG = %<nop>WIKILOGOIMG%
+</pre></blockquote>
+
+---+++ My logo does not fit the top bar
+
+The top bar is 64 pixels high by default.
+
+*Using templates:*
+<blockquote>
+Change the height of the top bar in =templates/viewtopbar.pattern.tmpl=:
+
+<pre>
+%TMPL:DEF{"topbardimensions"}%
+#patternTopBar,
+#patternClearHeaderCenter,
+#patternClearHeaderLeft,
+#patternClearHeaderRight,
+#patternTopBarContentsOuter {
+	height:64px; /* top bar height; make room for header columns */
+	overflow:hidden;
+}
+%TMPL:END%
+</pre>
+
+Only change the number from 64px to another value.
+</blockquote>
+
+*Using style sheets:*
+<blockquote>
+Create a new stylesheet with above definition in it, attach it to a topic and point =USERLAYOUTURL= to that topic attachment. See %TWIKIWEB%.PatternSkinCssCookbook about creating custom styles.
+</blockquote>
+
+---+++ I want to change the white space above and below the logo
+
+Change the table style in topic %TWIKIWEB%.WebTopBar. The default top padding is 11px.
+
+---++ Top bar
+
+---+++ I want to set or change the top background image
+
+The image at the top is called "header art" - commonly the top image found on blog sites. The image that is displayed by default is set by the variable =WEBHEADERART=, defined in [[%WIKIPREFSTOPIC%]].
+
+Redefine your custom variables in [[%LOCALSITEPREFS%]] (to keep %WIKIPREFSTOPIC% intact):
+<blockquote><pre>
+   * Set WEBHEADERART = %<nop>PUBURLPATH%/%<nop>TWIKIWEB%/PatternSkin/TWiki_header.gif
+   * Set WEBHEADERBGCOLOR = somehexcolor (no quotes, for example: #ffffff)
+</pre></blockquote>
+
+You can also set =WEBHEADERART= per web, by defining the variable in the Web's !WebPreferences.
+
+---+++ I want to have the web color in the top bar
+
+Redefine =WEBHEADERBGCOLOR= in [[%LOCALSITEPREFS%]] (to keep %WIKIPREFSTOPIC% intact):
+<blockquote><pre>
+   * Set WEBHEADERBGCOLOR = %<nop>WEBBGCOLOR%
+</pre></blockquote>
+
+---+++ I want to remove the Jump and Search boxes from the top bar 
+
+If you have localization enabled, you will also see a language dropdown box at the far right.
+
+You can remove these items from %TWIKIWEB%.WebTopBar.
+
+---+++ I want to hide the top bar
+
+*Using templates:*
+
+The view template is populated with page elements using template inclusions:
+
+<pre>
+%<nop>TMPL:INCLUDE{"page"}%
+%<nop>TMPL:INCLUDE{"viewtopbar"}%
+%<nop>TMPL:INCLUDE{"viewtoolbar"}%
+%<nop>TMPL:INCLUDE{"viewleftbar"}%
+%<nop>TMPL:INCLUDE{"viewrightbar"}%
+%<nop>TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%<nop>TMPL:INCLUDE{"viewbottombar"}%
+</pre>
+
+Each included template draws a part of the screen.%BR%
+Omit =%<nop>TMPL:INCLUDE{"viewtopbar"}%= to hide the top bar.
+
+Another approach is to clear the contents of module =topbar=; for example in =view.myskin.tmpl=:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:INCLUDE{"topbar"}%%TMPL:END%
+</pre>
+
+and add:
+
+<pre>
+%<nop>TMPL:DEF{"topbardimensions"}%#patternTopBar,
+#patternClearHeaderCenter,
+#patternClearHeaderLeft,
+#patternClearHeaderRight,
+#patternTopBarContentsOuter {
+	height:0px;
+}%<nop>TMPL:END%
+</pre>
+</blockquote>
+
+*Using style sheets:*
+<blockquote>
+See PatternSkinCssCookbookNoTopBar.
+</blockquote>
+
+---++ Left bar
+
+---+++ I want to hide the left bar
+
+*Using templates:*
+<blockquote>
+Omit =%<nop>TMPL:INCLUDE{"viewleftbar"}%= to hide the left bar, or in a view template clear it using =%<nop>TMPL:DEF{"viewleftbar"}%%TMPL:END%=
+</blockquote>
+
+*Using style sheets:*
+<blockquote>
+See PatternSkinCssCookbookNoLeftBar.
+</blockquote>
+
+---++ Other page parts
+
+---+++ I want to hide the edit buttons from certain users
+
+It may defy the wiki-ness of your TWiki installation, but in certain circumstances it could be useful to hide the edit buttons from users that are not logged in, for instance for customers.
+
+Create in the template directory the file =view.customer.tmpl=. 'Empty' =topicaction= and =toolbar= by writing in the template:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+%<nop>TMPL:DEF{"topicaction"}%%TMPL:END%
+%<nop>TMPL:DEF{"toolbar"}%%TMPL:END%
+</pre></blockquote>
+
+In %MAINWEB%.TWikiGuest, set the cover to
+<blockquote><pre>
+   * <nop>Set COVER = customer
+</pre></blockquote>
+
+By default this topic is editable only by !TWikiAdminGroup members.
+
+---+++ I want to remove the History button from the bottom
+
+All action buttons are defined in =viewtopicactionbuttons.pattern.tmpl=. Remove module =revisions= from =%<nop>TMPL:DEF{"topicactionbuttons"}%=. %BR%
+<blockquote><code style="white-space:pre">
+%<nop>TMPL:DEF{"topicactionbuttons"}%%<nop>TMPL:P{"activatable_raw_edit"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{context="WysiwygPluginEnabled" then="activatable_edit_wysiwyg"}%%<nop>TMPL:P{context="WysiwygPluginEnabled" then="sep"}%
+%<nop>TMPL:P{"activatable_attach"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{"printable"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{"raw"}%%<nop>TMPL:P{"sep"}%
+%<nop>TMPL:P{"backlinks"}%%<nop>TMPL:P{"sep"}%
+<span style="color:red"><s>%<nop>TMPL:P{"revisions"}%%<nop>TMPL:P{"sep"}%</s></span>
+%<nop>TMPL:P{"activatable_more"}%%<nop>TMPL:END%
+</code>
+</blockquote>
+In your =view.myskin.tmpl= file (see above) you write:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:DEF{"topicactionbuttons"}%%TMPL:P{"activatable_raw_edit"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{context="WysiwygPluginEnabled" then="activatable_edit_wysiwyg"}%%TMPL:P{context="WysiwygPluginEnabled" then="sep"}%
+%<nop>TMPL:P{"activatable_attach"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"printable"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"raw"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"backlinks"}%%TMPL:P{"sep"}%
+%<nop>TMPL:P{"activatable_more"}%%TMPL:END%
+</pre>
+
+Remove all newlines if you copy-paste above text.
+</blockquote>
+Test by appending =?cover=myskin= to any topic.
+
+---+++ I want to insert text outside of the topic content
+
+!PatternSkin has 2 'buckets' to write additional content to: =beforetextcontents= and =aftertextcontents=, both defined in =view.pattern.tmpl=. These containers can contain text or html and are placed directly before and after the topic text.
+
+Both modules are wrapped in CSS containers:
+   * =beforetextcontents= - wrapped in =div= of class =twikiBeforeText=
+   * =aftertextcontents= - wrapped in =div= of class =twikiAfterText=
+   
+To put contents before the main text, use the custom skin approach as described above.%BR%
+So our =view.myskin.tmpl= file contains:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:DEF{"beforetextcontents"}%This is the text before%TMPL:END%
+</pre></blockquote>
+Test by appending =?cover=myskin= to any topic.
+
+Use the same procedure for contents to be put after the topic text:
+<blockquote><pre>
+%<nop>TMPL:INCLUDE{"view"}%
+
+%<nop>TMPL:DEF{"aftertextcontents"}%This is the text after%TMPL:END%
+</pre></blockquote>

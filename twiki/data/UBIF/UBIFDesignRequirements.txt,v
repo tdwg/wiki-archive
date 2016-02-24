@@ -1,0 +1,338 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2009.11.25.03.14.42;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2009.11.20.02.35.37;	author LeeBelbin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.07.16.10.41.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.07.15.18.00.18;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.06.21.13.05.47;	author RenatoDeGiovanni;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.06.20.08.42.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.06.19.11.19.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.06.18.15.00.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118882" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+---+!! %TOPIC%
+
+<h2>General requirements</h2>
+
+... something should be added here, currently only technical requirements and problems with that are discussed below! ...
+
+<h2>Schema design and namespaces</h2>
+
+For the last two weeks I am struggling to find a good design for a common UBIF and multiple, specialized BDI.SDD_, ABCD, and <nop>TaxonConcept schemata. Some of the requirements are (see also [[http://160.45.63.11/Projects/TDWG-BDI.SDD_/Docs/SDD_I_SchemaDesignPrinciples.html][BDI.SDD_ Schema Design Principles]]):
+   * The UBIF base schema should validate stand-alone, with different payloads. That is a single UBIF Datasets collection should be 
+     able to hold multiple dataset objects with different payloads (e.g. one has names, the other descriptions, several more 
+     specimen unit data).
+      * This can be achieved with a xs:any (ns=#other) element at the end of Dataset. Originally I run into validation problems
+        when using two namespaces (the payload was no longer validated, but this could be partly resolved and partly confirmed 
+        as a long-standing bug in xml-spy, compare UBIF.DesignWith2NamespacesDoesNotValidate!
+   * The schemata should be constructed with standard xml namespace conventions, implying the use of 
+     elementFormDefault="qualified" attributeFormDefault="unqualified" in schema design. With 
+     elementFormDefault="unqualified" the behaviour of embedded elements in instance documents (i.e. not the element bearing a 
+     complex type, but those contained within it) depends on whether a default namespace (no prefix) or a namespace with a prefix is used.
+      * See, for example, the following articles on this issue: <a href="http://www.xml.com/pub/a/2002/11/20/schemas.html?page=2#elementFormDefault">Dare Obasanjo, Why You Should Always Set elementFormDefault to "qualified"</a> and
+        <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven, ... Better practices perhaps?</a>.
+   * The payload schemata should reuse a library of common types to simplify the design of builder and consumer applications, 
+     especially when object-oriented programming languages are used.
+      * In principal this is possible using a common library (UBIF_Lib.xsd). However, this is complicated by bugs in applications and namespace issues. The chameleon design pattern, using included libraries without a targetNamespace (and which then acquire the namespace of the including schema is a good solution, and both ABCD and BDI.SDD_ have so far used such libaries. While a single schema always works, as shown in [[%ATTACHURL%/TwoNsAttempt1.zip][TwoNsAttempt1.zip]] this runs into multiple compatibility issues (or bugs in xmlspy) when attempting to combine two schema, that are based on the same library. Although XML spy is not the measure of all things, it is worrysome if already such a widely used tools in unable to cope with a design.
+      * Searching for a work-around, I tried copying the library, so that UBIF and BDI.SDD_ include the same information from files with different names. The hypothesis was that the bug in xmlspy is due to mistaking filename and namespace. However, this did not improve the situation, see [[%ATTACHURL%/TwoNsAttempt1b.zip][TwoNsAttempt1b.zip]].
+      * In [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]] the problem was solved by using text cut-and-paste instead of the schema include command. As documented in the read me file in the zip, even this solution behaves quirky, depending on which schemata have been opened previously. With a freshly started xmlspy, however, it could be used. It is not elegant, since updates in the base library have to be manually introduced into the participating schemata.
+      * Finally, some types cannot be moved into a base library, but are by necessity tied to UBIF rather than UBIF_Lib.xsd. This occurs because of the use of identity constraints (= key/keyref mechanism) to link the definition of proxy objects with references to them. XML Schema unfortunately stipulates that identity constraints can only be defined on elements, not on types. Furthermore, the key must be defined in the common root of all key and keyref-occurrences. Within the UBIF structure this is the Dataset element. Therefore types like <nop>MediaResourceRefType, <nop>PublicationRefType, but also the derived citation or revision data types are by necessity in the UBIF namespace.
+      * A result of this is that at rather unexpected locations a UBIF namespace (defined as ub in the following examples) must be used. For example, although both Icon and <nop>MediaResource are based on the UBIF <nop>MediaResourceRefType, one needs a prefix, the other not. Similarly, a list of multiple citations has the namespace at Citation, a single citation not! Examples from SDD_tech.xml in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]] for mixed namespace usage:
+<verbatim>
+            <Icon ref="123"/>
+            <MediaResources>
+               <ub:MediaResource ref="124"/>
+            </MediaResources>
+          ...
+            <Citations>
+              <ub:Citation>
+                 <ub:Publication ref="111"/><ub:Location>333</ub:Location>
+              </ub:Citation>
+            </Citations>
+          ...
+            <Citation>
+               <ub:Publication ref="111"/><ub:Location>156</ub:Location>
+            </Citation>
+</verbatim>
+   
+
+<strong>Conclusions:</strong>
+
+   * UBIF is a stand-alone schema in its own namespace that does support unrelated payload schemata with different namespaces. 
+   * UBIF_Lib is a library of reusable base type definitions without a target namespace, it acquires the namespace of the importing schema (e.g. UBIF.xsd)
+   * It is not recommended to _both_ import UBIF.xsd and include UBIF_Lib.xsd, although in theory this should work. (Please help if you can make more sense, see the situations detailed in [[%ATTACHURL%/TwoNsAttempt1.zip][TwoNsAttempt1.zip]] and [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]].)
+   * If a payload schema like BDI.SDD_ wants to reuse UBIF concepts like references to publications, agents, locations etc. it must either accept a mix of its own namespace and UBIF namespace elements, or it should use the UBIF namespace itself. This is unexpected to me and seems unfortunate (and contradicts <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven's Best Practice conclusion 4</a>), but is the best I can find.
+   * As a result, to allow both other and own namespace, the xs:any extension at the end of the UBIF Dataset element had to be changed from "##other" to "##any" namespace.
+   * This is what is proposed in [[%ATTACHURL%/UBIF10b9_SDD091b25.zip][UBIF10b9_SDD091b25.zip]]. However, note that this is not a full solution. It means a UBIF namespace may either be validated through UBIF.xsd with other unrelated schemata, or under a related schema. That is for BDI.SDD_ document have xsi:schemaLocation="http://www.tdwg.org/2004/UBIF BDI.SDD_.xsd"!!! This makes them combinable with other namespace payloads, but if ABCD would use the same one-schema approach, we would have to construct a master schema combining BDI.SDD_, ABCD and all others that base themself on the UBIF namespace. This is possible, does not feel right or elegant - but I am tired out after two weeks reading schema documentation, best practices, testing bugs in spy - and I have to stop working on this... Please someone come in to help!
+ 
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18. June 2004
+---
+
+As an afterthought the next day:
+   * If we accept that the library needs to be physically included rather than using xs:include (as done in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]]), the rather confusing use UBIF namespace inside BDI.SDD_ could be improved. The ref elements and collections would not be used through types, but rather through model groups (like the <nop>EnablingGroup) that contain the elements. The Citation would always be ub:Citation, etc. The problem with this is that this fixed the element name to the one defined in the base libary (whereas using types, the element name can be freely choosen at the point of usage). However, the number of element names used is either 1 or rather low (e. g. Icon used instead of <nop>MediaResource for a <nop>MediaResourceRef). -- Any opinion?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 19. June 2004
+
+
+%META:FILEATTACHMENT{name="TwoNsAttempt1.zip" attr="h" comment="2 Namespace chameleon library pattern - failed" date="1087570277" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\TwoNsAttempt1.zip" size="102186" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="TwoNsAttempt2.zip" attr="h" comment="2 Namespace library pasted into SDD -  problematic" date="1087570314" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\TwoNsAttempt2.zip" size="115198" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="UBIF10b9_SDD091b25.zip" attr="h" comment="Single namespace attempt with ex. files" date="1087573689" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\UBIF10b9_SDD091b25.zip" size="102207" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="TwoNsAttempt1b.zip" attr="h" comment="Like TwoNsAttempt1, but include uses 2 copies" date="1087720826" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\TwoNsAttempt1b.zip" size="116702" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1089974402" from="SDD.UBIFDesignRequirements" to="UBIF.UBIFDesignRequirements"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258684537" format="1.1" reprev="1.8" version="1.8"}%
+d11 1
+a11 1
+For the last two weeks I am struggling to find a good design for a common UBIF and multiple, specialized BDI.SDD, ABCD, and <nop>TaxonConcept schemata. Some of the requirements are (see also [[http://160.45.63.11/Projects/TDWG-BDI.SDD/Docs/SDD_I_SchemaDesignPrinciples.html][BDI.SDD Schema Design Principles]]):
+d26 2
+a27 2
+      * In principal this is possible using a common library (UBIF_Lib.xsd). However, this is complicated by bugs in applications and namespace issues. The chameleon design pattern, using included libraries without a targetNamespace (and which then acquire the namespace of the including schema is a good solution, and both ABCD and BDI.SDD have so far used such libaries. While a single schema always works, as shown in [[%ATTACHURL%/TwoNsAttempt1.zip][TwoNsAttempt1.zip]] this runs into multiple compatibility issues (or bugs in xmlspy) when attempting to combine two schema, that are based on the same library. Although XML spy is not the measure of all things, it is worrysome if already such a widely used tools in unable to cope with a design.
+      * Searching for a work-around, I tried copying the library, so that UBIF and BDI.SDD include the same information from files with different names. The hypothesis was that the bug in xmlspy is due to mistaking filename and namespace. However, this did not improve the situation, see [[%ATTACHURL%/TwoNsAttempt1b.zip][TwoNsAttempt1b.zip]].
+d54 1
+a54 1
+   * If a payload schema like BDI.SDD wants to reuse UBIF concepts like references to publications, agents, locations etc. it must either accept a mix of its own namespace and UBIF namespace elements, or it should use the UBIF namespace itself. This is unexpected to me and seems unfortunate (and contradicts <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven's Best Practice conclusion 4</a>), but is the best I can find.
+d56 1
+a56 1
+   * This is what is proposed in [[%ATTACHURL%/UBIF10b9_SDD091b25.zip][UBIF10b9_SDD091b25.zip]]. However, note that this is not a full solution. It means a UBIF namespace may either be validated through UBIF.xsd with other unrelated schemata, or under a related schema. That is for BDI.SDD document have xsi:schemaLocation="http://www.tdwg.org/2004/UBIF BDI.SDD.xsd"!!! This makes them combinable with other namespace payloads, but if ABCD would use the same one-schema approach, we would have to construct a master schema combining BDI.SDD, ABCD and all others that base themself on the UBIF namespace. This is possible, does not feel right or elegant - but I am tired out after two weeks reading schema documentation, best practices, testing bugs in spy - and I have to stop working on this... Please someone come in to help!
+d62 1
+a62 1
+   * If we accept that the library needs to be physically included rather than using xs:include (as done in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]]), the rather confusing use UBIF namespace inside BDI.SDD could be improved. The ref elements and collections would not be used through types, but rather through model groups (like the <nop>EnablingGroup) that contain the elements. The Citation would always be ub:Citation, etc. The problem with this is that this fixed the element name to the one defined in the base libary (whereas using types, the element name can be freely choosen at the point of usage). However, the number of element names used is either 1 or rather low (e. g. Icon used instead of <nop>MediaResource for a <nop>MediaResourceRef). -- Any opinion?
+@
+
+
+1.7
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1089974460" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+d11 20
+a30 20
+For the last two weeks I am struggling to find a good design for a common UBIF and multiple, specialized SDD, ABCD, and <nop>TaxonConcept schemata. Some of the requirements are (see also [[http://160.45.63.11/Projects/TDWG-SDD/Docs/SDD_I_SchemaDesignPrinciples.html][SDD Schema Design Principles]]):
+	* The UBIF base schema should validate stand-alone, with different payloads. That is a single UBIF Datasets collection should be 
+	  able to hold multiple dataset objects with different payloads (e.g. one has names, the other descriptions, several more 
+	  specimen unit data).
+		* This can be achieved with a xs:any (ns=#other) element at the end of Dataset. Originally I run into validation problems
+		  when using two namespaces (the payload was no longer validated, but this could be partly resolved and partly confirmed 
+		  as a long-standing bug in xml-spy, compare UBIF.DesignWith2NamespacesDoesNotValidate!
+	* The schemata should be constructed with standard xml namespace conventions, implying the use of 
+	  elementFormDefault="qualified" attributeFormDefault="unqualified" in schema design. With 
+	  elementFormDefault="unqualified" the behaviour of embedded elements in instance documents (i.e. not the element bearing a 
+	  complex type, but those contained within it) depends on whether a default namespace (no prefix) or a namespace with a prefix is used.
+		* See, for example, the following articles on this issue: <a href="http://www.xml.com/pub/a/2002/11/20/schemas.html?page=2#elementFormDefault">Dare Obasanjo, Why You Should Always Set elementFormDefault to "qualified"</a> and
+		  <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven, ... Better practices perhaps?</a>.
+	* The payload schemata should reuse a library of common types to simplify the design of builder and consumer applications, 
+	  especially when object-oriented programming languages are used.
+		* In principal this is possible using a common library (UBIF_Lib.xsd). However, this is complicated by bugs in applications and namespace issues. The chameleon design pattern, using included libraries without a targetNamespace (and which then acquire the namespace of the including schema is a good solution, and both ABCD and SDD have so far used such libaries. While a single schema always works, as shown in [[%ATTACHURL%/TwoNsAttempt1.zip][TwoNsAttempt1.zip]] this runs into multiple compatibility issues (or bugs in xmlspy) when attempting to combine two schema, that are based on the same library. Although XML spy is not the measure of all things, it is worrysome if already such a widely used tools in unable to cope with a design.
+		* Searching for a work-around, I tried copying the library, so that UBIF and SDD include the same information from files with different names. The hypothesis was that the bug in xmlspy is due to mistaking filename and namespace. However, this did not improve the situation, see [[%ATTACHURL%/TwoNsAttempt1b.zip][TwoNsAttempt1b.zip]].
+		* In [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]] the problem was solved by using text cut-and-paste instead of the schema include command. As documented in the read me file in the zip, even this solution behaves quirky, depending on which schemata have been opened previously. With a freshly started xmlspy, however, it could be used. It is not elegant, since updates in the base library have to be manually introduced into the participating schemata.
+		* Finally, some types cannot be moved into a base library, but are by necessity tied to UBIF rather than UBIF_Lib.xsd. This occurs because of the use of identity constraints (= key/keyref mechanism) to link the definition of proxy objects with references to them. XML Schema unfortunately stipulates that identity constraints can only be defined on elements, not on types. Furthermore, the key must be defined in the common root of all key and keyref-occurrences. Within the UBIF structure this is the Dataset element. Therefore types like <nop>MediaResourceRefType, <nop>PublicationRefType, but also the derived citation or revision data types are by necessity in the UBIF namespace.
+		* A result of this is that at rather unexpected locations a UBIF namespace (defined as ub in the following examples) must be used. For example, although both Icon and <nop>MediaResource are based on the UBIF <nop>MediaResourceRefType, one needs a prefix, the other not. Similarly, a list of multiple citations has the namespace at Citation, a single citation not! Examples from SDD_tech.xml in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]] for mixed namespace usage:
+d32 14
+a45 14
+				<Icon ref="123"/>
+				<MediaResources>
+					<ub:MediaResource ref="124"/>
+				</MediaResources>
+			 ...
+				<Citations>
+				  <ub:Citation>
+					  <ub:Publication ref="111"/><ub:Location>333</ub:Location>
+				  </ub:Citation>
+				</Citations>
+			 ...
+				<Citation>
+					<ub:Publication ref="111"/><ub:Location>156</ub:Location>
+				</Citation>
+d47 1
+a47 1
+	
+d51 6
+a56 6
+	* UBIF is a stand-alone schema in its own namespace that does support unrelated payload schemata with different namespaces. 
+	* UBIF_Lib is a library of reusable base type definitions without a target namespace, it acquires the namespace of the importing schema (e.g. UBIF.xsd)
+	* It is not recommended to _both_ import UBIF.xsd and include UBIF_Lib.xsd, although in theory this should work. (Please help if you can make more sense, see the situations detailed in [[%ATTACHURL%/TwoNsAttempt1.zip][TwoNsAttempt1.zip]] and [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]].)
+	* If a payload schema like SDD wants to reuse UBIF concepts like references to publications, agents, locations etc. it must either accept a mix of its own namespace and UBIF namespace elements, or it should use the UBIF namespace itself. This is unexpected to me and seems unfortunate (and contradicts <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven's Best Practice conclusion 4</a>), but is the best I can find.
+	* As a result, to allow both other and own namespace, the xs:any extension at the end of the UBIF Dataset element had to be changed from "##other" to "##any" namespace.
+	* This is what is proposed in [[%ATTACHURL%/UBIF10b9_SDD091b25.zip][UBIF10b9_SDD091b25.zip]]. However, note that this is not a full solution. It means a UBIF namespace may either be validated through UBIF.xsd with other unrelated schemata, or under a related schema. That is for SDD document have xsi:schemaLocation="http://www.tdwg.org/2004/UBIF SDD.xsd"!!! This makes them combinable with other namespace payloads, but if ABCD would use the same one-schema approach, we would have to construct a master schema combining SDD, ABCD and all others that base themself on the UBIF namespace. This is possible, does not feel right or elegant - but I am tired out after two weeks reading schema documentation, best practices, testing bugs in spy - and I have to stop working on this... Please someone come in to help!
+d62 1
+a62 1
+	* If we accept that the library needs to be physically included rather than using xs:include (as done in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]]), the rather confusing use UBIF namespace inside SDD could be improved. The ref elements and collections would not be used through types, but rather through model groups (like the <nop>EnablingGroup) that contain the elements. The Citation would always be ub:Citation, etc. The problem with this is that this fixed the element name to the one defined in the base libary (whereas using types, the element name can be freely choosen at the point of usage). However, the number of element names used is either 1 or rather low (e. g. Icon used instead of <nop>MediaResource for a <nop>MediaResourceRef). -- Any opinion?
+d66 1
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089914418" format="1.0" version="1.5"}%
+d15 1
+a15 1
+		  as a long-standing bug in xml-spy, compare DesignWith2NamespacesDoesNotValidate!
+d68 1
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="RenatoDeGiovanni" date="1087823147" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="UnifiedBioInfoFramework"}%
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087720920" format="1.0" version="1.3"}%
+d52 1
+a52 1
+	* If a payload schema like SDD wants to reuse UBIF concepts like references to publications, agents, locations etc. it either must either accept a mix of its own namespace and UBIF namespace elements, or it should use the UBIF namespace itself. This is unexpected to me and seems unfortunate (and contradicts <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven's Best Practice conclusion 4</a>), but is the best I can find.
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087643940" format="1.0" version="1.2"}%
+d25 1
+d28 1
+a28 2
+		* A result of this is that at rather unexpected locations a UBIF namespace (defined as ub in the following examples) must be used. For example, although both Icon and <nop>MediaResource are based on the UBIF <nop>MediaResourceRefType, one needs a prefix, the other not. Similarly, a list of multiple citations has the namespace at Citation, a single citation not! Examples from SDD_tech.xml in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]]: 
+ for mixed namespace usage:
+d47 1
+a47 1
+<strong>Conclusion:</strong>
+d51 1
+a51 1
+	* It is not recommended to _both_ import UBIF.xsd and include UBIF_Lib.xsd, although in theory this should work. (Please help if you can make more sense, see the situations detailed in [[%ATTACHURL%/TwoNsAttempt1.zip][TwoNsAttempt1.zip]] [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]].)
+d60 1
+a60 2
+	* perhaps the chameleon includes in "Attempt1" may work, if they use different files, i.e. perhaps the bug in spy is due to mistaking filename and namespace? Rather than copying the library pieces, duplicating a file might be acceptable - if this works...
+	* perhaps the rather confusing need to use UBIF namespace inside SDD could be reduced, if the ref elements and collections were not used through types, but rather through model groups (like the <nop>EnablingGroup) that contain the elements. The problem with this is that this fixed the element name to the one defined in the base libary (whereas using types, the element name can be freely choosen at the point of usage). However, the number of element names used is either 1 or rather low (e. g. Icon used instead of <nop>MediaResource for a <nop>MediaResourceRef).
+d62 1
+a62 1
+Any opinion?
+a63 1
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 19. June 2004
+d67 1
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087570800" format="1.0" version="1.1"}%
+d15 1
+a15 1
+		  as a long-standing bug in xml-spy, compare DesignWith2NamespacesDoesNotValidate problem!
+d17 1
+a17 2
+	  elementFormDefault="qualified" attributeFormDefault="unqualified" in schema design (see e.&nbsp;g. 
+	  <a href="http://www.sys-con.com/xml/articleprint.cfm?id=494">Tom Gaven ... Better practices perhaps?</a>). With 
+d19 3
+a21 2
+	  complex type, but those contained within it) depends on whether a default namespace (no prefix) or a namespace with 
+	  a prefix is used.
+d27 1
+a27 1
+		* A result of this is that at rather unexpected locations a ubif namespace (defined as ub in the following examples) must be used. For example, although both Icon and <nop>MediaResource are based on the UBIF <nop>MediaResourceRefType, one needs a prefix, the other not. Similarly, a list of multiple citations has the namespace at Citation, a single citation not! Examples from SDD_tech.xml in [[%ATTACHURL%/TwoNsAttempt2.zip][TwoNsAttempt2.zip]]: 
+d57 9
+a65 2
+---
+
+@

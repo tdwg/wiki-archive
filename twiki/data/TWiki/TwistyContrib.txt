@@ -1,0 +1,180 @@
+%META:TOPICINFO{author="TWikiContributor" date="1140597757" format="1.1" version="4"}%
+---+!! <nop>%TOPIC%
+
+*This contrib packages in a convenient way the !JavaScript library and the CSS file needed to implement Twisty sections.*
+
+!TwistyContrib is installed by default in TWiki 4 and used by [[TWiki:Plugins.TwistyPlugin][Twisty Plugin]].
+
+It is recommended to use the !TwistyPlugin as it eases the deployment and use of this contrib.
+
+This Contrib should work in all versions of TWiki. It has been tested against [[TWiki:Codev.CairoRelease][TWiki 3]] and [[TWiki:Codev.DakarRelease][TWiki 4]].
+
+%TOC{title="On this page:"}%
+
+---++ Usage examples
+
+If the contrib is properly installed (and !JavaScript is enabled in your browser) you should see two folding sections below.
+
+---+++ Basic Twisty
+<verbatim>
+<span id="demo1show" class="twistyTrigger twistyMakeVisible"><button class="twikiButton"> Unfold </button></span>
+<span id="demo1hide" class="twistyTrigger twistyHidden"><button class="twikiButton"> Fold </button></span>
+<span id="demo1toggle" class="twistyContent twistyMakeHidden">
+my twisty content
+</span>
+</verbatim>
+
+Generates:
+
+<span id="demo1show" class="twistyTrigger twistyMakeVisible"><button class="twikiButton"> Unfold </button></span>
+<span id="demo1hide" class="twistyTrigger twistyHidden"><button class="twikiButton"> Fold </button></span>
+<span id="demo1toggle" class="twistyContent twistyMakeHidden">
+my twisty content
+</span>
+
+---+++ Twisty with placeholder text
+<verbatim>
+<span id="demo2show" class="twistyTrigger twistyMakeVisible"><a href="#">Expand...</a> <span class="twistyPlaceholder">Hamlet is without question the most famous play in the English language...</span></span>
+<span id="demo2hide" class="twistyTrigger twistyHidden"><a href="#">Collapse...</a></span>
+<span id="demo2toggle" class="twistyContent twistyMakeHidden">
+Hamlet is without question the most famous play in the English language. Probably written in 1601 or 1602, the tragedy is a milestone in Shakespeare's dramatic development.
+</span>
+</verbatim>
+
+Generates:
+
+<span id="demo2show" class="twistyTrigger twistyMakeVisible"><a href="#">Expand...</a> <span class="twistyPlaceholder">Hamlet is without question the most famous play in the English language...</span></span>
+<span id="demo2hide" class="twistyTrigger twistyHidden"><a href="#">Collapse...</a></span>
+<span id="demo2toggle" class="twistyContent twistyMakeHidden">
+Hamlet is without question the most famous play in the English language. Probably written in 1601 or 1602, the tragedy is a milestone in Shakespeare's dramatic development.
+</span>
+
+Skins can customize the color of the twisty placeholder by modifiying the =.twistyPlaceholder= style.
+
+---++ Twisty made easy
+
+Manual written by [[TWiki:Main.HaraldJoerg][Harald Joerg]]. Examples require [[TWiki:Plugins.SpreadsheetPlugin][Spreadsheet Plugin]] to work (installed by default).
+
+<blockquote>
+Some of my TWiki users are impressed by the optical effect of what can be done with TWiki:Plugins.TwistyPlugin - and they keep asking me: "How do I do that? I don't understand the documentation, and I don't understand the raw text of your topics!"
+
+They indeed have a point here.  The docs aren't easily understood.  It isn't easy to pick all the variables needed from a single example, and just copypasting sometimes fails in embarrassing ways if non-unique =id= attributes are present in a topic.  Maybe it is easy for a power user, but it surely isn't easy _enough_.  There _ought_ to be a way to make it easier.
+
+Well, here you are.
+
+Just set a couple of site preferences, and your users will immediately understand your examples and start writing their own twisties.  And what's more: They'll do so in a _consistent_ way, across all your topics in all webs.
+</blockquote>
+
+---+++ You Write 
+In your !Main.TWikiPreferences write:
+<verbatim>
+   * Set FLIP = <span id="twid_%CALC{$SETM(twisty_id, + 1)$GET(twisty_id)}%show" class="twistyTrigger twistyMakeVisible">
+       <a href="#">more...</a>
+     </span>
+     <span id="twid_%CALC{$GET(twisty_id)}%hide" class="twistyTrigger twistyHidden">
+       <a href="#">close</a>
+     </span>
+     <div id="twid_%CALC{$GET(twisty_id)}%toggle" class="twistyContent twistyMakeHidden">
+   * Set FLOP = </div>
+</verbatim>
+%T% You can include the text in a verbatim block if you want (like I have done here).
+Additionally I've added plenty of newlines and spaces to make it readable.
+This works, and you don't have to care for invalid HTML!
+
+---+++ Your Users Write
+In any topic, your users can now write things like this:
+<verbatim>
+   * *Brace and parenthesize in K&R style* 
+     %FLIP% 
+     When setting out a code block, use the K&R style of bracketing.  
+     That is, place the opening brace at the end of the construct that controls the block. ... 
+     %FLOP%
+   * *Separate your control keywords from the following opening bracket* 
+     %FLIP% 
+     Control structures regulate the dynamic behaviour of a program, so the keywords 
+     of control structures are the most critical components of a program. ... 
+     %FLOP%
+</verbatim>
+
+---+++ You See
+   * *Brace and parenthesize in K&R style* 
+     %FLIP% 
+     When setting out a code block, use the K&R style of bracketing.  
+     That is, place the opening brace at the end of the construct that controls the block. ... 
+     %FLOP%
+   * *Separate your control keywords from the following opening bracket* 
+     %FLIP% 
+     Control structures regulate the dynamic behaviour of a program, so the keywords 
+     of control structures are the most critical components of a program. ... 
+     %FLOP%
+
+---+++ All on, all off
+
+You can toggle all Twisties on or off at once by putting a link or button on the page with class =twistyExpandAll= or =twistyCollapseAll=.
+
+<verbatim>
+<button class="twistyExpandAll twikiButton">Expand all</button> 
+<button class="twistyCollapseAll twikiButton">Collapse all</button>
+</verbatim>
+
+Creates these controls:
+
+<button class="twistyExpandAll twikiButton">Expand all</button> 
+<button class="twistyCollapseAll twikiButton">Collapse all</button>
+
+When you want to use links, write:
+
+<verbatim>
+#VarTOGGLE
+
+<a href="#TOGGLE" class="twistyExpandAll">Expand all</a> 
+<a href="#TOGGLE" class="twistyCollapseAll">Collapse all</a>
+</verbatim>
+
+
+#VarTOGGLE
+
+<a href="#TOGGLE" class="twistyExpandAll">Expand all</a> 
+<a href="#TOGGLE" class="twistyCollapseAll">Collapse all</a>
+
+
+
+
+---++ Settings
+
+	* Set SHORTDESCRIPTION = Twisty section javascript library to open/close content dynamically 
+	* Set STUB = TWiki::Contrib::TwistyContrib
+
+---++ Installation Instructions
+
+	* Download the ZIP file from the Plugin web (see below)
+	* Unzip ==%TOPIC%.zip== in your ($TWIKI_ROOT) directory. Content:
+	| *File:* | *Description:* |
+   | ==data/TWiki/TwistyContrib.txt== |  |
+   | ==lib/TWiki/Contrib/TwistyContrib.pm== |  |
+   | ==pub/TWiki/TwistyContrib/twist.css== |  |
+   | ==pub/TWiki/TwistyContrib/twist.js== |  |
+   | ==pub/TWiki/TwistyContrib/twist.compressed.js== |  |
+
+	* Optionally, run ==%TOPIC%_installer== to automatically check and install other TWiki modules that this module depends on. You can also do this step manually.
+	* Alternatively, manually make sure the dependencies listed in the table below are resolved.
+	<table border="1"><tr><th>Name</th><th>Version</th><th>Description</th></tr><tr><td align="left">TWiki::Plugins::BehaviourContrib</td><td align="left">&gt;=1.000</td><td align="left">Required</td></tr></table>
+
+
+---++ Contrib Info
+
+| Authors: | !JavaScript created by TWiki:Main.SamHasler, Contrib packaged by  TWiki:Main.RafaelAlvarez |
+| Copyright &copy;: | 2005 Sam Hasler and Rafael Alvarez, 2006 Arthur Clemens |
+| License: | [[http://www.gnu.org/copyleft/gpl.html][GPL]] |
+| Dependencies: | <table border="1"><tr><th>Name</th><th>Version</th><th>Description</th></tr><tr><td align="left">TWiki::Plugins::BehaviourContrib</td><td align="left">&gt;=1.000</td><td align="left">Required</td></tr></table> |
+| 25 Oct 2006 | 1.2 Arthur Clemens - Updated !JavaScript to support !TwistyPlugin version 1.2  |
+| 26 Sep 2006 | 1.010 Arthur Clemens - Complete !JavaScript rewrite |
+| 12 Sep 2005 | 1.000 First Version |
+| Home: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC% |
+| Feedback: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Dev |
+| Appraisal: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Appraisal |
+
+__Related Topics:__ %TWIKIWEB%.TWikiPreferences
+ 
+%META:FILEATTACHMENT{name="twist.js" attachment="twist.js" attr="" comment="!JavaScript library" date="1126427179" path="twist.js" size="3441" stream="twist.js" user="TWikiContributors" version="0"}%
+%META:FILEATTACHMENT{name="twist.css" attachment="twist.css" attr="" comment="Style Sheet" date="1126427224" path="twist.css" size="122" stream="twist.css" user="TWikiContributors" version="0"}%

@@ -1,0 +1,97 @@
+%META:TOPICINFO{author="TWikiAdminGroup" date="1158292750" format="1.1" version="1.4"}%
+---+!! <nop>%TOPIC%
+
+It adds one third block to _"Forced Specific Links"_ in the format: %BR%
+==[<nop>[URL or <nop>TopicName][Link Text][Option:value]]==
+
+Some new options and CSS sets can be used simultaneously, separated by a pipe (|): %BR%
+==[<nop>[URL or <nop>TopicName][Link Text][Option1:value1|Option2:value2|...|OptionN:valueN]]==
+
+%TOC%
+
+------
+
+---++ Syntax Rules
+
+|  *Options*  |  *Values*  |  *Coment*  |
+|  ==NewWin==  |  %GREEN%X%ENDCOLOR%x%GREEN%Y%ENDCOLOR%  | %GREEN%X%ENDCOLOR% and %GREEN%Y%ENDCOLOR% must be integer values. This option will open a new window with no menu, butons, or url bar, but it well have status bar |
+|  ==Name==  |  %GREEN%Name%ENDCOLOR%  | %GREEN%Name%ENDCOLOR% can be a target name (using fames) or the name of a new window |
+|  ==Title==  |  %GREEN%Text%ENDCOLOR%  | A text to be a hint for the link |
+|  ==Class==  |  %GREEN%Name%ENDCOLOR%  | The name of a class (to define CSS style) |
+|  ==ID==  |  %GREEN%Name%ENDCOLOR%  | This %GREEN%Name%ENDCOLOR% must be unique on the web page |
+|  ==Skin==  |  %GREEN%<nop>SkinName%ENDCOLOR%  | %GREEN%SkinName%ENDCOLOR% must be a valid TWiki skin |
+|  ==CSS==  |  %GREEN%CSS Code%ENDCOLOR%  | %GREEN%CSS Code%ENDCOLOR% is any CSS formatatin code. You can repeat this option <p/> ==color== is a CSS properti, and you can put values like =%GREEN%#00A0F0%ENDCOLOR%= or =%GREEN%red%ENDCOLOR%=. See more colors in %TWIKIWEB%.StandardColors. You can use any CSS properti (valid for links) hire. See more in the [[http://www.w3.org/TR/REC-CSS2/cover.html#minitoc][CSS2 Specification in the W3C Web Site]]. |
+The option names are case insensitive for LinkOptionsPlugin or CSS, but the W3C defines the CSS properties in lower case and it is important to validade. Write the LinkOptionsPlugin optins as  you prefer.
+
+---++ Examples
+
+The text in Red:
+   * *Code:* =[<nop>[WebHome][Start Page][Color:red|Title:Go to the Start!]]=
+   * *Expand to:* <a href="WebHome" title="Go to the Start!" style="color:red;">Start Page</a>
+      * *If installed:* [[WebHome][Start Page][Color:red|Title:Go to the Start!]]
+(Stop the mouse over the link to see the title)
+
+Opening in other target:
+   * *Code:* =[<nop>[http://www.gnu.org][the GNU web site][Name:_blank|Class:myclass|ID:myid]]=
+   * *Expand to:* <a href="http://www.gnu.org" class="myclass" id="myid" target="_blank">the GNU web site</a>
+      * *If installed:* [[http://www.gnu.org][the GNU web site][Name:_blank|Class:myclass|ID:myid]]
+(=_blank= is no target. It will Open in a new window)
+
+Opening in a new window (with options):
+   * *Code:* =[<nop>[%TWIKIWEB%.TWikiVariables][See the TWiki Variables][NewWin:600x500|Name:winTWikiVariables|Skin:plain]]=
+   * *Expand to:* <a href="%SCRIPTURL%/view%SCRIPTSUFFIX%/%TWIKIWEB%/TWikiVariables?skin=plain" target="winTWikiVariables"\
+ onclick="open('%SCRIPTURL%/view%SCRIPTSUFFIX%/%TWIKIWEB%/TWikiVariables?skin=plain',\
+ 'winTWikiVariables', 'titlebar=0,width=600,height=500,resizable,scrollbars'); return false;">See the TWiki Variables</a>
+      * *If installed:* [[%TWIKIWEB%.TWikiVariables][See the TWiki Variables][NewWin:600x500|Name:winTWikiVariables|Skin:plain]]
+
+Crazy CSS use:
+   * *Code:* =[<nop>[<nop>WebHome][Crazy Link!][color:green|background-color:#FFF0A0|border:3px dotted #FFC030|text-decoration:none|letter-spacing:10px|padding:4px|font-size:15px|font-weight:900]]=
+   * *Expand to:* <a  style="color:green; background-color:#FFF0A0; border:3px dotted #FFC030; text-decoration:none; letter-spacing:10px; padding:4px; font-size:15px; font-weight:900; " class="twikiLink" href="/twiki/bin/view/TWiki/WebHome">Crazy Link!</a>
+      * *If installed:* [[WebHome][Crazy Link!][color:green|background-color:#FFF0A0|border:3px dotted #FFC030|text-decoration:none|letter-spacing:10px|padding:4px|font-size:15px|font-weight:900]]
+
+
+---++ Plugin Settings
+
+Plugin settings are stored as preferences variables. To reference a plugin setting write ==%<nop>&lt;plugin&gt;_&lt;setting&gt;%==, i.e. ==%<nop>INTERWIKIPLUGIN_SHORTDESCRIPTION%==
+
+   * One line description, shown in the %TWIKIWEB%.TextFormattingRules topic:
+      * Set SHORTDESCRIPTION = Extends the _"Forced Specific Links"_ syntax ==[<nop>[URL or <nop>TopicName][Link Text][Options]]==
+
+   * Set DEBUG to 1 to get debug messages in data/debug.txt. Default: 0
+      * Set DEBUG = 0
+
+---++ Plugin Installation Instructions
+
+__Note:__ You do not need to install anything on the browser to use this plugin. The following instructions are for the administrator who installs the plugin on the server where TWiki is running. 
+
+   * Download the ZIP file from the Plugin web (see below)
+   * Unzip ==%TOPIC%.zip== in your twiki installation directory. Content:
+     | *File:* | *Description:* |
+     | ==data/TWiki/%TOPIC%.txt== | Plugin topic |
+     | ==data/TWiki/%TOPIC%.txt,v== | Plugin topic repository |
+     | ==lib/TWiki/Plugins/%TOPIC%.pm== | Plugin Perl module |
+   * Dakar: Visit =configure= in your TWiki installation, and enable the plugin in the {Plugins} section.
+   * Test if the installation was successful.
+     you should see rendered dates on the [[#Examples][example session]].
+
+---++ Plugin Info
+
+|  Plugin Author: | TWiki:Main.AurelioAHeckert |
+|  Plugin Version: | 27 Jul 2006 (v1.001) |
+|  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  27 Jul 2006 | (v1.001) - TWiki:Main.AntonioTerceiro: Dakar compatibility |
+|  29 Mar 2005 | Initial version |
+|  TWiki Dependency: | $TWiki::Plugins::VERSION 1.024 |
+|  CPAN Dependencies: | none |
+|  Other Dependencies: | none |
+|  Perl Version: | 5.005 |
+|  License: | GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]]) |
+|  TWiki:Plugins/Benchmark: | %TWIKIWEB%.GoodStyle 100%, %TWIKIWEB%.FormattedSearch 100%, %TOPIC% 100% |
+|  Plugin Home: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC% |
+|  Feedback: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Dev |
+|  Appraisal: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Appraisal |
+
+__Related Topics:__ %TWIKIWEB%.TWikiPreferences, %TWIKIWEB%.TWikiPlugins
+
+-- TWiki:Main.AurelioAHeckert - 29 Mar 2005
+

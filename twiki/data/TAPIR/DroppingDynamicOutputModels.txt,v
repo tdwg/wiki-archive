@@ -1,0 +1,144 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.6
+log
+@Revision 7
+@
+text
+@This page explores the idea of completely removing dynamic output models from the protocol. By the time of the Madrid 2005 TAPIR meeting this approach was named RestrictedFixedViews.
+
+Currently, providers advertise support of dynamic output models through capabilities responses, by having inside _/capabilities/operations/search/_:
+
+<verbatim>
+<customOutputModels accepted="true">
+  <structure>
+  ...subset of XML Schema supported...
+  </structure>
+</customOutputModels>
+</verbatim>
+
+So from the protocol schema perspective, dropping dynamic output models would first mean removing the element _/capabilities/operations/search/customOutputModels_ and its respective responseStructureCapabilitiesType. Data providers would only advertise predefined output models also inside _/capabilities/operations/search/_.
+
+The main reasons for dropping dynamic output models would be:
+
+   * the current limitations to fully describe all semantics encoded in output models (only leaf nodes or properties are mapped - classes and relationships are not captured).
+   * the decision to avoid additional complexity of handling other alternatives that could possibly express richer semantics in output models.
+   * the desire to simplify the TAPIR in order to promote different implementations and understanding/usage of people
+
+Considering the first reason above, it would probably not make sense to keep the <mapping> section inside output model definitions (why keep it if the current mapping is limited?). So another change in the protocol schema would be to drop the <mapping> element inside the outputModelType definition. This type would only keep the indexingElement to be used when paging search results.
+
+Since the main idea behind advertising a list of "mapped concepts" is that there could be different output models based on them, it would probably not make sense to keep that section too. So one more change in the protocol would be to remove <concepts> from the capabilities response. "Concept name servers" could be renamed to "schema repository servers" and they could be advertised somewhere else in the capabilities response, but their need would need to be clearer before deciding to keep them. 
+
+At this point, providers would need to advertise a set of predefined output models, all described in XML Schema, and with all semantics explained somewhere outside the protocol in machine-readable, partially machine-readable, or even only human-readable ways (like having descriptions in <xsd:annotation> elements). However, filters and inventory operations used to reference concepts that were advertised by _/capabilities/concepts_. So inside _/capabilities/operations/search/_ the element <predefinedOutputModels> could be renamed to <outputModels>, and each <outputModel>, besides  having a link to an external definition, could also contain a list of <knownConcepts>. Those concepts could follow the same pattern that was used by _/capabilities/concepts_, with the attributes path, searchable and required. 
+
+Search operations would need to reference one and only one output model, making use of one or more known concepts from the same output model. Inventory operations would rely on models again as a source of concepts. It is debatable if it makes sense to allow the mix of concepts from different models in inventories and also filters.
+
+Networks would choose providers based on the output models they have to offer. If a network wants to integrate a data provider that is sharing the same kind of data through a different output model, it would need to either know how to formulate queries (using the right concepts) and then transform responses using XSLT, or it would need to contact the provider and ask him/her to offer a new output model compatible with the network. Schema repositories and smart provider implementations could ease the task of mapping and exposing new output models, but this would depend at least on some manual intervention. 
+
+Output models could extend each other by means of regular XML Schema techniques. So one provider could offer an output model purely based on DarwinCore, and another provider could offer an output model based on DarwinCore + Microbial extension. In this case, requests would differ since both providers use different output models (concept paths could be the same, but the output model URL would be different). Networks based on DarwinCore would need to know about the extensions compatible with DarwinCore so that the respective providers could be considered.
+
+-----
+---+++ Namespace based approach
+When thinking of removing the 2step mapping (mapping model nodes to shared concepts), I'd like to recapture the drawbacks of the BioCASE approach. 
+
+Providers locally map their data to basically xml schemas with "concepts" identified by the schema namespace + xpath to the element in an instance document. Known problems are:
+ 1 query across several schemas: use concepts from multiple schemas in a single filter
+ 1 extend schemas, return mixed content: People want to extend common schemas for their own purposes while maintaining compatability with a core set of concepts. In the basic schema approach this requires the setup of new schemas importing others, thus creating new concepts because they need a new namespace.
+
+I think if we find solutions for these 2 issues, the SchemaBasedConcepts approach is straightforward, easy to understand and already introduced in our community.
+
+1) querying across schemas raises the question how different schemas are related. One idea was to trust on an underlying relational model in the local database of a provider. this relational model _relates_ the concepts used from different schemas. It would be nice to have those relations explicit though.
+
+TBC...
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d42 4
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d38 2
+a39 2
+ 1) query across several schemas: use concepts from multiple schemas in a single filter
+ 2) extend schemas, return mixed content: People want to extend common schemas for their own purposes while maintaining compatability with a core set of concepts. In the basic schema approach this requires the setup of new schemas importing others, thus creating new concepts because they need a new namespace.
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d32 10
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d27 1
+a27 1
+Search operations would need to reference one and only one output model, making use of one or more known concepts from the same output model. Inventory operations would need to find a way to reference single or only interrelated concepts, maybe by advertising the valid options under _/capabilities/operations/inventory_ (?).
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d19 1
+@

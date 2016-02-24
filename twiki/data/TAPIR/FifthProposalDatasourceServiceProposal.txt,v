@@ -1,0 +1,432 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@---+ 5th DatasourceServiceProposal
+---++++ General strategy
+
+Address the most important of the 3 types of services identified (DatasourceServices, ProviderServices and MessageBrokerServices): the*DatasourceService*.
+
+
+---++++ Files
+   * *Shared Core Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolCore.xsd
+   * *Datasource Service Schema* : http://ww3.bgbm.org/viewcvs/viewcvs.cgi/*checkout*/schemas/protocol/newprotocolDatasource.xsd
+
+---++++ Details
+
+   * Address only DatasourceServices ( ~ DiGIR resources) in the protocol.
+
+   * Use the same approach regarding AccessPoints:
+   * Only datasources will have an access point (provider software access point is not covered by this protocol).
+   * Datasources will accept all kind of requests.
+   * Eliminate DifferencesInHeaderInformation by (see DatasourceHeaderProposalOne):
+   * Removing the optional attribute "resource" in both "source" and "destination" elements (affects DiGIR).
+   * Removing the "destination" element (affects both).
+   * Allowing multiple "source" elements to be able to track each address in the process, and incorporating the "sendTime" element as an attribute of "source". However, intermediaries don't need to stamp a source element - it's an optional behavior (affects both - related to new BioCASE proposal).
+   * Making the address ("accesspoint") an attribute of "source", not its content. In responses from a datasource, the address should be the exact accesspoint of the datasource (affects both).
+   * Including an optional "software" attribute inside the "source" element which should hold the name and version of the software used. More detailed software descriptions can be specified in the capabilities reponse (affects both).
+   * remove the "type" element and only use the immediate element after "header" to determine the type of requests/responses.
+
+   * Eliminate DifferencesInRequestTypes by:
+  (for detailed definitions see further below)
+   * Including a MetadataRequest FifthProposalDatasourceServiceProposal Response (affects BioCASE).
+   * Defining the metadata elements in a separate schema (affects both).
+   * Including a CapabilitiesRequest FifthProposalDatasourceServiceProposal Response (affects DiGIR).
+   * Including a PingRequest FifthProposalDatasourceServiceProposal Response (affects both).
+   * Provisionally have 2 seperate search Request FifthProposalDatasourceServiceProposal Response types:
+      * a "search" Request FifthProposalDatasourceServiceProposal Response as the RecordBasedApproach (affects both).
+      * a "docsearch" Request FifthProposalDatasourceServiceProposal Response as the DocumentBasedApproach (affects both).
+
+   * Use the same ping Request FifthProposalDatasourceServiceProposal Response: (see PingProposalOne) (affects both)
+
+   * Use the same metadata response initially based on DiGIR but with some changes: (see DatasourceMetadataProposalTwo)
+   * Resource renamed to datasource.
+   * Included accessPoint in the datasource.
+   * Removed the implementation element (duplicated).
+   * Moved elements minQueryTermLength, maxSearchResponseRecords, maxInventoryResponseRecords to the CapabilitiesRequest. 
+   * Removed recordBasis and recordIdentifier elements.
+   * Changed useRestrictions to a generic "rights" element (equivalent to previously suggested IPR and to a Dublin Core element). Accepts xml:lang attribute.
+   * Provider metadata is now a datasource relatedEntity.
+   * Datasource name renamed to label and accepts xml:lang attribute.
+   * Keywords element accepts xml:lang and has maxOccurs unbounded.
+   * Citation is an element (with maxOccurs unbounded and xml:lang). 
+   * Conceptual schema needs an associated schema location in its content.
+   * Made dateLastUpdated and numberOfRecords as an attribute part of the conceptual schema element.
+   * Datasource has a list of related entities.
+   * Each entity accepts a list of names (xml:lang), a list of roles (with controlled vocabulary defined by networks), a logo url, a description (xml:lang), an acronym and related information links.
+   * If values of related entities come from a local cache, we recommend a diagnostics warning in responses.
+   * Open Issues:
+      * Each entity needs a GUID.
+      * Included "language" element related to the datasource content (from Dublin Core).
+      * Included generic multiple element typeOfContent. Networks should agree on a controlled vocabulary. (equivalent to Dublin Core "type" element).
+
+   * Use the same CapabilitiesRequest and Response by: (see DatasourceCapabilitiesProposalOne)
+   * Including a list of conceptual schemas being used (and all mapped concepts) and incldue capabilities for each schema:
+      * Including a list of request methods supported.
+      * Including a list of local settings (minQueryTermLength and a generic maxResponseSize substituting maxSearchResponseRecords and maxInventoryResponseRecords).
+      * Optionally including a more detailed list of software in the response.
+      * Including supported operators separated by categories.
+      * Include the RecordDefinitions used for the conceptual schema
+   * Include the metadata schema being used for the SearchResponseTopStructure
+
+   * Eliminate DifferencesInConceptualBinding by: (see ConceptualBindingProposalOne)
+   * Referencing concepts through simple xpaths (affects DiGIR).
+   * Allowing concepts from different conceptual schemas to be present in the same request by prefixing the path (affects mainly BioCASE).
+
+   * Use the same InventoryRequest and Response: (see DatasourceInventoryProposalOne)
+   * Allowing filters (affects BioCASE).
+   * Allowing counts, both partial and total (affects BioCASE).
+   * Using the name "inventory" for this type of request (affects BioCASE).
+   * Allowing more than one concept in inventory/scan requests (affects both).
+   * Always sort results. Order by sequence of requested concepts if multiple. 
+
+   * Eliminate DifferencesWithOperators by:
+   * adding a new unary logical operator called "not" (affects DiGIR).
+   * adding a new unary comparative operator called "isNull" (affects DiGIR).
+   * dropping the operators "orNot", "andNot" and "notEquals" (affects both).
+   * dropping the operator "isNotNull" (affects BioCASE).
+
+   * Additional enhacements to operators:
+   * allow comparative operators to compare any 2 expressions, which can be made of literals (values) or concepts. This would allow to compare 2 concepts also instead of the current restriction to compare a concept with a literal only. 
+   * allow functions.
+   * change maxOccurs of LOPs to unbounded (affects both).
+
+   * Use the same way to call providers:
+   * Using a single POST or GET parameter called "request" which contains either the XML message or an URL pointing to the XML message. 
+
+   * Changes in filters:
+   * allow search requests without filters (affects both). 
+   * evaluate to false if concept is not mapped but compared. 
+   * always insert info/warn diagnostic if unmapped concept encountered in request. 
+
+   * Use the same error handling strategy:
+   * use CommonErrorCodes and prefixes for classification of codes.
+
+   * How should we deal with NULL values when producing responses? NULL is non existing informaion and the element containing a NULL value should therefore be dropped and not be part of the response.
+
+   * Use the same SearchRequest for a RecordBasedApproach by (see DatasourceSearchProposalOne):
+   * Use a fixed SearchResponseTopStructure to include metadata
+   * Use new footer element to give information for paging and counting.
+
+   * Use the same SearchRequest for a DocumentBasedApproach by (see DatasourceDocsearchProposalOne):
+   * Use new footer element to give information for paging and counting.
+   * ...
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d105 1
+a105 1
+   * ...
+d108 1
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d36 2
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d101 1
+a101 1
+   * Use the same RecordBasedApproach - SearchRequest by (see DatasourceSearchProposalOne):
+d105 1
+a105 1
+   * Use the same DocumentBasedApproach - DocsearchRequest by (see DatasourceDocsearchProposalOne):
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d101 2
+a102 1
+   * Use the same RecordBasedApproach SearchRequest by (see DatasourceSearchProposalOne):
+d105 1
+a105 1
+   * Use the same DocumentBasedApproach DocsearchRequest by (see DatasourceDocsearchProposalOne):
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d101 4
+a104 1
+   * Use the same SearchRequest by:
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d75 1
+a75 1
+   * Optionally request sorting of result list. Order by sequence of requested concepts if multiple. 
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d64 1
+a64 1
+   * Include the metadata schema being used for the ResponseTopStructure
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d58 7
+a64 5
+   * Including a list of conceptual schemas being used (and all mapped concepts).
+   * Including a list of request methods supported.
+   * Including a list of local settings (minQueryTermLength and a generic maxResponseSize substituting maxSearchResponseRecords and maxInventoryResponseRecords).
+   * Optionally including a more detailed list of software in the response.
+   * Including supported operators separated by categories.
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@a49 1
+   * Each entity needs a GUID.
+d53 1
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d48 1
+a48 1
+   * Made DateLastUpdated and NumberOfRecords as an attribute part of the conceptual schema element.
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@a44 1
+   * Included generic multiple element typeOfContent. Networks should agree on a controlled vocabulary. (equivalent to Dublin Core "type" element).
+a46 1
+   * Included "language" element related to the datasource content (from Dublin Core).
+d48 1
+d53 3
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d93 1
+a93 1
+   * use common Error Codes and prefixes for classification of codes.
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d27 1
+a27 1
+   (for detailed definitions see further below)
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d23 1
+a23 1
+   * Including an optional "software" element with attributes "name" and "version" inside the "source" element. Software could have many occurrences (affects both).
+d27 1
+d32 1
+a32 1
+   * Provisionally have 2 seperate search request types:
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d13 1
+a13 1
+   * Address only DatasourceServices (resources) in the protocol.
+d16 2
+a17 3
+   * Only resources will have an access point (provider software access point will not be covered by the protocol).
+   * Resources will accept all kind of requests.
+
+a18 1
+
+d22 1
+a22 1
+   * Making the address ("accesspoint") an attribute of "source", not its content. In responses from a resource, the address should be the exact accesspoint of the resource (affects both).
+d31 3
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d4 2
+a5 1
+Concentrate only on a datasource service protocol. Try to get the best from previous proposals, solve remaining inconsistencies, and also incorporate some new suggestions.
+a10 15
+---+++++ Types of services
+
+The 3 types of services identified (DatasourceServices, ProviderServices and MessageBrokerServices) are similar in many aspects, but they are not the same. Using the same protocol schema to validate messages from all services would certainly make the schema more complicated and probably less restrictive (allowing many unreal combinations of elements). Using the same specification to describe the all services would probably lack the desired clarity and simplicity. Ideally we would need 3 separate specifications and 3 separate protocols, but at the present moment it may not be possible to produce all of them.
+
+This proposal tries to address only the most important service: the DatasourceService.
+
+Additional reasons for NOT addressing ProviderService now:
+
+   * The capability to query more than one datasource at the same time is a new feature (not directly related to the integration of DiGIR and BioCASE, and not necessarily easy to implement).
+   * The capability of being a discovery service for local datasources is only being used by DiGIR and could be easily substituted by a UDDI service (either by creating new themes in the GBIF UDDI repository, or by installing a  free and open source repository like [[http://ws.apache.org/juddi/][jUDDI]]).
+
+Additional reasons for NOT addressing MessageBrokerService now:
+
+   * Although the DiGIR protocol has some elements especifically related to that service (e.g. "responseWrapper" element and multiple destinations), it is not validating all messages exchanged between clients and "portal" engine, and it seems the protocol is not officialy supposed to specify these types of messages. BioCASE on its turn uses a java API for that purpose. Making the protocol compliant with MessageBrokers would not be a trivial task, and probably other more generic protocols would better support query distribution.
+
+@

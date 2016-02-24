@@ -1,0 +1,279 @@
+head	1.7;
+access	;
+symbols;
+locks; strict;
+comment	@@;
+
+1.7
+date	2006.09.07.07.08.17;	author DonovanSharp;	state Exp;
+branches;	
+next	1.6;
+1.6
+date	2006.07.06.05.57.13;	author DonovanSharp;	state Exp;
+branches;	
+next	1.5;
+1.5
+date	2006.07.05.05.37.16;	author DonovanSharp;	state Exp;
+branches;	
+next	1.4;
+1.4
+date	2006.06.05.04.17.43;	author DonovanSharp;	state Exp;
+branches;	
+next	1.3;
+1.3
+date	2006.06.05.01.20.42;	author DonovanSharp;	state Exp;
+branches;	
+next	1.2;
+1.2
+date	2006.06.02.04.10.02;	author DonovanSharp;	state Exp;
+branches;	
+next	1.1;
+1.1
+date	2006.06.02.00.51.12;	author DonovanSharp;	state Exp;
+branches;	
+next	;
+
+
+desc
+@@
+
+
+1.7
+log
+@@
+text
+@%META:TOPICINFO{author="DonovanSharp" date="1157612897" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="SddContents"}%
+---++SDD Part 0: Introduction and Primer to the SDD Standard 
+
+---+++Frequently Asked Questions
+
+---++++There's already a perfectly good descriptive data standard in DELTA - why not continue to use it?
+
+#DeltaFaq The [[http://biodiversity.uno.edu/delta/][DELTA]] system, developed from 1971 at CSIRO in Canberra, was for many years a widely used format for capturing and manipulating descriptive data. The [[http://biodiversity.uno.edu/delta/][DELTA]] data format was accepted as a standard by TDWG in 1991.
+
+However, the [[http://biodiversity.uno.edu/delta/][DELTA]] system comprises a data format closely tied to a particular software implementation (the DELTA programs such as CONFOR, INTKEY etc). Because of this close linkage between the data format and the software, any changes to the [[http://biodiversity.uno.edu/delta/][DELTA]] standard required matching changes in a large body of software code. Since the code-base belonged to a particular developer group, no changes to the [[http://biodiversity.uno.edu/delta/][DELTA]] format could be made unless the developers accepted the changes and made appropriate modifications to the software. By the later 1990's a number of improvements to the [[http://biodiversity.uno.edu/delta/][DELTA]] format had been suggested, by the DELTA developers and others, but these changes were not implemented because of difficulties in updating the software.
+
+Also by the late 1990s a number of developers had created alternative software packages (e.g. [[http://www.diversitycampus.net/Workbench/Descriptions/][DeltaAccess]], [[http://www.lucidcentral.com][Lucid]]) based on alternative data formats (either new formats or modifications to DELTA). These formats were generally not fully mappable with DELTA data, or with each other. This in turn meant that data could not be losslessly translated from one format to the another, making roundtripping of data impossible.
+
+It was in response to these challenges that the SDD data standard was created as an implementation--independent format created through international collaboration. The format of SDD has been designed allow extensibility of the standard without creating immediate problems for generating or consuming applications. Independence from a particular software implementation also means that loss of support for any given implementing program will have no implications for maintenance of the standard.
+
+ 
+
+---++++SDD instance documents seem extremely verbose - why is this, and is it a problem?
+
+#VerboseFaq SDD uses XML to represent descriptive data. XML (Extensible Markup Language: see [[http://www.w3.org][www.w3.org]]) is an extremely flexible and effective markup language. It is also usually verbose - in fact, one of the design criteria for the World Wide Web Consortium (W3C) in creating XML was "Terseness in XML markup is of minimal importance". This is because terseness (such as, for instance, through extensive use of abbreviated codewords rather than plain text) makes the document harder to read by both people and machines.
+
+Much of the verbosity of XML occurs because XML is a markup language in which the structure of the data is explicitly represented by tags, rather than relying on implicit (e.g. positional) methods for determining data elements. For example, consider a small data matrix, comprising three columns and two rows of integers. The matrix could be represented straightforwardly using two lines of comma-separated values:
+
+0,1,8
+
+7,4,2
+
+The same data matrix represented in XML will require many tags and is considerably more verbose.
+
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+<Matrix>    
+    <Row id=1>
+        <Column id=1>0</Column>
+        <Column id=2>1</Column>
+        <Column id=3>8</Column>
+    </Row>
+    <Row id=2>
+        <Column id=1>7</Column>
+        <Column id=2>4</Column>
+        <Column id=3>2</Column>
+    </Row>
+</Matrix>
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+While deceptively simple, the first (matrix) representation cannot be parsed without specifying a number of implicit parsing rules (for instance, that the values are separated by commas, that while parsing a row the column number can be determined by tallying commas, and that the row number is determined by tallying line breaks). The data can be read only by a special-purpose parser furnished with these rules. By contrast, the XML representation requires a minimum number of implicit parsing rules, and any XML parser will be able to parse the data.
+
+SDD documents, particularly simple instances such as given in the examples in this Primer, also appear complex because SDD is weighted to bring efficiencies to representations of large documents rather than small ones. For instance, authors and contributors in SDD documents are specified once, then referred to by numeric key references throughout the remainder of the document. While this may appear nonsensical in a small document where only one author is referred to once, it will be maximally efficient for large documents where many authors are referred to many times.
+
+----++++Why are there so many numbers within an SDD instance document and to what do they relate
+
+Every higher level element within an SDD document must have a unique identifier by which references to that element can be reconciled. There are many ways of achieving this. Every element can be assigned a unique number, for example;  
+ 
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+ <TaxonName id="54">
+  <Representation>
+   <Label xml:lang="en-us">Korthalsella papuana</Label>
+  </Representation>
+ </TaxonName>
+
+
+or
+
+  <StateDefinition id="76">
+   <Representation>
+    <Label xml:lang="en-us">aquatic</Label>
+   </Representation>
+   </StateDefinition>.
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+Alternatively each element can be assigned a unique identifier with a prefix providing information about the element it is associated with, for example;  
+ 
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+
+<tr>
+<td>
+
+<verbatim>
+ <TaxonName id="t54">
+  <Representation>
+   <Label xml:lang="en-us">Korthalsella papuana</Label>
+  </Representation>
+ </TaxonName>
+
+or
+
+  <StateDefinition id="s76">
+   <Representation>
+    <Label xml:lang="en-us">aquatic</Label>
+   </Representation>
+   </StateDefinition>.
+
+</verbatim>
+
+</td>
+</tr>
+
+</table>
+
+-- Main.DonovanSharp - 02 Jun 2006@
+
+
+1.6
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152165433" format="1.1" reprev="1.6" version="1.6"}%
+d60 1
+a60 1
+----++++Why are ther so many numbers within an SDD instance document and to what do they relate
+a120 1
+
+@
+
+
+1.5
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1152077835" format="1.1" version="1.5"}%
+d31 5
+d51 5
+d64 5
+d76 1
+d86 5
+d93 5
+d115 2
+d118 2
+d121 1
+@
+
+
+1.4
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149481063" format="1.1" reprev="1.4" version="1.4"}%
+a90 1
+
+@
+
+
+1.3
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149470442" format="1.1" reprev="1.3" version="1.3"}%
+d19 1
+a19 2
+SDD instance documents seem extremely verbose - why is this, and is it a problem?
+SDD uses XML to represent descriptive data. XML (Extensible Markup Language: see www.w3.org) is an extremely flexible and effective markup language. It is also usually verbose - in fact, one of the design criteria for the World Wide Web Consortium (W3C) in creating XML was "Terseness in XML markup is of minimal importance". This is because terseness (such as, for instance, through extensive use of abbreviated codewords rather than plain text) makes the document harder to read by both people and machines.
+d21 2
+d26 1
+d31 1
+d44 1
+d50 2
+a51 1
+Why are ther so many numbers within an SDD instance document and to what do they relate
+d54 1
+d68 1
+a69 1
+d72 1
+d87 1
+a87 1
+
+@
+
+
+1.2
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149221402" format="1.1" version="1.2"}%
+d7 1
+a7 1
+There's already a perfectly good descriptive data standard in DELTA - why not continue to use it?
+d9 1
+a9 1
+#DeltaFaq The DELTA system, developed from 1971 at CSIRO in Canberra, was for many years a widely used format for capturing and manipulating descriptive data. The DELTA data format was accepted as a standard by TDWG in 1991.
+d11 1
+a11 1
+However, the DELTA system comprises a data format closely tied to a particular software implementation (the DELTA programs such as CONFOR, INTKEY etc). Because of this close linkage between the data format and the software, any changes to the DELTA standard required matching changes in a large body of software code. Since the code-base belonged to a particular developer group, no changes to the DELTA format could be made unless the developers accepted the changes and made appropriate modifications to the software. By the later 1990's a number of improvements to the DELTA format had been suggested, by the DELTA developers and others, but these changes were not implemented because of difficulties in updating the software.
+d13 1
+a13 1
+Also by the late 1990s a number of developers had created alternative software packages (e.g. DeltaAccess, Lucid) based on alternative data formats (either new formats or modifications to DELTA). These formats were generally not fully mappable with DELTA data, or with each other. This in turn meant that data could not be losslessly translated from one format to the another, making roundtripping of data impossible.
+d84 1
+@
+
+
+1.1
+log
+@@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonovanSharp" date="1149209472" format="1.1" reprev="1.1" version="1.1"}%
+d7 1
+a7 2
+#DeltaFaq There's already a perfectly good descriptive data standard in DELTA - why not continue to use it?
+The DELTA system, developed from 1971 at CSIRO in Canberra, was for many years a widely used format for capturing and manipulating descriptive data. The DELTA data format was accepted as a standard by TDWG in 1991.
+d9 2
+a83 1
+
+@
+

@@ -1,0 +1,1056 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2010.02.04.05.00.49;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2009.11.09.21.49.40;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.11.05.17.58.38;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="BobMorris" date="1265259649" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="PlaziEOLProject"}%
+<img height=78 src="images/dc7nch5n_150hkssndck_b.gif" width=214>
+</div>
+
+
+
+
+---+Report to GBIF on Plazi EOL SPM Service
+
+Terry Catapano, Columbia University and&nbsp; Robert A. Morris, UMASS-Boston and Harvard University Herbaria.<br>
+Plazi, Switzerland
+  <br>
+Boston/New York/Berne, September 13, 2009<br>
+
+---++Abstract
+Plazi received a grant from GBIF to implement the Species Profile Model for the provision of taxonomic descriptions to the Encyclopedia of Life to complement a previous GBIF grant to Zootaxa and Plazi that provided that source data. These data for the project were taxonomic publications related to Ants. The original publications had been scanned, with the text captured via OCR, and encoded by Plazi using !GoldenGate (<a href=http://plazi.org/?q=GoldenGATE id=tc9: title=http://plazi.org/?q=GoldenGATE>http://plazi.org/?q=GoldenGATE</a>) and the !TaxonX XML schema (<a href=http://!TaxonX.org/schema/v1/!TaxonX1.xsd id=f70h title=http://!TaxonX.org/schema/v1/!TaxonX1.xsd>http://!TaxonX.org/schema/v1/!TaxonX1.xsd</a>). An XSLT conversion to SPM RDF/XML was developed and deployed as a web service using the eXist XML database (<a href=http://www.exist-db.org id=eocb title=www.exist-db.org>www.exist-db.org</a>) so that SPM files generated dynamically from the !TaxonX files can be retrieved via an HTTP GET request. A documented API is provided for the service, which allows the client applications latitude on tailoring the service.&nbsp; Sufficient documentation is provided so that clients can use the service for altogether different and unique processing of the underlying XML document.
+
+At the date of finishing this project, 5892 treatments have been made accessible on EOL, including fish, ant and platygasteroid wasps. By the end of October, more than 10,000 from approximately 500 publications will be available with a steadily increase of additional treatments on Plazi.
+
+[Since the end of October 2009, 12,360 taxonomic treatments from 542 publications have
+been available, and the numbers will increase steadily.
+
+[[http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/counts.xq][Current statistics]]
+
+-- Main.BobMorris - 05 Nov 2009]
+
+---++ !TaxonX
+!TaxonX provides for the encoding of taxonomic treatments, with elements for the the major structural components of treatments (e.g., Nomenclature, Materials Examined, Description, etc...) and phrase-level features of interest in taxonomy (e.g., scientific names, locality names, characters, etc...) as well as mechanisms for linking to external resources and the semantic normalization of terms mentioned in the source document. The !TaxonX instances contain a moderate degree of markup. Bibliographic metadata for the source documents are provided in each instance. Within the publications, treatments and the nomenclature sections are always identified. Other sections of treatments are identified and named when they occur, but are not always present due to the wide variability of the structure of the source documents . All scientific names are marked and associated with an LSID, but other features may not always be identified.
+
+---++RDF, OWL, and the Species Profile Model
+RDF and its related languages RDFS and OWL describe resources by identifying them and relations between them. Formally, RDF has two equivalent definitions.
+
+First, it is a set of triples &lt;subject, predicate, object&gt;, where the subject and object are URIs that identify some resources that are being described, and the predicate is a URI that identifies a relation between them. Triples themselves can be declared to be resources, allowing relationships among triples to be described. This process is called _reification,_ loosely following terminology from the linguistics discipline. To the extent we should think about a triple as part of a description of its subject, reification allows the formation of descriptions of how we can describe things. In turn, this allows descriptions not only of resources, but also of abstractions about them, i.e. classes of resources and properties of resources expressed without regard to any particular explicit resources. That is the role of RDFS and OWL, whose design enables machine reasoning using variants of First Order Logic. They also enable more robust and semantically meaningful data integration than does RDF alone, and this is EOL's principal use of SPM.
+
+A set of triples gives rise to a natural directed labeled graph, whose graph nodes are resources&nbsp; occurring in the triple set, and an edge from subject to object labeled with the predicate URI. Conversely given such a graph, we can produce a set of triples whose subject is the edge source, predicate is the edge label, and object is the target of the edge. Such a graph provides an equivalent definition of RDF.&nbsp; We have oversimplified these definitions especially in that RDF includes a rudimentary type system, which is especially important with the introduction of&nbsp; RDFS, a vocabulary that adds classes to the basic notion of RDF. Thus, a triple &lt;A, rdf:type, B&gt;&nbsp; where B is a class defined in RDFS can be interpreted as saying that A is a member of B.
+
+Sometimes one of these two expressions of RDF provides the modeler with a better view than the other. This makes the W3C RDF Validator(http://www.w3.org/RDF/Validator/) a particularly helpful tool for exploring RDF knowledge models, because it can display both forms.
+
+Finally, RDF has several serializations, including one in&nbsp; XML, called RDF/XML. This is convenient mainly due to widespread familiarity with XML and availability of many tools to manipulate it. Unlike the graph or triple representations, it often fails to provide human readers with insights into subtle semantic issues in a model.
+ 
+The Species Profile Model is an OWL ontology describing a class, <i>SpeciesProfileModel</i> (SPM), defined simply as "A set of information about a taxon" with two properties, "<i>aboutTaxon</i>" ("The taxon this information is about")and "<i>hasInformation</i>" ("A piece of information about this taxon"). The <i>aboutTaxon</i> property ranges over the <i>TaxonConcept</i> class, defined by the TDWG Taxon Concept LSID Ontology, and the <i>hasInformation</i> property ranges over the class <i>InfoItem</i> defined by the Species Profile Model ontology. The TDWG Species Profile Model <i>InfoItem</i> (SPMI) Ontology, in turn, defines several subclasses in InfoItem to "describ[e] a controlled vocabulary for types of InfoItem". The terms defined in the SPM, SPMI, and the other TDWG vocabularies can then be used to construct triples. The RDF triples provide assertions about taxa for use by consuming applications, and semantic reasoning engines can infer additional assertions using the formal semantics of RDF and languages built upon it, such as various species of OWL, the Web Ontology Language (http://www.w3.org/2004/OWL/). These languages particularly promote data integration between heterogeneous data sets, which is part of EOL's goal.&nbsp; The interested reader will find substantial details about both the reasoning and data integration aspects of RDF in the book&nbsp; <i>Semantic Web for the Working Ontologist, </i>Dean Allemang and Jim Hendler, Morgan Kaufman, Burlington, MA, 2008.
+
+---++XSLT Conversion
+The XSLT stylesheet language, and the programs which process it, support the transformation of XML documents to various other forms of documents. Common uses include transformation to HTML for web presentation, and transformation between various forms of XML. Our use is two-fold: to extract particular elements of interest from a !TaxonX document, and to output the result in the form of the special XML dialect RDF/XML in order to represent the underlying RDF graph.&nbsp; It is therefore necessary to understand the RDF/XML syntax (http://www.w3.org/TR/rdf-syntax-grammar/) and to validate results using the W3C validator. SPM itself is expressed in OWL, using the RDF/XML serialization. It is sometimes useful to verify OWL compliance---which is stricter than RDF compliance---by using the WonderWeb OWL Validator (http://www.mygrid.org.uk/OWL/Validator).The XSLT stylesheet used to convert !TaxonX to SPM is available at: <a href=http://plazi.cs.umb.edu/exist/rest/db/!TaxonX_docs/styles/tx2spm.xsl id=l-d9 title=http://plazi.cs.umb.edu/exist/rest/db/!TaxonX_docs/styles/tx2spm.xsl>http://plazi.cs.umb.edu/exist/rest/db/!TaxonX_docs/styles/tx2spm.xsl</a>.
+
+While an RDF/XML document will always only result in one RDF graph, many RDF/XML graphs can be created from the same XML document, depending on the interpretation of its XML syntax. The "mapping" from !TaxonX to SPM is a matter of inferring assertions from the semantically indeterminate !TaxonX XML syntax to the very precise syntax of RDF/XML. Thus the XSLT stylesheet converting from !!TaxonX to SPM thus represents an <i>interpretation</i> of the !!TaxonX instance, and indeed of !!TaxonX and SPM themselves, by the data provider. These interpretations may or may not be semantically acceptable to any or all consuming agents. While provision of the !!TaxonX XML directly to consumers would leave open other possible interpretations and sets of assertions, perhaps more appropriate to the consumer's applications and needs, provision of SPM as XML/RDF essentially fixes the interpretation as that of the provider, which in this case is the Plazi SPM service and more specifically, the XSLT transformation. In fact, the Plazi service we developed can allow the client side to specify an XSLT stylesheet of its own to produce whatever interpretation it wishes of the underlying !TaxonX document. This is a simple application of the underlying eXist framework we use, but we offer no support for it.
+
+Following standard XML practice, throughout this document, objects that come from various different vocabularies have short prefixes (followed by ':') to distinguish the vocabularies. The principal ones we discuss are:
+<ul>
+  <li>
+    tax:&nbsp; the !TaxonX vocabulary
+  </li>
+  <li>
+    spm: the Species Profile Model vocabulary
+  </li>
+  <li>
+    spmi: Species Profile Model InfoItem vocabulary<br>
+  </li>
+  <li>
+    tc: the TDWG TaxonConcept vocabulary
+  </li>
+  <li>
+    tn: the TDWG TaxonName vocabulary
+  </li>
+</ul>
+<br>
+
+In our XSLT stylesheet, one spm:SPM object is created for each tax:treatment. Each treatment contains a nomenclature section, containing the name of the taxon described by the treatment, in both string and URI form (most often as an Life Sciences Identifier (LSID) URN). The URI is also used as the object of the <i>aboutTaxon</i> predicate for the SPM.
+
+  <table border=1 bordercolor=#000000 cellpadding=3 cellspacing=0 class="" id=l3ji>
+    <tbody>
+    <tr>
+      <td width=50%>
+
+        <b>!TaxonX</b><br>
+      </td>
+      <td width=50%>
+        <b>SPM</b><br>
+      </td>
+    </tr>
+    <tr>
+      <td width=50%>
+
+        <br>
+        <font face="Courier New"> &lt;<span class=start-tag>tax:treatment</span>&gt;<br>
+        &lt;<span class=start-tag>tax:nomenclature</span>&gt;<br>
+        No. 123. &lt;<span class=start-tag>tax:name</span>&gt;<br>
+        &lt;<span class=start-tag>tax:xid</span><span class=attribute-name> identifier</span>=<span class=attribute-value>"<i><b>urn:lsid:biosci.ohio-state.edu:osuc_concepts:135414</b></i>" </span><span class=attribute-name>source</span>=<span class=attribute-value>"HNS"</span><span class=attribute-name>/</span>&gt;<br>
+
+        &lt;<span class=start-tag>tax:xmldata</span>&gt;<br>
+        &lt;<span class=start-tag>dc:Genus</span>&gt;<i><b>Camponotus</b></i>&lt;/<span class=end-tag>dc:Genus</span>&gt;<br>
+        &lt;<span class=start-tag>dc:<i><b>Species</b></i></span>&gt;<i><b>gerberti</b></i>&lt;/<span class=end-tag>dc:Species</span>&gt;<br>
+        &lt;/<span class=end-tag>tax:xmldata</span>&gt;Camponotus (Tanaemyrmex) gerberti&lt;/<span class=end-tag>tax:name</span>&gt;</font><font face="Courier New">, sp. n.&lt;/<span class=end-tag>tax:nomenclature</span>&gt;<br>
+
+        ...<br>
+        </font>
+      </td>
+      <td width=50%>
+        <br>
+        <font face="Courier New"> &lt;<span class=start-tag>spm:SpeciesProfileModel</span><span class=attribute-name> xmlns:spm</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_spm_1"</span>&gt;<br>
+
+        &nbsp; &lt;<span class=start-tag>spm:aboutTaxon</span>&gt;<br>
+        &nbsp;&nbsp; &lt;<span class=start-tag>tc:TaxonConcept</span><span class=attribute-name> xmlns:tc</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/TaxonConcept#" </span><span class=attribute-name>rdf:about</span>=<span class=attribute-value>"<i><b>urn:lsid:biosci.ohio-state.edu:osuc_concepts:135414</b></i>"</span>&gt;<br>
+
+        &nbsp;&nbsp; &nbsp; <span class=start-tag>&lt;tc:nameString</span><span class=attribute-name> xml:lang</span>=<span class=attribute-value>"en"</span>&gt;<i><b>Camponotus gerberti</b></i>&lt;/<span class=end-tag>tc:nameString</span>&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=start-tag>tc:accordingTo</span><span class=attribute-name> rdf:resource</span>=<span class=attribute-value>"#_actor1"</span><span class=attribute-name>/</span>&gt;<br>
+
+        &nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=start-tag>tc:hasName</span>&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=start-tag>tn:TaxonName</span><span class=attribute-name> xmlns:tn</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/TaxonName#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_tn1"</span>&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=start-tag>tn:rankString</span><span class=attribute-name> xml:lang</span>=<span class=attribute-value>"en"</span>&gt;<b><i>Species</i></b>&lt;/<span class=end-tag>tn:rankString</span>&gt;<br>
+
+        </font><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/<span class=end-tag>tn:TaxonName</span>&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; &lt;/<span class=end-tag>tc:hasName</span>&gt;<br>
+        &nbsp; &lt;/<span class=end-tag>tc:TaxonConcept</span>&gt;<br>
+        &nbsp;&lt;/<span class=end-tag>spm:aboutTaxon</span>&gt;<br>
+
+        </font><br>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+IPR information is asserted using the <i>spm:hasInformation</i> property and <i>spmi:Use</i> class. All treatments provided by Plazi are considered to be not copyrightable and thus the value "No known copyright restrictions." is used as the value of the Dublin Core Rights element:
+
+<font face="Courier New">&lt;<span class=start-tag>spm:hasInformation</span>&gt;<br>
+&nbsp;&nbsp; &lt;<span class=start-tag>spmi:Use</span><span class=attribute-name> xmlns:spmi</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SPMInfoItems#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_Use_1"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=start-tag>dcterms:rights</span><span class=attribute-name> xmlns:dcterms</span>=<span class=attribute-value>"http://dublincore.org/2008/01/14/dcterms.rdf#"</span>&gt;</font><span style="FONT-FAMILY:Courier New">No known copyright restrictions.</span><font face="Courier New">&lt;/<span class=end-tag>dcterms:rights</span>&gt;<br>
+
+&nbsp;&nbsp; &lt;/<span class=end-tag>spmi:Use</span>&gt;<br>
+</font><font face="Courier New"> &lt;/<span class=end-tag>spm:hasInformation</span>&gt;<br>
+<br>
+</font>For more on Plazi's position regarding copyright and taxonomic treatments see Agosti D, Egloff W. "Taxonomic information exchange and copyright: the Plazi approach." BMC Res Notes 2009, 2:53. (http://www.biomedcentral.com/1756-0500/2/53)<br>
+<br>
+In the current&nbsp; SPM service, Plazi only serves material which meets the above, that is which is not copyrightable.&nbsp; In the event that provision of copyrighted material is to be served, it is quite unclear how that should be treated with and SPMInfoItem, particularly with regard to licensing provisions.
+
+Textual descriptions of the described taxon are asserted using the <i>spm:hasInformation</i> property and <i>spmi:Description</i> class. As will be discussed below, the lack of clear definitions for this class led us to create two possible conversions from !TaxonX to SPM depending on the sense of the term "Description." The narrow sense is&nbsp; as morphological description. A conversion based on the narrow sense draws only from the sections of the treatment dealing with morphology. For example:<br>
+<br>
+&nbsp;<br>
+<br>
+<div>
+  <table border=1 bordercolor=#000000 cellpadding=3 cellspacing=0 class="" id=pq94>
+
+    <tbody>
+    <tr>
+      <td width=50%>
+        <b>!TaxonX</b><br>
+      </td>
+      <td width=50%>
+        <b>SPM</b><br>
+      </td>
+
+    </tr>
+    <tr>
+      <td width=50%>
+        <font face="Courier New">&lt;<span class=start-tag>tax:div</span><span class=attribute-name> type</span>=<span class=attribute-value>"<b><i>description</i></b>"</span>&gt;<br>
+        <br>
+
+        &lt;<span class=start-tag>tax:p</span>&gt;[[ soldier ]]. Very pale dirty yellow, head reddish yellow, mandibles dark red...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;Head large, triangular, considerably broader...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;[[ worker ]] Of the same pale colour as the [[ soldier ]]. but only the extreme anterior angle of clypens and cheeks blackish...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;Head long, narrow, broader in front than behind, broadest a little in front of sides of head, narrowed, ...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        &lt;/<span class=end-tag>tax:div</span>&gt;</font>
+      </td>
+      <td width=50%>
+        <font face="Courier New">&lt;<span class=start-tag>spm:hasInformation</span>&gt;<br>
+
+        &nbsp; &lt;<span class=start-tag>spmi:Description</span><span class=attribute-name> xmlns:spmi</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SPMInfoItems#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_Description_1_1"</span>&gt;<br>
+        &lt;<span class=start-tag>spm:hasContent</span><span class=attribute-name> rdf:parseType</span>=<span class=attribute-value>"Literal"</span>&gt;<br>
+
+        </font><font face="Courier New"><br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;[[ soldier ]]. Very pale dirty yellow, head reddish yellow, mandibles dark red...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;Head large, triangular, considerably broader...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+
+        <br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;[[ worker ]] Of the same pale colour as the [[ soldier ]]. but only the extreme anterior angle of clypens and cheeks blackish...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+        </font><font face="Courier New"><br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;Head long, narrow, broader in front than behind, broadest a little in front of sides of head, narrowed, ...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+
+        </font><font face="Courier New"><br>
+        &lt;/<span class=end-tag>spm:hasContent</span>&gt;<br>
+        &lt;/<span class=end-tag>spmi:Description</span>&gt;<br>
+        &lt;/<span class=end-tag>spm:hasInformation</span>&gt;<br>
+        </font>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+In the broad sense of "Description", the entire treatment is a description. A conversion based on the broad sense includes the entire textual content of the description, e.g. <i>materials examined</i>, <i>description</i>, <i>diagnosis</i>, <i>etymology</i>, etc.<br>
+
+<br>
+<div>
+  <table border=1 bordercolor=#000000 cellpadding=3 cellspacing=0 class="" id=no0r>
+    <tbody>
+    <tr>
+      <td width=50%>
+        <b>!TaxonX</b><br>
+      </td>
+      <td width=50%>
+
+        <b>SPM</b><br>
+      </td>
+    </tr>
+    <tr>
+      <td width=50%>
+        <font face="Courier New">&lt;<span class=start-tag>tax:div</span><span class=attribute-name> type</span>=<span class=attribute-value>"description"</span>&gt;<br>
+
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;[[ soldier ]]. Very pale dirty yellow, head reddish yellow, mandibles dark red...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;Head large, triangular, considerably broader...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        <br>
+
+        &lt;<span class=start-tag>tax:p</span>&gt;[[ worker ]] Of the same pale colour as the [[ soldier ]]. but only the extreme anterior angle of clypens and cheeks blackish...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;Head long, narrow, broader in front than behind, broadest a little in front of sides of head, narrowed, ...&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        &lt;/<span class=end-tag>tax:div</span>&gt;<br>
+
+        </font><i><font face="Courier New"> <b><br>
+        &lt;<span class=start-tag>tax:div</span><span class=attribute-name> type</span>=<span class=attribute-value>"materials_examined"</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;Described from eight soldiers and seven workers.&lt;/<span class=end-tag>tax:p</span>&gt;<br>
+
+        <br>
+        &lt;<span class=start-tag>tax:p</span>&gt;These ants were found by M. Mamet in an old collection of insects at the College of Agriculture, Mauritius. They were collected by S. Geberti...</b></font></i><i><font face="Courier New"><b>&lt;/<span class=end-tag>tax:p</span>&gt;</b></font></i><font face="Courier New"><br>
+        <i><b><br>
+        &lt;/<span class=end-tag>tax:div</span>&gt;</b></i></font>
+      </td>
+      <td width=50%>
+
+        <font face="Courier New">&lt;<span class=start-tag>spm:hasInformation</span>&gt;<br>
+        &nbsp; &lt;<span class=start-tag>spmi:Description</span><span class=attribute-name> xmlns:spmi</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SPMInfoItems#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_Description_1_1"</span>&gt;<br>
+        &lt;<span class=start-tag>spm:hasContent</span><span class=attribute-name> rdf:parseType</span>=<span class=attribute-value>"Literal"</span>&gt;<br>
+
+        </font><font face="Courier New"><br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;[[ soldier ]]. Very pale dirty yellow, head reddish yellow, mandibles dark red...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;Head large, triangular, considerably broader...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+
+        <br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;[[ worker ]] Of the same pale colour as the [[ soldier ]]. but only the extreme anterior angle of clypens and cheeks blackish...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+        </font><font face="Courier New"><br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;Head long, narrow, broader in front than behind, broadest a little in front of sides of head, narrowed, ...&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+
+        <b><i><br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;Described from eight soldiers and seven workers.&lt;/<span class=end-tag>xhtml:p</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>xhtml:p</span><span class=attribute-name> xmlns:xhtml</span>=<span class=attribute-value>"http://www.w3.org/1999/xhtml"</span>&gt;</i></b></font><b><i><font face="Courier New">These ants were found by M. Mamet in an old collection of insects at the College of Agriculture, Mauritius. They were collected by S. Geberti...</font></i></b><font face="Courier New"><b><i>&lt;/<span class=end-tag>xhtml:p</span>&gt;</i></b></font><br>
+
+        <font face="Courier New">&lt;/<span class=end-tag>spm:hasContent</span>&gt;<br>
+        &lt;/<span class=end-tag>spmi:Description</span>&gt;<br>
+        &lt;/<span class=end-tag>spm:hasInformation</span>&gt;</font><br>
+      </td>
+    </tr>
+    </tbody>
+
+  </table>
+</div>
+&nbsp;<br>
+<br>
+Bibliographical data about the source publication is drawn from elements in the MODS (Metadata Object Description Standard; http://www.loc.gov/standards/MODS) and provided in RDF according to the TDWG Base, Common and Citation Vocabularies.<br>
+<br>
+<br>
+<div>
+  <table border=1 bordercolor=#000000 cellpadding=3 cellspacing=0 class="" id=sm2c>
+    <tbody>
+    <tr>
+      <td width=50%>
+
+        <b>!TaxonX/MODS</b><br>
+      </td>
+      <td width=50%>
+        <b>RDF<br>
+        </b>
+      </td>
+    </tr>
+    <tr>
+
+      <td width=50%>
+        <font face="Courier New"> &lt;<span class=start-tag>tax:!TaxonXHeader</span>&gt;<br>
+        &lt;<span class=start-tag>mods:mods</span>&gt;<br>
+        &lt;<span class=start-tag>mods:titleInfo</span>&gt;<br>
+        &lt;<span class=start-tag>mods:title</span>&gt;<b><i>A new Camponotus from Madagascar and a small collection of ants from Mauritius.</i></b>&lt;/<span class=end-tag>mods:title</span>&gt;<br>
+
+        &lt;/<span class=end-tag>mods:titleInfo</span>&gt;<br>
+        &lt;<span class=start-tag>mods:name</span><span class=attribute-name> type</span>=<span class=attribute-value>"personal"</span>&gt;<br>
+        &lt;<span class=start-tag>mods:role</span>&gt;<br>
+        &lt;<span class=start-tag>mods:roleTerm</span>&gt;Author&lt;/<span class=end-tag>mods:roleTerm</span>&gt;<br>
+
+        </font><font face="Courier New"> &lt;/<span class=end-tag>mods:role</span>&gt;<br>
+        &lt;<span class=start-tag>mods:namePart</span>&gt;<i><b>Donisthorpe, H. S. J. K.</b></i>&lt;/<span class=end-tag>mods:namePart</span>&gt;<br>
+        &lt;/<span class=end-tag>mods:name</span>&gt;<br>
+        &lt;<span class=start-tag>mods:typeOfResource</span>&gt;text&lt;/<span class=end-tag>mods:typeOfResource</span>&gt;<br>
+
+        &lt;<span class=start-tag>mods:relatedItem</span><span class=attribute-name> type</span>=<span class=attribute-value>"host"</span>&gt;<br>
+        &lt;<span class=start-tag>mods:titleInfo</span>&gt;<br>
+        &lt;<span class=start-tag>mods:title</span>&gt;<i><b>Annals and Magazine of Natural History</b></i>&lt;/<span class=end-tag>mods:title</span>&gt;<br>
+        </font><font face="Courier New"> &lt;/<span class=end-tag>mods:titleInfo</span>&gt;<br>
+
+        &lt;<span class=start-tag>mods:part</span>&gt;<br>
+        &lt;<span class=start-tag>mods:detail</span><span class=attribute-name> type</span>=<span class=attribute-value>"volume"</span>&gt;<br>
+        &lt;<span class=start-tag>mods:number</span>&gt;<i><b>(12)2</b></i>&lt;/<span class=end-tag>mods:number</span>&gt;<br>
+        &lt;/<span class=end-tag>mods:detail</span>&gt;<br>
+
+        &lt;<span class=start-tag>mods:extent</span><span class=attribute-name> unit</span>=<span class=attribute-value>"page"</span>&gt;<br>
+        &lt;<span class=start-tag>mods:start</span>&gt;<i><b>271</b></i>&lt;/<span class=end-tag>mods:start</span>&gt;<br>
+        &lt;<span class=start-tag>mods:end</span>&gt;<i><b>275</b></i>&lt;/<span class=end-tag>mods:end</span>&gt;<br>
+
+        </font><font face="Courier New"> &lt;/<span class=end-tag>mods:extent</span>&gt;<br>
+        &lt;<span class=start-tag>mods:date</span>&gt;<i><b>1949</b></i>&lt;/<span class=end-tag>mods:date</span>&gt;<br>
+        &lt;/<span class=end-tag>mods:part</span>&gt;<br>
+        &lt;/<span class=end-tag>mods:relatedItem</span>&gt;<br>
+
+        &lt;<span class=start-tag>mods:location</span>&gt;<br>
+        ...</font><font face="Courier New"><br>
+        &lt;/<span class=end-tag>mods:mods</span>&gt;<br>
+        &lt;/<span class=end-tag>tax:!TaxonXHeader</span>&gt;<br>
+        </font>
+      </td>
+
+      <td width=50%>
+        <font face="Courier New"> &lt;<span class=start-tag>tbase:Actor</span><span class=attribute-name> xmlns:tbase</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/Base#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_actor1"</span>&gt;<br>
+        &lt;<span class=start-tag>tcom:publishedInCitation</span><span class=attribute-name> xmlns:tcom</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/Common#"</span>&gt;<br>
+
+        &lt;<span class=start-tag>tcom:publicationCitation</span><span class=attribute-name> rdf:ID</span>=<span class=attribute-value>"_pubcit"</span>&gt;<br>
+        &lt;<span class=start-tag>tpcit:authorship</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;<b><i>Donisthorpe, H. S. J. K.</i></b>&lt;/<span class=end-tag>tpcit:authorship</span>&gt;<br>
+
+        &lt;<span class=start-tag>tpcit:title</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;<i><b>A new Camponotus from Madagascar and a small collection of ants from Mauritius.</b></i>&lt;/<span class=end-tag>tpcit:title</span>&gt;<br>
+        &lt;<span class=start-tag>tpcit:parentPublicationString</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;<br>
+
+        <i><b>Annals and Magazine of Natural History</b></i><br>
+        &lt;/<span class=end-tag>tpcit:parentPublicationString</span>&gt;<br>
+        </font><font face="Courier New"> &lt;<span class=start-tag>tpcit:volume</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;<br>
+        (<i><b>12)2</b></i><br>
+
+        &lt;/<span class=end-tag>tpcit:volume</span>&gt;<br>
+        &lt;<span class=start-tag>tpcit:datePublished</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;<i><b>1949</b></i>&lt;/<span class=end-tag>tpcit:datePublished</span>&gt;<br>
+        &lt;<span class=start-tag>tpcit:pages</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;<i><b>271-275</b></i>&lt;/<span class=end-tag>tpcit:pages</span>&gt;<br>
+
+        &lt;/<span class=end-tag>tcom:publicationCitation</span>&gt;<br>
+        &lt;/<span class=end-tag>tbase:Actor</span>&gt;<br>
+        </font>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+The bibliographic data occurs once in the RDF document returned for a publication and is linked to from each SPM via the rdf:ID attibute:
+
+<font face="Courier New">&lt;<span class=start-tag>tbase:Actor</span><span class=attribute-name> xmlns:tbase</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/Base#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"<b>_actor1</b>"</span>&gt;<br>
+
+&lt;<span class=start-tag>tcom:publishedInCitation</span><span class=attribute-name> xmlns:tcom</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/Common#"</span>&gt;<br>
+&lt;<span class=start-tag>tcom:publicationCitation</span><span class=attribute-name> rdf:ID</span>=<span class=attribute-value>"_pubcit"</span>&gt;<br>
+&lt;<span class=start-tag>tpcit:authorship</span><span class=attribute-name> xmlns:tpcit</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/PublicationCitation#"</span>&gt;Donisthorpe, H. S. J. K.&lt;/<span class=end-tag>tpcit:authorship</span>&gt;<br>
+
+etc...<br>
+&lt;/tbase:Actor&gt;</font><br>
+<br>
+...<br>
+<br>
+<font face="Courier New">&lt;<span class=start-tag>spm:SpeciesProfileModel</span><span class=attribute-name> xmlns:spm</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_spm_1"</span>&gt;<br>
+
+&lt;<span class=start-tag>spm:aboutTaxon</span>&gt;<br>
+&lt;<span class=start-tag>tc:TaxonConcept</span><span class=attribute-name> xmlns:tc</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/TaxonConcept#" </span><span class=attribute-name>rdf:about</span>=<span class=attribute-value>"urn:lsid:biosci.ohio-state.edu:osuc_concepts:135414"</span>&gt;<br>
+&lt;<span class=start-tag>tc:nameString</span><span class=attribute-name> xml:lang</span>=<span class=attribute-value>"en"</span>&gt;Camponotus gerberti&lt;/<span class=end-tag>tc:nameString</span>&gt;<br>
+
+&lt;<span class=start-tag>tc:accordingTo</span><span class=attribute-name> rdf:resource</span>=<span class=attribute-value>"<b>#_actor1</b>"</span><span class=attribute-name>/</span>&gt;<br>
+etc...<br>
+&lt;/spm:SpeciesProfileModel&gt;
+
+Finally, <i>spmi:Associations</i>&nbsp; InfoItems are supplied to express relationships between the described taxon and other taxa named in the treatment.
+
+<div>
+  <table border=1 bordercolor=#000000 cellpadding=3 cellspacing=0 class="" id=ihtt>
+    <tbody>
+    <tr>
+      <td width=50%>
+        <b>!TaxonX</b><br>
+      </td>
+      <td width=50%>
+
+        <b>SPM</b><br>
+      </td>
+    </tr>
+    <tr>
+      <td width=50%>
+        <font face="Courier New">&lt;<span class=start-tag>tax:treatment</span>&gt;<br>
+        &lt;<span class=start-tag>tax:nomenclature</span>&gt;<br>
+
+        No. 124.<br>
+        </font><font face="Courier New">&lt;<span class=start-tag>tax:name</span>&gt;<br>
+        &lt;<span class=start-tag>tax:xid</span><span class=attribute-name> identifier</span>=<span class=attribute-value>"<i><b>urn:lsid:biosci.ohio-state.edu:osuc_concepts:143647</b></i>" </span><span class=attribute-name>source</span>=<span class=attribute-value>"HNS"</span><span class=attribute-name>/</span>&gt;<br>
+
+        &lt;<span class=start-tag>tax:xmldata</span>&gt;<br>
+        &lt;<span class=start-tag>dc:Genus</span>&gt;Dodous&lt;/<span class=end-tag>dc:Genus</span>&gt;<br>
+        &lt;<span class=start-tag>dc:Species</span>&gt;bispinosus&lt;/<span class=end-tag>dc:Species</span>&gt;<br>
+        &lt;/<span class=end-tag>tax:xmldata</span>&gt;Dodous bispinosus&lt;/<span class=end-tag>tax:name</span>&gt;, sp. n.&lt;/<span class=end-tag>tax:nomenclature</span>&gt;<br>
+
+        &lt;<span class=start-tag>tax:div</span><span class=attribute-name> type</span>=<span class=attribute-value>"description"</span>&gt;<br>
+        </font><font face="Courier New">&lt;<span class=start-tag>tax:p</span>&gt;<br>
+        Very like<br>
+        &lt;<span class=start-tag>tax:name</span>&gt;<br>
+        &lt;<span class=start-tag>tax:xid</span><span class=attribute-name> identifier</span>=<span class=attribute-value>"<i><b>urn:lsid:biosci.ohio-state.edu:osuc_concepts:143662</b></i>" </span><span class=attribute-name>source</span>=<span class=attribute-value>"HNS"</span><span class=attribute-name>/</span>&gt;<br>
+
+        &lt;<span class=start-tag>tax:xmldata</span>&gt;<br>
+        &lt;<span class=start-tag>dc:Genus</span>&gt;<i><b>Dodous</b></i>&lt;/<span class=end-tag>dc:Genus</span>&gt;<br>
+        &lt;<span class=start-tag>dc:Species</span>&gt;<b><i>trispinosus</i></b>&lt;/<span class=end-tag>dc:Species</span>&gt;<br>
+        &lt;/<span class=end-tag>tax:xmldata</span>&gt;trispinosus&lt;/<span class=end-tag>tax:name</span>&gt;<br>
+
+        </font><font face="Courier New">but without the two shorter spines on the mesonotum. The sculpture is different, and the species is also a little darker in colour.<br>
+        &lt;/<span class=end-tag>tax:p</span>&gt;<br>
+        ...<br>
+        &lt;/tax:treatment&gt;<br>
+        </font>
+      </td>
+
+      <td width=50%>
+        <font face="Courier New"> &lt;<span class=start-tag>spm:SpeciesProfileModel</span><span class=attribute-name> xmlns:spm</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_spm_2"</span>&gt;<br>
+        &lt;<span class=start-tag>spm:aboutTaxon</span>&gt;<br>
+        &lt;<span class=start-tag>tc:TaxonConcept</span><span class=attribute-name> xmlns:tc</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/TaxonConcept#" </span><span class=attribute-name>rdf:about</span>=<span class=attribute-value>"urn:lsid:biosci.ohio-state.edu:osuc_concepts:143647"</span>&gt;<br>
+
+        &lt;<span class=start-tag>tc:nameString</span><span class=attribute-name> xml:lang</span>=<span class=attribute-value>"en"</span>&gt;Dodous bispinosus&lt;/<span class=end-tag>tc:nameString</span>&gt;<br>
+        <br>
+        ...<br>
+        <br>
+
+        </font><font face="Courier New">&lt;<span class=start-tag>spmi:Associations</span><span class=attribute-name> xmlns:spmi</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/SPMInfoItems#" </span><span class=attribute-name>rdf:ID</span>=<span class=attribute-value>"_Associations_2"</span>&gt;<br>
+        <br>
+        &lt;<span class=start-tag>spm:associatedTaxon</span>&gt;<br>
+        <br>
+
+        &lt;<span class=start-tag>tc:TaxonConcept</span><span class=attribute-name> xmlns:tc</span>=<span class=attribute-value>"http://rs.tdwg.org/ontology/voc/TaxonConcept#" </span><span class=attribute-name>rdf:about</span>=<span class=attribute-value>"<i><b>urn:lsid:biosci.ohio-state.edu:osuc_concepts:143662</b></i>"</span>&gt;<br>
+        </font><font face="Courier New"> &lt;<span class=start-tag>tc:nameString</span><span class=attribute-name> xml:lang</span>=<span class=attribute-value>"en"</span>&gt;<i><b>Dodous trispinosus</b></i>&lt;/<span class=end-tag>tc:nameString</span>&gt;<br>
+
+        &lt;<span class=start-tag>tc:hasRelationship</span>&gt;<br>
+        &lt;<span class=start-tag>tc:Relationship</span><span class=attribute-name> rdf:ID</span>=<span class=attribute-value>"N100CB"</span>&gt;<br>
+        &lt;<span class=start-tag>tc:toTaxon</span><span class=attribute-name> rdf:resource</span>=<span class=attribute-value>"<b><i>urn:lsid:biosci.ohio-state.edu:osuc_concepts:143647</i></b>"</span><span class=attribute-name>/</span>&gt;<br>
+
+        &lt;<span class=start-tag>tc:fromTaxon</span><span class=attribute-name> rdf:resource</span>=<span class=attribute-value>"<i><b>urn:lsid:biosci.ohio-state.edu:osuc_concepts:143662</b></i>"</span><span class=attribute-name>/</span>&gt;<br>
+        &lt;/<span class=end-tag>tc:Relationship</span>&gt;<br>
+        &lt;/<span class=end-tag>tc:hasRelationship</span>&gt;<br>
+
+        &lt;/<span class=end-tag>tc:TaxonConcept</span>&gt;<br>
+        </font><font face="Courier New"> &lt;/<span class=end-tag>spm:associatedTaxon</span>&gt;<br>
+        ...<br>
+        &lt;/spm:SpeciesProfileModel&gt;</font>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+</div>
+</font><br>
+<p>
+  <br>
+</p>
+<p>
+  <br>
+</p>
+---++Accessing the Service
+
+The SPM service is based on the eXist XML database (http://www.exist-db.org/)&nbsp; using a REST interface documented on the TDWG wiki page at http://wiki.tdwg.org/twiki/bin/view/SPM/PlaziEOLProject#Plazi_SPM_REST_service. For this service, the documents are hosted on the server plazi.cs.umb.edu, maintained in the Biodiversity and Ecolgical Informatics lab at the University of Massachusetts/Boston Computer Science Department.&nbsp;
+
+XML !TaxonX docs are normally added and updated to the XML repository using HTTP PUT from within the Golden Gate editor, by which domain experts typically "touch up" !TaxonX . Via the REST interface, EOL and any other data aggregator can retrieve an SPM treatment of the publications using HTTP GET pointing to an XQuery file that performs the conversion to SPM and returns it in UTF-8 encoded RDF/XML with mime type text/xml&nbsp; The specification for this is at http://wiki.tdwg.org/twiki/bin/view/SPM/PlaziEOLProject#Plazi_SPM_REST_service
+
+---++Issues and Questions to Resolve During This Process
+Below we discuss 12 issues that we faced during the development, including what we did about them and what recommendations we have based on our experiences.&nbsp; Some of these issues are not about SPM per-se except to the extent we found ambiguities or silence in SPM. Some may be addressed in the recent GBIF draft recommendations on&nbsp; the (<i>Cryer, et. al 2009 Adoption of Persistent Identifiers for Biodiversity Informatics</i>, http://imsgbif.gbif.org/File/retrieve.php?PATH=4&amp;FILE=2efc20187e6ad3dd828bbeadaa1040e6&amp;FILENAME=LGTGReportDraft.pdf&amp;TYPE=application/pdf)<br>
+
+*Issue 1*. Validation of the RDF to ensure RDF being produced was valid. This was accomplished by testing against the web-based W3C validation service at http://www.w3.org/RDF/Validator/.&nbsp; We found this a particularly useful tool since it yields easy to understand representations of the RDF triples generated. By contrast, easy as the XML form of RDF is for humans to read, it is not always easy to understand from it whether one or another RDF predicate is being correctly or appropriately used.
+
+_Conclusions and Recommendations about Issue1:_
+
+Best practices for ontology annotation should be developed, perhaps with particular attention to documenting predicates.<br>
+
+*Issue 2.*Even for valid RDF there was still a question as to whether it was valid OWL RDF, or whether OWL RDF was a goal.
+
+No clear goals have been set and documented by GBIF or TDWG about reasoning on SPM, or other TDWG ontology vocabularies. It is generally accepted that the OWL Full dialect of OWL promotes data integration robustly in the sense that OWL Full has enough expressiveness to give integrators confidence in semantic equivalences or near equivalences in their mappings between one vocabulary and another.&nbsp; However, the OWL DL (Description Logics) dialect of OWL promotes tractable&nbsp; reasoning computation, making it easier to determine, e.g. whether a pair of vocabularies are logically inconsistent with one another, or whether data violates some quality control axioms that an application might wish to enforce. SPM invokes quite a bit of the current TDWG ontology, with the consequence that SPM is OWL FULL but not DL, because some of the TDWG ontology is not.
+
+ The "Open World" assumption for RDF is presently frequently cited as the slogan "AAA" (Anyone can say Anything Anywhere). One consequences is that misuses of ontology constructs can inadvertently pass into instances (by instance generation code), without discovery merely by RDF validation.&nbsp; This can happen if known applications do not fail on the misuse because it addresses issues the application ignores, or because particular consequences are harmless (e.g. because they return empty resource URI's and so are about nothing). One such SPM instance generation error was discovered only at the time of this writing in trying to understand why the Manchester WonderWeb OWL validator ( http://www.mygrid.org.uk/OWL/Validator) was asserting that _!TaxonConcept_ was being used as both an RDF Class and an RDF Property. That is forbidden in OWL DL, but not OWL Full, for which the SPM instances were valid OWL. No such invalidity appeared in either the SPM ontology or the TDWG Ontology. The problem proved to be that the Plazi XSLT was generating incorrect RDF for the <_hasRelationship_ object property of _!TaxonConcept_, essentially offering the _hasRelationship_ predicate a logy. The problem proved to be that the Plazi XSLT was generating incorrect RDF for the _hasRelationship_ object property of _!TaxonConcept_ where it expected a Relationship object, which is one of the low level classes in the TDWG ontology.
+
+We were intending to model not only what taxa were associated with the
+_!TaxonConcept_ being described&nbsp; (as supported by SPM
+_!InfoItems_), but also what those associations are. (The SPM
+annotations give predator-prey relationships as an example.)&nbsp; The
+result was that the instance document used _!TaxonConcept_ as both a
+Property and a Class, and this forces the instance document into OWL
+Full. Moreover, the underlying set of kinds of taxonomic relationships
+available to _tc:hasRelationship_ is presently defined by an
+enumeration that arose historically from a set of concerns of
+taxonomists, largely about the nomenclatural issues surrounding
+taxonomic revisions. This is nowhere near broad enough to cover the
+kinds of _Associations_ envisioned in SPM, which includes such things
+as predator/prey and other ecological relationships. Pending future
+additions to !TaxonX, the underlying schema representing the documents
+from which we extract SPM-based knowledge, we are no longer attempting
+to output _tc:hasRelationship_. 
+
+_Conclusions and Recommendations about Issue 2:_
+
+(1) The SPM concept _associatedTaxon_ is underspecified. It does not
+provide a robust mechanism for specifying the nature of the
+association. It is possibly that this can be remedied with a robust
+appeal to _tc:hasRelationship_, although that presently has overly
+narrow range. 
+
+(2) Clear goals for reasoning support for SPM should be elucidated.
+
+*Issue 3a.*Some vocabulary items in SPMI lacked definition or guidance
+for their use. For example, the SPMI ontology defines a set of
+sublasses of the SPM _InfoItem_ class, of which one or more instances
+is given for an SPM object using the _hasInformation_ property of
+SPM. One such type of _InfoItem_ is the _Description. _But this term
+is rather broadly used in biology. In systematics literature it is
+ambiguous whether the concept should apply to the entire section
+designated as the taxonomic treatment of a taxon in the article, or
+should refer only to the morphological description section. By
+practice or by nomenclatural codes, the morphological description
+section serves, strictly speaking, only to determine which specimens
+are circumscribed by that morphological description. We addressed this
+ambiguity with a user-settable parameter in the stylesheet which
+determines which of these is extracted. We offer a service parameter
+that allows the client to determine whether they wish a narrowly(
+i.e. morphology only) or broadly defined description. 
+
+*Issue 3b.* Insufficient SPMI concepts. Anyone providing data in SPM
+faces a potential mismatch between domain concepts and those SPMI
+classes they select to represent the domain classes.  SPM can
+address this by adding more types of _!InfoItems_, but this will tend
+to increase the complexity in creating and processing SPM. Conversely,
+SPM could decrease the number of concepts and heighten ambiguity. For
+example, we found no way to signal the important "Materials Examined"
+section of typical systems papers. This might make it difficult to
+mine our service for occurrence records. 
+
+*Issue 3c.* Potentially overlapping SPMI classes.  There are three
+different concepts in SPMI about description.  These are the
+_!InfoItem_ subclasses _Description_, _!GeneralDescription,_ and
+_!DiagnosticDescription._ Lacking definitions it is impossible to
+determine what relations these have to one another.
+
+_Conclusions and Recommendations about Issue 3: _
+
+(1) There should be more guidance about the semantics of
+!InfoItems. Right now, they are little more than concept names. By
+virtue of having no substructure other than what is inherited from
+class _InfoItem_, these concepts are able to express little more than
+the taxonomic concerns modeled by the class _!TaxonConcept_, which are
+probably of little importance for many of the subclasses of
+_InfoItem_. 
+
+(2) Consideration should be given to major ontological elucidation of
+the substructures of the InfoItem subclasses, with particular
+attention to existing relevant ontologies.
+
+*Issue 4.* Should text extracted from publications permit or require
+markup? At the moment, we offer the choice as a runtime parameter, to
+signify whether the service should return plain text or XHTML. Current
+use for by EOL chooses the XHTML in order to render paragraph
+boundaries faithfully to the original literature.
+
+ _Conclusions and Recommendations about Issue 4:_
+
+We have no recommendation beyond leaving the issue as a service parameter.
+
+*Issue 5.* How to handle statements of Intellectual Property
+Rights. Taxonomic treatment data is in the public domain and not
+copyrightable. EOL's practices required a Creative Commons license,
+but such licenses (or any license) applies only to copyrightable
+material. We insert an RDF statment a statement that the material has
+no copyright restrictions: 
+
+  <font face="Courier New">&lt;<span class=start-tag>dcterms:rights</span><span class=attribute-name> xmlns:dcterms</span>=<span class=attribute-value>"http://dublincore.org/2008/01/14/dcterms.rdf#"</span>&gt;</font>No known copyright restrictions.<font face="Courier New">.&lt;/<span class=end-tag>dcterms:rights</span>&gt;
+  </font>
+We discussed whether more clarity is required about attribution of
+non-copyrightable material. Should there be both a text statement
+and a machine processable indication that the material is in the
+public domain because it is not copyrightable? How should consumers
+be warned that the non-copyrightable material is extracted from
+copyrighted material which still requires attribution. The issues
+are laid out in Agosti and Egloff (2009:
+(http://www.biomedcentral.com/1756-0500/2/53). The current solution
+to be adopted by EoL is to output the text mentioned above in our
+dc:rights term. 
+
+*Issue 6. * Completeness and adequacy of data provided. It's unclear
+how much detail the  data provider should offer a data
+recipient. For example, it may be evident to a human that the object
+"Donisthorpe, H. S. J. K." of the  _tpcit:authorship_ predicate is
+the name of a person,  that "Donisthorpe" is a surname, etc. This
+semantics may be available through an ontology but not be of
+interest if the recipient has no need of machine reasoning or even
+integrating across authors. It's difficult to know at what point
+enough information has been provided satisfy the data recipient's
+purposes.  We serve whatever data we found that is  expressible in
+the vocabularies commonly in use in TDWG applications. 
+
+_Conclusions and Recommendations about Issue 6:_
+
+Educate consumers to the possibility that implict information can be
+inferred by machine reasoning over the applicable ontologies, and
+applications that don't do this can only have access to the explictly
+asserted relationships. 
+
+*Issue 7.* Open World Issues. The Open World assumption (now often
+described as the AAA slogan:  Anybody can say Anything Anywhere )
+means that some issues cannot be addressed by the data being served.
+AAA means that everything is unknown unless explicitly known. Should
+"unknown" be signaled in some cases? For example, a taxonomic
+description might be extracted from something whose author is
+unknown. Normally RDF would simply be silent on this point, but it
+may be important to distinguish that a piece of data is important but
+simply unknown. There is a risk in assigning "unknown" to something
+which in fact is possibly somewhere known. That risk is that future
+semantic data integration with data contradicting the "unknown"
+semantics will then be logically inconsistent. Unfortunately, in the
+First Order Logic that underlies RDF reasoning, if there is one
+contradiction in a set of assertions, it can be proved that every
+assertion is both true and false. This is not nice. 
+
+_Conclusions and Recommendations about Issue 7:_
+
+Best practices should be established about unknown data. Probably the
+ community needs to be educated about AAA. A possible best practice
+ is to use RDF annotations when signifying "unknown" is desired.
+ These can be read by machines (and humans) but do not participate in
+ semantic analysis. 
+
+*Issue 8.* Updates: It is unclear how to handle URI's assigned to
+different versions of the same SPM record. Should a URI resolve one
+record regardless of what information is in it, or should each
+version have it's own URI. Like most data providers, we largely
+ignore this issue, although we do embed an XML comment with a service
+timestamp on it. 
+
+_Conclusions and Recommendations about Issue 8:_
+This is probably a general problem for RDF and should be the subject
+of a uniform best practice. There is a recent GBIF workgroup report
+on the subject. (Cryer et al. 2009) 
+
+
+*Issue 9.* Strings or URIs: As a data provider we sometimes faced the
+choice of providing a URI or a string value for much of the data. In
+principle, a URI should be sufficient but in practice it is helpful
+to have both e.g., for scientific names. In the absence of guidance
+from the data consumer it is impossible to know what is necessary or
+sufficient. Other examples that SPM does not directly address, and
+for which there seem to be no authorities presently recommended,
+include URIs for taxonomies, ranks within those taxonomies, authors,
+journals, articles, etc. Some of the issue is addressed by SPM's
+provision of both _hasContent_ and _hasValue_ properties. The former
+provides strings, and the latter provides objects from the TDWG
+Ontology class _definedTerm_. The only case in which we might have
+been able to use _definedTerm _would be to build some application
+that attempts to place the publication's taxonomic rank in some
+named taxonomy. We deemed that outside of the scope of this work,
+particularly since a client might choose to ignore it and use their
+own preferred taxonomy. 
+
+Elsewhere, we provide both strings and URIs where the publication is
+unambiguous. See for example, the element _spm:aboutTaxon_ in the
+first table above. For its target _!TaxonConcept_,  we provide a
+URI-identified rdf:about as required, but _!TaxonConcept _also has
+an element _nameString_ with which we provide a string that should
+correspond to a scientific name. An integrating provider such as EOL
+possibly would choose to ignore the URI and base their integration
+on the name string. 
+
+_Conclusions and Recommendations about Issue 9:_
+
+Unless a consumer has specified preferences, whenever possible include
+both string and URI values. It may be that best practices need to be
+established for doing this in ways specific to SPM, or even to
+individual SPMI _!InfoItems_. 
+
+*Issue 10:* Multiple identifiers:  resources may have multiple ids in
+multiple GUID schemes associated with them. 
+
+_Conclusions and Recommendations about Issue 10:_
+
+SPM should specify means to associate multiple ids with the same
+resource. It may be that owl:sameAs is  adequate, but use cases
+should be developed and the semantics of owl:sameAs  examined to see
+if it satisfies them. This may be in the scope of (Cryer et
+al. 2009) 
+
+
+*Issue 11:* It is unclear how the data provider is to explain the
+intended meaning behind possibly ambiguous sets of statements. For
+example- A taxon name string may be provided twice with different
+languages, for example English or Latin. In this case it's to be
+understood that the name can be in either Latin or English but
+depending on the consuming applications' reasoning -the first may be
+taken as the primary, the second as the second. But the generated
+RDF would usually be order independent, making it difficult to
+track. 
+
+_Conclusions and Recommendations about Issue 11:_
+
+SPM should specify mechanisms and practices that allow a provider to
+signify relationships among alternatives. rdf:List may not be
+adequate if statements appear independently of one another (for
+example, after data integration). 
+
+
+*Issue 12:* Lack of Metadata about the served SPM: We found no clear
+way to document within the SPM file how the SPM itself was
+produced. We resorted to XML comments, but it is unclear whether
+some standard RDF annotation mechanism might be better. Of special
+importance might be provenance of the SPM, including original
+source, changes, versions, etc. 
+
+_Conclusions and Recommendations about Issue 12:_
+
+There should be best practices established for annotating service
+output, and it should be examined whether SPM has any specific
+needs. 
+
+
+</body>
+
+
+
+
+
+-- Main.BobMorris - 05 Nov 2009@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1257803380" format="1.1" reprev="1.2" version="1.2"}%
+d5 3
+a7 1
+[This page derived from a report submitted to GBIF on September 13, 2009. This Wiki page will be made suitable for and invite comments.  Please don't edit while you see this notice here....-- Main.BobMorris - 05 Nov 2009
+d24 1
+a24 1
+[[http://plazi.cs.umb.edu:8080/exist/rest/db/taxonx_docs/counts.xq][Current statistics]]
+d45 1
+a45 1
+The XSLT stylesheet language, and the programs which process it, support the transformation of XML documents to various other forms of documents. Common uses include transformation to HTML for web presentation, and transformation between various forms of XML. Our use is two-fold: to extract particular elements of interest from a !TaxonX document, and to output the result in the form of the special XML dialect RDF/XML in order to represent the underlying RDF graph.&nbsp; It is therefore necessary to understand the RDF/XML syntax (http://www.w3.org/TR/rdf-syntax-grammar/) and to validate results using the W3C validator. SPM itself is expressed in OWL, using the RDF/XML serialization. It is sometimes useful to verify OWL compliance---which is stricter than RDF compliance---by using the WonderWeb OWL Validator (http://www.mygrid.org.uk/OWL/Validator).The XSLT stylesheet used to convert !TaxonX to SPM is available at: <a href=http://plazi.cs.umb.edu:8080/exist/rest/db/!TaxonX_docs/styles/tx2spm.xsl id=l-d9 title=http://plazi.cs.umb.edu:8080/exist/rest/db/!TaxonX_docs/styles/tx2spm.xsl>http://plazi.cs.umb.edu:8080/exist/rest/db/!TaxonX_docs/styles/tx2spm.xsl</a>.
+d739 1
+a739 1
+-- Main.BobMorris - 05 Nov 2009
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1257443918" format="1.1" reprev="1.1" version="1.1"}%
+d15 1
+a15 1
+Plazi received a grant from GBIF to implement the Species Profile Model for the provision of taxonomic descriptions to the Encyclopedia of Life to complement a previous GBIF grant to Zootaxa and Plazi that provided that source data. These data for the project were taxonomic publications related to Ants. The original publications had been scanned, with the text captured via OCR, and encoded by Plazi using !GoldenGate (<a href=http://plazi.org/?q=GoldenGATE id=tc9: title=http://plazi.org/?q=GoldenGATE>http://plazi.org/?q=GoldenGATE</a>) and the !!TaxonX XML schema (<a href=http://!TaxonX.org/schema/v1/!TaxonX1.xsd id=f70h title=http://!TaxonX.org/schema/v1/!TaxonX1.xsd>http://!TaxonX.org/schema/v1/!TaxonX1.xsd</a>). An XSLT conversion to SPM RDF/XML was developed and deployed as a web service using the eXist XML database (<a href=http://www.exist-db.org id=eocb title=www.exist-db.org>www.exist-db.org</a>) so that SPM files generated dynamically from the !TaxonX files can be retrieved via an HTTP GET request. A documented API is provided for the service, which allows the client applications latitude on tailoring the service.&nbsp; Sufficient documentation is provided so that clients can use the service for altogether different and unique processing of the underlying XML document.
+d472 1
+a472 1
+<h2>
+d474 1
+a474 6
+  Accessing the Service
+</h2>
+<p>
+</p>
+<p>
+  The SPM service is based on the eXist XML database (http://www.exist-db.org/)&nbsp; using a REST interface documented on the TDWG wiki page at http://wiki.tdwg.org/twiki/bin/view/SPM/PlaziEOLProject#Plazi_SPM_REST_service. For this service, the documents are hosted on the server plazi.cs.umb.edu, maintained in the Biodiversity and Ecolgical Informatics lab at the University of Massachusetts/Boston Computer Science Department.&nbsp;
+d489 1
+a489 1
+No clear goals have been set and documented by GBIF or TDWG about reasoning on SPM, or other TDWG ontology vocabularies. It is generally accepted that the OWL Full dialect of OWL promotes data integration robustly in the sense that OWL Full has enough expressiveness to give integrators confidence in semantic equivalences or near equivalences in their mappings between one vocabulary and another.&nbsp; However, the OWL DL (Description Logics) dialect of OWL promotes tractable&nbsp; reasoning computation, making it easier to determine, e.g. whether a pair of vocabularies are logically inconsistent with one another, or whether data violates some quality control axioms that an application might wish to enforce. SPM invokes quite a bit of the current TDWG ontology, with the consequence that SPM is OWL FULL but not DL, because some of the TDWG ontology is not.<br>
+d491 1
+a491 1
+ The "Open World" assumption for RDF is presently frequently cited as the slogan "AAA" (Anyone can say Anything Anywhere). One consequences is that misuses of ontology constructs can inadvertently pass into instances (by instance generation code), without discovery merely by RDF validation.&nbsp; This can happen if known applications do not fail on the misuse because it addresses issues the application ignores, or because particular consequences are harmless (e.g. because they return empty resource URI's and so are about nothing).&nbsp; One such SPM instance generation error was discovered only at the time of this writing in trying to understand why the Manchester WonderWeb OWL validator ( http://www.mygrid.org.uk/OWL/Validator) was asserting that <i>TaxonConcept</i> was being used as both an RDF Class and an RDF Property. That is forbidden in OWL DL, but not OWL Full, for which the SPM instances were valid OWL.&nbsp; No such invalidity appeared in either the SPM ontology or the TDWG Ontology. The problem proved to be that the Plazi XSLT was generating incorrect RDF for the <i>hasRelationship</i> object property of <i>TaxonConcept</i>, essentially offering the <i>hasRelationship</i> predicate a <i>TaxonConcept</i> where it expected a Relationship object, which is one of the low level classes in the TDWG ontology.<br>
+d493 16
+a508 1
+We were intending to model not only what taxa were associated with the <i>TaxonConcept</i> being described&nbsp; (as supported by SPM <i>InfoItems</i>), but also what those associations are. (The SPM annotations give predator-prey relationships as an example.)&nbsp; The result was that the instance document used <i>TaxonConcept</i> as both a Property and a Class, and this forces the instance document into OWL Full. Moreover, the underlying set of kinds of taxonomic relationships available to <i>tc:hasRelationship</i> is presently defined by an enumeration that arose historically from a set of concerns of taxonomists, largely about the nomenclatural issues surrounding taxonomic revisions. This is nowhere near broad enough to cover the kinds of <i>Associations</i> envisioned in SPM, which includes such things as predator/prey and other ecological relationships. Pending future additions to !TaxonX, the underlying schema representing the documents from which we extract SPM-based knowledge, we are no longer attempting to output <i>tc:hasRelationship</i>.
+d512 5
+a516 1
+ (1) The SPM concept <i>associatedTaxon</i> is underspecified. It does not provide a robust mechanism for specifying the nature of the association. It is possibly that this can be remedied with a robust appeal to <i>tc:hasRelationship</i>, although that presently has overly narrow range.
+d520 63
+a582 38
+*Issue 3a.*Some vocabulary items in SPMI lacked definition or guidance for their use. For example, the SPMI ontology defines a set of sublasses of the SPM <i>InfoItem</i> class, of which one or more instances is given for an SPM object using the <i>hasInformation</i> property of SPM. One such type of <i>InfoItem</i> is the <i>Description. </i>But this term is rather broadly used in biology. In systematics literature it is ambiguous whether the concept should apply to the entire section designated as the taxonomic treatment of a taxon in the article, or should refer only to the morphological description section. By practice or by nomenclatural codes, the morphological description section serves, strictly speaking, only to determine which specimens are circumscribed by that morphological description. We addressed this ambiguity&nbsp; with a user-settable parameter in the stylesheet which determines which of these is extracted. We offer a service parameter that allows the client to determine whether they wish a narrowly( i.e. morphology only) or broadly defined description.
+
+<b>Issue 3b.</b> Insufficient SPMI concepts. Anyone providing data in SPM faces a potential mismatch between domain concepts and those SPMI classes they select to represent the domain classes.&nbsp; SPM can address this by adding more types of <i>InfoItems</i>, but this will tend to increase the complexity in creating and processing SPM. Conversely, SPM could decrease the number of concepts and heighten ambiguity. For example, we found no way to signal the important "Materials Examined" section of typical systems papers. This might make it difficult to mine our service for occurrence records.<br>
+<br>
+<b>Issue 3c.</b> Potentially overlapping SPMI classes.&nbsp; There are three different concepts in SPMI about description.&nbsp; These are the <i>InfoItem</i> subclasses<i> Description, GeneralDescription,</i> and <i>DiagnosticDescription.</i> Lacking definitions it is impossible to determine what relations these have to one another.&nbsp;&nbsp; &nbsp; &nbsp;<br>
+
+<br>
+<i>Conclusions and Recommendations about Issue 3: </i><br>
+<br>
+(1) There should be more guidance about the semantics of InfoItems. Right now, they are little more than concept names. By virtue of having no substructure other than what is inherited from class <i>InfoItem</i>, these concepts are able to express little more than the taxonomic concerns modeled by the class <i>TaxonConcept</i>, which are probably of little importance for many of the subclasses of <i>InfoItem</i>.<br>
+<br>
+(2) Consideration should be given to major ontological elucidation of the substructures of the InfoItem subclasses, with particular attention to existing relevant ontologies.<br>
+<br>
+<p>
+
+  <br>
+</p>
+<p>
+  <b>Issue 4.</b> Should text extracted from publications permit or require markup? At the moment, we offer the choice as a runtime parameter, to signify whether the service should return plain text or XHTML. Current use for by EOL chooses the XHTML in order to render paragraph boundaries faithfully to the original literature.&nbsp;<br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <i>Conclusions and Recommendations about Issue 4:</i>
+
+</p>
+<p>
+  <br>
+</p>
+<p>
+  We have no recommendation beyond leaving the issue as a service parameter.<br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <b>Issue 5. </b>How to handle statements of Intellectual Property Rights. Taxonomic treatment data is in the public domain and not copyrightable. EOL's practices required a Creative Commons license, but such licenses (or any license) applies only to copyrightable material. We insert an RDF statment a statement that the material has no copyright restrictions:
+d584 1
+a584 3
+</p>
+<p>
+  <font face="Courier New">&lt;<span class=start-tag>dcterms:rights</span><span class=attribute-name> xmlns:dcterms</span>=<span class=attribute-value>"http://dublincore.org/2008/01/14/dcterms.rdf#"</span>&gt;</font>No known copyright restrictions.<font face="Courier New">.&lt;/<span class=end-tag>dcterms:rights</span>&gt;<br>
+d586 143
+a728 80
+</p>
+<br>
+
+<br>
+<p>
+  <br>
+</p>
+<p>
+  &nbsp; We discussed whether more clarity is required about attribution of non-copyrightable material. Should there be both a text statement and a machine processable indication that the material is in the public domain because it is not copyrightable? How should consumers be warned that the non-copyrightable material is extracted from copyrighted material which still requires attribution. The issues are laid out in Agosti and Egloff (2009: (http://www.biomedcentral.com/1756-0500/2/53). The current solution to be adopted by EoL is to output the text mentioned above in our dc:rights term.<br>
+</p>
+<br>
+<p>
+  <br>
+</p>
+<p>
+
+  <b>Issue 6. </b>Completeness and adequacy of data provided. It's unclear how much detail the&nbsp; data provider should offer a data recipient. For example, it may be evident to a human that the object "Donisthorpe, H. S. J. K." of the&nbsp; <i>tpcit:authorship</i> predicate is the name of a person,&nbsp; that "Donisthorpe" is a surname, etc. This semantics may be available through an ontology but not be of interest if the recipient has no need of machine reasoning or even integrating across authors. It's difficult to know at what point&nbsp; enough information has been provided satisfy the data recipient's purposes.&nbsp; We serve whatever data we found that is&nbsp; expressible in the vocabularies commonly in use in TDWG applications.<br>
+
+</p>
+<p>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <i>Conclusions and Recommendations about Issue 6:</i>
+</p>
+<p>
+  <br>
+</p>
+<p>
+
+  Educate consumers to the possibility that implict information can be inferred by machine reasoning over the applicable ontologies, and applications that don't do this can only have access to the explictly asserted relationships.<br>
+</p>
+
+<p>
+  <b>Issue 7.&nbsp; </b>Open World Issues. The Open World assumption (now often described as the AAA slogan:&nbsp; Anybody can say Anything Anywhere ) means that some issues cannot be addressed by the data being served.&nbsp; AAA means that everything is unknown unless explicitly known. Should "unknown" be signaled in some cases? For example, a taxonomic description might be extracted from something whose author is unknown. Normally RDF would simply be silent on this point, but it may be important to distinguish that a piece of data is important but simply unknown. There is a risk in assigning "unknown" to something which in fact is possibly somewhere known. That risk is that future semantic data integration with data contradicting the "unknown" semantics will then be logically inconsistent. Unfortunately, in the First Order Logic that underlies RDF reasoning, if there is one contradiction in a set of assertions, it can be proved that every assertion is both true and false. This is not nice.<br>
+
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <i>Conclusions and Recommendations about Issue 7:</i>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  Best practices should be established about unknown data. Probably the community needs to be educated about AAA. A possible best practice is to use RDF annotations when signifying "unknown" is desired.&nbsp; These can be read by machines (and humans) but do not participate in semantic analysis.<br>
+
+</p>
+<br>
+<p>
+  <b>Issue 8. </b>Updates: It is unclear how to handle URI's assigned to different versions of the same SPM record. Should a URI resolve one record regardless of what information is in it, or should each version have it's own URI. Like most data providers, we largely ignore this issue, although we do embed an XML comment with a service timestamp on it.<br>
+</p>
+
+<p>
+  <i>Conclusions and Recommendations about Issue 8:</i>
+</p>
+
+<p>
+  This is probably a general problem for RDF and should be the subject of a uniform best practice. There is a recent GBIF workgroup report on the subject. (Cryer et al. 2009)<br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <br>
+</p>
+
+<p>
+  <b>Issue 9. </b>Strings or URIs: As a data provider we sometimes faced the choice of providing a URI or a string value for much of the data. In principle, a URI should be sufficient but in practice it is helpful to have both e.g., for scientific names. In the absence of guidance from the data consumer it is impossible to know what is necessary or sufficient. Other examples that SPM does not directly address, and for which there seem to be no authorities presently recommended, include URIs for taxonomies, ranks within those taxonomies, authors, journals, articles, etc. Some of the issue is addressed by SPM's provision of both <i>hasContent</i> and <i>hasValue</i> properties. The former provides strings, and the latter provides objects from the TDWG Ontology class <i>definedTerm</i>. The only case in which we might have been able to use <i>definedTerm </i>would be to build some application that attempts to place the publication's taxonomic rank in some named taxonomy. We deemed that outside of the scope of this work, particularly since a client might choose to ignore it and use their own preferred taxonomy.<br>
+</p>
+
+<p>
+  <br>
+</p>
+<p>
+  Elsewhere, we provide both strings and URIs where the publication is unambiguous. See for example, the element <i>spm:aboutTaxon</i> in the first table above. For its target <i>TaxonConcept</i>,&nbsp; we provide a URI-identified rdf:about as required, but <i>TaxonConcept </i>also has an element <i>nameString</i> with which we provide a string that should correspond to a scientific name. An integrating provider such as EOL possibly would choose to ignore the URI and base their integration on the name string.<br>
+a729 23
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <i>Conclusions and Recommendations about Issue 9:</i>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  Unless a consumer has specified preferences, whenever possible include both string and URI values. It may be that best practices need to be established for doing this in ways specific to SPM, or even to individual SPMI <i>InfoItems</i>.<br>
+
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <b>Issue 10: </b>Multiple identifiers:&nbsp; resources may have multiple ids in multiple GUID schemes associated with them.<br>
+</p>
+<p>
+  <br>
+</p>
+d731 1
+a731 8
+<p>
+  <i>Conclusions and Recommendations about Issue 10:</i><br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  SPM should specify means to associate multiple ids with the same resource. It may be that owl:sameAs is&nbsp; adequate, but use cases should be developed and the semantics of owl:sameAs&nbsp; examined to see if it satisfies them. This may be in the scope of (Cryer et al. 2009)<br>
+a732 62
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <b>Issue 11: </b>It is unclear how the data provider is to explain the intended meaning behind possibly ambiguous sets of statements. For example- A taxon name string may be provided twice with different languages, for example English or Latin. In this case it's to be understood that the name can be in either Latin or English but depending on the consuming applications' reasoning -the first may be taken as the primary, the second as the second. But the generated RDF would usually be order independent, making it difficult to track.<br>
+</p>
+<p>
+  <br>
+
+</p>
+<p>
+  <i>Conclusions and Recommendations about Issue 11:</i>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  SPM should specify mechanisms and practices that allow a provider to signify relationships among alternatives. rdf:List may not be adequate if statements appear independently of one another (for example, after data integration).<br>
+</p>
+<p>
+  <br>
+
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <b>Issue 12: </b>Lack of Metadata about the served SPM: We found no clear way to document within the SPM file how the SPM itself was produced. We resorted to XML comments, but it is unclear whether some standard RDF annotation mechanism might be better. Of special importance might be provenance of the SPM, including original source, changes, versions, etc.<br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <i>Conclusions and Recommendations about Issue 12:</i>
+
+</p>
+<p>
+  <br>
+</p>
+<p>
+  There should be best practices established for annotating service output, and it should be examined whether SPM has any specific needs.<br>
+</p>
+<p>
+  <br>
+</p>
+<p>
+  <br>
+
+</p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></body>
+@

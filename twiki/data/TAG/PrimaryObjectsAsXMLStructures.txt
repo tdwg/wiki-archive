@@ -1,0 +1,24 @@
+%META:TOPICINFO{author="RogerHyam" date="1138314074" format="1.1" version="1.1"}%
+%META:TOPICPARENT{name="ArchitectureOverview"}%
+---+ <nop>%TOPIC%
+
+
+---++ Primary Objects Can't be XML Structures
+One suggestion has been to divide the current XML Schemas into smaller modules. Basically chunks of XML defined in XML Schema that represent the primary objects: A TaxonConcept; A Specimen; A Bibliographic Reference etc. There is a problem with this approach.
+
+All of the suggested objects need to contain references of some kind to other objects and not just literals.  A specimen needs a link to a collector. A name needs a link to a place of publication etc. Each of the structures needs to contain a _proxy_ for at least one other kind of object.  The options for the proxy are:
+   1 Just a reference (ID or GUID). The consuming application can't display a label or anything about the target of the reference without retrieving it.
+   1 Generic labelled reference. This is the TCS type approach. String + Ref or just string or just ref. This is a one size fits all. If the string contains a trinomial, rank and author it is very difficult to then render it with the trinomial words in italics for example.
+   1 A specific labelled reference for each object type. This is like that suggested for UBIF where there are different versions of the major object, some more complex than others. Maintaining such things may become complex.
+   1 A full version of the object but allowing the object to be rendered with little data in it. This is a variation on 3 above. How do we know if we have the full object or a pointer and how do we specify which bits of the object we are requesting when we request the outer object. e.g. when returning specimens include the taxons rank in a separate field to the binomial. Taking either this approach or number 3 is the same as building a single large schema - a monolithic solution - which results in complexity of management etc.
+
+Taking an RDF/OWL approach means:
+   1 The structure of the reference is always the same (an RDF 'about' attribute or blank node) and is defined by the syntax rather than being something created by our community. So we have a generic, just the ID pointer (1 above) straight off.
+   1 The reference can be annoted with any number of assertions and these can be nested. Well known vocabularies can be used to describe what the reference is. Dublin Core can be used to indicate the mime type for example. We could define minimum assetions that are required for a reference to an object thus giving us 2 above. The structure and semantics of such a pointer could be understood outside the TDWG community.
+   1 An ontology can be used to publish the semantics of the core objects and therefore what assertions should be expected. This meets the original requirement of having the structured objects in the first place - to define approved or 'official' semantics for published data.
+   1 What still remains a problem is specifying the data that is returned (as in 4 above) without using a query language such as SPARQL.
+
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%

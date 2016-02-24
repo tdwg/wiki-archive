@@ -1,0 +1,25 @@
+---+ MessageBrokerService
+
+A MessageBrokerService is a service distributing messages to other services and pooling their responses. It has a single AccessPoint. A MessageBroker will be used for portals but can also be used in a cascading way to create local networks, e. g. for special interest groups. In this way it serves as a gateway to a complete network of distributed services with (potentially) its own registry of services.
+
+Making the protocol compliant with MessageBrokers would not be a trivial task,
+and probably other more generic protocols would better support query
+distribution. Such protocols could already exist, but we have not
+investigated with more details.
+
+Therefore we do not specify a complete protocol for brokers now, but we think they are the generalized form of a ProviderService for which a protocol is being specified.
+
+---+++++ Suggestions for a Broker Service Protocol
+Based on the ProviderService protocol there are some additional complications:
+
+   * Brokers can be cascading, therefore ...
+   * how to adress destinations in the header? Do we need to be able to pass on a message to only a subset of other services somewhere down the line/tree of services?
+   * how to avoid vicious circles MessageBrokerService loops in the forwarding of messages?
+
+---+++++ Current Protocols
+Although the DiGIR protocol has some elements
+especifically related to that service (e.g. "responseWrapper" element
+and multiple destinations), it is not validating all messages
+exchanged between clients and the "portal" engine, and it seems the
+protocol is not officialy supposed to cover these types of messages.
+BioCASE on its turn uses a java API for that purpose. 

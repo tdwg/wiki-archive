@@ -1,0 +1,656 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+	
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2005.03.09.06.37.03;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.1
+log
+@Schema proposal
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 sp2 U (http://www.altova.com) by Robert A. Morris (UMASS Boston CSLabs) -->
+<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Robert A. Morris (UMASS Boston CSLabs) -->
+<!-- proposed standard for Taxonomic Concept Schema (TCS) -->
+<!-- v0.82 scrutinised with Jessie -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="ABCDNameTypes.xsd"/>
+	<xs:element name="DataSet">
+		<xs:annotation>
+			<xs:documentation>Root element of the data set.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MetaData">
+					<xs:annotation>
+						<xs:documentation>Information associated with the creation of the dataset in human-readable form. May be augmented or replaced with common TDWG MetaData structure or UBIF container.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Creator" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Person or Program that generated the data set.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CreationTime" type="DateTimeISOType">
+								<xs:annotation>
+									<xs:documentation>Time at which the data set was created.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Purpose" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Reason why the data set was generated.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Source" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Origin of the data for derived data sets (e.g. database connect string).</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="ProviderSpecificMetaData" type="PlaceholderType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Mechanism to allow for the extension of the schema for specific applications.</xs:documentation>
+									<xs:documentation>- specific GBIF request</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Vouchers">
+					<xs:annotation>
+						<xs:documentation>Container for voucher (representation of specimen) records.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Voucher" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Specimen and location [A]</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence minOccurs="0">
+										<xs:element name="Institution">
+											<xs:annotation>
+												<xs:documentation>Information about the location of the specimen. The anyType represents a placeholder for optionally extending the schema with a schema element defined in another standard. [A]</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="PlaceholderType">
+														<xs:attribute name="identifier" type="xs:token" use="required"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Collection" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>The anyType represents a placeholder for optionally extending the schema with a schema element defined in another standard. [A]</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="PlaceholderType">
+														<xs:attribute name="identifier" type="xs:token" use="required"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Specimen">
+											<xs:annotation>
+												<xs:documentation>Physical object the voucher is referring to. The anyType represents a placeholder for optionally extending the schema with a schema element defined in another standard. [A]</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="PlaceholderType">
+														<xs:attribute name="identifier" type="xs:token" use="required"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:token" use="required">
+										<xs:annotation>
+											<xs:documentation>Unique identifier (key) of the element. It can be local to the data set or a GUID in which case it can be resolved to a location on the internet where the record is stored. </xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Publications">
+					<xs:annotation>
+						<xs:documentation>Container for publication records.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Publication" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Details of the data source where the the concept was originally published. (Might adopt a common TDWG data structure.) [A]</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence minOccurs="0">
+										<xs:element name="PublicationSimple" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Full bibliographic reference as a single formatted string.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="PublicationDetailed" type="PlaceholderType" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:token" use="required">
+										<xs:annotation>
+											<xs:documentation>Unique identifier (key) of the element. It can be local to the data set or a GUID in which case it can be resolved to a location on the internet where the record is stored. </xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="type" use="optional">
+										<xs:annotation>
+											<xs:documentation>Enumerated list of publication source types.</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="Generic"/>
+												<xs:enumeration value="Artwork"/>
+												<xs:enumeration value="Audiovisual Material"/>
+												<xs:enumeration value="Book"/>
+												<xs:enumeration value="Book Section"/>
+												<xs:enumeration value="Book Series"/>
+												<xs:enumeration value="Computer Program"/>
+												<xs:enumeration value="Conference Proceedings"/>
+												<xs:enumeration value="Edited Book"/>
+												<xs:enumeration value="Journal Article"/>
+												<xs:enumeration value="Magazine Article"/>
+												<xs:enumeration value="Map"/>
+												<xs:enumeration value="Newspaper Article"/>
+												<xs:enumeration value="Patent"/>
+												<xs:enumeration value="Report"/>
+												<xs:enumeration value="Thesis"/>
+												<xs:enumeration value="Communication"/>
+												<xs:enumeration value="Sub-Reference"/>
+												<xs:enumeration value="Determination"/>
+												<xs:enumeration value="Commentary"/>
+												<xs:enumeration value="Web Page"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TaxonConcepts">
+					<xs:annotation>
+						<xs:documentation>Container for concept records.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="TaxonConceptWithNonNominalType" type="TaxonConceptWithNonNominalTypeT" minOccurs="0" maxOccurs="unbounded"/>
+								<xs:element name="TaxonConceptWithNominalType" type="TaxonConceptWithNominalTypeT" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>Representation of a Taxon Concept. Various types of concept can be represented, including a reference to the GUID of an existing Concept. [A]</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:choice>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="RelationshipAssertions">
+					<xs:annotation>
+						<xs:documentation>Container for taxonomic assertion records.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="RelationshipAssertion" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Relationships between two concepts which are not part of the original definition of either of these concepts; possibly by a third party. [A] </xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:complexContent>
+										<xs:extension base="RelationshipType">
+											<xs:sequence minOccurs="0">
+												<xs:element name="AccordingTo" type="AccordingToType">
+													<xs:annotation>
+														<xs:documentation>Information about the authorship of the asserted relationship.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="FromTaxonConcept">
+													<xs:annotation>
+														<xs:documentation>Starting point of the directed relationship. A reference to a TaxonConcept.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ReferenceType"/>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="ToTaxonConcept">
+													<xs:annotation>
+														<xs:documentation>End point of the directed relationship. A reference to a TaxonConcept.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ReferenceType"/>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="id" type="xs:token" use="required">
+												<xs:annotation>
+													<xs:documentation>Unique identifier (key) of the element. It can be local to the data set or a GUID in which case it can be resolved to a location on the internet where the record is stored. </xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="AssertionID">
+			<xs:selector xpath="./RelationshipAssertions/RelationshipAssertion"/>
+			<xs:field xpath="@@id"/>
+		</xs:key>
+		<xs:key name="ConceptID">
+			<xs:selector xpath="./TaxonConcepts/TaxonConcept"/>
+			<xs:field xpath="@@id"/>
+		</xs:key>
+		<xs:key name="VoucherID">
+			<xs:selector xpath="./Vouchers/Voucher"/>
+			<xs:field xpath="@@id"/>
+		</xs:key>
+		<xs:key name="PublicationID">
+			<xs:selector xpath="./Publications/Publication"/>
+			<xs:field xpath="@@id"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="ReferenceType">
+		<xs:annotation>
+			<xs:documentation>Reference to an entity defined elsewhere (equivalent to a foreign key)</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ref" type="xs:token">
+			<xs:annotation>
+				<xs:documentation>Points to a top-level element via an ID reference; use gref to reference an external entity via a GUID. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccordingToType">
+		<xs:annotation>
+			<xs:documentation>Describes the origin of the concept or assertion.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccordingToSimple" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Unstructured string as used in the data source describing the origin of the concept (e.g. AuthorTeam and year).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccordingToDetailed" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Details provided by the data source about the concept or relationship authors.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AuthorTeam" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>String representation of  who was responsible for creating a particular concept or relationship, as represented in the source data. May be a subset of the publication authors.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Date" type="DateTimeISOType" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Time of creation of the concept or relationship .</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="PublishedIn" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Reference ID or GUID of the original publication in which the concept or relationship was introduced. [A]</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="ReferenceType">
+										<xs:sequence>
+											<xs:element name="MicroReference" type="xs:string" minOccurs="0">
+												<xs:annotation>
+													<xs:documentation>Specifies a location (e.g. page or paragraph) within the publication.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RelationshipType">
+		<xs:annotation>
+			<xs:documentation>Type attribute describe the type of relationship</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="type" use="required">
+			<xs:annotation>
+				<xs:documentation>Any of an enumerated list of possible taxonomic and nomenclatural relationships that may be expressed between two TaxonConcepts.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="is congruent to"/>
+					<xs:enumeration value="is not congruent to"/>
+					<xs:enumeration value="includes"/>
+					<xs:enumeration value="does not include"/>
+					<xs:enumeration value="excludes"/>
+					<xs:enumeration value="is included in"/>
+					<xs:enumeration value="is not included in"/>
+					<xs:enumeration value="is child of"/>
+					<xs:enumeration value="is parent of"/>
+					<xs:enumeration value="overlaps"/>
+					<xs:enumeration value="does not overlap"/>
+					<xs:enumeration value="is type of"/>
+					<xs:enumeration value="has type"/>
+					<xs:enumeration value="is basionym for"/>
+					<xs:enumeration value="has basionym"/>
+					<xs:enumeration value="is vernacular for"/>
+					<xs:enumeration value="has vernacular"/>
+					<xs:enumeration value="is conserved against"/>
+					<xs:enumeration value="has conserved name"/>
+					<xs:enumeration value="has conserved type"/>
+					<xs:enumeration value="is conserved type of"/>
+					<xs:enumeration value="is heterotypic synonym of"/>
+					<xs:enumeration value="is homotypic synonym of"/>
+					<xs:enumeration value="is later homonym of"/>
+					<xs:enumeration value="has later homonym"/>
+					<xs:enumeration value="is treated as later homonym of"/>
+					<xs:enumeration value="has homonym treated as later "/>
+					<xs:enumeration value="is lectotypification of"/>
+					<xs:enumeration value="has lectotypification"/>
+					<xs:enumeration value="is neotypification of "/>
+					<xs:enumeration value="has neotypification"/>
+					<xs:enumeration value="is orthographic variant of"/>
+					<xs:enumeration value="is misapplied name for"/>
+					<xs:enumeration value="has misapplied name "/>
+					<xs:enumeration value="is nomen novum for"/>
+					<xs:enumeration value="has nomen novum "/>
+					<xs:enumeration value="is not a synonym of"/>
+					<xs:enumeration value="is partial synonym of"/>
+					<xs:enumeration value="is pro parte synonym of"/>
+					<xs:enumeration value="is recombination of"/>
+					<xs:enumeration value="has recombination"/>
+					<xs:enumeration value="is rejected in favour of"/>
+					<xs:enumeration value="has rejected name"/>
+					<xs:enumeration value="is rejected type of"/>
+					<xs:enumeration value="has rejected type"/>
+					<xs:enumeration value="is replaced synonym for"/>
+					<xs:enumeration value="has replaced synonym"/>
+					<xs:enumeration value="is synonym of"/>
+					<xs:enumeration value="is validation of"/>
+					<xs:enumeration value="has validation"/>
+					<xs:enumeration value="is epitypification of "/>
+					<xs:enumeration value="has epitypification"/>
+					<xs:enumeration value="is anamorph of"/>
+					<xs:enumeration value="is teleomorph of"/>
+					<xs:enumeration value="is second parent of"/>
+					<xs:enumeration value="is female parent of"/>
+					<xs:enumeration value="is first parent of"/>
+					<xs:enumeration value="is male parent of"/>
+					<xs:enumeration value="is hybrid parent of"/>
+					<xs:enumeration value="is hybrid child of"/>
+					<xs:enumeration value="doubtful"/>
+					<xs:enumeration value="is ambiregnal of"/>
+					<xs:enumeration value="is equivalent of"/>
+					<xs:enumeration value="is sanctioned by"/>
+					<xs:enumeration value="is sanctioning"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PlaceholderType">
+		<xs:annotation>
+			<xs:documentation>Placeholder for other schema standards</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:anyAttribute namespace="##any"/>
+	</xs:complexType>
+	<!-- Concept Type enumerations  ram 7 Mar 2004  Example only -->
+	<xs:simpleType name="ConceptTypeEnum">
+		<xs:annotation>
+			<xs:documentation>An enumeration that is the union of all the others</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="NominalConceptTypeEnum NonNominalConceptTypeEnum"/>
+	</xs:simpleType>
+	<xs:simpleType name="NominalConceptTypeEnum">
+		<xs:annotation>
+			<xs:documentation>An enumeration of values possible for concept type, but containing only "Nominal"</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="Nominal"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NonNominalConceptTypeEnum">
+		<xs:annotation>
+			<xs:documentation>An enumeration of values possible for concept type, but not containing "Nominal"</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="Original"/>
+			<xs:enumeration value="Revision"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Representations of Names -->
+	<xs:complexType name="NameBaseT" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Abstract base type for describing names to allow different structure according as whether the Name is attached to a Nominal or non-Nominal concept</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NameVerbatim">
+				<xs:annotation>
+					<xs:documentation>Complete verbatim name as found in the data source. This is where spelling variations and other  The NameBaseT is an abstract SchemaType and when instantiated offers the possibility for additional optional information, which differs according as whether the TaxonConcept is of Nominal type or not.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="NameWithNominalConceptT">
+		<xs:annotation>
+			<xs:documentation>Concrete type giving the structure of a Name object that can be applied to a TaxonConceptWithNominalType. It extends NameBaseT with all the structure that differs from the non nominal case</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="NameBaseT">
+				<xs:sequence>
+					<xs:element name="NameDetailed" type="PlaceholderType">
+						<xs:annotation>
+							<xs:documentation>Container for full set of nomenclatural elements (LC). This option is automatically selected if the TaxonConcept "Type" attribute is "Nominal".</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NameWithNonNominalConceptT">
+		<xs:annotation>
+			<xs:documentation>Concrete type giving the structure of a Name object that can be applied to a non nominal concept. It is derived from NameBaseT and includes all the extra structure for this case.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="NameBaseT">
+				<xs:sequence>
+					<xs:element name="NameSimple">
+						<xs:annotation>
+							<xs:documentation>Name string calculated from an atomized record of the referenced "Nominal" concept in the source data. This option is automatically selected if the TaxonConcept "Type" attribute is not "Nominal".</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute name="ref" use="required">
+										<xs:annotation>
+											<xs:documentation>Reference to the Nominal concept that corresponds to the Code-recognized name used </xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Representations of TaxonConcepts -->
+	<xs:complexType name="TaxonConceptBaseT" abstract="false" mixed="false">
+		<xs:annotation>
+			<xs:documentation>An abstract TaxonConcept. It is abstract because it can not be instantiated. Rather, one of the two derived types  TaxonConceptWithNominalTypeT or TaxonConceptWithNonNominalTypeTmust appear in an instance document, although something of Schema type TaxonConceptT may appear anwhere it is possible to substitute either of the derived types</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0">
+			<xs:element name="AccordingTo" type="AccordingToType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Information about the authorship of this concept which uses the Name in their sense (i.e. secundum, sensu).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Kingdom" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Kingdom of the concept.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Rank" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Rank of the concept (potentially enumerated to the UBIF standard). </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Relationships" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Stores explicit, taxonomic and nomenclatural relationships that are part of the original concept definition.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Relationship" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Type of the relationship [A]</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="RelationshipType">
+										<xs:sequence>
+											<xs:element name="ToTaxonConcept" type="ReferenceType">
+												<xs:annotation>
+													<xs:documentation>Reference to another TaxonConcept. [A]</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SpecimenCircumscription" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A set of specimens that are used to define the concept.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CircumscribedBy" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Link to record of a specimen. [A]</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="ReferenceType">
+										<xs:attribute name="type" use="optional">
+											<xs:annotation>
+												<xs:documentation>May record the designated type-status of a specimen in relation to the circumscribed TaxonConcept,  according to the nomenclatural codes.</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="epitype"/>
+													<xs:enumeration value="holotype"/>
+													<xs:enumeration value="isotype"/>
+													<xs:enumeration value="lectotype"/>
+													<xs:enumeration value="neotype"/>
+													<xs:enumeration value="non-type"/>
+													<xs:enumeration value="paratype"/>
+													<xs:enumeration value="syntype"/>
+													<xs:enumeration value="isosyntype"/>
+													<xs:enumeration value="hapantotype"/>
+													<xs:enumeration value="paralectotype"/>
+													<xs:enumeration value="paratype"/>
+													<xs:enumeration value="syntype"/>
+													<xs:enumeration value="type"/>
+													<xs:enumeration value="name-bearing type"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CharacterCircumscription" type="PlaceholderType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A set of taxonomic descriptions used to define this concept. May potentially hold descriptions according to the TDWG SDD schema, or any other, format.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ProviderSpecificData" type="PlaceholderType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Mechanism to allow for the extension of the schema for specific applications.</xs:documentation>
+					<xs:documentation>- specific GBIF request</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:token" use="required">
+			<xs:annotation>
+				<xs:documentation>Unique identifier (key) of the element. It can be local to the data set or a GUID in which case it can be resolved to a location on the internet where the record is stored. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="primary" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TaxonConceptWithNominalTypeT">
+		<xs:annotation>
+			<xs:documentation>Use this data type if the concept is of nominal type. A schema aware editor like Spy will not let you enter anything but "Nominal" for the value of the type attribute, or at least will signal a validation error if you do</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TaxonConceptBaseT">
+				<xs:sequence>
+					<xs:element name="Name" type="NameWithNominalConceptT"/>
+				</xs:sequence>
+				<xs:attribute name="type" type="NominalConceptTypeEnum" use="required" fixed="Nominal"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TaxonConceptWithNonNominalTypeT">
+		<xs:annotation>
+			<xs:documentation>See annotation for "TaxonConceptWithNominalTypeT". The permitted values for the "type" attribute are those in the NonNominalConceptTypeEnum</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TaxonConceptBaseT">
+				<xs:sequence>
+					<xs:element name="Name">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="NameWithNonNominalConceptT"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="type" type="NonNominalConceptTypeEnum" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
+@

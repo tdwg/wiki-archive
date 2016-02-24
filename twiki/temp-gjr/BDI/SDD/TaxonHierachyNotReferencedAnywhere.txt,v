@@ -1,0 +1,169 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2009.11.25.03.14.39;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2009.11.20.02.45.32;	author LeeBelbin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.11.02.16.44.13;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.11.02.00.51.35;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.10.31.09.55.46;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.10.09.13.57.15;	author JacobAsiedu;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118879" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="DiscussionFor1dot1RC2"}%
+---+!! %TOPIC%
+
+I noticed that !TaxonHierarchy cannot be referenced in descriptions. I think it will be a good idea to have the ability to do that.
+
+-- Main.JacobAsiedu - 09 Oct 2006
+
+I cannot at the moment think how (and where in the schema) to use this. Please describe a use-case for which purpose the references are intended. Which biological knowledge that is part of an organism description requires to choose between multiple alternative taxon hierarchies?
+
+We did have a reference for taxon hierarchies for operational "user-interface-setup" purposes, e.g. to define which of multiple hierarchies is used for data inheritance (down/up) and which hierarchy is displayed by default in an identification tool. However, these attempts were deemed too preliminary and left in discussion state (double underscore).
+
+-- Main.GregorHagedorn - 31 Oct 2006
+
+We use them to represent relations between taxa and sets of taxa, e.g. "similar species", "prey", "predators", "larval hosts", etc. Often these are specific to the description, not the taxon described, as they may depend on the geographic or temporal scope of a description. For "species of concern", e.g. invasives, rare species, agricultural pests, pathogens,... these may be especially important.
+
+To the best of my understanding, there is no place except in a !TaxonHierarchy to hang a list.
+
+-- Bob Morris
+
+You are right, we do not have any features in BDI.SDD_ to describe organism interactions like prey/predator/pollinator/pathogen/host etc. "Similar species" is an interesting additional case we have never discussed yet. Essentially the functionality has been moved into a future release, to be able to release current BDI.SDD_.
+
+I believe using taxon hierarchy for these purposes is inappropriate. Although a flat list is technically a hierarchy, the hierarchies in UBIF/BDI.SDD_ are intended to have a general meaning, i.e. a possible classification/arrangement of taxa, which is not specific to a single description. Using them to express relations between taxa means that the scope of a taxon hierarchy must be made transparent to users intending to use the hierarchy for real taxon classification purposes (a dataset might contain 3 classifications and 2000 relationships). Furthermore, organism relationships are two sided, and using taxon hierarchies for this purpose would require data duplication if both sides of the relationship are being described.
+
+I believe a separate new mechanism is a better solution for the problem.
+
+BTW: How do you express relations in RDF in a way allowing automatic interpretation that "A is-pathogen-of B" automatically implies that "B is-host-of A"?
+
+-- Main.GregorHagedorn - 02 Nov 2006@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685132" format="1.1" reprev="1.6" version="1.6"}%
+d21 1
+a21 1
+You are right, we do not have any features in BDI.SDD to describe organism interactions like prey/predator/pollinator/pathogen/host etc. "Similar species" is an interesting additional case we have never discussed yet. Essentially the functionality has been moved into a future release, to be able to release current BDI.SDD.
+d23 1
+a23 1
+I believe using taxon hierarchy for these purposes is inappropriate. Although a flat list is technically a hierarchy, the hierarchies in UBIF/BDI.SDD are intended to have a general meaning, i.e. a possible classification/arrangement of taxa, which is not specific to a single description. Using them to express relations between taxa means that the scope of a taxon hierarchy must be made transparent to users intending to use the hierarchy for real taxon classification purposes (a dataset might contain 3 classifications and 2000 relationships). Furthermore, organism relationships are two sided, and using taxon hierarchies for this purpose would require data duplication if both sides of the relationship are being described.
+d29 1
+a29 1
+-- Main.GregorHagedorn - 02 Nov 2006
+@
+
+
+1.5
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1162485853" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="DiscussionFor1dot1RC2"}%
+d21 1
+a21 1
+You are right, we do not have any features in SDD to describe organism interactions like prey/predator/pollinator/pathogen/host etc. "Similar species" is an interesting additional case we have never discussed yet. Essentially the functionality has been moved into a future release, to be able to release current SDD.
+d23 1
+a23 1
+I believe using taxon hierarchy for these purposes is inappropriate. Although a flat list is technically a hierarchy, the hierarchies in UBIF/SDD are intended to have a general meaning, i.e. a possible classification/arrangement of taxa, which is not specific to a single description. Using them to express relations between taxa means that the scope of a taxon hierarchy must be made transparent to users intending to use the hierarchy for real taxon classification purposes (a dataset might contain 3 classifications and 2000 relationships). Furthermore, organism relationships are two sided, and using taxon hierarchies for this purpose would require data duplication if both sides of the relationship are being described.
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1162428695" format="1.1" version="1.3"}%
+d16 12
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1162288546" format="1.1" version="1.2"}%
+d12 4
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1160402235" format="1.1" version="1.1"}%
+d5 3
+d9 1
+d11 1
+a11 1
+-- Main.JacobAsiedu - 09 Oct 2006
+@

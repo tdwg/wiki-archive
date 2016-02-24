@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+<body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<h2><a name="SDD_Part_0_Introduction_and_Prim"></a> SDD Part 0: Introduction and Primer to the SDD Standard </h2>
+<p />
+<h3><a name="3_12_Attaching_Media_to_SDD_Item"></a> 3.12 Attaching Media to SDD Items </h3>
+<p />
+<h4><a name="3_12_1_Media_resources_in_SDD"></a><a name="3_12_1_Media_resources_in_SDD_"></a> 3.12.1 Media resources in SDD. </h4>
+<p />
+<p />
+The location of media in an SDD instance document is represented by a simple resource list. Media may include images (.jpeg, .png etc.), sound, video and web resources. SDD allows external references, embedded resource data, and provides for a multilingual caption.
+<p />
+Media items are defined within the &lt;MediaObjects&gt; element and simply referenced each time they are used elsewhere in an SDD instance document.
+<p />
+Simple SDD code for associated media has the basic structure shown below and in Example 3.12.1.1.
+<p />
+<img alt="media.gif" src="http://wiki.tdwg.org/twiki/static/_publish/media.gif" />
+<p />
+<h4><a name="Example_3_12_1_1_A_simple_SDD_me"></a> Example 3.12.1.1 - A simple SDD media dialog </h4>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<p />
+<pre>
+    &#60;MediaObjects&#62;
+      &#60;MediaObject id&#61;&#34;m1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Image description, e. g., to be used for alt-attribute in html.&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;Type&#62;Text&#60;/Type&#62;
+        &#60;Data href&#61;&#34;file:/Media/Html/Gleditsia&#95;triacanthos.htm&#34;/&#62;
+      &#60;/MediaObject&#62;
+      &#60;MediaObject id&#61;&#34;m2&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;No caption&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;Type&#62;Image&#60;/Type&#62;
+        &#60;Data href&#61;&#34;file:/Media/Images/Gleditsia triacanthos.jpg&#34;/&#62;
+      &#60;/MediaObject&#62;
+    &#60;/MediaObjects&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+The location of locally stored media objects is defined relative to the SDD instance document.
+<p />
+The &lt;Representation&gt; element provides a label for the media object. This may be useful if the instance document includes multiple descriptions for different purposes, or is intended for publication in multiple languages (see the topic <a href="sddlanguage.html">Language support in SDD</a>.
+<p />
+&lt;Owners&gt; refers to a person, persons or institution defined in the SDD <a href="sddagents.html">&lt;Agents&gt;</a> element.
+<p />
+&lt;IPRStatements&gt; records the original source of media (for example the full citation for a publication). and any restrictions on useage. May contain URL to IPR statements external to the SDD instance document.
+<p />
+Media items are defined once and referenced for each useage. Multiple media items of different types may be referenced for an item.
+<p />
+<h4><a name="Example_3_12_1_2_Referencing_med"></a> Example 3.12.1.2 - Referencing media </h4>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<p />
+<pre>
+  &#60;Dataset&#62;
+
+    &#60;TaxonNames&#62;
+      &#60;TaxonName id&#61;&#34;t1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Gleditsia triacanthos&#60;/Label&#62;
+          &#60;MediaObject ref&#61;&#34;m1&#34;/&#62;
+          &#60;MediaObject ref&#61;&#34;m2&#34;/&#62;
+        &#60;/Representation&#62;
+      &#60;/TaxonName&#62;
+    &#60;/TaxonNames&#62;
+    &#60;Characters&#62;
+      &#60;CategoricalCharacter id&#61;&#34;c1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Armature&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;States&#62;
+          &#60;StateDefinition id&#61;&#34;s1&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;armed&#60;/Label&#62;
+              &#60;MediaObject ref&#61;&#34;m3&#34;/&#62;
+              &#60;MediaObject ref&#61;&#34;m4&#34;/&#62;
+            &#60;/Representation&#62;
+          &#60;/StateDefinition&#62;
+        &#60;/States&#62;
+      &#60;/CategoricalCharacter&#62;
+    &#60;/Characters&#62;
+&#60;MediaObjects&#62;
+   ... media dialog goes here
+&#60;/MediaObjects&#62;
+
+  &#60;/Dataset&#62;
+
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+Associated information may include captions, web addresses and translations. Media may be directly embedded in the SDD code instead of referenced with a URL.
+<p />
+<h4><a name="Example_3_12_1_3_Associated_info"></a> Example 3.12.1.3 - Associated information for embedded media </h4>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<p />
+<pre>
+      &#60;MediaObjects&#62;
+         &#60;MediaObject id&#61;&#34;m1&#34; uri&#61;&#34;urn:lsid:local:local:129739128&#34;&#62;
+            &#60;Representation&#62;
+               &#60;Label&#62;Image description, e. g., to be used for alt-attribute in html.&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;Owners&#62;
+               &#60;Agent ref&#61;&#34;a1&#34; role&#61;&#34;own &#34;/&#62;
+            &#60;/Owners&#62;
+            &#60;Type&#62;Image&#60;/Type&#62;
+            &#60;Data href&#61;&#34;http://test.edu/test.jpg&#34;/&#62;
+         &#60;/MediaObject&#62;
+         &#60;MediaObject id&#61;&#34;m2&#34;&#62;
+            &#60;Representation&#62;
+               &#60;Label&#62;Morning call of Homo sapiens&#60;/Label&#62;
+            &#60;/Representation&#62;
+            &#60;Type&#62;Sound&#60;/Type&#62;
+            &#60;Data href&#61;&#34;http://test.edu/123.mp3&#34;/&#62;
+         &#60;/MediaObject&#62;
+         &#60;MediaObject id&#61;&#34;m3&#34;&#62;
+            &#60;Representation&#62;
+               &#60;Label&#62;Melampsora evonymi-caprearum&#60;/Label&#62;
+               &#60;!-- Details like Caption are optional --&#62;
+               &#60;Detail role&#61;&#34;Caption&#34; xml:lang&#61;&#34;fr&#34;&#62;&#60;i&#62;Melampsora evonymi-caprearum&#60;/i&#62; Kleb., stade II sur &#60;i&#62;Salix caprea&#60;/i&#62;L.&#60;/Detail&#62;
+               &#60;Detail role&#61;&#34;Caption&#34; xml:lang&#61;&#34;de&#34;&#62;&#60;i&#62;Melampsora evonymi-caprearum&#60;/i&#62; Kleb., Sporenstadium II auf &#60;i&#62;Salix caprea&#60;/i&#62; L.&#60;/Detail&#62;
+               &#60;Detail role&#61;&#34;Caption&#34; xml:lang&#61;&#34;en&#34;&#62;&#60;i&#62;Melampsora evonymi-caprearum&#60;/i&#62; Kleb., spore stage II on &#60;i&#62;Salix caprea&#60;/i&#62; L.&#60;/Detail&#62;
+            &#60;/Representation&#62;
+            &#60;Type&#62;Image&#60;/Type&#62;
+            &#60;!-- Optionally Resources may be included rather than referencenced through URIs. 
+           An additional href specifying the source of the encoded resource is optional (in addition to the encoded content) --&#62;
+    &#60;EncodedData ContentType&#61;&#34;image/png&#34;  href&#61;&#34;http://test.edu/Melampsora&#95;evonymi-caprearum.png&#34;&#62;R0lGODlhcgGSALMAAAQCAEMmCZtuMFQxDS8b&#60;/EncodedData&#62;
+         &#60;/MediaObject&#62;
+      &#60;/MediaObjects&#62;
+</pre>
+<p />
+</td>
+</tr>
+<p />
+</table>
+<p />
+Available "roles" within the &lt;Detail&gt; element are; Abstract, Caption, Coverage, Description, Normative and UnknownDetailRole.
+<p />
+If resources are included within the SDD instance document they should be directly encoded, i.e. not wrapped into a MIME object first.
+<p />
+<p />
+<p />
+<p />
+<p />
+<p />
+-- DonovanSharp - 05 Jun 2006
+<p />
+<p />
+</body></html> 

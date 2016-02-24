@@ -1,0 +1,29 @@
+%TMPL:INCLUDE{"twiki.classic"}%
+%TMPL:INCLUDE{"rename.classic"}%
+%TMPL:DEF{"titleaction"}%(move attachment) %TMPL:END%
+
+
+
+%TMPL:DEF{"webaction"}% *Move file attachment* %TMPL:END%
+
+%TMPL:DEF{"topicaction"}% <input type="submit" class="twikiSubmit" value=" Move " />
+ %TMPL:P{"sep"}% [[%WEB%.%TOPIC%][Cancel]] %TMPL:END%
+
+
+%TMPL:DEF{"content"}%
+<form method="post" name="rename" action="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%">
+---+ Move or Delete File <code>%FILENAME%</code>
+
+| |  *Web:* | *&nbsp;Topic:* |
+|  *From:* |    <nop>%WEB%. | &nbsp;%TOPIC% |
+|  *To:* |  <select name="newweb"> %WEBLIST{"<option $marker value=$qname>$name</option>" webs="%TRASHWEB%,public" selection="%WEB%" separator=" "}% </select>. | &nbsp;<input name="newtopic" value="%TOPIC%" /> |
+<input type="hidden" name="attachment" value="%FILENAME%" />
+
+__Note:__
+
+   * To delete an attachment move it to web *%TRASHWEB%*, topic *TrashAttachment*.
+   * The attachment and any history will be moved to the new topic.
+   * An error page will be shown if either of the topics are locked by another user.
+   * The new topic chosen must already exist.
+   * Note that any URLs that refer to the attachment will be broken after this move.
+%TMPL:P{"topicinfo"}%</form>%TMPL:END%

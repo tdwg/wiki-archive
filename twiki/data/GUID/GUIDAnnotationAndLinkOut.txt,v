@@ -1,0 +1,144 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.5
+date	2006.04.24.10.16.17;	author DonaldHobern;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.04.24.10.15.33;	author DonaldHobern;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.04.21.13.58.36;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.21.12.04.50;	author DonaldHobern;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.13.19.58.49;	author RicardoPereira;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.5
+log
+@
+.
+@
+text
+@---++ GUID Annotation and Link-Out Mechanisms
+
+*Coordinator(s):*
+
+*Participants:*
+
+----
+---+++ Description
+DonaldHobern - 2006-04-21:
+
+Basically the question is whether we should adopt any mechanisms and best practices for how a third-party data provider should serve annotations and additional data fields to be related to a data object with its own LSID and served by some other data provider.  During GUID-1 Ben Szekely mentioned the annotation interfaces that had been proposed for use with LSIDs.  This is a mechanism for a data provider using LSIDs to expose an interface which a third-party data provider may invoke to notify the first data provider that they are serving such annotations.  It is then up to the first data provider to decide whether or not to include a reference to these annotations as part of the metadata for the LSID in question.
+
+This is a collaborative approach which could be useful but which relies on special software at both ends, in addition to any basis LSID resolution stack.  Unless a high proportion of data providers serving LSIDs install software to accept notifications of annotations and to store the appropriate external references, I do not believe that third-party data providers will find it worthwhile to establish their end of the interaction.  Does anyone think otherwise?
+
+There would seem to be two other fairly obvious approaches we could follow to manage external annotation of LSIDs:
+
+   1.  We could rely simply on passive discovery of the links by crawler applications such as the GBIF data indexer - when indexing the third-party data, it would be possible to store a reference to the relationship between the objects and to offer a service allowing users to check for "additional information" on any LSID.  This relies on good coverage by the crawler tools - in particular it assumes that the data objects offered by the third-party data provider belong to classes which are themselves of interest to the crawler.
+   1.  We could establish a central service which can be invoked by anyone to assert relationships between any two LSIDs.  This would take the burden of handling these notifications away from the original data providers and would provide the foundation for establishing an "additional information" service.
+
+I therefore have two questions:
+
+   1.  Are any of these options likely to be valuable enough that we should consider clarifying them, implementing any required software and services, and defining best practices?
+   1.  (Even more importantly) Is there anyone who is sufficiently interested to take ownership of this topic?
+----
+---+++ Discussion
+
+Did Szekely talk about administrative issues in such interfaces when automated? For example, trust mechanisms to prevent spam agents from inserting nefarious references into the mix? These could seriously complicate either of the two mechanisms you mention, although in the case of Biodiversity data, the number of such potential annotation suppliers is possibly small enough that human-mediated registration of trust relationships might not be onerous. That is basically how GBIF solves that problem for specimen data. It's an unscalable solution possibly except for provision of a recursive trust tree but maybe that doesn't matter.
+
+We have a similar problem in a project about collaborative image annotation. We are pretending it doesn't exist and just working on the infrastructure as though there are no spammers.
+
+BobMorris 2006-04-21
+
+----
+
+As Tony Blair is fond of saying, there is a third way. Why not co-opt an existing service, such as Pingback used in blogs (e.g., [[http://hixie.ch/specs/pingback/pingback]]).
+
+Blogging can be thought of as distributed annotation. It provides a mechanism whereby if I comment on an entry in another person's blog, that person's blog gets notified automatically.
+
+Now, if we were really clever, we'd do things like support the blogging explicitly, and potentially get useful annotations almost for free. For example, if somebody makes an entry in their blog that links to an LSID, the data provider is notified of the blog entry via Pingback. If the blog supports an RRS 1.0 feed, then the blog serves RDF, which can be easily referenced as an annotation in the LSID metadata. We get this with minimal effort, and users can annotate in an environment they are familiar with (their blog software). I'm not suggesting blogs are the only annotation we support (obviously we'd like tools specific to our area of interest), but making use of what is out there seems to make sense to me.
+
+Given that there are existing tools out there to do this sort of thing, I don't think this would be hard to do. Why not add it to the list of things a TDWG-GUID-compliant data provider should/could support?
+
+RodPage 2006-04-21
+
+----
+---+++ Conclusions and Recommendations
+
+
+
+
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryInfrastructureWG
+@
+
+
+1.4
+log
+@
+.
+@
+text
+@d35 1
+a35 1
+As Tony Blair is fond of saying, there is a third way. Why not co-opt an existing service, such as Pingback used in blogs (e.g., http://hixie.ch/specs/pingback/pingback).
+@
+
+
+1.3
+log
+@
+.
+@
+text
+@d33 11
+@
+
+
+1.2
+log
+@
+.
+@
+text
+@d27 5
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d9 1
+d11 1
+d13 11
+@

@@ -1,0 +1,203 @@
+/* Stylesheet based on:
+Workbench Version 2.7 Screen: Verdana+colors+relative size for browser size-zoom (compare print stylesheet, using Arial+black+11pt) (c) G. Hagedorn 12.2004 
+Extended with the SDD Primer styles, (c) Kevin Thiele, 2004 
+Extended with TWIKI void-skin styles
+*/
+
+/* ### BEGIN SDD Primer styles ### */
+.Example     { padding:5; border:1px solid #A099CC; background-color: #DDDDFF; margin-left:30; margin-right:30 }
+.exampleHeader { padding:0; border-bottom:1px solid #A099CC; border-left-width:1; border-right-width:1; border-top-width:1; background-color: #DDDDFF; font-style:italic; color:#0000FF }
+span.element-mandatory { color: #0000FF; font-style: italic; font-weight:bold }
+span.element-optional { color: #0000FF; font-weight: bold }
+span.element-normal { color: #0000FF; }
+/* ### END SDD Primer styles ### */
+
+body {
+ background-position:top left;background-attachment:fixed;background-repeat:no-repeat;
+ margin-top:10px;margin-bottom:2em;}
+body, table {
+ color:black;
+ background:white; /* 'background-color' does not work on MAC IE 3, 'background' does! */
+ font-family:Verdana,Helvetica,Arial,sans-serif;}
+
+/* Sizing is problematic: A size in pt is changed with text size setting in NS, but fixed in IE 
+  smaller etc: Problem with IE5. small in default rather large, but sizing ok, smaller in default ok but sizing awkward! (IE5:font-size:smaller=10/small=12/medium=13.5pt!) 
+  Relative size with %: OK in IE5 and NS, but table is not considered child of body. Using Body,Table works ok! 
+  but now IE6 screws things up, treats tables correctly as children of body, thus 83% will be applied mutliple times! Solution: see "body table" below */
+body, table {font-size:83%} /* body, and table for Netscape which incorrectly does not recognize it as child of body */
+body table  {font-size:100%} /* = table within body */
+
+/* Link pseudo styles */
+:link {color:#333399;background:transparent;text-decoration:none;}
+:visited {color:#333399;background:transparent;text-decoration:none;}
+:link:active, :link:focus :visited:active, :visited:focus, a:active {color:blue;background:#FFA}
+:link:hover, :visited:hover, a:hover {color:blue;background:#FFA}
+/* invisible link */
+a.invis:link {color:black;background:transparent;text-decoration:none;}
+a.invis:visited {color:black;background:transparent;text-decoration:none;}
+/* style for links to help, different color, cursor as help! */
+a.help:link {cursor:help;color:blue;background:transparent;text-decoration:none;}
+a.help:visited {cursor:help;color:blue;background:transparent;text-decoration:none;} 
+a.help:hover {cursor:help;color:blue;background:#FFA;}
+a.help:active {cursor:help;color:blue;background:transparent;}
+/* footnote replaces <sup><a class="invis" href="x"></a></sup>. Note: 72 % is closest match to <sup> formatting, and vertical-align:top (rather than :super) produces good superscript */
+a.footnote {color:black;background:transparent;text-decoration:none;vertical-align:top;font-size:72%;}
+/* a.footnote:link only matches "a href=", but this should also match "a name=" */
+a.footnote:hover {color:blue;background:#FFA;vertical-align:top;font-size:71%;}
+a.footnote:active {color:blue;background:transparent;vertical-align:top;font-size:71%;}
+/* turn off link border around images; attribute border="0" is no longer possible in xhtml strict! */  
+a img {border:0 none;}
+img[usemap] {border:0 none;} /* img outside of hyperlink, but associated with a map, suppress border! */
+
+h1, h2, h3, h4, h5, h6 { 
+ text-align:left;
+ background:transparent; /* w3c stylesheet: "WebTV has a bug with transparent" */
+ margin-top:1em;margin-bottom: 0.6em;
+ font-family:Arial,Helvetica,sans-serif; /* Arial, not Verdana! */
+ font-weight:bold;color:#336699;}
+h1 {font-size:160%;} /* OK, IE interprets size relative to body! */
+h2 {font-size:145%;}
+h3 {font-size:125%;}
+h4 {font-size:115%;}
+h5, h6 {font-size:100%;}
+
+div, th, td, form, input, textarea, select, p, ul, ol, li, dl, address, blockquote {
+ font-family:Verdana,Arial,Helvetica,sans-serif;}
+pre, tt, code, kbd, samp {font-family:"Courier New",Courier,monospace;}
+
+ul, ol, pre {margin-top:0;margin-bottom:0;}
+p, li, dl, address, blockquote {margin-top:0.7em;margin-bottom:0.7em;}
+
+/* List definitions: 
+   Note: paragraphs within ul/ol must be nested as <li><p></p><p></p></li>!
+   Option: .redbullet {list-style-image:url('bullet_red.gif');list-style-type:square}   list-style-type added for browsers not supporting the gif bullet style (bullet image is square) 
+   Option to remove bullets or numbers: li.continue {list-style:disc;list-style:none;}  Reason for double def: Mac NS has problem with 'none' */
+ul {margin-left:1.5em;list-style-type:square} 
+ol {margin-left:1.9em;list-style-type:decimal} /* margin left is here margin of list text. Problem: bullet/number for list-style-position:outside is left of this. marker-offset can be defined if marker box is defined within CSS, support seems sparse, li:before {display:marker;content:"-";marker-offset:20pt;} did not work (my error?) */ 
+ul ul {list-style-type:circle}      /* margin-left:1.5em; remains ok, is relative to first list */ 
+ol ol {list-style-type:lower-alpha} /* margin-left:1.9em;  remains ok, is relative to first list */  
+ul.compact, ul.compact li, ul.compact li p, ol.compact, ol.compact li, ol.compact li p {margin-top:0;margin-bottom:0;}
+
+ /* surprisingly, at least in IE6 "ul li", "ul li p" do NOT automatically inherit from ul, must be named specifically! */
+ul.separated, ul.separated li, ol.separated, ol.separated li {margin-top:0.7em;margin-bottom:0.7em;} /* currently = default, but default may be changed */
+ol.loweralpha {list-style-type:lower-alpha} /* (= numbering a b c) */
+ul.toc, ul.toc li {margin:0 0 0.2em 0;list-style-type:none;}
+
+dt {margin-top:0; margin-bottom:0;font-weight:bold} 
+dt.label {display: run-in;}
+dd, dd p {margin-top:0;margin-bottom:0.7em;}
+
+sup {text-decoration:none;font-size:86%;}
+sub {text-decoration:none;font-size:86%;}
+small {font-size:86%;}
+
+/* IE5.5 seems to ignore small-caps, works with IE6 */
+q {font-variant:small-caps;font-style:normal} /* Note: abbr is still ignored in IE6. q is really intended for other purposes. However, validates under xhtml, even without cite attribute */
+span.refauthor, 
+span.taxauthor, 
+span.personname {font-variant:small-caps}
+
+span.hilite {color:black;background:yellow;} /* for highlighted notes; could use: color:red or background:yellow; */
+
+
+.title {text-align:center} /* normal headers are redefined to be left-aligned! */
+.newchapter {page-break-before:always} 
+
+.hide {display:none} /* Note: do not use all.hide etc. syntax, IE ignores this */
+.large {font-size:115%}
+.small {font-size:86%}
+.tiny {font-size:77%} /* never use sizes smaller 75%, esp. unreadable on Mac. 77% can still be read with IE: Text size=smaller */
+
+/* the following styles should no longer be used, "deprecated" */
+.justify {text-align:justify}
+.largejustify {font-size:115%;text-align:justify}
+.smalljustify {font-size:86%;text-align:justify}
+.tinyjustify  {font-size:77%;text-align:justify}
+
+p.hanging   {text-indent:-0.6cm;margin-left:0.6cm} /* for hanging text indentation (first line left, following indented) like Word: Ctrl-T */
+ /* NOTE: td.hanging would be very useful, but does NOT work in IE 6.0. Anybody knows a solution? PERHAPS p inside td...*/
+p.compact   {margin-top:0.1em;margin-bottom: 0.1em;} /* used especially as start-paragraph for compact lists: */
+p.copyright {font-size:86%}
+p.signature {font-size:86%;text-align:right} /* for right aligned author/version/date information, below document or below title */
+p.footnote  {font-size:86%;text-indent:-0.6em;margin-left:0.6em} /* for footnote paragraphs */
+
+/* for authors comments on a text: !!: For indentations use cm, not em, else normal and small text indented differently! */
+p.note     {margin-left:0.6cm;} 
+p.smallnote{margin-left:0.6cm;font-size:86%;}
+/* for other peoples revision comments on a text */
+p.comment  {margin-left:0.6cm;font-size:86%;color:#000099} /* darker blue */
+p.comment2 {margin-left:0.6cm;font-size:86%;color:#007722} /* darkgreen */
+p.comment3 {margin-left:0.6cm;font-size:86%;color:maroon}  /* reddish brown */
+p.comment4 {margin-left:0.6cm;font-size:86%;color:#ee5500} /* cinnamon/darker orange, ff6600 would be clear orange, matching with blue */
+
+div.note   {margin-left:0.6cm;}
+div.impressum {font-size:10px;text-align:center} /* using fixed size, 9 is absolute min! */
+div.formblock1, 
+td.formblock1 {color:black;background-color:#EEEEEE; font-size:86%; padding: 0 7px 7px 7px;margin: 0 7px 7px 0px;} /* create visible blocks of elements  within an html form */
+
+
+/* table formatting: */
+table caption {font-size:125%;font-weight:bold;font-family:Verdana,Arial,Helvetica,sans-serif;}
+th {font-weight:bold;text-align:left;}
+th[align=center] {font-weight:bold;text-align:center;} /* not yet in IE 5.5. */
+tr.header, td.header {color:black;background-color:#D0D8DF;vertical-align:bottom;font-weight:bold}  /* WAS D3D3D3 header row with a darker background color */
+tr.data1, td.data1 {color:black;background-color:white;vertical-align:top}     /* data row, usually white background color */
+tr.data2, td.data2 {color:black;background-color:#F2F5F8;vertical-align:top}   /* data row with alternate background color */
+tr.separator, td.separator {color:black;background-color:#D0D8DF}              /* separator row with a darker background color */
+
+hr {color:#0076AE;}
+/* Note: occasionally hr creates more space than desired, e.g. when used as line in tables. However:
+  hr.compact {padding:0;margin:0 0 0 0;line-height:3pt}   did not seem to work */
+
+@media aural {  
+  h1,h2,h3 {stress:20;richness:90}
+  .hide {speak:none}
+  .tiny, p.copyright, p.signature {volume:x-soft;speech-rate:x-fast}
+  dt {pause-before:20%}
+  pre, tt {speak-punctuation:code} 
+}
+
+/* ### Special for the WIKI */
+ul li, ul li p, ol li, ol li p {margin-top:0;margin-bottom:0;}
+
+/* ### BEGIN TWIKI void skin ### */
+/* Start header on every page */
+#headerbox {margin:0em; height:1.8em; text-decoration:none}
+#headerbox h1 {float:left; font-size:1.6em; font-weight:bold; padding:0.1em; margin-top:0em; margin-left:0.5em; text-decoration:none}
+#headerbox .pagename {font-size:1.2em; font-weight:bold; text-align:right; margin-right:1em; padding-top:0.4em; text-decoration:none}
+#headerbox p { display:inline;}
+.revbar {margin-left:22.2em; font-size:1.2em; text-decoration:none}
+#menubox {height:1.5em; font-size:0.9em}
+#menubox a {text-decoration:none}
+#menubox a.user {text-decoration:none}
+#searchbox {float:right; margin-right:1.2em; font-size:1.0em; padding:0em}
+#searchbox input {font-size:1.0em}
+#searchbox form {display:inline; margin:0em; padding:0em}
+#helpbox {font-size:0.9em; padding-left:1.8em; padding-right:1.8em; padding-top:0.6em; height:2.0em}
+/* End header on every page */
+div.hbar {height:0.4em}
+#widgetbox {float:left; width:17em; margin:0em}
+#widgetsidebarbox {float:left; width:17em; margin:0em}
+#widgetsidebarbox a {text-decoration:none}
+#widgetsidebarbox a.user {text-decoration:none}
+#contentbox {margin-right:1.5em; margin-left:17.3em; padding:0em}
+#contentbox.print {margin-right:1.5em; margin-left:10.3em}
+.widget {padding:0.5em; margin:3.0em 0.5em 1.5em 1em}
+.widgetbroadcast {padding:1em; margin:3.0em 0.5em 1.5em 1em}
+.widget .boxtitle {position:relative; display:inline; top:-1.2em; font-size:1em; font-weight:normal; padding:1px 2px; margin:0em; margin-left:0.5em; margin-bottom:-1.2em}
+td.tablecol0 {margin-bottom:0.4em}
+td.tablecol1 {margin-bottom:0.4em}
+td.tablecol0 p {padding-top:0.4em; padding-bottom:0.4em}
+td.tablecol1 p {padding-top:0.4em; padding-bottom:0.4em}
+.tableheader p {padding-top:0.4em; padding-bottom:0.4em}
+div.tableheader {font-family:verdana, sans-serif}
+/* The copyright, privacy, etc box */
+#boringbox {clear:left; margin:0em; margin-bottom:1em; font-size:0.8em; padding:0.3em; text-align:center}
+.hide {position:absolute; width:1px; visibility:hidden; height:1px}
+li.uncheck {list-style:url(unchecked.jpg) }
+li.check {list-style:url(checked.jpg) }
+li.pcheck {list-style:url(partchecked.jpg) }
+blockquote, 
+.blockquote {margin-left:2.0em; width:80%; 	border-left:1px; border-right:0px; border-top:0px; border-bottom:0px; border-color:black; border-style:solid; padding-left:1em}
+div.fragment {margin-left:2em; margin-right:2em; padding:4px}
+/* ### END TWIKI void skin ### */

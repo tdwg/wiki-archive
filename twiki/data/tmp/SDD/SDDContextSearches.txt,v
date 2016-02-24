@@ -1,0 +1,456 @@
+head	1.8;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.8
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2005.03.21.21.11.33;	author JenniferForman;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2005.01.06.16.42.44;	author BobMorris;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.10.21.04.54.31;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.10.12.21.01.28;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.10.12.15.32.41;	author NorbertSiegmund;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.09.14.21.51.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.09.14.19.58.00;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="JenniferForman" date="1111439492" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="SDDAsNativeStore"}%
+From Norbert Siegmund in reference to work in our AMNH Ants project:
+
+After the last meeting with Prof. Böhm, i have some questions about the XML document and the schema. Maybe you could help so that i have a better understanding about our work.
+
+First, i want to know is: Why we have the keys? Why we dont put the words like "small" in the Descriptive Data? Prof. Böhm was wondering because the XML should be human readable.
+
+---
+
+"CodedDescriptions" should be machine processable and language independent. This is the principal motivation for use of key/keyref mechanism, and it allows words to be reused with their context made explicit. For example in some of data in another project, there is a butterfly wing pattern state named "tiger", but this word is also the common name of an animal and might appear part of a taxon name. The XPath constraints that relate keyrefs to their keys are a precise specification of context that might only be approximate using IR techniques to constrain the context.  In particular some support becomes available by Schema validation to help insure that inappropriate references aren't made as might happen, for example, if the globally unique ID/IDREF mechanisms were used. [This probably also helps when combining SDD documents. There is no need to worry about overlap in the "unique" IDs between the merged documents]
+
+Also it is central to SDD that multi-lingual versions of a Description be supported if desired. (SDD generalizes language to an object called Audience, which is a pair consisting of an ISO language and an integer 1-5 meant to indicate a level of expertise at which the language is targeted. What each integer means is up to a Terminology author, and the only guidance is that bigger numbers are "more expert", though that is enforced. In the sample, I thing I defined only a single audience, English ant specialists. But there might have been als "German school children" as an audience if someone chose to add appropriate language for the labels on objects. etc. 
+
+-- Main.BobMorris - 14 Sep 2004
+
+I would add that words are often redefined and have synonyms ("bipartite" and "two-partite" and "with two parts"), and synonymy may depend on context. For example in non-muriform fungal spores, "uniseptate" and "2-celled" is a frequently used synonymously, but obviously it is not a general synonym. Also there is a question of uniqueness: words unique in one language may have the same spelling in another language. As Bob says, a central idea is to have as much data as possible in a format that does not depend on a specific language. This includes states (= categories), modifiers (e.g. certainty, frequency, degree), measures (minimum, standard-deviation, etc.) and units. 
+
+I feel that computer scientists often start with the assumption that the prose-like description texts so commonly found in biodiversity descriptions are desirable and have special value. I think they have not, and I know many biologists who hate them because of their imprecision. Some biologists do love them and consider them an art-form - and yes, it may be art, but often it is bad science. This becomes only too obvious if one tries to systematically code data based on natural language descriptions (in DELTA, <nop>DeltaAccess, Lucid, etc.). Often gross errors in the source are found this way.
+
+For which purposes should the xml be human readable as you require? If you have natural language descriptions as in the ant case, the appropriate method are the <nop>NaturalLanguageDescriptions, which do contain the original text (in Text tags), but are otherwise offer roughly a similar structure for exact markup as the <nop>CodedDescriptions do.
+
+-- Gregor Hagedorn - 14 Sep 2004
+
+First, i have to thanks for the great answers. After, i read more about the XML Scheme, I am able to answer here. One of the main jobs of the SDD seems to be the interaction or the exchange from one system to an other one. So the <nop>NaturalLanguageDescription should be enough. Maybe the debugkey-tool could be a standard tool to make queries faster und not so complicated.
+
+-- Norbert Siegmund - 12 Oct 2004
+
+---
+
+And a document with so many keys, i think, isn't readable. The next question is: Why isn't it possible to have unique keys in a document? That should be not a big problem and we have not so many problems.
+
+-- Norbert Siegmund - 12 Oct 2004
+
+I think you mean: why is the domain of uniqueness the object type, and not the document? I believe in many use cases the IDs need to be unchanging on repeated requests. This is not strictly required if the full document is the only content a service provider can deliver. However, in a web-service environment it would not be meaningful to include resources or the terminology (characters, states, etc.) with each document. So a first request on startup of a key application could be to request the complete terminology - perhaps even only with reduced content (labels in a specific language, but no natural-language wording etc.). In subsequent requests, specific queries based on these ids are submitted, and selected descriptions (as xml fragments, i.e. not valid under the full xml schema, but becoming valid when combined with the previously downloaded terminology) are requested.
+
+I think - and please contradict if other solutions come to your mind -  that this requires either a session context in which the autogenerated IDs for the entire dataset are kept for each user, or that the IDs are actually based on the content (e.g. present as persistent data, or hashed from existing keys). The latter seems the desirable solution.
+
+Since the applications may be distributed, and since existing relational databases make it simple to achieve keys per object/entity, and very difficult to have uniqueness across all ojbects in the database, a less strict uniqueness constraint is currently preferred.
+
+I am not sure what the benefit of document-wide uniqueness actually is. If a major benefit exists, the constraint on keys could be increased. Note that the schema does not define the id/ref as xml ID/IDREF type, and to my knowledge this mechanism is generally considered deprecated.
+
+-- Gregor Hagedorn - 22 Oct 2004
+
+---
+
+We've built a tool that heuristically puts the appropriate text into the debugref attributes. See http://wiki.cs.umb.edu/twiki/bin/view/SDD/DebugRef. In general, many design questions about SDD are discussed on the (very extensive) SDD Wiki http://wiki.cs.umb.edu/twiki/bin/view/SDD -- Main.BobMorris - 14 Sep 2004
+
+I don't understand the question above. Norbert, can you elaborate? We do have lots of unique keys? Perhaps you are referring to the fact that the keys are in several domains, i.e. a character and a state may both have key="1"? This is thought to simplify the design of federated data systems, where keys and keyrefs from separate sources (one service providing terminology, several others providing descriptions, which to form a valid SDD document are combined using external entities or xInclude). Commonly used databases make it easy to define uniqueness in an object collection, but uniqueness across all objects in a database usually ends up with GUID. So having separate domains for characters, descriptions, states, modifiers, etc. is thought to simplify usage, not make it more complicated. This is not set in stone, however, any specific critique is welcome. But note also, that the id values are assumed non-changing. They are not ephemeral in a single document, but SDD specifies that they can be relied on for repeated object identification in the future.
+
+-- Gregor Hagedorn - 14 Sep 2004
+ 
+---
+
+Why do we use different keys for some words like "bidentate" in the <nop>StateReference?  I know, that these keys are different, because of a different context. But in the <nop>DescriptiveData we can exactly search in special context so i think, we dont need different keys. And maybe we have better results or we want to search this word in different contexts. So that could be easier to do this.
+
+-- Norbert Siegmund 
+
+There are two issues here: a) the expectation that a word like blue would then always have the same key, in any character it is used in. This would make the key a semantic identifier, independent of context. I think this is not possible to define in general, since different words mean the same, and the same words may mean different things. b) However, it would be quite possible to further contrain the uniqueness of states, thus a state ID is only unique within its character. This is possible and is done e.g. in conventional DELTA. However, this requires any reference to a state to consist of character id plus state id. In my experience, this make the handling of the system in fact more problematic, especially when considering terminology evolution, during which states may be moved (together with all data in descriptions) from one character to another. For this reason the states have document-wide unique IDs, i.e. the id alone identifies the state in a terminology. 
+
+Again - the latter (= b) could be changed, the decision is based on my estimation of benefits/tradeoffs. 
+
+-- Gregor Hagedorn - 22 Oct 2004
+
+---
+
+As above, Schema validation enforces structure across the whole document. Querying is not the only (and probably not the most used) application for SDD, at least in the short term. Initially, most SDD applications will be for interchange and integration between  databases most of whose implementation will not be SDD, or even native XML. 
+
+It may well be that the design of SDD has imposed a quadratic search for the kind of stuff you describe when natural language in a specific context is desired. Since the context for most labels is given only in the Terminology, you might have to search first Terminology for words of interest, examine the keys of object on which they are found, then search Descriptions for things referencing those keys. 
+
+Possibly this problem is addressed by XML databases that have good indexing mechanisms. Not sure about that.
+
+-- Main.BobMorris - 14 Sep 2004
+
+Norbert, can you explain the use case in which you would want to search the entire database for a word like "bidentate", rather than doing this in the context of a character variable? Many things may be didentate, and as said above, this may have different semantics. I am not saying that you can not make a fuzzy search ignoring the context, but can you give good examples where this would be the standard case?
+
+The design of SDD is indeed based on the assumption that most queries will be hierarchical: first select the character (= variable, = combination of:<br/>
+- object/objectpart, i.e. where are you looking at (e.g. leaf margin of sepals)<br/>
+- which property is observed (presence of hairs)<br/>
+- which method is used (naked eye, handlens, light microscope, SEM???)<br/>
+then select from the available categories.
+
+The situation looking for categories across variables is in the extreme like looking into a socialogical questionaire and asking for all that have "strongly reject" scored in any question. This is not entirely correct, since in biology often the category terms imply a certain amount of context, but this is highly variable, so I would rather not make it a feature of the structural design.
+
+That said, we could for the Concept States, use the id of the concept state directly, rather than mediating it through a character. That would come closer to your use case. We would loose some validation properties (you could use any concept term, whether it is appropriate for a character or not) and we would have more problems when the terminology evolves (is changed, while data are already present in a federated system). These two thoughts are the reason to add a new, character specific id for states that refer to concept states. So if dropping this tips the balance in other use cases, we may do otherwise...
+
+-- Gregor Hagedorn - 14 Sep 2004
+
+Ok, i tried to find a good example. A biologist wants to classify an ant. He see small legs and a small thorax shape and so on. (If some biology expressions are wrong, I am sorry about that.) Now, he wants to know from the system, what ant he has. So the system must search in all these categories  with their different subkeys for the attribute small. First, the system search faster if it only needs one key for the word "small". And usually the system will presentate more results. So a system could score results with states, which use the key of the word "small", higher than other ones. The intention behind this is: An ant with small legs, usually has a small body, a small head, etc. But it seems that the problems have a worser affect then the explained properties have a good one. So thanks for the explanation.
+
+-- Norbert Siegmund - 12 Oct 2004
+
+Basically you describe a natural language search. This can easily be done on the NLD part - which offer the coded terminology only in addition to the free-form text. However, in my experience the scenario you describe would not be a wise approach. Sitting in front of the system and asked to type in my own natural language description would require me to understand whether the description uses "thorax" or "body", and "minute" or "small". Clearly, these things can ultimately addressed with perfect understanding of terminology - but so far biologists usually have a hard time defining a single terminology. We are simple not ready to define all possible terminologies and cross-reference these words (and often phrases which may not appear consecutively in text) into a global ontology.
+
+So in a way SDD like DELTA "cheats". By agreeing on and presenting a common terminology both during data entry and during query, I work in a constrained vocabulary, and matching is much more reliable.
+
+-- Gregor Hagedorn - 22 Oct 2004
+ 
+You make a good point, but the kind case you cite represents not a defect in SDD, but rather in the particular Descriptions or sometimes in Terminology in use in the examples we are working with. The particular Terminology is (a) not very complete (b) not necessarily biologically accurate and (c) a little less than optimal in how many "ConceptTree" elements it has and what they cover. Since I wrote it, these defects are all my fault. However, as far as I remember and can tell by a quick scan, the attribute "small" is defined only in a single place and all characters that support a state corresponding to "small" do so with a keyref (in SDD1.0 now on the attribute "ref") to the unique thing whose label is "small". 
+
+That said, whether one can conclude that an object with a hierarchy, e.g. a body parts hierarchy, has all parts small if one part is small is really a biological statement and may often be far from true. (Probably it is often false in descrition of the parts of a flower, for example). I think there is some theory about scaling of body parts in animals---and it probably leads to your conclusions in general. I recall slightly that this theory mostly comes from physics surrounding energy needs of things which move under their own power(which roughly is one of the things that distinguishes animals from plants). 
+
+And _that_ said, there is one piece about SDD that is (known to be) missing which would aid in addressing the example. Namely, we don't really have a way to represent property inheritance. Nor does the ontology mechanism ("Glossary" section) really address this I think. More generally, we continue to discuss exactly how much ontology mechanism should be in SDD.
+
+-- Main.BobMorris - 12 Oct 2004
+
+---
+
+My last question is:  You wrote in the last mail about a constraint attribute for the path of a key. Could you give me an example? I don`t understand this point.
+
+---
+
+To understand this in detail one must understand the key/keyref mechanism in some detail. You'll end up at http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#element-key
+but it might take a lot of reading of the XML Schema Primer http://www.w3.org/TR/xmlschema-0/ to get there. I'll try to put here a good example from a real SDD document. -- Main.BobMorris - 14 Sep 2004
+
+You could look in the schema for xs:key and xs:keyref, you find the xpath for the identity constraints there. -- Gregor Hagedorn - 14 Sep 2004
+
+Thanks for the hints. -- Norbert Siegmund - 12 Oct 2004
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1105029764" format="1.0" version="1.6"}%
+d47 1
+a47 1
+We've built a tool that heuristically puts the appropriate text into the debugref attributes. See http://efgblade.cs.umb.edu/twiki/bin/view/SDD/DebugRef. In general, many design questions about SDD are discussed on the (very extensive) SDD Wiki http://efgblade.cs.umb.edu/twiki/bin/view/SDD -- Main.BobMorris - 14 Sep 2004
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1098334471" format="1.0" version="1.5"}%
+d3 117
+a119 116
+From Norbert Siegmund in reference to work in our AMNH Ants project:
+
+After the last meeting with Prof. Böhm, i have some questions about the XML document and the schema. Maybe you could help so that i have a better understanding about our work.
+
+First, i want to know is: Why we have the keys? Why we dont put the words like "small" in the Descriptive Data? Prof. Böhm was wondering because the XML should be human readable.
+
+---
+
+"CodedDescriptions" should be machine processable and language independent. This is the principal motivation for use of key/keyref mechanism, and it allows words to be reused with their context made explicit. For example in some of data in another project, there is a butterfly wing pattern state named "tiger", but this word is also the common name of an animal and might appear part of a taxon name. The XPath constraints that relate keyrefs to their keys are a precise specification of context that might only be approximate using IR techniques to constrain the context.  In particular some support becomes available by Schema validation to help insure that inappropriate references aren't made as might happen, for example, if the globally unique ID/IDREF mechanisms were used. [This probably also helps when combining SDD documents. There is no need to worry about overlap in the "unique" IDs between the merged documents]
+
+Also it is central to SDD that multi-lingual versions of a Description be supported if desired. (SDD generalizes language to an object called Audience, which is a pair consisting of an ISO language and an integer 1-5 meant to indicate a level of expertise at which the language is targeted. What each integer means is up to a Terminology author, and the only guidance is that bigger numbers are "more expert", though that is enforced. In the sample, I thing I defined only a single audience, English ant specialists. But there might have been als "German school children" as an audience if someone chose to add appropriate language for the labels on objects. etc. 
+
+-- Main.BobMorris - 14 Sep 2004
+
+I would add that words are often redefined and have synonyms ("bipartite" and "two-partite" and "with two parts"), and synonymy may depend on context. For example in non-muriform fungal spores, "uniseptate" and "2-celled" is a frequently used synonymously, but obviously it is not a general synonym. Also there is a question of uniqueness: words unique in one language may have the same spelling in another language. As Bob says, a central idea is to have as much data as possible in a format that does not depend on a specific language. This includes states (= categories), modifiers (e.g. certainty, frequency, degree), measures (minimum, standard-deviation, etc.) and units. 
+
+I feel that computer scientists often start with the assumption that the prose-like description texts so commonly found in biodiversity descriptions are desirable and have special value. I think they have not, and I know many biologists who hate them because of their imprecision. Some biologists do love them and consider them an art-form - and yes, it may be art, but often it is bad science. This becomes only too obvious if one tries to systematically code data based on natural language descriptions (in DELTA, <nop>DeltaAccess, Lucid, etc.). Often gross errors in the source are found this way.
+
+For which purposes should the xml be human readable as you require? If you have natural language descriptions as in the ant case, the appropriate method are the <nop>NaturalLanguageDescriptions, which do contain the original text (in Text tags), but are otherwise offer roughly a similar structure for exact markup as the <nop>CodedDescriptions do.
+
+-- Gregor Hagedorn - 14 Sep 2004
+
+First, i have to thanks for the great answers. After, i read more about the XML Scheme, I am able to answer here. One of the main jobs of the SDD seems to be the interaction or the exchange from one system to an other one. So the <nop>NaturalLanguageDescription should be enough. Maybe the debugkey-tool could be a standard tool to make queries faster und not so complicated.
+
+-- Norbert Siegmund - 12 Oct 2004
+
+---
+
+And a document with so many keys, i think, isn't readable. The next question is: Why isn't it possible to have unique keys in a document? That should be not a big problem and we have not so many problems.
+
+-- Norbert Siegmund - 12 Oct 2004
+
+I think you mean: why is the domain of uniqueness the object type, and not the document? I believe in many use cases the IDs need to be unchanging on repeated requests. This is not strictly required if the full document is the only content a service provider can deliver. However, in a web-service environment it would not be meaningful to include resources or the terminology (characters, states, etc.) with each document. So a first request on startup of a key application could be to request the complete terminology - perhaps even only with reduced content (labels in a specific language, but no natural-language wording etc.). In subsequent requests, specific queries based on these ids are submitted, and selected descriptions (as xml fragments, i.e. not valid under the full xml schema, but becoming valid when combined with the previously downloaded terminology) are requested.
+
+I think - and please contradict if other solutions come to your mind -  that this requires either a session context in which the autogenerated IDs for the entire dataset are kept for each user, or that the IDs are actually based on the content (e.g. present as persistent data, or hashed from existing keys). The latter seems the desirable solution.
+
+Since the applications may be distributed, and since existing relational databases make it simple to achieve keys per object/entity, and very difficult to have uniqueness across all ojbects in the database, a less strict uniqueness constraint is currently preferred.
+
+I am not sure what the benefit of document-wide uniqueness actually is. If a major benefit exists, the constraint on keys could be increased. Note that the schema does not define the id/ref as xml ID/IDREF type, and to my knowledge this mechanism is generally considered deprecated.
+
+-- Gregor Hagedorn - 22 Oct 2004
+
+---
+
+We've built a tool that heuristically puts the appropriate text into the debugref attributes. See http://efgblade.cs.umb.edu/twiki/bin/view/SDD/ToolsForUseWithSDD. In general, many design questions about SDD are discussed on the (very extensive) SDD Wiki http://efgblade.cs.umb.edu/twiki/bin/view/SDD -- Main.BobMorris - 14 Sep 2004
+
+I don't understand the question above. Norbert, can you elaborate? We do have lots of unique keys? Perhaps you are referring to the fact that the keys are in several domains, i.e. a character and a state may both have key="1"? This is thought to simplify the design of federated data systems, where keys and keyrefs from separate sources (one service providing terminology, several others providing descriptions, which to form a valid SDD document are combined using external entities or xInclude). Commonly used databases make it easy to define uniqueness in an object collection, but uniqueness across all objects in a database usually ends up with GUID. So having separate domains for characters, descriptions, states, modifiers, etc. is thought to simplify usage, not make it more complicated. This is not set in stone, however, any specific critique is welcome. But note also, that the id values are assumed non-changing. They are not ephemeral in a single document, but SDD specifies that they can be relied on for repeated object identification in the future.
+
+-- Gregor Hagedorn - 14 Sep 2004
+ 
+---
+
+Why do we use different keys for some words like "bidentate" in the <nop>StateReference?  I know, that these keys are different, because of a different context. But in the <nop>DescriptiveData we can exactly search in special context so i think, we dont need different keys. And maybe we have better results or we want to search this word in different contexts. So that could be easier to do this.
+
+-- Norbert Siegmund 
+
+There are two issues here: a) the expectation that a word like blue would then always have the same key, in any character it is used in. This would make the key a semantic identifier, independent of context. I think this is not possible to define in general, since different words mean the same, and the same words may mean different things. b) However, it would be quite possible to further contrain the uniqueness of states, thus a state ID is only unique within its character. This is possible and is done e.g. in conventional DELTA. However, this requires any reference to a state to consist of character id plus state id. In my experience, this make the handling of the system in fact more problematic, especially when considering terminology evolution, during which states may be moved (together with all data in descriptions) from one character to another. For this reason the states have document-wide unique IDs, i.e. the id alone identifies the state in a terminology. 
+
+Again - the latter (= b) could be changed, the decision is based on my estimation of benefits/tradeoffs. 
+
+-- Gregor Hagedorn - 22 Oct 2004
+
+---
+
+As above, Schema validation enforces structure across the whole document. Querying is not the only (and probably not the most used) application for SDD, at least in the short term. Initially, most SDD applications will be for interchange and integration between  databases most of whose implementation will not be SDD, or even native XML. 
+
+It may well be that the design of SDD has imposed a quadratic search for the kind of stuff you describe when natural language in a specific context is desired. Since the context for most labels is given only in the Terminology, you might have to search first Terminology for words of interest, examine the keys of object on which they are found, then search Descriptions for things referencing those keys. 
+
+Possibly this problem is addressed by XML databases that have good indexing mechanisms. Not sure about that.
+
+-- Main.BobMorris - 14 Sep 2004
+
+Norbert, can you explain the use case in which you would want to search the entire database for a word like "bidentate", rather than doing this in the context of a character variable? Many things may be didentate, and as said above, this may have different semantics. I am not saying that you can not make a fuzzy search ignoring the context, but can you give good examples where this would be the standard case?
+
+The design of SDD is indeed based on the assumption that most queries will be hierarchical: first select the character (= variable, = combination of:<br/>
+- object/objectpart, i.e. where are you looking at (e.g. leaf margin of sepals)<br/>
+- which property is observed (presence of hairs)<br/>
+- which method is used (naked eye, handlens, light microscope, SEM???)<br/>
+then select from the available categories.
+
+The situation looking for categories across variables is in the extreme like looking into a socialogical questionaire and asking for all that have "strongly reject" scored in any question. This is not entirely correct, since in biology often the category terms imply a certain amount of context, but this is highly variable, so I would rather not make it a feature of the structural design.
+
+That said, we could for the Concept States, use the id of the concept state directly, rather than mediating it through a character. That would come closer to your use case. We would loose some validation properties (you could use any concept term, whether it is appropriate for a character or not) and we would have more problems when the terminology evolves (is changed, while data are already present in a federated system). These two thoughts are the reason to add a new, character specific id for states that refer to concept states. So if dropping this tips the balance in other use cases, we may do otherwise...
+
+-- Gregor Hagedorn - 14 Sep 2004
+
+Ok, i tried to find a good example. A biologist wants to classify an ant. He see small legs and a small thorax shape and so on. (If some biology expressions are wrong, I am sorry about that.) Now, he wants to know from the system, what ant he has. So the system must search in all these categories  with their different subkeys for the attribute small. First, the system search faster if it only needs one key for the word "small". And usually the system will presentate more results. So a system could score results with states, which use the key of the word "small", higher than other ones. The intention behind this is: An ant with small legs, usually has a small body, a small head, etc. But it seems that the problems have a worser affect then the explained properties have a good one. So thanks for the explanation.
+
+-- Norbert Siegmund - 12 Oct 2004
+
+Basically you describe a natural language search. This can easily be done on the NLD part - which offer the coded terminology only in addition to the free-form text. However, in my experience the scenario you describe would not be a wise approach. Sitting in front of the system and asked to type in my own natural language description would require me to understand whether the description uses "thorax" or "body", and "minute" or "small". Clearly, these things can ultimately addressed with perfect understanding of terminology - but so far biologists usually have a hard time defining a single terminology. We are simple not ready to define all possible terminologies and cross-reference these words (and often phrases which may not appear consecutively in text) into a global ontology.
+
+So in a way SDD like DELTA "cheats". By agreeing on and presenting a common terminology both during data entry and during query, I work in a constrained vocabulary, and matching is much more reliable.
+
+-- Gregor Hagedorn - 22 Oct 2004
+ 
+You make a good point, but the kind case you cite represents not a defect in SDD, but rather in the particular Descriptions or sometimes in Terminology in use in the examples we are working with. The particular Terminology is (a) not very complete (b) not necessarily biologically accurate and (c) a little less than optimal in how many "ConceptTree" elements it has and what they cover. Since I wrote it, these defects are all my fault. However, as far as I remember and can tell by a quick scan, the attribute "small" is defined only in a single place and all characters that support a state corresponding to "small" do so with a keyref (in SDD1.0 now on the attribute "ref") to the unique thing whose label is "small". 
+
+That said, whether one can conclude that an object with a hierarchy, e.g. a body parts hierarchy, has all parts small if one part is small is really a biological statement and may often be far from true. (Probably it is often false in descrition of the parts of a flower, for example). I think there is some theory about scaling of body parts in animals---and it probably leads to your conclusions in general. I recall slightly that this theory mostly comes from physics surrounding energy needs of things which move under their own power(which roughly is one of the things that distinguishes animals from plants). 
+
+And _that_ said, there is one piece about SDD that is (known to be) missing which would aid in addressing the example. Namely, we don't really have a way to represent property inheritance. Nor does the ontology mechanism ("Glossary" section) really address this I think. More generally, we continue to discuss exactly how much ontology mechanism should be in SDD.
+
+-- Main.BobMorris - 12 Oct 2004
+
+---
+
+My last question is:  You wrote in the last mail about a constraint attribute for the path of a key. Could you give me an example? I don`t understand this point.
+
+---
+
+To understand this in detail one must understand the key/keyref mechanism in some detail. You'll end up at http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#element-key
+but it might take a lot of reading of the XML Schema Primer http://www.w3.org/TR/xmlschema-0/ to get there. I'll try to put here a good example from a real SDD document. -- Main.BobMorris - 14 Sep 2004
+
+You could look in the schema for xs:key and xs:keyref, you find the xpath for the identity constraints there. -- Gregor Hagedorn - 14 Sep 2004
+
+Thanks for the hints. -- Norbert Siegmund - 12 Oct 2004
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1097614888" format="1.0" version="1.4"}%
+d6 2
+a7 2
+First, i want to know is: Why we have the keys? Why we dont put the words like "small" in the
+Descriptive Data? Prof. Böhm was wondering because the XML should be human readable.
+d17 1
+a17 1
+I would add that words are often redefined and have synonyms ("bipartite" and "two-partite" and "with two parts"), and synonymy may depend on context. For example in non-muriform fungal spores, "uniseptate" and "2-celled" is a frequently used synonym, but obviously it is not a general synonym. Also there is a question of uniqueness: words unique in one language may have the same spelling in another language. As Bob says, a central idea is to have as much data as possible in a format that does not depend on a specific language. This includes states (= categories), modifiers (e.g. certainty, frequency, degree), measures (minimum, standard-deviation, etc.) and units. 
+d19 1
+a19 1
+I feel that computer scientists often seem to think that the prose-like description texts so common in biodiversity have any special value. I think they have not, and I know many biologists who hate them because of their imprecise qualities. Some biologists love them and consider them an art-form - yes, it may be art, but often it is bad science. This becomes only too obvious if one tries to systematically code data based on natural language descriptions (in DELTA, <nop>DeltaAccess, Lucid, etc.). Only too often gross errors in the source are found this way.
+d21 1
+a21 1
+For which purposes should the xml be human readable as you require? If you have natural language descriptions as in the ant case, the appropriate method are the <nop>NaturalLanguageDescriptions, which do contain the original text (in Text tags), but are otherwise roughly offer a similar structure for exact markup as the <nop>CodedDescriptions do.
+d25 1
+a25 3
+First, i have to thanks for the great answers. After, i read more about the XML Scheme, i am able to answer here.
+One of the main jobs of the SDD seems to be the interaction or the exchange from one system to an other one. So the NaturalLanguageDescription should
+be enough. Maybe the debugkey-tool could be a standard tool to make queries faster und not so complicated.
+a28 1
+ 
+d31 13
+a43 1
+And a document with so many keys, i think, isn`t readable. The next question is: Why isn't it possible to have unique keys in a document? That should be not a big problem and we have not so many problems.
+d55 9
+a63 3
+Why do we use different keys for some words like "bidentate" in the <nop>StateReference?  I know, that
+these keys are different, because of a different context. But in the <nop>DescriptiveData we can exactly
+search in special context so i think, we dont need different keys. And maybe we have better results or we want to search this word in different contexts. So that could be easier to do this.
+d89 1
+a89 2
+Ok, i tried to find a good example. A biologist wants to classify an ant. He see small legs and a small thorax shape and so on.(If some biology expressions are wrong, I am sorry about that.) Now, he wants to know from the system, what ant he has. So the system must search in all theese categories  with their different subkeys for the attribute small. First, the system search faster if it only needs one key for the word "small". And usually the system will presentate more results. So a system could score results with states, which use the key of the word "small", higher than other ones. The intention behind this is: An ant with small legs, usually has a small body, a small head, etc. .
+But it seems that the problems have a worser affect then the explained properties have a good one. So thanks for the explanation.
+d93 5
+d99 1
+a99 2
+---
+You make a good point, but the kind case you cite represents not a defect in SDD, but rather in the particular Descriptions or sometimes in Terminology in use in the examples we are working with. The particular Terminology is (a) not very complete (b) not necessarily biologically accurate and (c)a little less than optimal in how many "ConceptTree" elements it has and what they cover. Since I wrote it, these defects are all my fault. However, as far as I remember and can tell by a quick scan, the attribute "small" is defined only in a single place and all characters that support a state corresponding to "small" do so with a keyref (in SDD1.0 now on the attribute "ref") to the unique thing whose label is "small". 
+d103 2
+a104 1
+And _that_ said, there is one piece about SDD that is (known to be) missing which would aid in addressing the example. Namely, we don't really have a way to represent property inheritance. Nor does the ontology mechanism ("Glossary" section) really address this I think. More generally, we continue to discuss exactly how much ontology mechanism should be in SDD
+d106 1
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="NorbertSiegmund" date="1097595161" format="1.0" version="1.3"}%
+d81 7
+d98 1
+a98 2
+Thanks for the hints. -- Norbert Siegmund - 12 Oct 2004
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1095198660" format="1.0" version="1.2"}%
+d25 3
+d29 3
+d43 1
+a43 1
+
+d74 6
+d90 3
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1095191880" format="1.0" version="1.1"}%
+d3 1
+a3 1
+From Norbert Siegmund in reference to work in our AMNH Ants project
+d8 1
+a9 1
+"CodedDescriptions" especially must be machine processable and language independent. This is the principal motivation for use of key/keyref mechanism, and it allows words to be reused with their context made explicit. For example in some of data in another project, there is a butterfly wing pattern state named "tiger", but this word is also the common name of an animal and might appear part of a taxon name. The XPath constraints that relate keyrefs to their keys are a precise specification of context that might only be approximate using IR techniques to constrain the context.  In particular some support becomes available by Schema validation to help insure that inappropriate references aren't made as might happen, for example, if the globally unique ID/IDREF mechanisms were used. [This probably also helps when combining SDD documents. There is no need to worry about overlap in the "unique" IDs between the merged documents]
+d11 14
+a24 1
+Also it is central to SDD that multi-lingual versions of a Description be supported if desired. (SDD generalizes language to an object called Audience, which is a pair consisting of an ISO language and an integer 1-5 meant to indicate a level of expertise at which the language is targeted. What each integer means is up to a Terminology author, and the only guidance is that bigger numbers are "more expert", though that is enforced. In the sample, I thing I defined only a single audience, English ant specialists. But there might have been als "German school children" as an audience if someone chose to add appropriate language for the labels on objects. etc. -- Main.BobMorris - 14 Sep 2004
+d28 1
+a28 3
+And a document with so many keys, i think, isn`t readable.
+The next question is: Why isn`t it possible to have unique keys in a document? That should be not
+a big problem and we have not so many problems.
+d32 5
+a36 2
+We've built a tool that heuristically puts the appropriate text into the debugRef attributes. See http://efgblade.cs.umb.edu/twiki/bin/view/SDD/ToolsForUseWithSDD
+In general, many design questions about SDD are discussed on the (very extensive) SDD Wiki http://efgblade.cs.umb.edu/twiki/bin/view/SDD -- Main.BobMorris - 14 Sep 2004
+d54 14
+d75 1
+a75 1
+but it might take a lot of reading of the XML Schema Primer http://www.w3.org/TR/xmlschema-0/ to get there. 
+d77 1
+a77 3
+I'll try to put here a good example from a real SDD document.
+
+-- Main.BobMorris - 14 Sep 2004
+@

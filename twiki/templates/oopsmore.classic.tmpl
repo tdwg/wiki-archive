@@ -1,0 +1,55 @@
+%TMPL:INCLUDE{"twiki.classic"}%
+%TMPL:DEF{"titleaction"}%(more) %TMPL:END%
+%TMPL:DEF{"webaction"}% *Topic actions* %TMPL:END%
+%TMPL:DEF{"heading"}%More Actions on Topic [[%TOPIC%]]%TMPL:END%
+%TMPL:DEF{"message"}%   * *%MAKETEXT{"Delete topic"}%*
+      * <b><a href="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%?newweb=%TRASHWEB%&amp;nonwikiword=on" rel='nofollow'>%MAKETEXT{"Delete topic..."}%</a></b>,
+        %MAKETEXT{"looking for references in _all public webs_"}% *%MAKETEXT{"(recommended)"}%*
+      * <a href="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%?newweb=%TRASHWEB%&amp;nonwikiword=on&amp;currentwebonly=on" rel='nofollow'>%MAKETEXT{"Delete topic..."}%</a>,
+        %MAKETEXT{"looking for references in _[_1] web_ only" args="%WEB%"}%
+
+   * *%MAKETEXT{"Rename or move topic"}%*
+      * <b><a href="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%" rel='nofollow'>%MAKETEXT{"Rename/move topic..."}%</a></b>,
+        %MAKETEXT{"looking for references in _all public webs_"}% *%MAKETEXT{"(recommended)"}%*
+      * <a href="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%?currentwebonly=on" rel='nofollow'>%MAKETEXT{"Rename/move topic..."}%</a>,
+        %MAKETEXT{"looking for references in _[_1] web_ only" args="%WEB%"}%
+
+   * *%MAKETEXT{"Backlinks"}%* <br/>
+      * <b><a href='%SCRIPTURLPATH{"oops"}%/%WEB%/%TOPIC%?template=backlinksallwebs' title='%MAKETEXT{"Search all webs for topics that link to here"}%' accesskey='l'>%MAKETEXT{"Find topics that link to [_1] ..." args="<nop>%TOPIC%"}%</a></b>,
+        %MAKETEXT{"<em>in all public webs</em>"}%
+      * <a href='%SCRIPTURLPATH{"oops"}%/%WEB%/%TOPIC%?template=backlinksweb' title='%MAKETEXT{"Search the [_1] Web for topics that link to here" args="<nop>%WEB%"}%' accesskey='w'>%MAKETEXT{"Find topics that link to [_1] ..." args="<nop>%TOPIC%"}%</a>,
+        %MAKETEXT{"<em>in [_1] web</em> only" args="<nop>%WEB%"}%
+
+   * *%MAKETEXT{"Child topics in [_1] web" args="<nop>%WEB%"}%*
+      * %METASEARCH{type="parent" web="%WEB%" topic="%TOPIC%" default="%MAKETEXT{"No child topics"}%"}%
+
+<form name="main" action="%SCRIPTURLPATH{"edit"}%/%WEB%/%TOPIC%">
+<input type="hidden" name="t" value="%GMTIME{"$epoch"}%" />
+   * *Set new topic parent*
+      * Step 1: Select topic parent: %BR%
+        <select name="topicparent" size="10">
+        <option value="none">none (remove topic parent)</option>
+        %TOPICLIST{"<option value=$qname>$name</option>" separator=" "}%
+        </select>
+      * Step 2: Continue to <input type="submit" class="twikiSubmit" value="Edit" /> and save <nop>%TOPIC% to activate the new parent
+        <input type="hidden" name="t" value="%SERVERTIME{$year$mo$day$hour$min$sec}%" />
+</form>
+
+<form name="main" action="%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%">
+   * *%MAKETEXT{"View previous topic revision"}%* (1 ... %PARAM1%)
+      * Revision: <input type="text" name="rev" size="6" value="%PARAM2%" />
+        in <input type="checkbox" class="twikiCheckbox" id="raw" name="raw" /><label for="raw">raw text format</label>
+        <input type="submit" class="twikiSubmit" value="View revision" />
+</form>
+
+<form name="main" action="%SCRIPTURLPATH{"rdiff"}%/%WEB%/%TOPIC%">
+   * *Compare revisions*
+      * Older revision: <input type="text" name="rev2" size="6" value="1.1" />
+      * Newer revision: <input type="text" name="rev1" size="6" value="%PARAM1%" />
+        <input type="submit" class="twikiSubmit" value="View difference" />
+</form>
+
+   * *Edit topic preference settings*
+      * <a href="%SCRIPTURLPATH{"manage"}%/%WEB%/%TOPIC%?action=editSettings" rel='nofollow'>Edit settings</a> for this topic %TMPL:END%
+%TMPL:DEF{"topicaction"}% [[%WEB%.%TOPIC%][Cancel]] %TMPL:END%
+%TMPL:P{"oops"}%

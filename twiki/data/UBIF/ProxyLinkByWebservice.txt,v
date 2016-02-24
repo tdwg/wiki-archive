@@ -1,0 +1,235 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.05.08.10.22.38;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.08.13.12.54.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147083758" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="ObsoleteTopicProxyDataModel"}%
+Until version UBIF 1.0 beta 14, the <nop>ProxyBaseType in UBIF contained an attempt to model linking using fully definable
+web service links. This was correctly criticized as being rather complex and consequently unlikely to be used. 
+
+The part has therefore been removed from future UBIF beta versions. The xml schema fragment is preserved below to possibly
+form the basis for future discussion, if this should become desirable. A better overview is the following schema diagram:
+
+    <img src="%ATTACHURLPATH%/ProxyBaseLink_LastWebservice.gif" alt="ProxyBaseLink_LastWebservice.png" width="866" height="893" align="center" />
+
+---
+
+<verbatim>
+<xs:element name="WebService" minOccurs="0">
+<xs:annotation>
+  <xs:documentation xml:lang="en-us">A web service providing an object representation, of which either the 
+wsdl url is directly known, or which 
+can be discovered through UDDI (allowing the service to move to 
+new locations).
+
+@@@@ The lack of distinction 
+between identifying parameters, 
+and method-specific parameters 
+in web services is problematic. 
+Different services or methods 
+may have different parameter, 
+but may still be pointing to the 
+same object!</xs:documentation>
+</xs:annotation>
+<xs:complexType>
+  <xs:sequence>
+    <xs:choice>
+      <xs:element name="ServiceURI" type="xs:anyURI">
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Defines a static service uri; normally a web service wsdl-file.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:sequence>
+        <xs:annotation>
+          <xs:documentation xml:lang="en-us">Alternatively,
+the service 
+may be
+discovered
+through 
+UDDI</xs:documentation>
+        </xs:annotation>
+        <xs:element name="RegistryURI" type="xs:anyURI" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation xml:lang="en-us">This might be the wsdl URI of the UDDI web service itself. We assume that the UDDI used is a private UDDI, not part of the global business UDDI system. Is missing, if the public UDDI has been used.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="BindingKey" type="String255">
+          <xs:annotation>
+            <xs:documentation xml:lang="en-us">A key value to recover the desired service port from a UDDI registry. This might be a UUID key provided by the registry.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:choice>
+    <xs:element name="MethodName" type="String255">
+      <xs:annotation>
+        <xs:documentation xml:lang="en-us">Name of a method retrieving the object from a web service. Other methods to link information between the current infoset and the external infoset may exist; how to use these would be application knowledge. 
+
+A method or function is called an operation in the wsdl file</xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Parameters" minOccurs="0">
+      <xs:annotation>
+        <xs:documentation xml:lang="en-us">Parameters to be 
+used when calling 
+the method above</xs:documentation>
+      </xs:annotation>
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="Parameter" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en-us">ATTR: name / value 
+(both as string, date or numerical types are assumed to be converted into the xml string representation)</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:attribute name="name" type="xs:string" use="required"/>
+              <xs:attribute name="value" type="xs:string" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
+</xs:complexType>
+</xs:element>
+</verbatim>
+
+---
+
+Instance example:
+
+<verbatim>
+<WebService>
+  <RegistryURI>uddi.gbif.net</RegistryURI>
+  <BindingKey>Fishbase-DiGIR-Interface</BindingKey>
+  <MethodName>DiGIR-Request</MethodName>
+  <Parameters>
+    <Parameter name="ID" value="99999"/>  
+    <!-- Note: in ABCD no single object ID is planned for, instead mutliple parameters have to be passed to a webservice-->
+  </Parameters>
+</WebService>
+</verbatim>
+
+-- Main.GregorHagedorn - 13 Aug 2004
+---
+
+%META:FILEATTACHMENT{name="ProxyBaseLink_LastWebservice.png" attr="h" autoattached="1" comment="" date="1146861232" path="ProxyBaseLink_LastWebservice.png" size="18689" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="ProxyBaseLink_LastWebservice.gif" attr="h" autoattached="1" comment="" date="1146861232" path="ProxyBaseLink_LastWebservice.gif" size="21645" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1092401640" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="ProxyDataModel"}%
+d9 1
+a9 1
+	 <img src="%ATTACHURLPATH%/ProxyBaseLink_LastWebservice.gif" alt="ProxyBaseLink_LastWebservice.png" width="866" height="893" align="center" />
+d32 9
+a40 9
+	 <xs:choice>
+		<xs:element name="ServiceURI" type="xs:anyURI">
+		  <xs:annotation>
+			 <xs:documentation xml:lang="en-us">Defines a static service uri; normally a web service wsdl-file.</xs:documentation>
+		  </xs:annotation>
+		</xs:element>
+		<xs:sequence>
+		  <xs:annotation>
+			 <xs:documentation xml:lang="en-us">Alternatively,
+d46 16
+a61 16
+		  </xs:annotation>
+		  <xs:element name="RegistryURI" type="xs:anyURI" minOccurs="0">
+			 <xs:annotation>
+				<xs:documentation xml:lang="en-us">This might be the wsdl URI of the UDDI web service itself. We assume that the UDDI used is a private UDDI, not part of the global business UDDI system. Is missing, if the public UDDI has been used.</xs:documentation>
+			 </xs:annotation>
+		  </xs:element>
+		  <xs:element name="BindingKey" type="String255">
+			 <xs:annotation>
+				<xs:documentation xml:lang="en-us">A key value to recover the desired service port from a UDDI registry. This might be a UUID key provided by the registry.</xs:documentation>
+			 </xs:annotation>
+		  </xs:element>
+		</xs:sequence>
+	 </xs:choice>
+	 <xs:element name="MethodName" type="String255">
+		<xs:annotation>
+		  <xs:documentation xml:lang="en-us">Name of a method retrieving the object from a web service. Other methods to link information between the current infoset and the external infoset may exist; how to use these would be application knowledge. 
+d64 5
+a68 5
+		</xs:annotation>
+	 </xs:element>
+	 <xs:element name="Parameters" minOccurs="0">
+		<xs:annotation>
+		  <xs:documentation xml:lang="en-us">Parameters to be 
+d71 6
+a76 6
+		</xs:annotation>
+		<xs:complexType>
+		  <xs:sequence>
+			 <xs:element name="Parameter" maxOccurs="unbounded">
+				<xs:annotation>
+				  <xs:documentation xml:lang="en-us">ATTR: name / value 
+d78 9
+a86 9
+				</xs:annotation>
+				<xs:complexType>
+				  <xs:attribute name="name" type="xs:string" use="required"/>
+				  <xs:attribute name="value" type="xs:string" use="required"/>
+				</xs:complexType>
+			 </xs:element>
+		  </xs:sequence>
+		</xs:complexType>
+	 </xs:element>
+d102 2
+a103 2
+	 <Parameter name="ID" value="99999"/>  
+	 <!-- Note: in ABCD no single object ID is planned for, instead mutliple parameters have to be passed to a webservice-->
+d111 2
+a112 2
+%META:FILEATTACHMENT{name="ProxyBaseLink_LastWebservice.png" attr="h" comment="" date="1092403085" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\ProxyBaseLink_LastWebservice.png" size="18689" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="ProxyBaseLink_LastWebservice.gif" attr="h" comment="" date="1092405870" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\ProxyBaseLink_LastWebservice.gif" size="21645" user="GregorHagedorn" version="1.1"}%
+@

@@ -1,0 +1,36 @@
+TAPIR could be used to work in a very object oriented way. Based on exchanging objects only it simplifies many things as it is not document based. Similar to WFS.
+
+NOTE: this content is unfinished and was not revised! It has "brainstorming" status"!
+
+---+++ Changes envisioned
+   * respond only with fixed object structures. no dynamic models
+      * easier paging and counting. no record definition needed anymore
+      * a new TAPIR collection bag element might be needed in case the protocol envelope is turned off
+   * object classes are defined by schema namespace + global element name
+   * use compound objects referencing other objects by their ID. 
+      * Does not need to be GUIDs, can also work with local IDs for now.
+      * compound objects without referencing - directly nested xml - could be possible, but is not desired to gain full benefit
+   * new search parameters
+      * a request needs to select an object class. Maybe this could be optional as you could retrieve different object classes from the same service.
+      * a new request flag might indicate to resolve the object into a full, explicit, denormalized compound object
+     * max resolving depth should be specified. could be limited by provider
+   * A single service accesspoint would serve different object classes. this is needed to serve compound objects. otherwise one would have to use many different services at the same time just to assemble a single full object
+   * need a generic extension mechasim. Only allow extension on "root" level of object. If other extension slots are required, the object class probably should be decomposed into smaller object classes
+      * extension via an optional unlimited list of pointers to other objects at the end of any object. This avoids xsd:any, is generic and forces extensions to be well defined in another object class. Extension slots for ppinters would have to be defined in the class. So you would be able to define "closed/final" and "open" classes.
+   * search on compound objects via joins of several objects. could be done with through either of these:
+      * joins in filter query on object pointer and object ID. For example:
+    _/abcd:specimen/abcd:identification/abcd:taxon@id EQUALS ObjectOrientedApproachtcs:taxon@id AND ObjectOrientedApproachtcs:taxon/tcs:genus LIKE "Abies"_
+      * joins through full filter path down to element crossing mulstiple namespaces if needed. For example:
+    _/abcd:specimen/abcd:identification/abcd:taxon/tcs:taxon/tcs:genus LIKE "Abies"_
+   * object aliasing is still not solved. If we want to query on the same object class but on different instances, we need proper aliasing of objects. Required for SDD and lacking in current TAPIR, BioCASe, WFS but exists in SPARQL
+   * capabilities reports about existing classes and their definitions (xml schema)
+   * new GET bindings required (easy, just a reminder)
+---+++ questions
+   * what would pointers to other objects look like?
+      * [[http://www.w3.org/TR/xlink/#simple-links][simple XLinks]] would allow us to point to URLs (not gained anything) and also be generically recognized as such from applications! Basically its just a URI link similar to html links.
+     Example assuming _xmlns:xlink="http://www.w3.org/1999/xlink"_ alread defined somewhere:
+     _<abcd:taxon xlink:type="simple" xlink:href="zvon.gif"/>_
+      * should links be typed? Should they specify which class of object they are pointing too? would be good for clients to know what links to resolve. how could this be done?
+   * do class defining schemas need to import other namespaces they are pointing too? probably yes, so one can use other schema types and elements. But this would result in a full blown up super TDWG schema suite, similar to GML (?). A tightly interlinked schema suite could mean:
+      * versioning problems. if may abcd object points to TCS1.0 but I have TCS 1.2 objects, can I use them? what if external services upgrade to TCS1.2 and my abcd specimen still points to the TCS1.0 GUID? So its seems to me its better to not tightly bind the schemas together if this is possible at all.
+     * Do objects based on the same db record but in different schema versions have the same GUID? is a TCS1.0 object the same as the TCS1.2 if the underlying record is the same?

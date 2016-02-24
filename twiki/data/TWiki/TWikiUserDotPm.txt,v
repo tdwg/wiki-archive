@@ -1,0 +1,212 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.16.04.12.03;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.06.25.16.26.33;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::User=
+
+A User object is an internal representation of a user in the real world.
+The object knows about users having login names, wiki names, personal
+topics, and email addresses.
+
+
+%TOC%
+
+Groups are also handled here. A group is really a subclass of a user,
+in that it is a user with a set of users within it.
+
+The User package also provides methods for managing the passwords of the
+user.
+
+
+---++ ClassMethod *new* <tt>($session,$loginname,$wikiname)</tt>
+
+Construct a new user object for the given login name, wiki name.
+
+The wiki name can either be a wiki word or it can be a web-
+qualified wiki word. If the wiki name is not web qualified, the
+user is assumed to have their home topic in the
+$TWiki::cfg{UsersWebName} web.
+
+
+
+---++ ObjectMethod *wikiName* <tt>() -> $wikiName</tt>
+
+Return the wikiname of the user (without the web!)
+
+
+
+---++ ObjectMethod *webDotWikiName* <tt>() -> $webDotWiki</tt>
+
+Return the fully qualified wikiname of the user
+
+
+
+---++ ObjectMethod *login* <tt>() -> $loginName</tt>
+
+Return the login name of the user
+
+
+
+---++ ObjectMethod *web* <tt>() -> $webName</tt>
+
+Return the registration web of the user
+
+
+
+---++ ObjectMethod *equals* <tt>() -> $boolean</tt>
+
+Test is this is the same user as another user object
+
+
+
+---++ ObjectMethod *stringify* <tt>() -> $string</tt>
+
+Generate a string representation of this object, suitable for debugging
+
+
+
+---++ ObjectMethod *passwordExists* <tt>() -> $boolean</tt>
+
+Checks to see if there is an entry in the password system
+Return '1' if true, '' if not
+
+
+
+---++ ObjectMethod *checkPassword* <tt>($password) -> $boolean</tt>
+
+used to check the user's password
+
+=$password= unencrypted password
+
+=$success= '1' if success
+
+TODO: need to improve the error mechanism so TWikiAdmins know what failed
+
+
+
+---++ ObjectMethod *removePassword* <tt>() -> $boolean</tt>
+
+Used to remove the user and password from the password system.
+Returns true if success
+
+
+
+---++ ObjectMethod *changePassword* <tt>($user,$oldUserPassword,$newUserPassword) -> $boolean</tt>
+
+used to change the user's password
+=$oldUserPassword= unencrypted password
+=$newUserPassword= unencrypted password
+undef if success, error message otherwise
+
+
+
+---++ ObjectMethod *addPassword* <tt>($newPassword) -> $boolean</tt>
+
+creates a password entry
+=$newUserPassword= unencrypted password
+'1' if success
+TODO: need to improve the error mechanism so TWikiAdmins know what failed
+
+
+
+---++ ObjectMethod *resetPassword* <tt>() -> $newPassword</tt>
+
+Reset the users password, returning the new generated password.
+
+
+
+---++ ObjectMethod *emails* <tt>() -> @@emailAddress</tt>
+
+If this is a user, return their email addresses. If it is a group,
+return the addresses of everyone in the group.
+
+
+
+---++ ObjectMethod *setEmails* <tt>($user,@@emails)</tt>
+
+Fetch the email address(es) for the given username
+
+
+
+---++ ObjectMethod *isAdmin* <tt>() -> $boolean</tt>
+
+True if the user is an admin (is a member of the $TWiki::cfg{SuperAdminGroup})
+
+
+
+---++ ObjectMethod *getGroups* <tt>() -> @@groups</tt>
+
+Get a list of user objects for the groups a user is in
+
+
+
+---++ ObjectMethod *isInList* <tt>($list) -> $boolean</tt>
+
+Return true we are in the list of user objects passed.
+
+$list is a string representation of a user list.
+
+
+
+---++ ObjectMethod *isGroup* <tt>() -> $boolean</tt>
+
+Test if this is a group user or not
+
+
+
+---++ ObjectMethod *groupMembers* <tt>() -> @@members</tt>
+
+Return a list of  user objects that are members of this group. Should only be
+called on groups.
+
+
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d100 1
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d95 1
+a95 1
+'1' if success
+@

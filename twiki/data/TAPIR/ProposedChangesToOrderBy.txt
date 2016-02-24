@@ -1,0 +1,41 @@
+<orderBy> is currently defined as:
+
+<verbatim>
+<xsd:element name="orderBy" minOccurs="0">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="concept" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="conceptType">
+              <xsd:attribute name="descend" type="xsd:boolean" use="optional" default="false"/>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+</verbatim>
+
+Since it always references properties, it could be changed to:
+
+<verbatim>
+<xsd:element name="orderBy" minOccurs="0">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="property" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="propertyType">
+              <xsd:attribute name="descend" type="xsd:boolean" use="optional" default="false"/>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+</verbatim>
+
+The propertyType definition can be found at ProposedChangesToOutputModelMapping.

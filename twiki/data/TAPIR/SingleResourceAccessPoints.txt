@@ -1,0 +1,33 @@
+---+ Single resource access points
+
+In this case, a service available through an access point (URL) would be associated to a single resource (dataset). If the same provider wants to serve records from more than one resource, each resource would need its own access point.
+
+*Impact*
+
+Consequences for the current DiGIR networks:
+
+   * Depending on the possibility of using or not the same installation to handle more then one resource:
+
+   * If we do not allow the same installation to handle more than one resource: No additional coding would be required, since DiGIR uses a broader approach, where a single provider can be associated to multiple datasets. But the whole code base would require a "downgrade" by commenting out every line that deals with the possibility of having more than one resource. The DigirProvider should simplify metadata responses. All code related to automatic discovery of resources (in the portal) should be commented out, and all DiGIR parsers (libraries and interfaces) would need to change the way they deal with metadata responses (or we could try to avoid commenting out code if we somehow enforce each provider to have only one resource - see next).
+
+   * If we allow the same installation to handle more than one resource: A lot of functionality preserved. No additional code. *(prefered solution)*
+
+   * Depending on the type of URLs that would address resources:
+
+   * If we do not accept GET parameteres on resources access points: Current providers which serve multiple datasets (there are known cases where a single provider serves about 50 different datasets, such as the GBIF UK and Canadian nodes), would need to split their installation into the same number of resources, and to register separately each one in UDDI (for the GBIF network). Maintenance would become harder, since each new release would affect each installation instance. Each resource would be configured through its own configuration interface (separate config directories and separate admin interfaces) instead of using a single interface for all of them (unless the configurator is widely changed).
+
+   * If we accept GET parameteres on resources access points: Resources in the same provider could be configured and handled in the same way. The provider implementation could get the resource code from a GET parameter, and expose resources access points in the metadata responses by automatically appending the codes to the provider URL. *(prefered solution)*
+
+   * Regarding the ability/inability to retrieve a list of resources from provider metadata responses:
+
+   * If we could not get a list of resources from provider metadata responses: Networks that don't use UDDI would need to sort out a different way of keeping themselves informed about available datasets, either by frequently contacting the data providers (or being contacted by them), or by developing an new service that would somehow "mimic" UDDI and substitute part of the current metadata functionality.
+
+   * If we could still get a list of resources from provider metadata responses: A lot of functionality preserved. No additional code. *(prefered solution)*
+
+Consequences for the BioCASE network:
+
+   * Regarding the ability/inability to retrieve a list of resources from provider metadata responses:
+
+   * If we need to get a list of resources from provider metadata responses: Providers would need their own access points, and would need to know the resources available. *(prefered solution)*
+
+   * If we don't need to get a list of resources from provider metadata responses: No consequences, since this is the current approach taken by the network.

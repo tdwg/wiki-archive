@@ -1,0 +1,107 @@
+%META:TOPICINFO{author="RicardoPereira" date="1170087312" format="1.1" version="1.20"}%
+---++ LSID Resolver for Character Data
+
+*Coordinator(s):* Kevin Thiele, Damian Barnier 
+
+*Participants:* Main.BobMorris
+
+----
+---+++ Description
+This group will develop a prototype LSID resolver for character data. 
+
+
+----
+---+++ Technical Information
+
+   * *URL for prototype user interface:* http://lsid.identifylife.org:8080
+   * *LSID authority(ies):* identifylife.org
+   * *LSID namespace(s):* dataset, character, state
+   * *Hardware platform:* Dell !PowerEdge 2850, 2 x Intel Xenon Processors 3.0GHz/2M, EM64T, 800MHZ FSB, 2 GB DDR2, 2 x 146 GB !Ultra310 SCSI Hard Drives
+   * *Server platform:* Windows 2003 Server, Apache Tomcat/5.5.16, !MySQL 5.0.18
+   * *LSID Software stack used:* Java LSID Server 1.1.1
+   * *RDF/OWL ontology used for metadata:* !DublinCore, RDFS for character/state relationships still being developed
+   * *Approximate number of LSIDs stored:* Dataset still being populated
+   * *Benchmarks:*
+   * *Other resources:*
+
+----
+---+++ Roadmap, Milestones, Timeline
+
+   * Feb/06 - Initial prototype implementation
+Initial prototype implementation completed mid february, which consisted of a simple data model containing character (categorical and quantitative) data, state state, and related support data (labels, types, etc). Metadata returned as RDF with dublincore triples describing the character or state. Data returned as SDD instance documents.
+
+   * Mar/06 - Revision of prototype implementation
+
+Data model now mapped to the majority of SDD elements.
+
+LSID authority revised:
+   * authority: identifylife.org
+   * namespaces: dataset, character, state
+   * object: id of dataset, character, or state.
+   * revision: versioning details as yet unspecified
+
+Metadata is returned as RDF with dublin core triples. An RDFS describing the relationships between the data returned by the authority is still being developed.
+
+Data is returned as SDD instance documents representing the object referenced by the LSID.
+
+   * Mar/06 - Population of dataset
+
+The dataset is currently populated with an SDD document describing normative characters of Palms (130 characters, 377 states)
+
+   * Mar/06 - Revision of use cases, RDFS and data model
+   * Apr/06 - Deployment to production server
+   * Apr/06 - Further review of RDFS and use cases
+
+----
+---+++ Discussion, Implementation Issues
+
+See some initial discussion (prior to GUID1Workshop) about GUIDs for character data at GUIDsForDescriptiveData (and DescriptiveDataSummaryToJan06).
+
+-- Main.BobMorris 2006-03-21 07:07:55: To be sure, I argue strongly on the GUID Wiki against semantic content in LSID's, so I shouldn't care, but I am nevertheless curious what you mean by "pk_id, where pk is the primary key value from the related table?" Also
+and reasoning like this is one of the arguments against semantics in the LSID, but here goes anyway
+it doesn't look like you contemplate singling out Terminology for LSID treatment. Socially, I would think there might be greater acceptance of "normative" Terminology than normative Descriptions, especially since I suspect, but am not sure, that SDD is too weak for locale-dependent descriptions, which may be very important.
+
+I'm not entirely sure what the charge is for the resolution protytpes. Are we supposed to make proposals that other resolution services for the same notion would find useful to use, especially as to the metadata? Is that a goal for you, or are you designing entirely to the data model of the Identify Life project?]
+----
+
+-- Main.DamianBarnier 2006-03-23: Bob, I have revised the statement to, "object: id of dataset, character, or state."
+
+In our instance the object value is composed as pk_id where pk is the primary key of the record describing the dataset, character, or state in our data model, and id is the id value of the character, or state, from the source document. This value, due to its composition, will be unique for our data sets, and I believe should be reasonably opaque in most cases. The intention was to create a unique reference at no cost (ie. not needing to assign or maintain a unique identifier), not to add any semantic content to the LSID.
+
+Consider the following data:
+
+<verbatim>
+<CategoricalCharacter id='10' debugkey='2_10:Height'>
+  <Label xml:lang='en_US' audience='en'>
+    <Text>Height</Text>
+  </Label>
+  <States>
+    <StateDefinition id='11' debugkey='7_11:m high'>
+      <Label xml:lang='en_US' audience='en'>
+        <Text>m high</Text>
+      </Label>
+    </StateDefinition>
+  </States>
+</CategoricalCharacter>
+</verbatim>
+
+LSIDs for the character and state described above would take the form:
+   * [[lsidres:urn:lsid:identifylife.org:character:2_10][urn:lsid:identifylife.org:character:2_10]]
+   * [[lsidres:urn:lsid:identifylife.org:state:7_11][urn:lsid:identifylife.org:state:7_11]]
+
+At present the prototype simply provides a means of referencing elements of the data model via an LSID, and via this LSID obtaining basic RDF metadata describing the element, and SDD data defining the element, merely a starting point from which to do something meaningful.
+
+The data model for our prototype is simply a mapping of SDD to java, and is not shared with IdentifyLife.
+----
+
+-- Main.DamianBarnier 2006-03-24: The authority has now been moved to a publically accessable server, and should be available once the DNS changes propogate. I have added a crude webapp/frontend for browsing the characters/states and their associated metadata/data directly, it will be available at http://lsid.identifylife.org:8080/index.jsp. (lsid.identifylife.org 152.98.194.148)
+
+----
+---+++ Lessons Learned, Conclusions, Recommendations
+
+----
+---+++ Categories
+
+CategoryWorkingGroup
+CategoryPrototypingWG
+

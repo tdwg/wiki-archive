@@ -1,0 +1,482 @@
+%META:TOPICINFO{author="BenSzekely" date="1186064561" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="NalaDemo"}%
+---+ Nala Demo Design and Development Plan
+
+We begin with a preliminary discussion of the components we will use.  We also discuss why we are not using alternatives such as Piggy Bank.  Then we begin with a basic description of how the system will work end-to-end with architecture diagrams included.  In this section, we will detail the design decisions and implementation techniques as much as possible.  However to avoid disrupting the flow, we will include more complete discussion of certain decisions and systems in the following section. Next, we include a condensed list of technical components leading up to the final section in which we layout the development plan along with rough milestones.
+
+%TOC%
+
+---++ Preliminaries
+
+For lack of a better name, I initially call the system 'Nala' after the baby South American Caique parrot that is living in my study for a couple weeks.  She can't talk yet but is really good at debugging Javascript. (She actually just pulls the keys off my Thinkpad keyboard with incredible speed if I turn my head for a second so she must stay in her cage).  As for a descriptive secondary name, the 'RDF Browser'  does not really seam to capture what we are trying to achieve.  Something along the lines of Semantic Data Collection, or Capture seems to make sense.  We can all brainstorm on this one.  
+     
+'Queso' refers to the web application framework running atop 'Boca', the RDF database. The main features we will use in Queso are the Atom Publishing Protocol and SPARQL endpoints, and of course Boca's RDF storage and retrieval mechanisms.  
+
+Before delving into the system design, we briefly discuss some existing tools and our decision whether or not to use them.
+    
+---+++ Piggy Bank
+     
+On the surface it appears that [[http://simile.mit.edu/wiki/Piggy_Bank][Piggy Bank]] does almost everything we need of our application.  It is a sophisticated system that can detect RDF in pages via links and scraping.  It stores RDF locally in Sesame, but can share data in remote semantic banks.  Both the local and remote semantic banks can be queried and browsed using faceted browsing and query.  It uses the [[http://simile.mit.edu/wiki/Longwell][Longwell]] faceted browser and from we can tell, it is heavily intertwined in the Longwell framework.  I believe that a good chunk of the usage scenario laid out in the requirements
+document could be achieved using Piggy Bank.
+   
+*Pros*
+	     
+   * nice faceted browsing and search
+   * provides many of the required features of the project as is
+      * map/time line
+   * is a Firefox extension
+   * extensible screen scraping framework
+   * has some form of remote storage
+   * it could almost be used as is. 
+     
+*Cons*
+
+   * large, complicated, not very well documented code base
+   * back end store is not documented or easily accessed via API
+   * no built-in extensibility points for views or back ends
+   * though it might be passable as is, we would only get it 'as-is' since extending and hooking in to the large code base might be too difficult in the time of the contract
+   * a large part of the savings in using piggy bank would be for any UI work they have done, but the UI does not satisfy the requirements of the application as is.
+   * we'd have to modify code in server back-end and Java code in the front end.  Piggy Bank uses a complicated combination of local HTTP connections as well as XPCOM to Java bridge to connect to the Java-based storage system on the client.  
+   * even if we could hook in to their back-end, or modify their front end to user our back-end, maintaining this code would be difficult.  
+   * It does not appear that development on Piggy Bank is continuing aside from small bug fixes
+   * I sent an email to the lead developer of Piggy Bank (who I know personally) about whether or not he thought we should use Piggy Bank as a starting point and I have received no reply.  Time is very short for implementing this ambitious project and we can ill afford to be even partially blocked on bug-fixes or even simple questions from the Piggy Bank team.
+
+---+++ Disco RDF Browser
+
+The Disco browser provides just a very simple RDF browser.  It is Http-based, and provides no LSID support.  In addition it provides no storage for future query etc.. It is not a real candidate.  The same applies to many other RDF browsers out there such as the Tabulator.
+
+---+++ Queso, Boca
+    
+Boca is an open source RDF store developed by my former team at IBM.  It has such features as revision tracking, access control transactions, sparql query and a named graph data model and API.  Atop Boca runs Queso, a Semantic Web application development platform allowing simple Ajax/REST access to Boca named graphs and to the Sparql engine from JavaScript applications.  Using these systems, we can build our application rapidly because we won't have to write much server-side code, and I'm quite familiar with the code base should any bug fixes or new features be required.  Another great advantage of using Boca is that it has a very sophisticated programming model and Web Service based access API.  If our application takes off, and people are using it to generate large amounts of RDF, it will be very easy to leverage that data using Boca. 
+    
+---+++ Client Repository/Views
+    
+By not using Piggy Bank, we are on our own for implementing a client-side repository.  The *Client Repository*, or *CR*, will be our very simple Javascript-based local RDF store.  At first, this store will reside in memory, but eventually we should be able to serialize it to disk using JSON.  We are also left to build all our own views.  However, we think with a sufficiently simple and useful abstraction in the CR we can cleanly build out the views defined in the requirements section with as much shared code as possible.  Graphically the views may not be incredibly sophisticated but they should get the job done.   After much deliberation, Client Repository seems to provide an implementation of the *Current Set* requirement of the application.
+
+---+++ Why build the client from scratch?
+
+In a short time frame, it will be more efficient and straightforward to build exactly what we need rather than extract it from something rather large and complicated.  Going forward after the contract, it will be difficult to maintain the code base as the integration points with Piggy Bank would not be clean.  I.e. as Piggy Bank changes (if it is even still in active development), the integration with our application will assuredly break.  Implementing a new client code base will give GBIF/TDWG something to build off of and show off as their own. In addition, making the software LSID aware throughout will be easier if we begin writing from scratch.  Finally, we are still in early days of building Semantic Web demos and applications, and overlap of effort, if not duplication of effort is quite valuable as this will help our extended community figure out the best approaches to designing and building Semantic Web software.
+     
+---++ System Design
+
+We begin with a very high-level architecture diagram of the application and system.   The arrows represent XMLHttpRequests between the client and service components.  The lower box diagram shows the client component interactions.  Each component interacts with components above and below it.  
+
+http://wiki.tdwg.org/twiki/pub/GUID/NalaDesign/architecture.png
+     
+---+++ Data collection
+
+Before the data collection system begins scraping web pages, the user must enabled the extension.  To enable the extension, the user selects a menu option from the "Tools" menu in Firefox.  The user will supply
+a username and password.  In the first version, the only purpose of this login will be to determine which user we are saving graphs for.   We discuss security in greater detail in a later section.
+  
+In this section we describe in detail on how RDF data finds its way into the system.  The named graph is the atomic unit of storage and management in our application.  This works well because the named graph is the atomic unit in Boca and Queso, significantly simplifying our design and implementation.
+
+When a web page loads the screen scraping framework is invoked.  Based on the URL and possibly other factors, a set of screen scrapers are chosen to run on the page.  The scrapers fall into two categories
+       
+   1. code that looks for links to RDF sources
+   1. code that produces triples directly from the page
+       
+We'll discuss the detail of how scrapers are registered and stored further on.
+       
+We arbitrarily invoke the link scrapers(1) in some order, but maintain a collective set of RDF URLs that they find since some scrapers might produce the same URL(s).  For each URL we fetch it with an XMLHttpRequest.  
+     
+To save work on the client, and because the server will validate anyway, we assume the links contain valid RDF.  For the RDF =responseTxt= from each XHR we create an Atom Entry with the RDF as the content and content type =application/rdf+xml=, or whichever RDF content type the link contained.  (We may have to modified the Queso server to accepted additional RDF content types).  The effect of posting the Atom Entry to the Queso server is that each RDF source from the page will be automatically inserted into its own named graph.  Either through adding extra metadata via the Atom Entry XML (which will get transformed on the server) or inserting extra triples into the RDF payload, we can add additional triples to the named graph.  These might include the source URL, the scrape used, the current page that invoked the scraper and anything else we deem necessary. In the first version, we aren't going to add additional triples to the payload itself because this would require parsing the RDF on the client, and we do not have a generic RDF parser that can handle all
+formats.  However, we can parse any RDF in Queso on the server.
+     
+Because we store all the provenance information for each graph: the URL, the scraper used, the date, etc...we can use SPARQL ASK queries to determine if a page should be rescraped. 
+      
+For the purposes of walking-the-walk, I think we should be able to handle LSIDs at this point.  We can setup a dedicated web-resolver for our application and just grab the LSID metadata via a simple http get.  This will show people how not having a full LSID client stack is not a show stopper.  We can implement this by using a simple LSID scraper.  For any LSID we find in any page, invoke the Web resolver and see if we find any RDF
+     
+Next, we invoke the triple scrapers (2) in some order.  Just like each URL had its own Atom Entry, the set of triples generated from each scraper will be put into an Atom Entry along with additional metadata as above.  To do this, we'll make use of an RDF library to build up and then serialize a collection of triples.  
+     
+Here is an example of an Atom Entry created on the client.  Queso will add extra atom elements before it serializes it to RDF.  The Atom Entry is in fact stored in RDF in Boca.  When requested, Queso can easily recreate the Atom Entry from the RDF triples. The RDF triples generated from the Atom Entry as well as the triples parsed from the content are all stored in the same named graph. (see discussion)
+   
+<verbatim>
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:base="">
+  <id>urn:qid:test.boca.adtech.ibm.com:entries:2050832554</id
+  <title type="text">APP Named Graph Entry</title>
+  <updated>2007-07-09T23:02:32.734Z</updated>
+  <author>
+    <name>APPNamedGraphService</name>
+  </author>
+  <link rel="nala-page" href="http://www.klinewoods.com/" />
+  <link rel="nala-src" href="http://www.klinewoods.com/foaf.rdf" />
+  <content type="application/rdf+xml">
+    <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  xmlns:wot="http://xmlns.com/wot/0.1/">
+      <foaf:Person rdf:about="urn:bszekely">
+        <foaf:name>Ben Szekely</foaf:name>
+        <foaf:mbox rdf:resource="mailto:bszekely@gmail.com"/>
+      </foaf:Person>
+    </rdf:RDF>
+  </content>
+</entry>
+</verbatim>
+	
+The id in the =<id>= element is initially generated by the client, but in the current implementation of Queso, is replaced by one that the server knows is unique, though in a format that is somewhat configurable.  This id will be the id of the named graph containing the Atom triples and content triples. We'll have a more detailed discussion of ids at in the discussion section,  in particular, the names of graphs and where we can use LSIDs.  
+     
+The two link elements specify where the RDF comes from.  The first, =nala-page= is the page the triples or links were scraped from. =nala-source= is the source of where the RDF came from in the case of (1) link scrapers.  The URI of a triple scraper probably doesn't belong in a link element.  We'll most likely have to design a special RDF triple or Atom extension for this.
+     
+We will add specific titles to the link elements as well as the Entry which we will use to display them in the user interface.
+
+In the Atom Publishing Protocol (APP), entries must always be posted to a collection, specified in the POST URL.  For example:
+   
+<verbatim>
+     http://localhost:8080/atom/urn:qid:nala.gbif.org:collections:namedgraphs
+</verbatim>
+     
+would post to a collection with URI =urn:qid:nala.gbif.org:collections:namedgraphs=.  Internally, the collection is a named graph that contains links to all the entries.  In addition, however, it is a mechanism for providing Atom Feeds.  In our application it probably makes sense to a have a collection per page.  This will allow users to track metadata collected about a page without necessarily having to revisit that page themselves.  We'll explore this idea further if time permits. 
+   
+For the version of the application completed in Phase 2 of the contract, it probably makes sense for all named graphs to be publicly accessible for ease of demonstration and debugging.  In the discussion section below, we will discuss various security options and how they can be implemented atop Boca's security model.  Note that having an open security model does not prevent users from having saved graph sets stored on the server and any other per-user information. It just means that named graphs will all be public.  If Ricardo and Lee feel that security is a priority for the first cut, we can make it so.
+     
+Ok, so we have now posted one or more Atom Entires to Queso containing RDF scraped directly from the page or from links contained in the page.  Queso, as a response to the POST, will send back a beefed up Atom Entry with additional links elements, and date elements.  The RDF content will also contain the transformed Atom Entry in RDF.  This may seem a bit weird, but the content of the named graph now includes those triples. The Entry's =<id>= will be the server-assigned named graph URI.
+     
+At this point in the application, the page has been quietly scraped for RDF, and everything has been uploaded to Queso, all without the user having to do anything.  At this point, we will alert the user, via icon in the status bar or toolbar, that RDF has been discovered. Now, we would like to have a temporary Client Repository with all the various collections of triples from links, and scrapers.  As we scrape and POST, we can easily maintain such a repository for each resource, with its properties and relationships, as well as metadata such as keywords, the source page, the named graph(s), the date it was fetched/created etc..  We discuss the Client Repository in a later section.
+         
+Once all the scraping, fetching and posting has been completed, we can present the user with a table of all triples, partitioned (maybe with tabs) by the named graph URI, and organized according to the Table View defined in the requirements list.  Many approaches exist for presentation here, but the bottom line is that we will give the user the chance to save all or part of the discovered RDF.  The user can tag the named graphs with keywords, either individually or on a whole.  While the user is typing the keywords, he can obtain type-ahead assistance vi AJAX (we discuss this service further on).  
+     
+Once the user has selected the named graphs to save, and has ascribed optional keywords to them, we will call a special service that will receive this information, and add the named graphs, by URI, to the user's collection in Boca.  The service will also add the keywords to the index.  The service will be a simple HTTP post that contains a plain list of named graphs and tags
+     
+<verbatim>
+ng1 tag1 tag2 tag3
+ng2 tag4 tag5 tag6
+</verbatim>
+     
+The request will be received by an HTTP Servlet that will interact through the Boca named graph API to
+      
+   1. add the named graph to the user's collection of saved graphs
+   1. add the keywords to the keyword named graph, global for all users.
+        
+The graph in 2. will be the authoritative and permanent store for keywords, but will not do for fast lookups.  We'll have to do something more clever for that. 
+        
+---+++ Data retrieval techniques
+   
+Before proceeding further, it will be useful to discuss the various approaches we will use for getting data out of our system in the sections that follow.
+     
+---++++!! APP Named Graph requests
+           
+We can easily retrieve the contents of a particular named graph in RDF/XML using the Atom Publishing Protocol endpoint in Queso.  In many cases we will use this for showing simple Table or Single views.  However, in general, it is difficult to manipulate RDF on the client as there is limited query support and performance is not great.  One advantage of this data access method is that the APP endpoint employs some sophisticated caching mechanisms.  This is also the most efficient method of retrieving an entire named graph from Boca.
+           
+---++++!! Sparql Queries
+           
+This will be our main approach to querying the database.  All data retrieval operations that do not admit to the whole named graph model will use SPARQL queries.  SPARQL queries can be issued against a single named graph, a collection of named graphs, or all named graphs together.  The results can be returned in a number of formats, the most convenient of which for our purposes is Java Script Object Notation, or JSON.  JSON can be directly evaluated into JavaScript objects and easily traversed to display the information.  In addition, libraries such as Exhibit and Dojo make the display of JSON data quite easy.
+           
+---+++ Data query and viewing
+          
+The details of how data is searched, queried, browsed and viewed will most likely evolve as the application is developed.  The design and functionality described here is merely our starting approach, and first attempt to meet the outlined requirements. 
+
+---++++ Views
+        
+The views of the data fundamentally provide a view of many resources and their properties and relationships.  Internally, the data is stored in the Client Repository as javascript objects: a resource, with its properties and relationships, as well as metadata such as keywords, the source page, the named graph(s), the date it was fetched/created etc..
+          
+All views: *Tree*, *Table*, _Map_ and _Link_ are fundamentally all views of this core data structure. 
+          
+---+++++!! Tree View
+
+The top level of the tree represents all facets on which we want to browse the data.  For now, these are hard-coded facets such as source page, scraper, date, keywords.  When the tree view loads, it builds itself at runtime based on the current state of the Client Repository.  When a branch is opened, such as keywords, the next level allows us to show all resources found so far, and the # of them, or further restrict it on any other facet, just like at the root.  This continues until the user is satisfied of the restriction.  When a resource is selected, we can move to the single view which shows all the available information about the resource as well as where it came from. Alternatively, the whole set of resources can be selected and shown in table view.  This whole process is equivalent to showing a Table view, refined using the search bar at the top with keywords, source, etc...
+                      
+---+++++!! Table View
+
+A table view shows a table of resources, one row per resource.  Each column represents a property.  If a resource has no value for that property then the cell is blank.  At the top of the table will be a method for the user to refine the contents of the table by keyword, source, date, or other metadata.  He can also add or remove columns from the table.
+                       
+---+++++!! Link View
+
+All resources in the current Client Repository will be displayed as nodes in a graph, and with labeled edges between them. 
+          
+---+++++!! Map View
+
+All resources in the current Client Repository that have geographic information will be displayed on the map.  This view must be extensible so that different types of geographical information can be extracted i.e. different ontologies for long-lat coordinates,  city-state-country representations, etc... 
+        
+---++++ Client Repository Design
+         
+While the data on the server is stored by named graph so that data provenance is fully maintained, on the client, the requirements of the application dictate that the Resource is king, i.e. the subject of each triple.  So the top level object will be an associative array keyed by Resource URI.  
+         
+Now we have a decision to make. do we want keywords, named graph, source and other metadata associated with a triple or with each resource.  The former is clearly much more expensive, but maintains the complete provenance per statement.  However,we choose the relaxed approach, assuming that it will be sufficient.  After all, the complete history of every statement and namedgraph lies in the Boca and can be specially queried with SPARQL if necessary.  Thus the lists of keywords, dates (we'll do some clever aggregation here), named graphs, source pages, etc.. will each get an array hanging off the main object.  We can re-evaluate this decision as we build the application.
+         
+Next, we'll have a data structure of statements.  There are a number of ways to do this.  One approach will be to have an associative array whose key is the full URI of the predicate, and whose value is an array of the objects.  We'll start with this approach and modify it as we go forward.
+           
+The CR is a convenient LCD approach to providing a data representation to each of our views, as well as a way to temporarily display search results and captured RDF.
+       
+---++++ Populating the Client Repository
+       
+Sometimes we'll use a CR data structure for one-off jobs such during data collection when we want to present to the user a table view of all the data scraped from the current page.  In this case, we'll just build a client repository and then view it, and then destroy it when we are done (though not before possibly caching the data in the main CR). Other times, we'll want to keep the client repository around during a user's session, maybe even serialize it to disk to be retrieved when they come back online.  This will be a bonus feature if there is time.  
+           
+The first technique for populating the CR will be from a complete named graph in RDF/XML via APP.  Here we'll use the 3rd party RDF parser to get all the triples, but then iterate through and put them in our store, incorporating keywords and other metadata as they are available.
+           
+The second technique is through SPARQL queries.  Here, depending on what the user supplies, we may not get keywords or other metadata unless we either query for it after, or force the user to query for it.  We will write a very simple routine that takes SPARQL results in JSON and converts them to CR format.  We can then offer the user the option of filling in the missing provenance information through extra queries which we will generate automatically for them.  
+           
+---++++ Search and Data Discovery
+       
+So now the user has just browsed a bunch of pages, and has quite a bit of RDF saved in Boca.  Depending on how we implement it, they may already have some cached stuff in the main CR as well.   There are a number of ways for the Scientist in our scenario to do his search.  No matter what the search, the scientist may choose whether or not he is searching the whole data store or only his saved data.  New named graphs encountered via search may be added to the user's list of saved graphs.
+         
+The search area will be an HTML page that has different tabs or modes that allow for the different types of searching.   Once a search has been completed, the user might not want all statements immediately placed in the CR.  In practice, we'll most likely build up a temporary CR (like in data collection), show it to the user via Table View and let them select which resources go into the main CR.  This process will happen exactly once per search.  The selection process can involve keyword or other search on the table view of the temp CR.  After this final step, the user can do another search, or select a view of the main CR to browse the data, and possibly export.
+         
+---+++++!! Keyword Search
+
+The global keyword index on the server can very quickly return all the named graphs for a particular keyword.  Depending on the scope restriction, we'll have to do a quick SPARQL query on the server to remove the unnecessary graphs, and then return them to the client with all the information needed to populate a temporary CR.  If the user issues multiple keywords, we'll let the users specify if it is an AND or an OR, but nothing complex like "k1 AND (k2 OR k3)".  One approach that we'll try initially here, is that the keyword search will just return the named graphs, and then the client will issue APP requests for the RDF itself.  This will enabled us to leverage the caching functionality of Queso.  The complete keyword search system is described in a later section.
+           
+---+++++!! Text search
+
+Boca has a built-in Lucene-based text indexer, but its performance and reliability are questionable.  You give it a search string, and it returns matching named graphs.  The indexer indexes on all literal values. If we have time, we'll try to leverage this search feature for the Application.
+         
+---+++++!! Sparql Search
+
+Using the sparql endpoint, we can issue queries from the client to the server, getting the results back in JSON.  Depending on the query the user issues, we may be able to issue additional auto-generated queries to fill in keywords, source pages, scraper data etc...The user may not need this information anyhow.  After the sparql query has been issued, we'll transform the JSON and insert the resources and statements in the temporary CR.  We may have to restrict the type of sparql queries we allow the user to issue in order that they fit nicely into the CR data model.  Alternatively, we can allow a loose sparql query, when the data comes back, allowing the user to perform a *Resource search*, or further explore the data.  We will refine this design as we move forward with implementation.
+
+---+++++!! Resource search
+
+If a user encounters a particularly useful resource at any point in the application he can issue a request to the server to find all named graphs that mention that resource.   This is just a special case of a sparql query, but it deserves special treatment in the UI. The results of this search will be shown in Single View.
+     
+---+++ Scraper registration and storage
+   
+As discussed in 1.1, we will have two different types of scrapers, those that search for links to RDF and those that extract RDF triples themselves.  There are numerous security risks involved with allowing people to register Javascript code that can run.  However, there are ways to properly sandbox the code that we will make use of. 
+       
+Each scraper implementation can depend on certain objects that it can access in order to do its work.
+       
+The code for each scraper will be stored as an Atom Entry in Queso/Boca.  When the application loads, we can easily find all scrapers using Sparql queries.  Instead, we use a Queso collection (Atom Feed) that holds
+all the entries.  
+         
+Scrapers can have metadata associated with them that helps determine which websites they should be applied to.  Instead of this approach, we'll just let each scraper determine if it should execute itself on a given page.  This approach will be quite a bit simpler.  we can also add a regexp field on scraper JS itself using extension elements in Atom to save it.
+       
+We'll have a simple page for registering scrapers and loading them into Queso.  This is where we'll focus our efforts.
+
+<verbatim>
+
+- scraper list
+    - all the installed (evaled) scrapers are shown with a checkbox, indicating whether or not the scraper is enabled.  When a scraper is checked/unchecked, we'll update 
+       corresponding flag inside scraper object in real time.
+    - all those scrapers that have not been installed are shown with a button to install it.  When we install it, grab the source, wrap it in sandbox code, and evaluate it.  We then make it show up in the list on the left, either checked or unchecked (does'nt really matter which, the user can quickly choose).  
+    - to create a new scrape, the user clicks either "new link scraper" or "or page scraper".  A bit of sample code for either will be immediately placed in the page, along with dummy.  
+    - When he has written the code, he clicks save and this stores the scraper in the same place as the uninstalled scrapers that have been downloaded via atom. 
+    - we'll also add a new field for a regexp/wildcard that can be evaluated on the URL of a page to see if we want to run that scraper..we'll store this in an atom extension
+    - once we've installed a scraper, it gets removed from the set of uninstalled ones...we store the src code with the installed scraper.  In the view, the src code will be read-only unless the user uninstalls
+      the script.  
+   - to uninstall, we remove it from the installed scripts, add it to the uninstalled scripts, and let the user edit/publish/save or whatever they want to do with it.  
+
+</verbatim>
+   
+---+++ Data export
+   
+Data export should be a straightforward operation atop the Client Repository.  In the first cut of the application we will implement export atop the Table View.  The user will be allowed to select all or a subset of the rows in the table and choose to export them in one of the available formats.  We will allow comma-separated-values (CSV) and tab-separated-values (TSV) to start with.  The user can also specify whether or not they want all predicates exported or just the selected ones.  In general, all predicates will yield a very sparse export.  Given an array of resources and predicates to export, we can easily generate the proper output.
+    
+---+++ Keyword-named graph indexing        
+     
+In data storage systems where full text search is difficult to implement or not performant, keyword search is often employed to provide a quick alternative.  To support this in our application, we will build keyword indexing as an auxiliary service atop Queso and Boca, much like the saved-graphs service defined in section 1.1.  There is a slight difference in that the keyword indexing service might be something that belongs in Boca/Queso and is not specific to our application.  
+       
+Keywords will be permanently stored in a global named graph such as <!--&#65533;verbatim3&#65533;-->.  We don't spread the keywords over multiple named graphs because of the overhead of reading through all of them while building indexes. We have a couple different choices for how this named graph is arranged:
+           
+   1. *Flat* a simple flat list of triples of the form 
+<verbatim>
+        <nguri> <queso:keyword> "keyword1"
+</verbatim>
+   1. *Per NG*
+<verbatim>       
+        <nfguri> <queso:keywords> <_bnode:1>
+        <_bnode:1> <queso:keyword> "keyword1"
+        <_bnode:1> <queso:keyword> "keyword2"
+</verbatim>
+                             
+(1) allows us to issue the query for "all named graphs for a keyword" or "all keywords for a named graph" without performing any joins.  Indexes should help with both of these queries. (2) queries for all named graphs for a keyword will be expensive.  In addition will not be querying this graph directly when a user issues a keyword search.  This graph will be used mostly to build indexes.  We proceed with choice (1).
+            
+It's very easy to build storage-efficient in memory indexes for keyword searches.  We'll actually take a two-index approach
+         
+---+++++!! Type-ahead search index (TASI)
+
+As the user types keywords, we want to help auto-complete them.  To facilitate this, we simply keep a sorted array of all the keywords on the server and as the user types a character, we send the word typed so far (prefix) to the server via Ajax.  We then do two binary searches on the array to find the range of keywords that match the prefix and return them.  
+             
+---+++++!! Named-graph index (NGI)
+
+Once the user has chosen the keywords, we want to be able to quickly find the corresponding named graphs.  Having all this information in a global keyword named graph will greatly improve this lookup, but going to the database for each call is quite expensive.  Storing this information in memory will allow these searches to return instantly.  
+             
+The difficult bit here is how to update these indexes as more named graphs are tagged with keywords.  It basically boils down to inserting values into a sorted array, which is O(nlogn).  If the number of keywords isn't huge, this shouldn't be a problem.  For the demo we'll simply add the new values to the end of the array and call Arrays.sort(..) and see what happens.  In practice, we'll probably want to copy the array before insertion so we don't foul up queries that happen during the sort.  
+
+The feasibility of these in memory indexes is predicated on them actually being able to fit in memory.  We can fit a tens-of-thousands keyword type-ahead index in a megabyte of memory, with slightly more storage required for the named graph index.  
+             
+To summarize, the steps of keyword search are as follows:
+         
+   * in the search bar, the user types multiple words.  As the user types each word, it does queries against the (TASI), helping the user discover keywords that will yield any results at all.  
+              
+   * the application then sends the keywords to the NGI to find all the named graphs for each keyword and computes the union or intersection depending on AND or OR.  It then returns just this list of named graphs to the client.
+              
+   * the application then issues named graph requests over APP for each of the named graphs, parses the request using the 3rd party parser, and inserts the triples into the temporary CR for review by the user.
+                                 
+---+++ Saved Graph management    
+   
+In this section we discuss how the user manages set of Saved Named graphs. The Saved Set is simply the set of graphs that the user wishes to remain in the system and not get deleted during maintenance (see below).  
+This saved set is determined initially be the graphs the user chooses to saves as RDF is discovered on Web pages. 
+     
+From the toolbar or other sensible location, the users selects to "Manager Saved Graphs".
+     
+The Saved Graph Manager will be an HTML page inside the plugin that initially has a complete list of all saved named graphs. This list will be fetched using a call to service that we used to add saved name graphs during browsing.  The Saved Graph manager will also bring down keywords (and potentially other metadata, though this could be expensive), so that the user can quickly figure out which graphs to release.  In this view
+the user may not add any saved graphs.  Saved graphs may only be added during initial browsing, or during search and query. 
+
+---++ Extended Discussion
+
+In this section we discuss some design and technical issues that did not make sense to delve into in Section 1.  Some of the discussion here raises issues that we will not necessarily deal with in the demo version of the application, but that should be at least brought up to be addressed in future versions.  Many of these issues are pervasive in the application and affect the design of the system all the way through the stack.
+
+---+++ Caching
+   
+Caching will be very important to the scalability and performance of our application.  Data may be cached both in memory on the Web server, and in the browser extension.  Some caching is provided for us by existing components and some caching occurs inherently by the behavior of the system.  At this point, we do not see the need to build additional caching mechanisms. 
+   
+   * *client-side caching*  The Client Repository is our client-side cache.  All of the views in the application operate on this local data instead of going to the server for each view.  This inherent caching mechanism is crucial to performance.        
+   * *server-side caching*          
+      * _Queso cache_  All requests to Queso/Boca via Atom Publishing Protocol (APP) are automatically subject to caching.  Since much of the data will be brought down to the application via APP, we will benefit automatically from its caching mechanism. An interesting property of our system is that named graphs are write-once, read-only.  This is not a restriction of Queso or Boca, but merely a consequence of our application.  Every bit of scraped data gets its own named graph.  The consequence is that the data can be cached indefinitely.           
+      * _keyword search_ One way to think about the keyword indexes is as a cache of the special-case queries for keywords. 
+   
+---+++ Named graphs/duplicate data and ids
+    
+Every application that makes use of a named graph-based triple store must decide how to partition the data across graphs. In our application, each set of triples accumulated by a particular scraper or set fetched from an RDF link receives its own named graph.  This makes updating the data store very simple:  find some triples, create a named graph for them.  It is not without its problems, however.  Right now, if a page is scraped and saved repeatedly, we'll have duplicate data for the page in the system, possible within the saved graphs of a single user.  Because we store all the provenance information for each graph: the URL, the scraper used, the date, etc...we can use sparql ASK queries to determine if a page should be rescraped.  These queries can be fairly expensive because they must be posed on the entire data store.  We now discuss a few alternative named graph data models, and why they were not selected.
+    
+One alternative to this approach was to have each resource get its own named graph. Then, adding duplicate data would be a no-op.  The problem here is that we lose all provenance about where data came from.  In particular, if data about a particular resource is conflicting, sticking it all in one graph could create false information.  Solving this knowledge consistency problems is beyond the scope of the application.
+    
+Another approach would be to have a named graph per web page.  This works OK for static web pages.  As the web page changes, we would eventually rescrape it and then we'd just get a new version of the named graph.  However, data from different scrapers or links within the page may yield conflicting triples.  This information needs to be separated out.  The picture gets even more complicated when we have dynamic web pages, or Javascript based web pages.  
+    
+When all is said and done, the safest approach is just to have each self-contained piece of RDF reside in its own named graph.  We can handle duplicate data by not rescraping when we don't have to, and by handling duplicates at the CR level on the client when we display the information to the user.  If triple explosion becomes a problem, we can reevaluate our approach or engineer new ways to avoid duplicate graphs.
+    
+A somewhat convenient corollary to all of this is that the URIs for named graphs can be anything we like.  We can simply allow the Queso system to generate named graph URIs for us, and the application will just treat them opaquely. 
+   
+---+++ Security
+    
+When we speak about security, we don't mean making the web server hack-proof or worrying about malicious scripts running in the browser. These are all important issues, but not of immediate concern.  What we really intend to discuss here is the security model for our application.  As a demo application, it is acceptable for all named graphs and keywords to be public information.  However, in a real deployment this might not be the case.  If people are browsing private websites, they might not want to upload private RDF into a public database.  Furthermore, keywords might themselves be private.  
+    
+One possible security model would be that each named graph in the system is created under the user of the application.  That user can then, through Boca/Queso management tools, decide to give permission to other people to see their graphs.  The problem with this is that under normal operation (which is what 99% of users do), most data would be partitioned by user, reducing the collaborative benefit of the system.  Another security model would be to have all named graphs public by default unless the user chose to make a particular piece of sensitive RDF private.
+    
+---+++ Maintenance 
+   
+Because we retain all RDF that we browse, things could get out of hand quickly.  We would really like to have a mechanism for removing data that isn't saved after some period of time.  Unfortunately, Boca does not have a way to delete named graphs.  We can clear the contents of the named graph, but the triples will still exist in the history tables.  We will leave our design as is for now, but we may need to either modify Boca (not preferable), or revise our design so that only the explicitly saved named graphs are stored in the database.  We would also like a way for the corresponding remnants of cleansed named graphs in indexes to be cleaned as well.
+   
+---+++ Inference and cross-mapping types
+  	
+Inference is one of those tricky features of a real Semantic Web system that is difficult to get working right.  We see two basic approaches to inference in our system.  First, we can rely on Boca to infer triples based on owl:sameAs.  I believe it does this, but my colleague who implemented it is away now.  When he gets back I can ask him how it works.  I believe it should provide the rudimentary behavior outlined in the requirements.
+  	
+The second approach to inference would be to do something simple in the Client Repository to entail extra triples in the views. The benefit of this approach is that the rules could be applied per user.  The rules themselves can be stored as Atom Entries in Queso, and thus shared, but application of the rules would be per user, as is *not* the case in Boca.
+  
+---+++ LSIDs
+  
+Thus far we have identified one place where we can make use of LSIDs in the application.  We can pick out LSIDs when we are scraping and attempt to resolve their metadata using a web resolver.
+    
+As we pointed out earlier, named graphs as they are accessed by the application, are write-one read only entities.  Thus, we could also use LSIDs  as named graph URIs in our system, and add an LSID resolver atop Boca/Queso.  The main challenge would be to figure out extra triples to return in order to present a meaningful web of LSIDs to browse.
+     
+---++ Technical components and libraries
+
+Here is a condensed list of some of the required technical components.  
+
+   * RDF Store and REST API
+      * Boca
+      * Queso	
+   * Atom Javascript library      
+      * generate and parse valid Atom entries
+      * Atom Publishing Protocol client library
+   * Javascript RDF library
+      * To parse RDFXML and collect pure RDF we'll use the 3rd party library available at http://www.jibbering.com/rdf-parser/ for some
+      * RDF-XML serializer
+   * Client Repository
+      * load from RDF triples
+      * load from json
+   * Sparql library to issue queries against Queso/Boca
+      * sparql.js
+   * Data export mechanism
+   * Query interface
+      * keyword
+      * sparql
+      * resource query (in views)
+   * Views
+      * table
+      * tree
+      * single
+   * REST services
+      * graph save/keyword tagging service
+      * keyword type-ahead service
+      * keyword search service
+     
+---++ Development plan
+
+Of the remaining 5.5 weeks, or 220 work hours in the contract, I will be working full time for about 3 weeks, and then part time to finish it off. I'm still splitting the work into 40 hour increments though they may not fall on boundaries of actual weeks.  My goal is to submit the application for final review by the end of August. The timetable below is a rough schedule for completing the various parts of the application.  The purpose is really to let me know if I'm spending too much time on one thing, but I'm not going to view the various milestones as hard deadlines.  I believe the overall goals of the project are quite ambitious given the time frame, but I think they are doable.  If time becomes an issue, I will alter the goals so that at least a basic prototype allowing us to demonstrate the usage scenario is ready by the September 1 deadline.
+   
+---++++ Week 0 (hours 0-40)
+
+   * Requirements gathering
+   * Proof-of-concept code snipets
+   * This document
+
+---++++ Week 1 (hours 40-80)
+   
+   * Data collection and screen scraping completed
+      * basic web page scraping
+      * follow RDF and LSID links
+      * scrapers stored and registered in Queso
+      * simple UI for selecting scrapers and adding new ones
+      * post scraped RDF to Queso
+   * CR design finalization and implementation
+      * load Data from parsed RDF/XML
+        
+---++++ Week 2 (hours 80-120)
+     
+   * notify user the data has been scraped
+      * implement the table and single view to let user browse scraped RDF
+      * augment the table view so that user can save/tag graphs in view
+      * implement the service that receives saved NGs and keywords, and inserts saved NGs and keywords into the proper named graphs
+   * implement the keyword search services
+      * type-ahead keyword service
+      * named graph retrieval service
+         
+---++++ Week 3 (hours 120-160)
+   
+   * design and implement the overall search framework and UI
+   * get keyword search working
+      * call the keyword typeahead search
+      * call the named graph index service
+      * retrieve all the named graphs over APP
+      * load them into the temporary CR
+      * display in table view
+      * allow user to include various rows in main CR
+   * Add keyword type-ahead to named graph Save
+   * get sparql search working
+      * figure out how to refine the search or leverage a secondary Resouce search to get statements in JSON
+         - implement the JSON -> CR transform
+         - show the results to the user, and allow them to add to main CR
+    
+---++++ Week 4 (hours 160-200)
+   
+   * implement overall main viewing framework with tabs, etc...
+      * add icons, buttons and connectivity status to the status bar
+   * make sure table view works on main CR 
+      * view the main CR, and explore using keywords etc...
+      * select a resource and show in single view
+      * table view
+   * tree view
+      * arrange resource in a tree
+      * each child of a node represents a different axis of refinement.  
+      * get basic example working with a couple different axes of refinement
+        
+---++++ Week 5 (hours 200-240)
+      
+   * Resource search
+   * Data export
+   * User login/config
+   * Saved graph management
+      * servlet to enabled this (list graphs with keywords)
+   * named graph maintenance
+   * inference
+     
+---++++ Week 5.5 (hours 240-260)
+   
+   * finish unfinished tasks
+   * packaging and deployment
+      * XPI
+      * Boca/Queso/Services
+   * Updated design documentation and instructions
+   * Extra scrapers
+      * RDFa scraper
+      * Griddl scraper
+      * NCBI or other domain specific scraper
+   * Fix Queso to handle multiple RDF content types
+      * N3
+      * Ntriple
+      * Turtle
+   * Extra views
+      * link view
+      * map view
+   * full text indexing in Boca
+     
+      	   
+
+%META:FILEATTACHMENT{name="architecture.png" attachment="architecture.png" attr="" comment="" date="1184553178" path="architecture.png" size="66740" stream="architecture.png" user="Main.BenSzekely" version="1"}%

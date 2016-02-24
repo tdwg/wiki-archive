@@ -1,0 +1,186 @@
+%META:TOPICINFO{author="JohnWieczorek" date="1269534387" format="1.1" version="1.48"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+!! Historical <noautolink>%WEB%</noautolink> wiki site. Deprecated.
+------
+
+*Note*: These Wiki pages are for historical purposes, they *do not* reflect the content of the current standard, which can be found at
+
+* http://rs.tdwg.org/dwc/index.htm
+
+
+---++Darwin Core Concept List
+
+This document lists the proposed concepts of the !DarwinCore version 1.4. This document is meant to serve as a conceptual base that can be extended to meet the needs of more specialized communities. The latest Curatorial and Geospatial extensions, in particular, were designed to complement this document to meet the most basic needs of biological collections. Additional extensions are being developed to meet the needs of botany, paleontology, culture collections, and observational data.  See remarks on the [[DarwinCoreVersions][Versions]] page concerning version history of the Darwin Core. See the [[DesignAndPurpose][Design and Purpose]] page to understand the philosophy behind the construction of the Darwin Core and its extensions and the inclusions or exclusion of concepts in them.
+
+This is not the normative representation of the draft standard. In the case of any conflict between the two representations, the protocol-independent [[http://rs.tdwg.org/dwc/tdwg_dw_core.xsd][XML schema]] takes precedence.
+
+Status:
+
+&#8226;	Proposed TDWG Standard, submitted for consideration as a full standard.
+
+Submitted by:  Stan Blum, John Wieczorek
+
+Submitted: 10 Jul 2005
+
+|  *Element*  |  *Description*  |  *Required*  |  *Type*  |  *Min Value*  |  *Max Value*  |
+|  |  *Record-level Elements*  |  |  |  |  |
+| *[[GlobalUniqueIdentifier]]* | A Uniform Resource Name (URN) as a unique identifier for the specimen or observation record. In the absence of a persistent global unique identifier, construct one in the form: &#8220;[InstitutionCode]:[CollectionCode]: [CatalogNumber]&#8221; Examples: 1) !urn:lsid:nhm.ku.edu:Herps:32  2) &#8220;FMNH:Mammal:145732&#8221; | yes | string |  |  | 
+| *[[DateLastModified]]* | The last date-time of publication when any of the data for the record were modified from the previous publication of that record. When publishing a record for the first time, use the publication date-time. Returns values as ISO 8601 date and time. (cf. http://www.w3.org/TR/xmlschema-2/#isoformats and http://www.iso.org/iso/en/prods-services/popstds/dateandtime.html Example: November 5, 1994, 8:15:30 am, US Eastern Standard Time&#8221; would be &#8220;1994-11-05T13:15:30Z&#8221; | yes | !dateTime |  |  |
+| *[[BasisOfRecord]]* | A descriptive term indicating whether the record represents an object or observation. Examples:<br><b>PreservedSpecimen</b>- A physical object representing one or more organisms, part of organism, or artifact of an organism. synonyms: voucher, collection, lot.<br><b>FossilSpecimen</b>- A physical object representing one or more fossil organisms, part of fossil organism, or artifact of a fossil organism.<br><b>LivingSpecimen</b>- An organism removed from its natural occurrence and now living in captivity or cultivation.<br><b>HumanObservation</b>- A report by a known observer that an organism was present at the place and time.<br><b>MachineObservation</b>- A report by a monitoring device that an organism was present at the place and time.<br><b>StillImage</b>- An photograph, drawing, painting.<br><b>MovingImage</b>- A sequence of still images taken at regular intervals and intended to be played back as a moving image; may include sound.<br><b>SoundRecording</b>- An audio recording.<br><b>OtherSpecimen</b>- Any type of specimen not covered by any of the categories above. | yes | string |  |  |
+| *[[InstitutionCode]]* | The code (or acronym) identifying the institution administering the collection in which the organism record is cataloged. No global registry exists for institutional codes; use the code that is "standard" at your institution or in your discipline. | yes | string |  |  | 
+| *[[CollectionCode]]* | The code (or acronym) identifying the collection within the institution in which the organism record is cataloged. | yes | string |  |  | 
+| *[[CatalogNumber]]* | The alphanumeric value identifying a record within the collection. It is highly recommended that each record be uniquely identified within a collection by this value. It is also recommended that each record be uniquely identified in a global context by the combination of !InstitutionCode, !CollectionCode and !CatalogNumber. | yes | string |  |  |
+| *[[InformationWithheld]]* | Brief descriptions of additional information that may exist, but that has not been made public. Information about obtaining the withheld information should be sought from the administrative contact identified in the provider resource metadata (curator, collection manager).  Examples: "specific locality information given only to nearest county", "ask about tissue samples", "georeferences given only to nearest degree". | no | string |  |  |
+| *[[Remarks]]* | Free text comments accompanying the object or observation record. | no | string |  |  |
+|  |  *Taxonomic Elements*  |  |  |  |  |
+| *[[ScientificName]]* | The full name of the lowest level taxon to which the organism has been identified in the most recent accepted determination, specified as precisely as possible, including name-author, year or authorship, sensu or sec. (according to or following) author, and indication of uncertainty. Conceptually equivalent to a full taxonomic identification as given by the identifier (verbatim). Does not include the identifier name or date of identification.  Examples: "Coleoptera" (an Order), "Vespertilionidae" (a Family), "Manis" (a Genus), "Ctenomys sociabilis" (Genus + !SpecificEpithet), "Ambystoma tigrinum diaboli" (Genus + !SpecificEpithet + !SubspecificEpithet), "Quercus agrifolia var. oxyadenia (Torr.) J.T. Howell" (Genus + !SpecificEpithet + !InfraspecificRank + !InfraspecificEpithet + !AuthorYearOfScientificName). | yes | string |  |  |
+| *[[HigherTaxon]]* | The names of taxonomic ranks less specific than SpecificEpithet concatenated and separated. "LIKE"  or "contains" substring query operations are meant to be used with this element to find matching higher taxon names. This element may contain the list of scientific names of all of the supra-specific taxa in the classification used to identify (determine) the specimen or observation. Example: "Animalia, Chordata, Vertebrata, Mammalia, Theria, Eutheria, Rodentia, Hystricognatha, Hystricognathi, Ctenomyidae, Ctenomyini, Ctenomys".  | no | string |  |  |
+| *[[Kingdom]]* |The name of the kingdom in which the organism is classified. | no | string |  |  |
+| *[[Phylum]]* |The name of the phylum (or division) in which the organism is classified. | no | string |  |  |
+| *[[Class]]* |The name of the class in which the organism is classified. | no | string |  |  |
+| *[[Order]]* |The name of the order in which the organism is classified. | no | string |  |  |
+| *[[Family]]* |The name of the family in which the organism is classified. | no | string |  |  |
+| *[[Genus]]* |The name of the genus in which the organism is classified. | no | string |  |  |
+| *[[SpecificEpithet]]* |The specific epithet of the scientific name applied to the organism. | no | string |  |  |
+| *[[InfraspecificRank]]* | The infraspecific rank (subspecies, variety, forma) of the !InfraspecificEpithet. Examples: "subsp.", "var.", "forma". | no | string |  |  |
+| *[[InfraSpecificEpithet][InfraspecificEpithet]]* |The infraspecific epithet of the scientific name applied to the organism. | no | string |  |  |
+| *[[AuthorYearOfScientificName]]* | The author of the !ScientificName and the year of publication, if known. More than one author can be listed in a concatenated string. Should be formatted with parentheses and year according to the conventions of the applicable NomenclaturalCode. | no | string |  |  |
+| *[[NomenclaturalCode]]* | The nomenclatural code under which the !ScientificName is constructed.  Examples: "ICBN", "ICZN", "BC", "ICNCP", "BioCode" | no | string |  |  |
+|  |  *Identification Elements*  |  |  |  |  |
+| *[[IdentificationQualifer]]* |A brief phrase or a standard term ("cf.", "aff.") to qualify the identification of the organism when doubts have arisen as to its taxonomic identity (determination).   Examples: 1) For the determination "Quercus aff. agrifolia var. oxyadenia", !IdentificationQualifier would be "aff. agrifolia var. oxyadenia" with accompanying values "Quercus" in [[Genus]], "agrifolia" in SpecificEpithet, "oxyadenia" in [[InfraSpecificEpithet][InfraspecificEpithet]], and "var." in InfraspecificRank. 2) For the determination "Quercus agrifolia cf. var. oxyadenia", !IdentificationQualifier would be "cf. var. oxyadenia " with accompanying values "Quercus" in [[Genus]], "agrifolia" in SpecificEpithet, "oxyadenia" in [[InfraSpecificEpithet][InfraspecificEpithet]], and "var." in InfraspecificRank. | no | string |  |  |
+|  |  *Locality Elements*  |  |  |  |  |
+| *[[HigherGeography]]* | The names (concatenated and separated) of geographic elements less specific than the information in the [[Locality]] element. "LIKE" or "contains" substring query operations are meant to be used with this element to find matching geographic names. This can be useful if it is unclear in which element a name might be found, and in cases where there is no other appropriate geographic element. Example: "South America, Argentina, Patagonia, Parque Nacional Nahuel Huapi, Neuquén, Los Lagos" with accompanying values "South America" in [[Continent]], "Argentina" in [[Country]], "Neuquén" in StateProvince, and Los Lagos in [[County]]. | no | string |  |  |
+| *[[Continent]]* | The full, unabbreviated name of the continent on which the organism was collected or observed. | no | string |  |  |
+| *[[WaterBody]]* | The full, unabbreviated name of the body of water in or over which the organism was collected or observed. | no | string |  |  |
+| *[[IslandGroup]]* | The full, unabbreviated name of the island group in which the organism was collected or observed. | no | string |  |  |
+| *[[Island]]* | The full, unabbreviated name of the island on which the organism was collected or observed. | no | string |  |  |
+| *[[Country]]* | The full, unabbreviated name of the country or major political unit in which the organism was collected or observed. | no | string |  |  |
+| *[[StateProvince]]* | The full, unabbreviated name of the state, province, or region (_i.e._, the next smaller political region than Country) in which the organism was collected or observed. | no | string |  |  |
+| *[[County]]* | The full, unabbreviated name of the county, shire, or municipality (_i.e._, the next smaller political region than !StateProvince) in which the organism was collected or observed. | no | string |  |  |
+| *[[Locality]]* | The specific natural language description of the place where the organism was collected or observed. This element need not contain less specific geographic information provided in other geographic elements (*[[HigherGeography]]*, *[[Continent]]*, *[[Country]]*, *[[StateProvince]]*, *[[County]]*, *[[WaterBody]]*, *[[Island]]*, *[[IslandGroup]]*). Though coordinate information can be contained in this concept, these data will be usable analytically only when shared through the concepts of the [[GeospatialExtension][Geospatial Extension]]. | no | string |  |  |
+| *[[MinimumElevationInMeters]]* | The minimum or actual elevation at which the collection or observation was made. Use negative values for locations below sea level.  Examples: 75 (for an elevation of 100 +- 25 meters). 100 (for an elevation between 100m and 200m). | no | double |  |  |
+| *[[MaximumElevationInMeters]]* | The maximum or actual elevation at which the collection or observation was made. Use negative values for locations below sea level.  Examples: Examples: 125 (for an elevation of 100 +- 25 meters). 200 (for an elevation between 100m and 200m). | no | double |  |  |
+| *[[MinimumDepthInMeters]]* | The minimum or actual depth at which the collection or observation was made. Use positive values for locations below the surface.  Examples: 0 (for a depth of up to 10m). 50 (for a depth between 50m and 100m). | no | double |  |  |
+| *[[MaximumDepthInMeters]]* | The maximum or actual depth at which the collection or observation was made. Use positive values for locations below the surface.  Examples: 10 (for a depth of up to 10m). 100 (for a depth between 50m and 100m). | no | double |  |  |
+|  |  *Collecting Event Elements*  |  |  |  |  |
+| *[[CollectingMethod]]* | The name of, reference to, or brief description of the method or protocol under which the collecting event occurred.  Examples: "UV light trap", "mist net", "bottom trawl". | no | string |  |  |
+| *[[ValidDistributionFlag]]* | A flag ("true" or "false") that indicates whether the locality information represents a valid distribution occurrence for a specimen. Specimens taken from captivity and showing the captive location should use the value "false". | no | boolean|  |  |
+| *[[EarliestDateCollected]]* | The earliest date-time (Common Era calendar) in a date-time period during which an organism or group of organisms was collected or observed. If the event is recorded as occurring at a single date-time, populate both !EarliestDateCollected and LatestDateCollected with the same value. | no | [[http://rs.tdwg.org/dwc/tdwg_basetypes.xsd][DateTimeISO]] |  |  |
+| *[[LatestDateCollected]]* | The latest date-time (Common Era calendar) in a date-time period during which an organism or group of organisms was collected or observed. If the event is recorded as occurring at a single date-time, populate both EarliestDateCollected and !LatestDateCollected with the same value. | no | [[http://rs.tdwg.org/dwc/tdwg_basetypes.xsd][DateTimeISO]] |  |  |
+| *[[DayOfYear]]* | The ordinal day of the year on which the object or observation was collected (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366). If the EarliestDateCollected and LatestDateCollected do not occur on the same day, do not populate !DayOfYear. | no | integer | 1 | 366 |
+| *[[Collector]]*| The name(s) (concatenated and separated) of collectors or observers. "LIKE" or "contains" substring query operations are meant to be used with this element to find matching collector names. The primary collector or observer, especially one whose CollectorNumber is also provided, should be listed first. Example: "Oliver P. Pearson, Anita K. Pearson" where the value in CollectorNumber "OPP 7101" corresponds to the number for the specimen in the field catalog (collector number) of Oliver P. Pearson. | no | string |  |  |
+|  |  *Biological Elements*  |  |  |  |  |
+| *[[Sex]]* | The sex of the biological individual represented by the cataloged object or observation. Examples: "male", "female", "hermaphrodite", "gynandromorph", "monoecious", "dioecious", "not recorded", "indeterminate", "transitional". | no | string |  |  |
+| *[[LifeStage]]* | The age class or life stage of the biological individual represented by the catalogued object or observation. Examples: "adult", "mature", "juvenile", "eft", "nymph", "seedling", "seed", "egg" | no | string |  |  |
+| *[[Attributes]]* | List of additional measurements or characteristics (concatenated and separated) for which there is no existing semantic element, but which the data provider nevertheless feels the desire to share. Examples: "Tragus length: 14mm; Weight: 120g", "Height: 1-1.5 meters tall; flowers yellow; uncommon". | no | string |  |  |
+|  |  *References Elements*  |  |  |  |  |
+| *[[ImageURL]]* | A Universal Resource Locator reference to digital images associated with the specimen or observation. | no | anyURL|  |  |
+| *[[RelatedInformation]]* | Free text references to information not delivered via the conceptual schema, including URLs to specimen details, publications, bibliographic references, etc. | no | string |  |  |
+
+---++++Open Questions:
+
+&#8226;	8 Oct 2004 - !AssociatedSpecies element requested. (Cooper, GBIF Circa).
+
+&#8226;	3 Sep 2005 - Recommendation that !MaNIS, OBIS, and BMDE all use Darwin Core 2 with extensions rather than extending !DwC2 in new schemas (Wieczorek).
+
+---++ Comments 
+Use the space below to make comments about this page. -- Main.JohnWieczorek - 24 Aug 2006
+
+
+------
+%ICON{bubble}% *Application behaviour*
+Posted by vieglais at 2004-08-31 10:50 AM
+
+The comment that applications will behave unpredictably is not really correct. It is correct to say that without appropriate guidelines, then unpredictable behaviour will appear. The question is whether those guidelines are defined in the protocol or in the record structure definition external to the protocol.
+
+------
+%ICON{bubble}% *associated organism link in darwin Core v2*
+Posted by Jerry Cooper [mailto:CooperJ@Landcareresearch.co.nz]  Date: Friday, 08 Oct 2004, 00:45:48
+
+I'd like to make an urgent plea for the development of an 'associated organisms' extension or core element. Those of you currently in, or heading to, New Zealand will realize that we operate one of the strictest border biosecurity systems in the world, and in addition one of our biggest threats to bidiversity comes from invasive species, and for that reason we carry out much reasearch on biological control. Biosecurity risk analysis and biological control research both require access to global repositories of host/vector/pest/pathogen relationships. Many primary biodiveristy databases include this information for hosts/pollinators/food plants/symbionts/mycorrhizal assocates etc. This simple link to another name (in the same dataset and not through a linked catalogued item - which may not explicitly exist) places a collection/observation record into a valuable ecological context. Please can we have a home for that simple data item?
+
+Jerry Cooper, 
+New Zealand
+
+------
+%ICON{bubble}% *DARWIN CORE and Simplicity*
+Posted by deblades at 2005-01-06 11:44 AM
+
+Being a entomological researcher, a database programmer/designer and having worked as an entomolgy collections manager, I find this initiative to be quite exciting. I am just getting familiar with the content of this project and its goals but I see a problem, all too common in these sorts of endeavours, beginning to rear its ugly head - the dreaded SCOPE CREEP!
+
+Looking at the comments posted below the schema (data elements) definition http://darwincore.calacademy.org/Documentation/DarwinCore2DraftHTML [ Note: Migrated to - http://wiki.tdwg.org/twiki/bin/view/DarwinCore/DarwinCoreDraftStandard ], I notice that some folks are asking for rather esoteric data elements be added, elements that really don't contribute information useful in analysis of specimen data. Perhaps the project needs to define a minimal set of data elements required to share the information (_e.g._ species name, geographic coordinates, sample dates and source collection) and meet the stated project goals:
+
+"The Darwin Core is a specification of data concepts and structure intended to support the retrieval and integration of primary data that documents the occurrence of organisms in space and time and the occurrence of organisms in biological collections."
+
+while allowing for additional, optional data elements to be included if one wishes. The nature and number of these additional elements should be carefully considered before their addition however. Other schemas like ABCD provide extensive data structures for recording additional info on specimens that, while useful to the institution holding the collection, are of little value in analyses by external researchers.
+
+Just my two cents worth - I'd love to hear other's opinions!
+
+------
+%ICON{bubble}% *Importing !DarwinCore*
+Posted by drew at 2005-02-13 02:15 AM
+
+We have successfully imported !DarwinCore into our own taxonomic literature schema: !TaxonX v.4.1
+
+http://research.amnh.org/informatics/new_ants
+
+http://research.amnh.org/informatics/ants/xml_marked/N3208_taxonx4_1.xml
+
+I would greatly appreciate comments.
+------
+%ICON{bubble}% *On the use of repeating elements*
+Posted by dhobern at 2005-03-17 12:56 AM
+
+I agree that there is an issue around our not defining the semantics of repeating elements within a Darwin Core record, and that different processors may handle the situation very differently. It is however important to remember that some of the elements should be repeatable and that this should not be excluded. This can be solved independently of whether or not a containing element is defined, but must not be forgotten.
+
+------
+%ICON{bubble}% *Unrestricted text fields*
+Posted by: lapham at 2006-03-20   07:38 AM
+
+Most text fields in !DwC are unrestricted, permotting anything to be entered and accepted. This leads to consistencxy problems
+
+One sloution to these consistncy problems is to restrict the field to values in list. 
+------
+%ICON{bubble}% *RareTaxon*
+Posted by: lapham at 2006-06-11   12:358 PM
+
+If we had a !RareTaxon yes/no field, folks woauld know what was rare and if somebody got a downloaded what was rare would come with it.
+
+One culd keep full locacity data in the datbase and use the flag field to restict data going to the !DwC flat file on your sever linked to !DiGIR.
+
+Charlie Lapham
+-------
+%ICON{bubble}% *!IndividualCount??*
+Posted by: dps at 2006-09-26   06:55 AM
+
+One of the issues with !DwC that has never been fully addressed is invertebrate specimens preserved in fluids. As is commonly done, individual catalogs may have variable numbers of individuals or either sex (or immatures). Consequently, a lot of information is lost when curators of these collections attempt to squeeze their data into this format. In the previous draft, "!IndividualCount" at least retained some of this information, but I now see this field has been removed in the current draft. Can someone provide the rationale for this?
+
+David Shorthouse
+------
+%ICON{bubble}% *IndividualCount*
+Posted by: JohnWieczorek at 2007-01-10   11:55 AM
+In reply to David's comment, above, the IndividualCount element now resides in the Curatorial Extension to the DarwinCore. The rationale is that it is an element of curatorial interest, rather than of more general interest.
+
+------
+%ICON{bubble}% *IndividualCount*
+Posted by: DavidShorthouse at 2007-01-29   07:27 PM
+Then, with the same logic, the "Biological Elements" to DwC should be moved into an extension. As it currently stands, these elements cannot be filled with specimens like spiders or other invertebrates in fluid because there may be variable numbers of adult males, adult females, or immatures of these all with the same catalog number. In other words, one vial will have one catalog number but in that vial could be 6 males, 5 females, and a couple immatures. Because the "Biological Elements" above have explicit element like "Sex", the impression is that this current core may be used to construct phenological charts. With spiders and other inverts in fluid, this phenological construction would be erroneous because it is impossible to record "Sex" like this without creating duplicate CatalogNumbers, which clearly is not acceptable.
+
+David Shorthouse
+
+------
+%ICON{bubble}% *GlobalUniqueIdentifiers*
+Posted by: Gail Kampmeier at 2008-10-06  04:11 PM
+I'm having conceptual problems with the way the GlobalUniqueIdentifier is defined.  It presumes that you are coming from a collections point of view and ignores that many taxonomists are dealing with a taxonomic family or subfamily, and may be databasing material from over 100 different collections, many of whom have not databased their material nor given it a unique identifier.  We need to have some sort of way of accommodating this, showing that the information came from efforts that were not collection based.  I see problems with collections giving specimens to another collection; taxonomists distributing a larger sampling of taxa to various museums, etc.  The important concept is that this is unique, and I am fine with three different categories making up the GUID, but the definitions are too restrictive.
+
+------
+%ICON{bubble}% *GlobalUniqueIdentifiers*
+Posted by: John Wieczorek at  2008-10-11  10:06 PM
+Gail, it sounds like you have no argument with the concept of a unique identifier. Can you recommend amendments to the description that you think would relax the restrictiveness?
+
+------
+%ICON{bubble}% *GlobalUniqueIdentifiers*
+Posted by: -- Main.GailKampmeier - 10 Dec 2008
+Sorry to take so long to get back to you.  I've been traveling and didn't have a ready answer.  Perhaps relaxing the concept of the InstitutionCode to incorporate the concept of a ProjectCode, which could also be an institution. This would give credit for the databasing efforts to a project that may be working with specimens loaned from or destined to be distributed to a variety of institutions that have not yet assigned GlobalUniqueIdentifiers to the specimens in question.  There are likely still inherent pitfalls (these labels are removed from specimens by an institution and replaced by its own when specimens are returned or new specimens distributed to an institution to give a better working collection of a family or genus; or the institution adds its own label (adding a barcode, for example) and re-databases the specimen under its GUI, and the reference is lost in the data stream to the Project, making duplicates difficult to resolve). 
+
+%META:TOPICMOVED{by="JohnWieczorek" date="1156986378" from="DarwinCore.ElementDefinitionsv1" to="DarwinCore.DarwinCoreDraftStandard"}%

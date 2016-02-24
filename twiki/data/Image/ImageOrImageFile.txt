@@ -1,0 +1,145 @@
+%META:TOPICINFO{author="BobMorris" date="1194673168" format="1.1" reprev="1.4" version="1.4"}%
+%META:TOPICPARENT{name="WebHome"}%
+This topic always gets in the way for me as to suggesting image metadata standards to consider, and I would like to see use cases, discussion, debate, rants and raves... and get this settled:
+
+---+++ Is the metadata on an image file, or on an image?
+---
+---
+
+[The following is lifted from a remark I made in a TDWG-GUID mailing list].
+
+Even---or especially if---you stick to Dublin Core, you have a problem about what things are part of a description.  If the metadata is about the file, then it is reasonable to express, e.g. that it has 1200x800 pixels, encoded as jpeg but perhaps not that it is a a picture of a flea biting a dog.  If the image is being described, the reverse might hold.
+
+Even if you are content to have folksonomies, i.e. tags, ---which is probably about the best you can hope for in dc:description--- you would find it only of very rare utility to search for "description contains '1200x800'. On the other hand, rendering clients probably desperately need the pixel size and also information about where to find other sizes of the "same" image.
+
+This particular example is a little forced since most digital image formats actually  encode the pixel size of the image within the file to aid decoding it for rendering, but the point remains.
+
+Do we need two independent standards, one for content metadata and one for file metadata? With assertions expressible about the relations among them? 
+
+-- Main.BobMorris - 06 Nov 2007
+---
+
+Green is from Rich Pyle on TDWG-GUID mailing list 06 Nov 2007
+
+%GREEN% This comes back to the more general question:
+
+Does the LSID identify a digital instance of an object (database record,
+binary file), or does the LSID identify the "abstract" object (specimen,
+image, etc.) that the digital object serves as surrogate for?
+
+In the context of images, my thinking is this:
+
+The "abstract" object is the set of photons that struck a planar surface
+inside a camera (over a given period of time) after passing through a series
+of lenses. From this object, there might be a derivative physical object
+(e.g., a frame of celluloid film, which might have its own set of properties
+such as film type, etc.), and there might be derivative digital object
+(e.g., a binary RAW file, or whatever "most original" set of 1s and 0s
+extracted from the camera representing a digitally interpreted version of
+the set of photons that struck the planar surface -- which I henceforth
+refer to as "RAW" file for simplicity sake -- even though it might actually
+be a TIFF or a JPEG or a NEF or whatever).  Either of these two derivative
+objects (the celluloid or the "RAW" file) might have derivatives of their
+own (e.g., dupes, prints, and scans for the celluloid object; crops, color
+corrections, resizes, other digital image formats for the "RAW" file).
+
+I see a world where each of these things (at least the ones that have value
+in terms of information presentation) gets its own LSID, and part of the
+metadata for each primary and subsequent derivative would be a pointer to
+the LSID that identifies the "top-level" non-physical, non-digital
+"abstract" image object (i.e., set of photons striking the planar surface).
+%ENDCOLOR%
+
+Generally I agree, but not in all the details below. I would also use the concept "represents" rather than "derivesFrom" for the relation between an abstract thing and the image file to distinguish it from the case of derivation by image editing. -- Main.BobMorris - 07 Nov 2007
+
+%GREEN%
+Once at that stage, the big questions become:
+
+1) What metadata from derived objects gets inherited "upstream" to the
+"master" abstract LSID;
+%ENDCOLOR%
+
+Upstream is tricky since the relation will have to be one of assertion (e.g. Bob asserts this jpeg file has the association represents LSID urn:lsid:ricardo.dog.tdwg.org). Also need some semantics on edited versions ( 'this is an derived from urn:lsid:pixels.ricardo.dog.tdwg.org derivedBy cropping with boundingBox (x0,y0) (x1,y1)' and 'this image file does not represent the abstract image of RicardosDog but results also in a new abstract image tNoseOfRecardosDog' of which this is a representation.
+
+I am not really averse to this. I don't think it takes more than a few relations 
+-- Main.BobMorris 
+
+ 
+
+%GREEN%
+2) What metadata from the "master" object gets inherited "downstream" to the
+various derivatives; and
+%ENDCOLOR%
+
+If there is an inverse pair hasRepresentation  and isRepresentationOf, the only motivation for inheriting metadata in either direction is efficiency, not semantics. It saves multiple resolutions. In the case of LSID metadata, maybe  there should be no inheritance of metadata, because there can be multiple resolvers and we can't know how to sort out the differences. Main.BobMorris
+%GREEN%
+
+3) Which of the LSIDs from the various derivatives become incorporated into
+the metadata of the "master" abstract LSID?
+%ENDCOLOR%
+
+This is the most interesting issue, because there are only two obvious mechanisms for discovering derivatives. One is from the "master" itself---but the discovered ones would only be those the master chooses to publicize, and there has to be an "authoritative" resolver to trust in this regard. The other is a registry of assertions of the form "I am a representation of X". Not sure this is a scalable solution, though metadata registries have a long and honorable history. Main.BobMorris
+
+%GREEN%
+Number 3 above is slightly different from number 1, in that number 1 is more
+about metadata content inheritance, whereas #3 is more about cross-linking
+among various LSIDs.
+
+One would assume that all LSIDs of derived image-objects would have as part
+of their metadata pointers to the "master" abstract LSID from which the
+former were derived.
+
+In this model, it becomes relatively straightforward which LSIDs get which
+metadata.
+
+The problem, of course, is how to structure the inheritance/flow of metadata
+from one LSID to another other (i.e., "master" to derived, and vice versa).
+
+Just some random thoughts....
+
+%ENDCOLOR%
+
+If TDWG-TAG, or at least Roger, agrees that there is nothing in the TDWG Ontology that expresses relations between abstract things and digital representations of them, maybe I'll have a go at proposing one.  In the case of images, at least, my proposal would be that content description go only on the abstraction and other metadata on the representation(s).  This will raise the social question of whether the community will accept a requirement to create an abstract LSID and a concrete LSID for each picture they take. However, it would be trivial to write an application that takes some descriptive data, or a URI thereof, produces TDWG LSID metadata for both an abstraction and the representation, and makes that available to LSID issuance mechanisms. It is probably feasible to arrange that a cooperative issuance agent would also put guts of the abstract description, along with its issued LSID, into the metadata of the representation.   Main.BobMorris
+
+
+Blue is from Matthew Dougherty on TDWG-Image mailing list 09 Nov 2007. Responses in black from Bob Morris, trying to focus for now on cross referencing to existing discussion, followed by refactoring to separate the issues not addressed elsewhere. Bob will erase this sentence when that is done...
+
+===============================================================
+%BLUE%
+
+
+
+Does a LSID identify a digital artifact or does a LSID identify the concept associated with the artifact? %ENDCOLOR%Discussed briefly above, and in more detail in  the GUID Wiki at GUID.ConceptualVsDigitalLSIDs   Probably deserves a separate topic here Image.ConceptualVsDigitalLSIDs-- Main.BobMorris - 10 Nov 2007 %BLUE%
+
+LSIDs could be used in many ways for different purposes: simple tagging, bi-directional links, provenance management, single instance, multiple instance.  %ENDCOLOR% Discussed in  the GUID Wiki at GUID.GUIDUseCases.  My intuition is that GUID use cases for images per-se will not impact the metadata discussion, given that LSIDs are adopted.  In any case, they probably belong in the GUID Wiki with a reference here(?) Main.BobMorris - 10 Nov 2007 %BLUE%
+
+Is it appropriate to apply a LSID to a specific bird and a group of LSIDS to the pictures of the bird?  Possibly.
+
+Is it appropriate to apply a LSID to an abstract subjective measurement in psychology?   Possibly.
+
+The association between LSIDs could have LSIDs.
+
+How much responsibility and burden should a LSID resolver bear versus other methods?
+
+Semantically an image is metadata, in that it is "a set of data the describes and gives information about other data" (Oxford); the 'other data' being the object that is the source of image, for example a protein.  
+
+A single near-atomic 3D image may be reconstructed from over one hundred thousand cryo-EM 2D images; such a 3D image could have hundreds of thousands of associated LSIDs, DOIs, and PURLs by the time it is placed into a public repository.  Is it sufficient to provide public resolver access for the final 3D image and just note the LSIDs of the 2D images which are on an internal network? 
+
+I believe the answers depends on the community or project that adopts LSIDs.  
+
+As for the dichotomy: is the metadata on an image file or on the image? Both are needed, sometimes they can be combined. 
+
+Again I believe the answer depends on the community or project that defines the metadata and requisite tools.  A critical underlying question is where does TDWG image/guid draw the lines between recommendation, compliance, enforcement, and funding to implement?
+
+DC, RDF and MPEG7 are vehicles that can manage these types of metadata, although they are poorly suited to contain actual pixels.  
+But one could binhex64 an image into a DC description, and there might be an application where it makes sense.
+
+MPEG7 is particularly well suited for still and moving image content annotation; extending it to a biological community's ontology is a crucial task.  
+Has there been activity to define TDWG's role in MPEG7?  Any use cases?
+
+
+To close, there are a number of reasons Dublin Core specification has been highly successful: 1) conceptually simple, 2) voluntary compliance and enforcement, 3) amendable by users to meet their community needs that does not require OCLC approval, 4) and it is a library science recommendation that provides an encyclopedic metric to frame discussion.  I think the danger is to make the rules of LSID use too complicated.  The ultimate sophistication is to define it simply, so that others can use it simply.  Or as someone else said "Everything should be made as simple as possible, but not simpler."
+ 
+-- Main.MatthewDougherty - 09 Nov 2007
+
+%ENDCOLOR%

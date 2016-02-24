@@ -1,0 +1,783 @@
+head	1.11;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.11
+date	2009.11.25.03.14.32;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2009.11.20.02.45.24;	author LeeBelbin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.03.01.11.36.58;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.04.20.15.52.09;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.08.18.14.43.52;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.08.18.10.13.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.08.17.13.57.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.06.11.08.25.06;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.06.10.17.43.00;	author PatrickLeary;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.06.09.22.45.47;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.11
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118872" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="UBioXidDevelopment"}%
+---+!! %TOPIC%
+
+This topic originated from the discussions in UBioXidDevelopment about how to convert Lucid LIF data to SDD. The main points from the discussion are summarized here. <strong style="color:green">Please feel free to add/correct the text below directly rathen than, as usual, add your comments at the end. Simply add yourself to the list of contributors!</strong>
+
+---
+
+<h3>Description matrix</h3>
+
+The matrix information of the Lucid-style .LIF file should go into "<nop>CodedDescriptions" section of SDD. Example of the matrix section of our .LIF to atlantic tunas: 
+
+<verbatim>
+[..Main Data (txs)..]
+6100000100001100100010000011111
+6010000010001010010010000101110
+6001000100001001010010000131110
+6001000100010100001001000101100
+6001000001001010100000101000000
+6000100100001010000100100101000
+6000010100001010001000310101100
+6000001000101010000100100101000
+</verbatim>
+
+This matrix scores taxa by rows and states by columns. Lucid scores taxon under the following scheme:%BR%
+0 - absent%BR%
+1 - present%BR%
+2 - unknown%BR%
+3 - rare%BR%
+4 - commonly misinterpreted%BR%
+5 - rarely misinterpreted%BR%
+6 - metric data
+
+
+Note: score 4 and 5 were originally discussed here as: "4 - present but may be misinterpreted as absent; 5 - absent but may be misinterpreted as present". We could not get any official definition for LIF, but the one that seems most likely is given above.
+
+
+<strong>Quantitative/numerical data</strong>
+
+In LIF, values are to be used only for metric data (Lucid-type 6). In Lucid, metric data is not entered as a single value, but instead there are parameters for extreme upper, normal upper, normal lower, and extreme lower values. So, for one metric state/taxon pair, there are four metric values to be entered. 
+
+SDD support a much larger number of statistical measures, including variance or sample size for true sampling data. A recommended mapping of Lucid parameters to SDD statistical measure codes follows:
+   * "extreme upper" = SDD: Max
+   * "normal upper" = SDD: <nop>UMethUpper 
+   * "normal lower" = SDD: <nop>UMethLower
+   * "extreme lower" = SDD: Min
+
+The "unknown method" in the name refers to the fact that for Lucid data the kind of interval is not known. It may be a statistical range (Interquartile, mean plus/minus standard deviation, 95% confidence interval for mean, etc.) or it may be a human estimate of what is considered a "normal" range. For the latter, SDD provides the codes "ObserverEstUpper/Lower".
+
+To use a quantitative character in SDD, an element with name "QuantitativeCharacter" must be added to Terminology/Characters (this defines a character id value, a label; but not the measures). To add character data to the description, add an "Quantitative" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+<verbatim>
+      <QuantitativeCharacter id="2">
+        <Representation><Label>Leaf length</Label></Representation>
+        <MeasurementUnit><Label role="abbrev">m</Label></MeasurementUnit>
+        <Default>
+          <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
+        </Default>
+      </QuantitativeCharacter>
+          ...
+          <Quantitative ref="2">
+            <Measure type="Min" value="2.3"/>
+            <Measure type="UMethLower" value="3.2"/>
+            <Measure type="UMethUpper" value="7.1"/>
+            <Measure type="Max" value="7.9"/>
+            <MeasurementUnit><InternationalAbbreviation>cm</InternationalAbbreviation></MeasurementUnit>
+          </Quantitative>
+</verbatim>
+
+Note that the measurement unit can either be expressed at the character definition, or at the character data. A unit in data overrides the unit in definition, but the unit in definition applies to all data not definíng a deviating unit.
+
+
+<strong>Categorical data</strong>
+
+SDD uses a character based scheme and only positive statements about values or categories are made. A character can be viewed as an analysis variable in statistical data analysis, which, however, may contain a list or set of values. For most purposes of identification processes this is conveniently expressed in a taxon x state matrix like in Lucid. However, many things can not or only poorly be expressed in that way (for example an image relating to a entire character, an entire character being inapplicable, or a text note on a character that has been studied).
+
+In SDD, a character therefore either has a status value (unknown, inapplicable etc.) or, if categorical, it has a list of states scored as present. The absence of a state is implicit, provided that the character has been scored at all. If the character is not listed at all, this is roughly equivalent to the status "unknown". This design is resilient against defining new characters while data are already scored. Lucid LIF statements about state being absent are redundant in SDD and 0 needs no representation. 
+
+To use a categorical character in SDD, an element with name "CategoricalCharacter" must be added to Terminology/Characters (this defines a character id value, a label, and the states). To add character data to the description, add an "Categorical" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+<verbatim>
+      <CategoricalCharacter id="1">
+        <Representation><Label> Leaf complexity</Label></Representation>
+        <States>
+          <StateDefinition id="1">
+            <Representation><Label>Simple</Label></Representation>
+          </StateDefinition>
+          <StateDefinition id="2">
+            <Representation><Label>Compound</Label></Representation>
+          </StateDefinition>
+        </States>
+      </CategoricalCharacter>
+       ...
+       Then used in descriptions like:
+      <Categorical ref="1">
+        <State ref="1"/>
+      </Categorical>
+</verbatim>
+
+
+<strong>Categorical data with modifiers</strong>
+
+Several Lucid scores (2-5) are expressed in SDD in the form of modifiers. We need:
+
+   * A frequency modifier "rare" to be defined in Terminology/Modifiers which would be added for states scored as 3 (see SDD example file Modifier id="22"). Example for the application of this in a description:
+<verbatim>
+         <CodedDescription id="1"><Header><ClassName ref="1"/></Header>
+         <SummaryData>
+           <Categorical ref="2"><State ref="3"><Modifier ref="22"/></State><State ref="4"/></Categorical>
+           <Categorical ref="3"><State ref="1"/></Categorical>
+         ...
+</verbatim>
+
+   * An expression that a state value is unknown. In SDD this requires a distinction:
+      * In Lucid LIF all states of a character are unknown and thus the character value itself is unknown. The SDD feature <nop>CodingStatus (status of the character) defines whether a property of an object is unknown (see Terminoloy/General/<nop>CodingStatusValues, e. g. in the SDD example files: <nop>CodingStatus id="2" debugkey="Unknown"). SDD does distinguish between various levels of unknown, especially whether this is not yet coded, or whether it is logically impossible to code (= not applicable), or whether information has been researched, but not readily available. These distinctions are irrelevant when using data for identification, but important when building large datasets, especially collaboratively.
+      * In Lucid some states are coded and others marked as unknown. This may either occur if the supplier of information has studied a feature, but knows that some conditions are rare and realizes that her or his sampling was insufficient, or may be the result of a poorly defined character (in which the states are not truly related, and a state frequency distribution would have no meaning). The way to express the mixed situation in SDD is to say it is "perhaps this state". Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier id="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+<verbatim>
+         <CodedDescription id="1"><Header><ClassName ref="1"/></Header>
+         <SummaryData>
+           <Categorical ref="2"><State ref="1"><Modifier ref="41"/></State><State ref="3"/><State ref="4"/></Categorical>
+           <Categorical ref="2"><State ref="5"/></Categorical>
+         ...
+</verbatim>
+      * Note that the above looks more complicated than the Frequency example, since Certainty modifiers apply to all states in a Categorical data element. The element itself may, however, be repeated. This may seem an unnecessary complication. It was chosen because Certainty modifiers apply in principle to all character types, including quantitative, measured color ranges, or future character types like molecular patterns.
+
+   * A certainty modifier with the special flag Specification/IsTrueByMisinterpretation set to true (see Modifier id="42"). This is to be used for Lucid value 5. Example:
+<verbatim>
+   <CodedDescription id="101"><Header><ClassName ref="1"/></Header>
+     <SummaryData>
+       <Character ref="1">
+         <State ref="1"><Modifier ref="42"/></State>
+       </Character>
+</verbatim>
+   * There is no equivalent to Lucid value 4 in SDD. The fact that something is present, but can be erroneously overlooked is considered so general that is is not part of data coding, but instead should be part of the reasoning of the query or identification method. Thus treat 4 simply as Lucid-score 1. -- <em>(If anybody disagrees on this, and can provide examples or scenarios, it would be an urgent issue to fix!)</em>
+   * Appropriate statistical measures for the metric data. (See the discussion above!)
+
+---
+
+<h3>Images</h3>
+
+Note that descriptions may be associated with images or formatted documents (or even video/audio). You can add a <nop>MediaResource ref in the description (we consider illustrations of the entire taxon part of description, not part of the taxon name). <nop>MediaResources/MediaResource can occur in the <nop>CodedDescription itself (after the Header) or in a specific character (if the image only applies to this). After defining a <nop>MediaResource in <nop>MediaResources:
+<verbatim>
+TO BE UPDATED
+</verbatim>
+you can refer to such resources for the entire description like:
+<verbatim>
+<CodedDescription id="101">
+  <Scope><TaxonName ref="1"/></Scope>
+  ###DIRECTLY NO LONGER POSSIBLE IN SDD. MAY BE IN REPRESENTATION, OR 
+  <MediaResource ref="123"/><MediaResource ref="124"/>
+  ...
+</verbatim>
+
+-- Main.GregorHagedorn, Main.PatrickLeary - 7 Jun 2004 to 18. August 2004
+
+---
+
+I have just recently created a working version of a LIF (Lucid Interchange Format) to SDD converter. It is a work in progress that shall be updated as the SDD standards change. It can be found at http://uio.mbl.edu/SDD/converter.php . The user can upload a LIF from their computer to convert, they can enter a URL (web address) of a LIF file somewhere on the web, or they can choose one of the sample LIF files that we provide to test the conversion process. Be aware that we are not taxonomists, so the keys that we provide are not very detailed and may not use all the proper taxonomic vocabulary. 
+
+We would be very interested to test a complete and thorough key made by a specialist, as that is the audience we are appealing to. If you have a key you would like to let us use to test our software, or even use as a demonstration key, you can e-mail me at pleary@@mbl.edu. 
+
+I would love to hear your comments and suggestions for changes to this converter, and I hope you can find it useful.
+
+-- Main.PatrickLeary - 10 Jun 2004 @
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685124" format="1.1" reprev="1.10" version="1.10"}%
+d5 1
+a5 1
+This topic originated from the discussions in UBioXidDevelopment about how to convert Lucid LIF data to BDI.SDD. The main points from the discussion are summarized here. <strong style="color:green">Please feel free to add/correct the text below directly rathen than, as usual, add your comments at the end. Simply add yourself to the list of contributors!</strong>
+d11 1
+a11 1
+The matrix information of the Lucid-style .LIF file should go into "<nop>CodedDescriptions" section of BDI.SDD. Example of the matrix section of our .LIF to atlantic tunas: 
+d42 5
+a46 5
+BDI.SDD support a much larger number of statistical measures, including variance or sample size for true sampling data. A recommended mapping of Lucid parameters to BDI.SDD statistical measure codes follows:
+   * "extreme upper" = BDI.SDD: Max
+   * "normal upper" = BDI.SDD: <nop>UMethUpper 
+   * "normal lower" = BDI.SDD: <nop>UMethLower
+   * "extreme lower" = BDI.SDD: Min
+d48 1
+a48 1
+The "unknown method" in the name refers to the fact that for Lucid data the kind of interval is not known. It may be a statistical range (Interquartile, mean plus/minus standard deviation, 95% confidence interval for mean, etc.) or it may be a human estimate of what is considered a "normal" range. For the latter, BDI.SDD provides the codes "ObserverEstUpper/Lower".
+d50 1
+a50 1
+To use a quantitative character in BDI.SDD, an element with name "QuantitativeCharacter" must be added to Terminology/Characters (this defines a character id value, a label; but not the measures). To add character data to the description, add an "Quantitative" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+d74 1
+a74 1
+BDI.SDD uses a character based scheme and only positive statements about values or categories are made. A character can be viewed as an analysis variable in statistical data analysis, which, however, may contain a list or set of values. For most purposes of identification processes this is conveniently expressed in a taxon x state matrix like in Lucid. However, many things can not or only poorly be expressed in that way (for example an image relating to a entire character, an entire character being inapplicable, or a text note on a character that has been studied).
+d76 1
+a76 1
+In BDI.SDD, a character therefore either has a status value (unknown, inapplicable etc.) or, if categorical, it has a list of states scored as present. The absence of a state is implicit, provided that the character has been scored at all. If the character is not listed at all, this is roughly equivalent to the status "unknown". This design is resilient against defining new characters while data are already scored. Lucid LIF statements about state being absent are redundant in BDI.SDD and 0 needs no representation. 
+d78 1
+a78 1
+To use a categorical character in BDI.SDD, an element with name "CategoricalCharacter" must be added to Terminology/Characters (this defines a character id value, a label, and the states). To add character data to the description, add an "Categorical" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+d101 1
+a101 1
+Several Lucid scores (2-5) are expressed in BDI.SDD in the form of modifiers. We need:
+d103 1
+a103 1
+   * A frequency modifier "rare" to be defined in Terminology/Modifiers which would be added for states scored as 3 (see BDI.SDD example file Modifier id="22"). Example for the application of this in a description:
+d112 3
+a114 3
+   * An expression that a state value is unknown. In BDI.SDD this requires a distinction:
+      * In Lucid LIF all states of a character are unknown and thus the character value itself is unknown. The BDI.SDD feature <nop>CodingStatus (status of the character) defines whether a property of an object is unknown (see Terminoloy/General/<nop>CodingStatusValues, e. g. in the BDI.SDD example files: <nop>CodingStatus id="2" debugkey="Unknown"). BDI.SDD does distinguish between various levels of unknown, especially whether this is not yet coded, or whether it is logically impossible to code (= not applicable), or whether information has been researched, but not readily available. These distinctions are irrelevant when using data for identification, but important when building large datasets, especially collaboratively.
+      * In Lucid some states are coded and others marked as unknown. This may either occur if the supplier of information has studied a feature, but knows that some conditions are rare and realizes that her or his sampling was insufficient, or may be the result of a poorly defined character (in which the states are not truly related, and a state frequency distribution would have no meaning). The way to express the mixed situation in BDI.SDD is to say it is "perhaps this state". Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in BDI.SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier id="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+d132 1
+a132 1
+   * There is no equivalent to Lucid value 4 in BDI.SDD. The fact that something is present, but can be erroneously overlooked is considered so general that is is not part of data coding, but instead should be part of the reasoning of the query or identification method. Thus treat 4 simply as Lucid-score 1. -- <em>(If anybody disagrees on this, and can provide examples or scenarios, it would be an urgent issue to fix!)</em>
+d156 1
+a156 1
+I have just recently created a working version of a LIF (Lucid Interchange Format) to BDI.SDD converter. It is a work in progress that shall be updated as the BDI.SDD standards change. It can be found at http://uio.mbl.edu/BDI.SDD/converter.php . The user can upload a LIF from their computer to convert, they can enter a URL (web address) of a LIF file somewhere on the web, or they can choose one of the sample LIF files that we provide to test the conversion process. Be aware that we are not taxonomists, so the keys that we provide are not very detailed and may not use all the proper taxonomic vocabulary. 
+d162 1
+a162 1
+-- Main.PatrickLeary - 10 Jun 2004 
+@
+
+
+1.9
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1172749018" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="UBioXidDevelopment"}%
+This topic originated from the discussions in UBioXidDevelopment about how to convert Lucid LIF data to SDD. The main points from the discussion are summarized here. <strong style="color:green">Please feel free to add/correct the text below directly rathen than, as usual, add your comments at the end. Simply add yourself to the list of contributors!</strong>
+d11 1
+a11 1
+The matrix information of the Lucid-style .LIF file should go into "<nop>CodedDescriptions" section of SDD. Example of the matrix section of our .LIF to atlantic tunas: 
+d42 5
+a46 5
+SDD support a much larger number of statistical measures, including variance or sample size for true sampling data. A recommended mapping of Lucid parameters to SDD statistical measure codes follows:
+   * "extreme upper" = SDD: Max
+   * "normal upper" = SDD: <nop>UMethUpper 
+   * "normal lower" = SDD: <nop>UMethLower
+   * "extreme lower" = SDD: Min
+d48 1
+a48 1
+The "unknown method" in the name refers to the fact that for Lucid data the kind of interval is not known. It may be a statistical range (Interquartile, mean plus/minus standard deviation, 95% confidence interval for mean, etc.) or it may be a human estimate of what is considered a "normal" range. For the latter, SDD provides the codes "ObserverEstUpper/Lower".
+d50 1
+a50 1
+To use a quantitative character in SDD, an element with name "QuantitativeCharacter" must be added to Terminology/Characters (this defines a character id value, a label; but not the measures). To add character data to the description, add an "Quantitative" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+d74 1
+a74 1
+SDD uses a character based scheme and only positive statements about values or categories are made. A character can be viewed as an analysis variable in statistical data analysis, which, however, may contain a list or set of values. For most purposes of identification processes this is conveniently expressed in a taxon x state matrix like in Lucid. However, many things can not or only poorly be expressed in that way (for example an image relating to a entire character, an entire character being inapplicable, or a text note on a character that has been studied).
+d76 1
+a76 1
+In SDD, a character therefore either has a status value (unknown, inapplicable etc.) or, if categorical, it has a list of states scored as present. The absence of a state is implicit, provided that the character has been scored at all. If the character is not listed at all, this is roughly equivalent to the status "unknown". This design is resilient against defining new characters while data are already scored. Lucid LIF statements about state being absent are redundant in SDD and 0 needs no representation. 
+d78 1
+a78 1
+To use a categorical character in SDD, an element with name "CategoricalCharacter" must be added to Terminology/Characters (this defines a character id value, a label, and the states). To add character data to the description, add an "Categorical" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+d101 1
+a101 1
+Several Lucid scores (2-5) are expressed in SDD in the form of modifiers. We need:
+d103 1
+a103 1
+   * A frequency modifier "rare" to be defined in Terminology/Modifiers which would be added for states scored as 3 (see SDD example file Modifier id="22"). Example for the application of this in a description:
+d112 3
+a114 3
+   * An expression that a state value is unknown. In SDD this requires a distinction:
+      * In Lucid LIF all states of a character are unknown and thus the character value itself is unknown. The SDD feature <nop>CodingStatus (status of the character) defines whether a property of an object is unknown (see Terminoloy/General/<nop>CodingStatusValues, e. g. in the SDD example files: <nop>CodingStatus id="2" debugkey="Unknown"). SDD does distinguish between various levels of unknown, especially whether this is not yet coded, or whether it is logically impossible to code (= not applicable), or whether information has been researched, but not readily available. These distinctions are irrelevant when using data for identification, but important when building large datasets, especially collaboratively.
+      * In Lucid some states are coded and others marked as unknown. This may either occur if the supplier of information has studied a feature, but knows that some conditions are rare and realizes that her or his sampling was insufficient, or may be the result of a poorly defined character (in which the states are not truly related, and a state frequency distribution would have no meaning). The way to express the mixed situation in SDD is to say it is "perhaps this state". Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier id="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+d132 1
+a132 1
+   * There is no equivalent to Lucid value 4 in SDD. The fact that something is present, but can be erroneously overlooked is considered so general that is is not part of data coding, but instead should be part of the reasoning of the query or identification method. Thus treat 4 simply as Lucid-score 1. -- <em>(If anybody disagrees on this, and can provide examples or scenarios, it would be an urgent issue to fix!)</em>
+d156 1
+a156 1
+I have just recently created a working version of a LIF (Lucid Interchange Format) to SDD converter. It is a work in progress that shall be updated as the SDD standards change. It can be found at http://uio.mbl.edu/SDD/converter.php . The user can upload a LIF from their computer to convert, they can enter a URL (web address) of a LIF file somewhere on the web, or they can choose one of the sample LIF files that we provide to test the conversion process. Be aware that we are not taxonomists, so the keys that we provide are not very detailed and may not use all the proper taxonomic vocabulary. 
+d162 1
+a162 1
+-- Main.PatrickLeary - 10 Jun 2004 @
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1145548329" format="1.0" version="1.7"}%
+d28 2
+a29 2
+4 - present but may be misinterpreted as absent%BR%
+5 - absent but may be misinterpreted as present%BR%
+d33 3
+d41 4
+a44 4
+	* "extreme upper" = SDD: Max
+	* "normal upper" = SDD: <nop>UMethUpper 
+	* "normal lower" = SDD: <nop>UMethLower
+	* "extreme lower" = SDD: Min
+d50 15
+a64 15
+		<QuantitativeCharacter id="2">
+		  <Representation><Label>Leaf length</Label></Representation>
+		  <MeasurementUnit><Label role="abbrev">m</Label></MeasurementUnit>
+		  <Default>
+			 <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
+		  </Default>
+		</QuantitativeCharacter>
+			 ...
+			 <Quantitative ref="2">
+				<Measure type="Min" value="2.3"/>
+				<Measure type="UMethLower" value="3.2"/>
+				<Measure type="UMethUpper" value="7.1"/>
+				<Measure type="Max" value="7.9"/>
+				<MeasurementUnit><InternationalAbbreviation>cm</InternationalAbbreviation></MeasurementUnit>
+			 </Quantitative>
+d78 16
+a93 16
+		<CategoricalCharacter id="1">
+		  <Representation><Label> Leaf complexity</Label></Representation>
+		  <States>
+			 <StateDefinition id="1">
+				<Representation><Label>Simple</Label></Representation>
+			 </StateDefinition>
+			 <StateDefinition id="2">
+				<Representation><Label>Compound</Label></Representation>
+			 </StateDefinition>
+		  </States>
+		</CategoricalCharacter>
+		 ...
+		 Then used in descriptions like:
+		<Categorical ref="1">
+		  <State ref="1"/>
+		</Categorical>
+d101 1
+a101 1
+	* A frequency modifier "rare" to be defined in Terminology/Modifiers which would be added for states scored as 3 (see SDD example file Modifier id="22"). Example for the application of this in a description:
+d103 5
+a107 5
+			<CodedDescription id="1"><Header><ClassName ref="1"/></Header>
+			<SummaryData>
+			  <Categorical ref="2"><State ref="3"><Modifier ref="22"/></State><State ref="4"/></Categorical>
+			  <Categorical ref="3"><State ref="1"/></Categorical>
+			...
+d110 3
+a112 3
+	* An expression that a state value is unknown. In SDD this requires a distinction:
+		* In Lucid LIF all states of a character are unknown and thus the character value itself is unknown. The SDD feature <nop>CodingStatus (status of the character) defines whether a property of an object is unknown (see Terminoloy/General/<nop>CodingStatusValues, e. g. in the SDD example files: <nop>CodingStatus id="2" debugkey="Unknown"). SDD does distinguish between various levels of unknown, especially whether this is not yet coded, or whether it is logically impossible to code (= not applicable), or whether information has been researched, but not readily available. These distinctions are irrelevant when using data for identification, but important when building large datasets, especially collaboratively.
+		* In Lucid some states are coded and others marked as unknown. This may either occur if the supplier of information has studied a feature, but knows that some conditions are rare and realizes that her or his sampling was insufficient, or may be the result of a poorly defined character (in which the states are not truly related, and a state frequency distribution would have no meaning). The way to express the mixed situation in SDD is to say it is "perhaps this state". Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier id="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+d114 5
+a118 5
+			<CodedDescription id="1"><Header><ClassName ref="1"/></Header>
+			<SummaryData>
+			  <Categorical ref="2"><State ref="1"><Modifier ref="41"/></State><State ref="3"/><State ref="4"/></Categorical>
+			  <Categorical ref="2"><State ref="5"/></Categorical>
+			...
+d120 1
+a120 1
+		* Note that the above looks more complicated than the Frequency example, since Certainty modifiers apply to all states in a Categorical data element. The element itself may, however, be repeated. This may seem an unnecessary complication. It was chosen because Certainty modifiers apply in principle to all character types, including quantitative, measured color ranges, or future character types like molecular patterns.
+d122 1
+a122 1
+	* A certainty modifier with the special flag Specification/IsTrueByMisinterpretation set to true (see Modifier id="42"). This is to be used for Lucid value 5. Example:
+d124 5
+a128 5
+	<CodedDescription id="101"><Header><ClassName ref="1"/></Header>
+	  <SummaryData>
+		 <Character ref="1">
+			<State ref="1"><Modifier ref="42"/></State>
+		 </Character>
+d130 2
+a131 2
+	* There is no equivalent to Lucid value 4 in SDD. The fact that something is present, but can be erroneously overlooked is considered so general that is is not part of data coding, but instead should be part of the reasoning of the query or identification method. Thus treat 4 simply as Lucid-score 1. -- <em>(If anybody disagrees on this, and can provide examples or scenarios, it would be an urgent issue to fix!)</em>
+	* Appropriate statistical measures for the metric data. (See the discussion above!)
+d160 1
+a160 2
+-- Main.PatrickLeary - 10 Jun 2004 
+
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1092840232" format="1.0" version="1.6"}%
+d3 156
+a158 161
+This topic originated from the discussions in UBioXidDevelopment about how to convert Lucid LIF data to SDD. The main points from the discussion are summarized here. <strong style="color:green">Please feel free to add/correct the text below directly rathen than, as usual, add your comments at the end. Simply add yourself to the list of contributors!</strong>
+
+---
+
+<h3>Description matrix</h3>
+
+The matrix information of the Lucid-style .LIF file should go into "<nop>CodedDescriptions" section of SDD. Example of the matrix section of our .LIF to atlantic tunas: 
+
+<verbatim>
+[..Main Data (txs)..]
+6100000100001100100010000011111
+6010000010001010010010000101110
+6001000100001001010010000131110
+6001000100010100001001000101100
+6001000001001010100000101000000
+6000100100001010000100100101000
+6000010100001010001000310101100
+6000001000101010000100100101000
+</verbatim>
+
+This matrix scores taxa by rows and states by columns. Lucid scores taxon under the following scheme:%BR%
+0 - absent%BR%
+1 - present%BR%
+2 - unknown%BR%
+3 - rare%BR%
+4 - present but may be misinterpreted as absent%BR%
+5 - absent but may be misinterpreted as present%BR%
+6 - metric data
+
+
+<strong>Quantitative/numerical data</strong>
+
+In LIF, values are to be used only for metric data (Lucid-type 6). In Lucid, metric data is not entered as a single value, but instead there are parameters for extreme upper, normal upper, normal lower, and extreme lower values. So, for one metric state/taxon pair, there are four metric values to be entered. 
+
+SDD support a much larger number of statistical measures, including variance or sample size for true sampling data. A recommended mapping of Lucid parameters to SDD statistical measure codes follows:
+	* "extreme upper" = SDD: Max
+	* "normal upper" = SDD: <nop>UnknownMethUpper 
+	* "normal lower" = SDD: <nop>UnknownMethLower
+	* "extreme lower" = SDD: Min
+
+The "unknown method" in the name refers to the fact that for Lucid data the kind of interval is not known. It may be a statistical range (Interquartile, mean plus/minus standard deviation, 95% confidence interval for mean, etc.) or it may be a human estimate of what is considered a "normal" range. For the latter, SDD provides the codes "ObserverEstUpper/Lower".
+
+To use a quantitative character in SDD, an element with name "QuantitativeCharacter" must be added to Terminology/Characters (this defines a character id value, a label; but not the measures). To add character data to the description, add an "Quantitative" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+<verbatim>
+			 <QuantitativeCharacter id="2">
+				<Label><Representation language="en"><Text>Leaf length</Text></Representation></Label>
+				<Assumptions><MeasurementScale>ratio</MeasurementScale></Assumptions>
+				<RecommendedMeasurementUnit><InternationalAbbreviation>mm</InternationalAbbreviation></RecommendedMeasurementUnit>
+			 </QuantitativeCharacter>
+			 ...
+			 <Quantitative ref="2">
+				<Measure ref="Min" value="2.3"/>
+				<Measure ref="UnknownMethLower" value="3.2"/>
+				<Measure ref="UnknownMethUpper" value="7.1"/>
+				<Measure ref="Max" value="7.9"/>
+				<MeasurementUnit><InternationalAbbreviation>cm</InternationalAbbreviation></MeasurementUnit>
+			 </Quantitative>
+</verbatim>
+
+Note that the measurement unit can either be expressed at the character definition, or at the character data. A unit in data overrides the unit in definition, but the unit in definition applies to all data not definíng a deviating unit.
+
+
+<strong>Categorical data</strong>
+
+SDD uses a character based scheme and only positive statements about values or categories are made. A character can be viewed as an analysis variable in statistical data analysis, which, however, may contain a list or set of values. For most purposes of identification processes this is conveniently expressed in a taxon x state matrix like in Lucid. However, many things can not or only poorly be expressed in that way (for example an image relating to a entire character, an entire character being inapplicable, or a text note on a character that has been studied).
+
+In SDD, a character therefore either has a status value (unknown, inapplicable etc.) or, if categorical, it has a list of states scored as present. The absence of a state is implicit, provided that the character has been scored at all. If the character is not listed at all, this is roughly equivalent to the status "unknown". This design is resilient against defining new characters while data are already scored. Lucid LIF statements about state being absent are redundant in SDD and 0 needs no representation. 
+
+To use a categorical character in SDD, an element with name "CategoricalCharacter" must be added to Terminology/Characters (this defines a character id value, a label, and the states). To add character data to the description, add an "Categorical" element to <nop>CodedDescription/SummaryData, containing a ref to the Character "id" attribute. This may look like:
+<verbatim>
+			 <CategoricalCharacter id="1">
+				<Label><Representation language="en"><Text>Leaf complexity</Text></Representation></Label>
+				<Assumptions><MeasurementScale>nominal</MeasurementScale></Assumptions>
+				<States>
+				  <StateDefinition id="1">
+					 <Label><Representation language="en"><Text>Simple</Text></Representation></Label>
+				  </StateDefinition>
+				  <StateDefinition id="2">
+					 <Label><Representation language="en" ><Text>Compound</Text></Representation></Label>
+				  </StateDefinition>
+				</States>
+			 </CategoricalCharacter>
+			 ...
+			 <Categorical ref="1">
+				 <State ref="1"/>
+			 </Categorical>
+</verbatim>
+
+
+<strong>Categorical data with modifiers</strong>
+
+Several Lucid scores (2-5) are expressed in SDD in the form of modifiers. We need:
+
+	* A frequency modifier "rare" to be defined in Terminology/Modifiers which would be added for states scored as 3 (see SDD example file Modifier id="22"). Example for the application of this in a description:
+<verbatim>
+			<CodedDescription id="1"><Header><ClassName ref="1"/></Header>
+			<SummaryData>
+			  <Categorical ref="2"><State ref="3"><Frequency ref="22"/></State><State ref="4"/></Categorical>
+			  <Categorical ref="3"><State ref="1"/></Categorical>
+			...
+</verbatim>
+
+	* An expression that a state value is unknown. In SDD this requires a distinction:
+		* In Lucid LIF all states of a character are unknown and thus the character value itself is unknown. The SDD feature <nop>CodingStatus (status of the character) defines whether a property of an object is unknown (see Terminoloy/General/<nop>CodingStatusValues, e. g. in the SDD example files: <nop>CodingStatus id="2" debugkey="Unknown"). SDD does distinguish between various levels of unknown, especially whether this is not yet coded, or whether it is logically impossible to code (= not applicable), or whether information has been researched, but not readily available. These distinctions are irrelevant when using data for identification, but important when building large datasets, especially collaboratively.
+		* In Lucid some states are coded and others marked as unknown. This may either occur if the supplier of information has studied a feature, but knows that some conditions are rare and realizes that her or his sampling was insufficient, or may be the result of a poorly defined character (in which the states are not truly related, and a state frequency distribution would have no meaning). The way to express the mixed situation in SDD is to say it is "perhaps this state". Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier id="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+<verbatim>
+			<CodedDescription id="1"><Header><ClassName ref="1"/></Header>
+			<SummaryData>
+			  <Categorical ref="2"><Modifiers><Certainty ref="41" /></Modifiers><State ref="3"/><State ref="4"/></Categorical>
+			  <Categorical ref="2"><State ref="5"/></Categorical>
+			...
+</verbatim>
+		* Note that the above looks more complicated than the Frequency example, since Certainty modifiers apply to all states in a Categorical data element. The element itself may, however, be repeated. This may seem an unnecessary complication. It was chosen because Certainty modifiers apply in principle to all character types, including quantitative, measured color ranges, or future character types like molecular patterns.
+
+	* A certainty modifier with the special flag Specification/IsTrueByMisinterpretation set to true (see Modifier id="42"). This is to be used for Lucid value 5. Example:
+<verbatim>
+	<CodedDescription id="101"><Header><ClassName ref="1"/></Header>
+	  <CodedData>
+		 <Character ref="1">
+			<State ref="1"><Certainty ref="42"/></State>
+		 </Character>
+</verbatim>
+	* There is no equivalent to Lucid value 4 in SDD. The fact that something is present, but can be erroneously overlooked is considered so general that is is not part of data coding, but instead should be part of the reasoning of the query or identification method. Thus treat 4 simply as Lucid-score 1. -- <em>(If anybody disagrees on this, and can provide examples or scenarios, it would be an urgent issue to fix!)</em>
+	* Appropriate statistical measures for the metric data. (See the discussion above!)
+
+---
+
+<h3>Images</h3>
+
+Note that descriptions may be associated with images or formatted documents (or even video/audio). You can add a <nop>MediaResource ref in the description (we consider illustrations of the entire taxon part of description, not part of the taxon name). <nop>MediaResources/MediaResource can occur in the <nop>CodedDescription itself (after the Header) or in a specific character (if the image only applies to this). After defining a <nop>MediaResource in <nop>ExternalDataInterface:
+<verbatim>
+<MediaResource id="125">
+  <Label><Representation language="en"><Text>Melampsora evonymi-caprearum</Text></Representation></Label>
+  <!-- Label is required, but if the source provides no separate title or description of a resource, the url may be used here as well -->
+  <Link><URL>www.xxx.org/img/Melampsora_evonymi-caprearum.png</URL></Link>
+  <Type>Image</Type>
+  <Caption><!-- Caption is optional -->
+	 <Representation language="fr"><Text><i>Melampsora evonymi-caprearum</i> Kleb., stade II sur <i>Salix caprea</i>L.</Text></Representation>
+	 <Representation language="de"><Text><i>Melampsora evonymi-caprearum</i> Kleb., Sporenstadium II auf <i>Salix caprea</i> L.</Text></Representation>
+	 <Representation language="en"><Text><i>Melampsora evonymi-caprearum</i> Kleb., spore stage II on <i>Salix caprea</i> L.</Text></Representation>
+  </Caption>
+</MediaResource>
+</verbatim>
+you can refer to such resources for the entire description like:
+<verbatim>
+<CodedDescription id="101">
+  <Header><ClassName ref="1"/></Header>
+  <MediaResources><MediaResource ref="123"/><MediaResource ref="124"/></MediaResources>
+  ...
+</verbatim>
+
+-- Main.GregorHagedorn, Main.PatrickLeary - 7 Jun 2004 to 18. August 2004
+---
+
+I have just recently created a working version of a LIF (Lucid Interchange Format) to SDD converter. It is a work in progress that shall be updated as the SDD standards change. It can be found at http://uio.mbl.edu/SDD/converter.php . The user can upload a LIF from their computer to convert, they can enter a URL (web address) of a LIF file somewhere on the web, or they can choose one of the sample LIF files that we provide to test the conversion process. Be aware that we are not taxonomists, so the keys that we provide are not very detailed and may not use all the proper taxonomic vocabulary. 
+
+We would be very interested to test a complete and thorough key made by a specialist, as that is the audience we are appealing to. If you have a key you would like to let us use to test our software, or even use as a demonstration key, you can e-mail me at pleary@@mbl.edu. 
+
+I would love to hear your comments and suggestions for changes to this converter, and I hope you can find it useful.
+
+-- Main.PatrickLeary - 10 Jun 2004 
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1092823983" format="1.0" version="1.5"}%
+d5 2
+d23 1
+a23 1
+Lucid scores taxon under the following scheme:%BR%
+a31 1
+This matrix scores taxa by rows and states by columns. For each taxon, the values of each state in their respective character are output to <nop>CodedDescriptions 
+d33 33
+a65 1
+SDD uses a character based scheme and only positive statements about values or categories are made. The absence of a state is implicit, provided that the character has been scored at all. Thus the statements about state absent are redundant and 0 needs no representation in SDD. 
+d67 1
+a67 2
+Values are to be used only for metric data (Lucid-type 6). In Lucid, metric data is not entered as a single value, but instead there are parameters for extreme upper, normal upper, normal lower, and extreme lower values. So, for one metric state/taxon pair, there are four metric values to be entered. 
+	* [In SDD you define any number of statistical measures, including these. The Lucids ones are equivalent to "Maximum value", "Undefined upper limit (legacy data)", "Undefined lower limit (legacy data)" and "Minimum value".  -- Main.GregorHagedorn - 
+d69 24
+a92 1
+---
+d94 1
+a94 1
+So to map LIF to SDD, we need: 
+d115 1
+a115 1
+		* Note that the above looks more complicated than the Frequency example
+d128 1
+d137 1
+a137 1
+  <ObjectLink><URL>www.xxx.org/img/Melampsora_evonymi-caprearum.png</URL></ObjectLink>
+d154 2
+a156 5
+Minor point: the audience should always correspond to the audiencekey defined in the top of the file. The audience of a Lucid file has to be guessed or asked from the person running the conversion process.
+
+
+-- Main.GregorHagedorn, Main.PatrickLeary - 7-10 Jun 2004
+---
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1092751020" format="1.0" version="1.4"}%
+d34 4
+a37 2
+Values are to be used only for metric data (Lucid-type 6). In Lucid, metric data is not entered as a single value, but instead there are parameters. There are extreme upper, normal upper, normal lower, and extreme lower values. So, for one metric state/taxon pair, there are four metric values to be entered. 
+	* [In SDD you define any number of statistical measures, including these. The Lucids ones are equivalent to "Maximum value", "Undefined upper limit (legacy data)", "Undefined lower limit (legacy data)" and "Minimum value". The general stuff is defined in GeneralDeclarations, see example file, and then in a character measures are defined in <nop>Character/Numerical/StatisticalMeasures. There a key is defined that is to be coded descriptions, and a keyref that points to the general semantics in <nop>GeneralDeclarations/UnivariateStatisticalMeasures. You can copy the definition you need from the example file (the general, not the simplified XID). However, Two problems here: a) I have removed numerics support in the XID schema to simplify getting into SDD for you. So when you want to use numerics, you have to use the full version. b) The current SDD version is undecided about how exactly this should be supported, so expect limited changes here.] -- Main.GregorHagedorn - 07 Jun 2004
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086942306" format="1.0" version="1.3"}%
+d38 2
+a39 1
+	* An expression that a state is unknown. Note that in SDD a feature <nop>CodingStatus exists, which defines whether a property of an object is unknown (see e.g. <nop>GeneralDeclarations in the SDD example files: <nop>CodingStatus key="2" debugkey="Unknown"). However, this differs from the fact that a specific state is unknown. The way to express this in SDD is to say it is "perhaps" this state. Example: the Lucid statement "flower elliptic, unknown whether ovatate" is in SDD interpreted as  "flower elliptic, perhaps ovatate". Thus we first need to define in Terminology/Modifiers a Certainty modifier for perhaps: (see Modifier key="41" in the SDD_tech.xml example file). Example for the application of this in a description:
+d41 5
+a45 5
+	<CodedDescription key="101"><Header><ClassName ref="1"/></Header>
+	  <CodedData>
+		 <Character ref="1">
+			<State ref="1"><Certainty ref="41"/></State>
+		 </Character>
+d48 3
+a50 1
+	* A frequency modifier rare to be defined in Terminology/Modifiers which would be added for states scored as 3 (see SDD example file Modifier key="22"). Example for the application of this in a description:
+d52 5
+a56 5
+	<CodedDescription key="101"><Header><ClassName ref="1"/></Header>
+	  <CodedData>
+		 <Character ref="1">
+			<State ref="1"><Frequency ref="22"/></State>
+		 </Character>
+d58 3
+a60 1
+	* A certainty modifier with the special flag Specification/IsTrueByMisinterpretation set to true (see Modifier key="42"). This is to be used for Lucid value 5. Example:
+d62 1
+a62 1
+	<CodedDescription key="101"><Header><ClassName ref="1"/></Header>
+d76 1
+a76 1
+<MediaResource key="125">
+d90 1
+a90 1
+<CodedDescription key="101">
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="PatrickLeary" date="1086889380" format="1.0" version="1.2"}%
+d3 3
+a5 1
+This topic originated from the discussions in UBioXidDevelopment about how to convert Lucid LIF data to SDD. The main points from the discussion are summarized here:
+d9 11
+a19 9
+[..Main Data (txs)..]%BR%
+6100000100001100100010000011111%BR%
+6010000010001010010010000101110%BR%
+6001000100001001010010000131110%BR%
+6001000100010100001001000101100%BR%
+6001000001001010100000101000000%BR%
+6000100100001010000100100101000%BR%
+6000010100001010001000310101100%BR%
+6000001000101010000100100101000%BR%
+d22 7
+a28 7
+0-absent%BR%
+1-present%BR%
+2-unknown%BR%
+3-rare%BR%
+4-present but may be misinterpreted as absent%BR%
+5-absent but may be misinterpreted as present%BR%
+6-metric data
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086821146" format="1.0" version="1.1"}%
+d93 7
+@

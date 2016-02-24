@@ -1,0 +1,763 @@
+head	1.15;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.15
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2006.05.08.10.34.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.12.16.14.01.29;	author TrevorPaterson;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.12.15.10.13.16;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.12.14.16.15.28;	author SallyHinchcliffe;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.12.13.14.21.01;	author TrevorPaterson;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.12.13.11.16.51;	author TrevorPaterson;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.12.10.16.06.33;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.12.09.12.32.15;	author TrevorPaterson;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.12.06.17.32.22;	author TrevorPaterson;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.12.02.12.56.45;	author TrevorPaterson;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.12.02.10.38.24;	author TrevorPaterson;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.12.01.16.20.15;	author TrevorPaterson;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.12.01.11.03.39;	author TrevorPaterson;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.11.30.14.37.11;	author TrevorPaterson;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.15
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147084443" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="LinneanCoreExampleNames"}%
+<font color="darkred">Napier TCS team has started looking at these Botanical Name examples from Sally to see if we can represent the Nomenclatural relations in TCS, and what problems remain. We are currently using the ABCD Name structure in TCS - which causes some problems, and would hope to use a better Name representation. We also have a bit of difficulty mapping the publication fields to RP's endnote style fields, and again would like a better (easier?) citation record representation.
+
+NOTE on the XML representations compliant with the TCS XML Schema: [[http://tdwg.napier.ac.uk/tcml/v088.xsd TCS v088.xsd]] uses the ABCD <nop>NameDetailed structure to hold Names used in concepts; we are currently experimenting with using parts of the <nop>LinneanCore schema within the TCS:NameDetailed element, creating [[http://tdwg.napier.ac.uk/tcml/v090.xsd TCS_LC v090.xsd]] (using an editted version of [[http://tdwg.napier.ac.uk/tcml/lc015_napier1.xsd LC Schema]]). The TCS approach probably does not require all the elements/fields of <nop>LinneanCore, as much of the information represented in a <nop>LinneanCore Name object would be represented by realtionships between Concepts in the TCS model. TCS may, however, require some further or alternative fields (for example to hold the year  value for a Name Author). </font>
+
+-- Main.TrevorPaterson - 30 Nov 2004 after UBIF.LinneanCoreExampleNames  -- Main.SallyHinchcliffe -- 03 Nov 2004 -- <no]p>PaulKirk  and Main.GregorHagedorn  -- 8 Nov 2004 
+
+
+  i <b>Family:</b>
+<font color="blue"> view our TCS compliant [[http://www.prometheusdb.org/download/FamilyNameExamples.xml XML(ABCD)]] for these examples (and also TCS_LC [[http://www.prometheusdb.org/download/FamilyNameExamples_LC.xml XML(LC)]] examples).   </font>
+      1 <i>Acmopyleaceae</i> (Pilg.) A. P. Melikyan & A.V.Bobrov - in Proc. Internat. Conf. Pl. Anat. & Morphology, St. Petersburg, 1997: 93 (1997): <b>basionym:</b> Acmopyleaceae subfam. Acmopyleoideae
+        <font color="darkred">APPROACH: needs two _Original_ Concepts with a relation 'has basionym' between them. The Concept for the basionym merely contains the <nop>NameSimple string 'Acmopyleaceae subfam. Acmopyleoideae', and is of Rank 'subfamily'. We are a bit confused about this name - as we had been led to believe that it would be represented by the string 'Acmopyleoideae', (which could be related to the parent family 'Acmopyleaceae' by creating a further concept and a classification relationship).</font> 
+         * I think the name of the subfamily alone is canonical, adding the name of the family is redundant but common. As usual I am confused about the TCS concept types. If the basionym record does not contain anything more than the name string (i.e. not even a publication) than why is it Original type rather than incomplete or nominal type? -- Gregor, 10.12.2004
+         * Touche - in this case the information to make a meaningful original concept for the basionym is missing - so it should be flagged as of type 'incomplete' ( if we had a bit more information we could make the original concept - i.e. the according to ) -- Main.TrevorPaterson - 13 Dec 2004
+      2 <i>Alzateaceae</i> S.A.Graham - Ann. Missouri Bot. Gard. 71 (3): 775 (1984 publ. 1985). <font color="darkred">APPROACH: only problem seems to be representing the two publication dates ? maybe solved by a better Publication structure ? <nop>AlexandriaCore </font>
+         * Current <nop>AlexandriaCore support both the year on publication and true publication date. However, it is valid criticism of LC whether this would not have to be duplicated inside LC to avoid too much of a dependency. I have no clear view whether the decoupling or avoiding redundancy is more important. -- Gregor, 10.12.2004
+      3 <i>Argophyllaceae</i> (Engler) A.Takhtadzhyan - Sistema Magnoliofitov (Systema Magnoliophytorum): 208 (1987) <b>basionym:</b> Saxifragaceae trib. Argophylleae  <font color="darkred">APPROACH: similar to first example.</font>
+      4 <i>Asteraceae</i> Martinov -  Tekhno-Bot. Slovar 55. 1820 <b>remarks:</b> nom. alt.: Compositae. <font color="darkred">APPROACH: similar to first example: but relationship is 'has replaced synonym' or similar...</font>
+
+
+   ii <b>Infra familial:</b> (all examples taken from Orchidaceae)
+<font color="blue"> view our [[http://www.prometheusdb.org/download/InfraFamilyNameExamples.xml XML(ABCD)]] and [[http://www.prometheusdb.org/download/InfraFamilyNameExamples_LC.xml XML(LC)]] for these examples. </font>
+<font color="darkred">APPROACH: for these three examples quite straightforward, an original concept for 'Bletideae' in example 2 has very little information, whilst that for Codornorchideae is much more detailed. The information that these are all members of Orchidaceae is not part of the name - but would be captured with a taxonomic classification relation.</font>
+      1 subtrib. <i>Anthogoniinae</i> S. C. Chen , Z. H. Tsi & G. H. Zhu - in Acta Phytotax. Sin., 37(2): 116 (1999). 
+      2 trib. <i>Bletieae</i> Benth. - Fl. Austral. 6: 270, 302. 1873 [23 Sep 1873] <b>remarks:</b> as "Bletideae"
+      3 subfam. <i>Codonorchidoideae</i> (P. J. Cribb) M.A.Clem. & D.L.Jones - Orchadian 13(10): 439 (30 Jan. 2002). <b>basionym:</b> Orchidaceae trib. Codonorchideae P. J. Cribb - in Lindleyana, 15(3): 169 (2000). 
+
+   iii <b>Genera:</b>
+<font color="darkred"> APPROACH: TCS considers the family classification of genera not to be part of the name, and would represent the family classification by a 'is child of' relationship to a concept for a family. As suggested in the examples, if this classification is made by IPNI it would be recorded appropriately. It would be up to the data provider to decide whether they were providing an original concept according to the Author of the Name (and linked to a family by an IPNI relationship), or a Revision concept according to IPNI, whose definition included membership of a family. These relationships are probably not of interest from a nomenclaturist's standpoint, who requires a representation of the original concept for the first use/definition of the name.</font>
+         * Would the relationship to a family according to IPNI have to be "sec. IPNI"? And *would IPNI have to deliver two record for each name*, one sec. original author, one revision to express the family? -- Gregor, 10.12.2004
+         * I think IPNI could decide what they are representing: are they creating original concepts as defined by the original authors of those concepts and then putting them into IPNIs classification (then we have (A) original concept <nop>AccordingTo oldguy, <nop>RelationshipAssertion 'is child of' taxonconcept, <nop>AccordingTo IPNI, where the parent concept may be IPNIs or someone else's.) Or IPNI could deliver revision concepts which include the clasfication relationships as part of the concpt definition; and yes in this case they would probably be delivering two concepts (1) the original (2) IPNIs revision which refers to the original, bur now includes classification information. -- Main.TrevorPaterson - 13 Dec 2004
+         * speaking for IPNI - our family classifications are rather 'accidental' and don't express anything that coherent. It could code one of two things - either what family was considered correct according to the institution entering the data at the time -OR it could indicate which family the author had put the genus in. The former is IPNI's classification, the latter, part of the original author's classification. Either way it doesn't belong in LC, and the canonical name (and the label) should NOT include it. (nor for Infrafamilial as well) -- Main.SallyHinchcliffe - 14 Dec 2004
+
+      1 <i>Cuenotia</i> Rizzini - Dusenia 7: 303. 1956 <b>family (acc. to IPNI)</b> Acanthaceae <font color="darkred">APPROACH: In our [[http://www.prometheusdb.org/download/Cuenotia.xml XML(ABCD)]] (or [[http://www.prometheusdb.org/download/Cuenotia_LC.xml XML(LC)]]) for this example we have chosen to represent Rizzini's original concept for Cuenotia, and an original concept authored by IPNI for the family Acanthaceae. We have related the concepts in two (alternative) ways (i) by including the relationship 'has 'child' Cuenotia in the definiton of Acanthaceae, or (ii) by a 'third party' taxonomic assertion that Cuenotia is a child of Acanthaceae.</font>
+      2 x <i>Carruanthophyllum</i> G. D.Rowley - Name that Succulent: 200 (1980). <b>family (acc. to IPNI)</b> Aizoaceae. <b>Hybrid Parentage:</b> Aizoaceae <i>Machairophyllum</i> × Aizoaceae <i>Carruanthus</i> Schwantes ex N.E.Br. in Journ. Bot., Lond. lxvi. 325 (1928); vide Ingram in Baileya, xvi. 141 (1969).  <font color="darkred">Our approach to representing hybrids is tied to the ABCD Name structure. Each parent Genus is represented as an original concept, and the hybrid genus has relationships 'is hybrid child of' to each of those. We are not represnting classification of all of these as members of the Aizoaceae family. We are not sure what it means biologically to have a hybrid genus? Our attempted [[http://www.prometheusdb.org/download/hybridGenus.xml XML(ABCD)]] and [[http://www.prometheusdb.org/download/hybridGenus_LC.xml XML(LC)]] is shown.</font>
+         * To my knowledge, a hybrid genus is simply a hybrid of individuals from species from two different genera. THe biology of a hybrid species and a species in a hybrid genus is not really different, it is a question of opinion or phylogeny whether to distantly related species are in the same or different genera. However, the special hybrid genus name form is introduced to highlight this unusual case of hybridization across genera. -- Gregor, 10.12.2004
+
+      3 <i>Caesia</i> Vell. - Fl. Flum. 107 (1825); iii. t. 23 (1827). <b>family  acc.to IPNI:</b> Rhamnaceae <font color="darkred"> APPROACH: seems to be a similar example to 1.</font>
+      4 <i>Caesia</i> R.Br. - Prodromus Florae Novae Hollandiae 1810 <b>family acc. to IPNI</b> Liliaceae, or Anthericaceae, depending on what record you select ... <font color="darkred"> APPROACH: again seems to be a similar example to 1, but now with some confusion in the taxonomic relationships captured. these can be 'resolved' by relating the concept to separate concepts for both Liliaceae and Anthericaceae (which may be related to each other by some kind of synonymy assertion.</font>
+      5 <i>Calanticaria</i> (B. L. Rob. & Greenm.) E. E. Schill. &amp; Panero - Bot. J. Linn. Soc. 140(1): 73 (2002). <b>family acc. to IPNI:</b> Compositae (or Asteraceae if you prefer). <b>basionym:</b> Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm. <font color="darkred"> APPROACH:  similar example to iii.1, but now with basionym relationship as well (as in i.1). Again unsure of representing the name in the basionym concept: can hold full string  for the basionym name 'Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm.' of rank subgenus - but should it be simply 'Calanticaria B.L.Rob. & Greenm.' of rank subgenus?</font>
+
+
+   iv <b>Infrageneric:</b>
+      1 <i>Caesia</i> sect. <i>Crinagrostis</i> F.Muell. - Fragmenta Phytographiae Australiae 10 1877. <b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell. <font color="darkred"> This would seem to be a classification not nomenclatural issue. To represent the first use and definition of the name 'Crinagrostis F.Muell.' an original concept would be created with the Name 'Crinagrostis F.Muell.', <nop>AccordingTo 'F.Muell (1877)', of Rank 'section', possibly with a parent relationship to some genus concept named Caesia. (Again we are not sure about representing multiple Monomial strings such as 'Caesia sect. Cringrostis F.Muell.' as the Name of a single concept - though TCS could handle this if it is a correct interpretation.)</font>
+         * Any infrageneric/supraspecific taxa need the genus as part of their canonical name, else you would not have identity. Not sure that is what you are asking??? But the genus is name identity, as well as classification. See my attempt to discuss this in LinneanCoreDisentangle -- Gregor, 10.12.2004
+         * OK i missed some of the implications in this. The original concept resembles a species binomial: to represent the first use and definition of the name 'Caesia sect. Crinagrostis F.Muell.' an original concept would be created with the Name 'Caesia sect. Crinagrostis F.Muell.', <nop>AccordingTo 'F.Muell (1877)', of Rank 'section', (possibly with a parent relationship to some genus concept named Caesia). The rule seems to be for anything below Genus represent the whole name including Genus - is this true - are Suprageneric Genus' different? -- Main.TrevorPaterson - 13 Dec 2004
+         * Not sure if this has been disentangled but my idea in putting in the comment '<b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell.' was NOT to suggest that we include the family (i.e. to put in classification information) but to illustrate the problem of homonyms in the hope that any LC schema we came up with would handle it. In my opinion linking a child (Crinagrostis F.Muell) to the correct parent (Caesia R.Br. and not Caesia Vell.) is the job of the nomenclator and should be handled within LC by using a reference to the correct genus rather than just filling in the (ambiguous) genus name  -- Main.SallyHinchcliffe - 14 Dec 2004
+      2 <i>Cajanus</i> sect. <i>Cantharospermum</i> (Wight & Arn.) Benth. - Plantae Junghuhnianae enumeratio plantarum 1852 <b>family (acc. to IPNI)</b>Fabaceae.  <b>basionym:</b><i>Cantharospermum</i> Wight & Arn. - Prodromus Florae Peninsulae Indiae Orientalis 1 1834 <font color="darkred"> No new issues here: classification as member of Fabaceae is a TCS issue; classification as a section of Cajanus in the Name String is unresolved. </font>
+      3 <i>Calamagrostis</i> ser. <i>Muticae</i> Keng ex Keng f. - in Bull. Bot. Res. North-East. Forest. Inst., 4(3): 195 (1984). <b>family (acc. to IPNI):</b> Gramineae, or Poaceae if you prefer. <font color="darkred"> same issues</font>
+         * ... this was a slightly mischeivous example from me. Gramineae is a conserved name for Poaceae (or Poaceae is another way of saying Gramineae). It is one example where the same concept (those grassy things) has two names: Gramineae if you are old fashioned, and Poaceae if you like your family names to be consistent. As far as I know the differences between Gramineae and Poaceae are purely terminological, but a real botanist, taxonomist or nomenclaturalist may wish to differ. -- Main.SallyHinchcliffe - 14 Dec 2004
+         * I agree, for 8 vascular plant familes (Apiaceae/Umbelliferae, Arecaceae/Palmae, Asteraceae/Compositae, Brassicaceae/Cruciferae, Clusiaceae/Guttiferae, Fabaceae/Leguminosae, Lamiaceae/Labiatae, Poaceae/Gramineae) the code allows concurrent synonyms, none is preferred and usage differs widely. It is an exceptional case in the code - but extremely common in usage. In my mind this case is easier treated if the information model behind accepts that a "name object" or TCS concept may be related to multiple name-string variants. As far as I understand, TCS proposes to treat "<i>Poa alpina</i> L." and "<i>Poa alpina</i> Linne" and "<i>Poa alpina</i> Linné" and "<i>Poa alpina</i> Linneaeus" as separate records with separate ID, and then map relationships between them. My confusion is that I do not see how this scales, if we have several hundreds circumscription concepts (this number is my estimate for monographs and floras, not including checklists or ecological involving the species). Rather than only defining the relationships between the circumscription concepts, we have to multiply them out with the name variants, and draw relationships between them. -- Main.GregorHagedorn - 14 Dec 2004
+
+      4 <i>Calamagrostis</i> subgen. <i>Calamagrostis</i> Adans. - Feddes Repertorium Specierum Novarum Regni Vegetabilis 63 1961 <b>remarks: </b>This is an autonym, which APNI includes, but the other parts of IPNI does not. Should we  be dealing with them as well? <font color="darkred">  The name has clearly been introduced in an original publication, probably with a definition (even if implicitly just 'not Calamagrostis subgenus xyz') so can be validly represented with a TCS original concept. </font> 
+
+   v <b>Species:</b>
+      1 <i>Caesia spinosa</i> Vell. - Fl. Flum. 107 (1825); iii. t. 23 (1827). <b>Family (acc. to IPNI):</b> Rhamnaceae, so presumably a child of <i>Caesia</i> Vell., not <i>Caesia</i> R.Br. <font color="darkred"> again this seems to be only an issue of classification not nomenclature. The TCS schema probably needs a further 'relationship' type to capture a classification between any hierarchichal levels. i.e. species Y.z. 'is placed in' family X; otherwise we require to make the recursive relationships species Y.z. 'is child of' genus Y 'is child of' Family X. This relationship is obviously taxonomic not nomenclatural, alternative names for this relationship might be 'is member of', 'is child of (with incertae sedis)', 'is included in' (but we already use this for set-based relationships  <i>sensu </i> Koperski <i>et al.</i>).</font>
+      2 <i>Caesia spiralis</i> Endl. - Plantae Preissianae 2(1) 1848 <b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell. <font color="darkred"> again this seems to be only an issue of classification not nomenclature </font>
+         * I disagree, the issue Sally is mentioning is _which_ genus the species has been published in. This is not retrievable from the name string (genus authors are lacking, so genus has no identity), but is a question of nomenclature. Only one genus can be zoology.available = botany.valid, so whether the species has which status depends on the answer. Knowing this is essential to determine which is the correct name for an accepted character circumscription concept. -- Gregor, 10.12.2004
+         * Yes this was exactly my point (see my rather more longwinded explanation above -- Main.SallyHinchcliffe - 14 Dec 2004
+         * OK IPNI seems to include the concept Caesia Vell. from IndexKew. for completeness - to allow it to be noted as a replaced synonym for Cormonema. The original concept for Caesia Vell. is judged by the 'rules' to be invalid because the name has already been used for a different concept Caesi R.Br. This can be recorded as a relationship assertion: concept named Caesia Vell. is invalid name for Concept named Cormonema ( or as in IPNI, the reverse relationship 'Cormonema has synonym Caesia Vell.'): Because IPNI save the relationship in one direction, the Caesia Vell. concept is a dead end - only used as a synonym link - why would there be confusion about whether to use it or Caesia R.Br. - the original concept for Caesia R.Br. does not have an invalid assertion associated with it, and has been included in IPNIs classification.  i.e. Caesia spiralis is a child of Caesi R.Br., similarly Caesia spinosa Vell. is only used as a dead end synonym record for Cormonema spinosum. (IPNI has also classified Caesia Vell. and Caesia spinosa Vell. into Rhamnaceae.) The difficulties are obviously in trying to build the nomenclatural history from the modern standpoint - it may be easier for IPNI to include the 'invalid' relationship in their representation of Caesia Vell. - but then it really isnt the original concept they are representing - but a modern, IPNI concept.......TCS just treats the Name "<i>Caesia spiralis</i> Endl." as  string, the classification information for this concept is stored as relationships. We dont think you should store and try and retreive classification information in the string - of course because of this horrible binomial system the name was generated from the classification...hence the source of all confusion. TCS tries to disambiguate the meaning of the string as used in a concept by use of definitions and relationships, rather than by dissecting semantics in the string. If you want to know which genus or  family a species is classified in - look up the classification relationships. -- Main.TrevorPaterson 13 Dec 2004
+         * ...well, IPNI includes both Caesia Vell. and Caesia spinosa Vell. because they were published even though they oughtn't to have been (I believe in 1825 IPNI was not online so Vell. may not have been aware that R.Br. had got there first with his genus name) Both are invalid but they're out there and need to be recorded in IPNI so there's somewhere for us to say that the later homonym is invalid & for people to look at the names and not keep making the mistake. Somehow either LC or TCS has to handle the issue of the children of homonyms NOT by my implied method of looking at the family and guessing, but explicitly by reference to the id of the parent record the child is in. -- Main.SallyHinchcliffe - 14 Dec 2004
+      3 <i>Daboecia cantabrica</i> (Huds.) K.Koch - Dendrologie 2(1): 13 (1872). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <b>isonym: </b>Ericaceae Daboecia cantabrica (Huds.) Britten & Rendle List Brit. Seed.-Pl. Ferns 18 (1907). <font color="darkred"> This is straight forward to represent using three original concepts; Huds.'s is recorded as the basionym for Koch's; Britten and Rendle's is marked as a later Homonym of Huds.'s. (We dont have the relationship 'Isonym' or 'homotypic homonym' in our schema - but could add it if required). Note, to more accurately reflect the original concepts as (implicitly) defined when they were originally defined, Koch's can relate to the (earlier) basionym, but not the later isonym, so this relationship is stored in the isonym. A database system could traverse relations ineither direction, or implement this in a number of ways. Example [[http://www.prometheusdb.org/download/Isonym.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/Isonym_LC.xml XML(LC)]]. </font>
+      4 <i>Daboecia cantabrica</i> (Huds.) Britten & Rendle - List Brit. Seed.-Pl. Ferns 18 (1907). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <font color="darkred"> Because we have created these concepts for the previous example, creating the basionym relationship is simple. In the [[http://www.prometheusdb.org/download/Isonym.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/Isonym_LC.xml XML(LC)]] example I have included this as part of the definition of Britten and Rendle's concept. </font>
+      5 <i>Vaccinium cantabricum</i> Huds. - Fl. Angl. ed. I. 143. <b>family (acc. to IPNI):</b> Ericaceae <font color="darkred"> This is a classification not a Name: would need to relate the concept for  V.c. to one for Ericaceae.</font>
+      6 <i>Daboecia × scotica</i> D.<nop>McClintock - in Garden, 103(3): 116 (1978). <b>family (acc. to IPNI): </b>Ericaceae <b>Remarks: </b> Cultivation. (D. azoria x cantabrica) <font color="darkred"> My interpretation is that this is a hybrid, therefore would be represented by creating  an original concept having this Name, <nop>AccordingTo/referenced  <nop>McClintock, and with two 'is hybrid child of' relationships to concepts representing the parents species. The family relationship would also be stored by a relationship to an 'Ericaceae' concept.</font> 
+      7 <i>Dacryodes belemensis</i> Cuatrec. - Trop. Woods no. 106: 58. 1957 <b>family (acc. to IPNI):</b> Burseraceae <font color="darkred"> No new issues? Family: Buseraceae is a classification </font>
+      8 <i>Dacryodes peruviana</i> (Loes.) Lam. - Ann. Jard. Bot. Buitenzorg 42: 202. 1932 <b>family (acc. to IPNI):</b> Burseraceae <b>Basionym: </b>Burseraceae Pachylobus peruvianus Loes. Bot. Jahrb. Syst. 37: 569. 1906  <font color="darkred"> No new issues? but Burseraceae is not part of the name of the basionym - must be a classification too.</font>
+      9 x <i>Carruanthophyllum hybridum</i> (Haw.) G.D.Rowley - in Cact. Succ. J. Gr. Brit., 44(1): 2 (1982):. <b>family (acc. to IPNI)</b> Aizoaceae <b>basionym: </b>Aizoaceae Mesembryanthemum hybridum <font color="darkred"> No new issues? but Aizoaceae is not part of the name of the basionym - must be a classification too.</font>
+
+   vi <b>Infraspecific:</b>
+
+<font color="darkred"> The representation of infraspecific names is controlled by the Schema structure; whether ABCD or LinneanCore. All the other issues here would seem to be either relationships to basionyms or classifications of the type 'is placed in' Family (see v.1 above).</font>
+         * Would TCS *not* want to deal with the classification issue here? How shall a machine reason whether a subspecies belongs to which species (e.g. in the case of homonyms)? -- Gregor, 10.12.2004
+         * Machines can only 'reason' by applying algorithms to stored data. we store the data in relationships not in the name string. Do you want to store the information in a name string - in which case you are right  - you will never know whether you have the genus Caesia Vell. or Caesia R.Br. in a binomial string -- Main.TrevorPaterson - 13 Dec 2004
+         * I am not suggesting to derive it from the name string, but pointing out that TCS somewhat incorrectly treats this ONLY has an issue of hierarchy, and not also of the name. I can change many things in the hierarchy without changing the name, but if I change those parts of the hierarchy also embedded in the canonical name identity, without changing the name, I produce nonsense. -- Gregor, 10.12.2004
+         * OK - I've checked the latest version of LC &amp; the genus element within the CanonicalName element has a string (e.g. Caesia) and a property which is a reference (e.g. <i>this</i>Caesia and not <i>that</i>Caesia - or Caesia Vell. and not Caesia R.Br.). We put this in from the start to handle homonyms, and that's why I included lots of Homonym examples in my data, to try and bring this debate out. So the question is, are we sneaking some Concepts into our names by doing this? Or are we simply providing an unambiguous way of providing nomenclatural information that makes explicit what the binomial fails to do? My opinion is the latter ... -- Main.SallyHinchcliffe - 14 Dec 2004
+         * <font color="red">OK - we missed the significance of these 'ref' attributes for Genus and <nop>SpeciesEpithet- as they are not commented. It isn't clear what they reference....other instances of LC objects ie a Genus record, or a species record? would the only use of the <nop>SpeciesEpithet 'ref' be for subspecies?? TCS view is that this really is an issue of classification, the concept with the name  Caesia spinosa Vell. would have the relationship 'is child of' a concept for the genus with the name Caesia Vell. --Main.TrevorPaterson 16 Dec 2004</font>
+
+
+      1 <i>Dacryodes peruviana</i> (Loes.) Lam. var. <i>caroniensis</i> Cuatrec. - Trop. Woods no. 106: 61. 1957 
+         * Note these are non-canonical name strings. The canonical equivalent for above would be "<i>Dacryodes peruviana</i> var. <i>caroniensis</i> Cuatrec". If TCS wants to use the original name as used in the publication, where does the canonical name occur in TCS? Or reversely, if the database editors apply canonicalization rules to the name string as used in the publication, different editors may apply different rules (less in the redundant authorship example above than in grammatical corrections). I think TCS needs to define the expected behaviour. -- Gregor, 10.12.2004
+         * TCS is not 'using' names: it is an exchange schema to represent and transfer stored information as represented by the originators of the information. A schema can't/shouldn't try to automatically standardize information to some view according to a A.Scrutineer, unless the information then becomes 'accrding to A.Scrutineer'. It can be used to record A.Scrutineer's opinion on what a standard/valid name  for an earlier concept 'should' be.....people can then use this standard scrutinized concept as the source of the name in their work. If different scrutineers provide alternative representations relating back to the same original concept - we can then pick our favourite - ie the one according to our favourite scrutineer - or make an aggregate concept 'all of X,Y and Z' -- Main.TrevorPaterson 13Dec2004.
+
+      2 <i>Daboecia cantabrica</i> (Huds.) K.Koch subsp. <i>azorica</i> (Tutin & E.F.Warburg) <nop>McClintock - Bot. J. Linn. Soc. 101(3): 280 (1989):. <b>family (acc. to IPNI): </b>Ericaceae <b>basionym: </b>Ericaceae Daboecia azorica Tutin & E.F.Warb. in Journ. Bot. 1932, lxx. 12. 
+      3 <i>Daboecia cantabrica</i> (Huds.) K.Koch nothosubsp. <i>scotica</i> (D. C. <nop>McClint.) E.C.Nelson - in New Plantsman, 3(2): 84 (1996):. <b>family (acc. to IPNI): </b>Ericaceae <b>basionym: </b>Ericaceae Daboecia × scotica. (D. C. <nop>McClint.) 
+         * Note that this is a subspecific nothotaxon without information about the parents. I do not know myself whether there should be a "x" here or not... -- Gregor, 10.12.2004
+      4 <i>Poa alpina</i> L. subsp. <i>stefanovii</i> Fiserova - in Preslia, 46(3): 223 (1974). <b>family (acc. to IPNI):</b> Gramineae, or Poaceae if you prefer.
+
+---
+
+<h3>Fungi</h3>
+
+A few 'unusual' nomenclatural acts to mull over: from -- Paul Kirk (through Gregor Hagedorn)  -- 8 Nov 2004
+
+   1 <i>Opegrapha endoleuca</i> Nyl., (1855)<br/> Replaced synonym: <i>Opegrapha enteroleuca</i> Fée, 1827; Competing synonym: non <i>Opegrapha enteroleuca</i> Ach., 1814. This is a basic nom. nov. to replace a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=396387][(IF ref)]]. 
+      * <font color="darkred"> TCS can represent this by creation of three original concepts. The last concept (<nop>AccordingTo Nyl.) has as part of its definition a relationship 'is Nom.Nov.' to the concept of Fee. When Fee made his erroneous homonym concept - he presumably did not know or was ignoring that of Ach.; therefore Fee's concept has no relationships recorded about Ach or the later Nyl. concept. However we can record assertions linking (i) Fee 'is a later homonym of' Ach. and (ii) Fee 'has Nom.Nov.' Nyl. - these <nop>RelationshipAssertions are <nop>AccordingTo Nyl. see our TCS conformant [[http://www.prometheusdb.org/download/FungiNomNov.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/FungiNomNov_LC.xml XML(LC)]]</font>
+      * The distinction between original relationships and relationship assertion is good, but somewhat problematic in practice, in that I would guess most data providers do not know this. For some relationships this can be assumed (like basionym), if explicit knowledge is required by the code. The rest would go into assertions. Contrary to what you say however I see little chance to have the assertion according to Nyl. This is not a critique of TCS, but TCS has to discuss this and how to react as a provider. -- Gregor, 10.12.2004
+      * yes - i suspect that actually it will be simpler if  the assertions would belong /be made by the database provider, so that in the case of ITIS all the classification hierarchy relationships are according to ITIS, and all the synonym assertions pointing out to concepts not in 'their' classification are also according to ITIS. Correctly ascribing assertion relationships is proably only feasible (and worthwhil?) for new taxonomic work - where it is possible for the author to do this themeselves - it is proably not something that database aggregators would be interested in doing.-- Trevor 
+
+   2 <font color="darkred"> [3] </font><i>Cortinarius luteobrunneus</i> Peintner & M.M. Moser, Mycotaxon 81: 180 (2002)<br/> Replaced synonym: <font color="darkred"> [1] </font><i>Thaxterogaster leoninus</i> E. Horak, 1973; Competing synonym: non <font color="darkred"> [2] </font> <i>Cortinarius leoninus</i> (Velen.) G. Garnier, 1991. A basic nom. nov. to prevent creation of a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=484714][(IF ref)]]. <font color="darkred"> I think that this is esssentially the same as the previous example: three concepts are created 1,2 & 3 - the definition of 3 includes 'is Nom.Nov. of' 1. The assertion "1 'has Nom.Nov.' 3" can be recorded <nop>AccordingTo Peinter & Moser; but in this case 1 & 2 are not homonyms. I am not sure what if any relationship is needed to capture the fact that the existence of 2 blocks moving the epithet of 1 to 3. On reflection we probably need a relation 'Name is blocked by' in the TCS schema which would be part of the definition of concept 3: i.e. concept 3 - Name = <i>Cortinarius luteobrunneus</i> Peintner & M.M. Moser; <nop>AccordingTo Peintner & M.M. Moser (2002) (+ref); relationship 'is Nom.Nov. for' concept 1; relationship 'Name is blocked by' concept 2.</font>
+   3 <i>Nectria mauritiicola</i> (Henn.) Seifert & Samuels, in Seifert, Stud. Mycol. 27: 160 (1985)<br/> Basionym: <i>Corallomyces mauritiicola</i> Henn., 1904; Unavailable basionym and competing synonym: <i>Corallomyces elegans</i> Berk. & M.A. Curtis, 1853 non <i>Nectria elegans</i> Y. Yamam. & Maeda, 1957; Anamorph: <i>Rhizostilbella hibisci</i> (Pat.) Seifert 1985. A combination using a later synonym because the one which has priority cannot be used because the combination would create a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=104547][(IF ref)]].<font color="darkred"> A Possible TCS representation would be :</font>
+      * <font color="darkred">CONCEPT 1: <i>Corallomyces elegans</i> Berk. & M.A. Curtis, 1853 (sec. Berk. & M.A. Curtis, 1853) </font>
+      * <font color="darkred">CONCEPT 2: <i>Corallomyces mauritiicola</i> Henn., 1904 (sec. Henn. 1904) </font>
+      * <font color="darkred">CONCEPT 3: <i>Nectria elegans</i> Y. Yamam. & Maeda, 1957 (sec. Yamam & Maeda, 1957)</font>
+      * <font color="darkred">CONCEPT 4: <i>Rhizostilbella hibisci</i> (Pat.) Seifert 1985. 'is Anamorph of' [5] (sec. Seifert, 1985)</font>
+      * <font color="darkred">CONCEPT 5: <i>Nectria mauritiicola</i> (Henn.) Seifert & Samuels, in Seifert. ' is Comb.Nov. for' [1]; 'has basionym' [2]; 'Name is blocked by' [3]; 'is teleomorph of' [4] (sec. Seifert, 1985)</font>
+      * <font color="darkred">RELATIONSHIP 1: [2] 'is later homonym of' [1] (sec. Seifert, 1985)</font></br></br> <font color="darkred">NOTE: this uses two relations not (yet) in TCS: (i) 'is Comb.Nov. for' [we have 'is recombination of' which is probably equivalent ??)(ii)  'Name is blocked by'</font>
+   4 <i>Entoloma amplifolium</i> Hesler, (1967)<br/> Replaced synonym: <i>Pleuropus entoloma</i> Murrill, 1945; Competing synonym: <i>Entoloma entoloma</i>; ("tautonym prevention"). A nom. nov. to prevent a tautonym (note GH: tautonyms like "Bufo bufo" are ok in Zoology, but not in Botany). [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=330423][(IF ref)]]. <font color="darkred"> A Possible TCS representation would be :</font>
+      * <font color="darkred">CONCEPT 1: <i>Pleuropus entoloma</i> Murrill, 1945(sec. Murrill, 1945) </font>
+      * <font color="darkred">CONCEPT 2: <i>Entoloma entoloma</i> 'has basionym' [1]; (sec. Hesler, 1967 ??)</font>
+      * <font color="darkred">CONCEPT 3: <i>Entoloma amplifolium</i> Hesler, (1967)  'has rejected name' [2]; 'is Comb.Nov. for' [1]; 'is nom.nov. for' [1]; (sec. Hesler, 1967)</font></br></br> <font color="darkred">NOTE: is concept 2 like a dummy concept? - i.e. never really created other than to record the fact that it would have been a name if not a tautonym. Or would there be no need ever to represent this invalid and unused name? The name of [3] seems to be both a new name and a new combination  - are these both recorded?</font>
+   5 <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888)<br/> Replaced synonym: <i>Ptychogaster albus</i> Richon; Competing synonym: <i>Ceriomyces albus</i> var. <i>albus</i>; ("autonym creation prevention"). A nom. nov. to prevent creation of a homotypic autonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=187612][(IF ref)]]. <font color="darkred"> A Possible TCS representation would be :</font>
+      * <font color="darkred">CONCEPT 1: <i>Ptychogaster albus</i> Richon (sec. Richon) </font>
+      * <font color="darkred">CONCEPT 2: <i>Ceriomyces albus</i> var. <i>albus</i>;  (sec. Hesler, 1967 ??)</font>
+      * <font color="darkred">CONCEPT 3: <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888) 'is comb.nov. for' [1]; 'is nom.nov. for' [1]; 'Name is blocked by' [2](sec. Sacc., 1888)</font></br></br> <font color="darkred">NOTE: is concept 2 like a dummy concept? - i.e. never really created other than to record the fact that it would have been a name if not a tautonym. Or - further confusion for me - I read elsewhere (UBIF.LCNameAuthorshipConventions) that creating a variety in a species automatically creates an autonym variety - i.e. <i>Ceriomyces albus</i> var. <i>albus</i>: so is this actually (or implicitly) created by the creation of <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888)? And presumably there needs to be something captured in the definition of <i>Ceriomyces albus</i> var. <i>albus</i> about its relationships to other concepts (e.g. <i>Ceriomyces albus</i>). </font>
+
+---
+
+Some other complex authorship examples (double ex, sanctioning and ex):from -- Main.GregorHagedorn - 15 Nov 2004
+
+<font color="darkred"> It seems that all of Gregor's examples are truely issues of how complex names are atomized, and  do not invlolve relationships between TCS concepts. If LinneanCore can come up with a workable atomization of these compound Authors good, but ABCD just treats them as strings which are represented intact. </font>
+      * I think you overlook that both the ":" and the "ex" express a relationship between concepts and name publications... How do you model the botany.invalid name which later is validated or sanctioned in TCS? -- Gregor, 10.12.2004
+      * the later concept has a name  (Aus bus Smith ex Jones) and a relationship ('is valid name for' or 'sanctions') -  to another concept - which may be incomplete? or have the definition of their use of the name, and which has the original authors name (Aus bus Smith). 
+   1 Candida vini (J.N. Vallot ex Desm.) Uden & H.R. Buckley ex S.A. Mey. & Ahearn in Lodder
+   2 Chlorociboria aeruginosa (Pers. : Fr.) Seaver ex Ramamurthi, Korf & L. R. Batra
+   3 Oudemansiella longipes (P. Kumm. : Fr.) Boursier in Moser in Gams <font color="darkred"> For some reason I picked this name to scrutinize to see if I could understand why double ins occured. The cited reference is actually co-authored by Moser and Gams, so why is it not longipes (P. Kumm. : Fr.) Boursier in Moser, Gams and Fischer. ( Index Fungorum Record: Oudemansiella longipes (P. Kumm.) Boursier, in Moser in Gams, Kleine Kryptogamenflora, Edn 2 (Stuttgart) IIb: 88 (1955); actual publication: Kleine Kryptogamenflora. Bd. 2 b. Basidiomyceten?T. 2. Die Röhrlinge, Blätter- und Bauchpilze (Agaricales und Gastromycetales). [Bearb.] von Meinhard Moser  von Meinhard Moser, Helmut Gams, G. Fischer (1955) ). Maybe the 'double in' is a typo? Anway they are so rare according to Gregor's statistics that maybe they don't matter.</font>
+      * G. Fischer is the publisher, so not an author. The German "[Bearb.]" means that this part of the flora has been done by Moser alone, while the entire flora is edited by the team. I am not an advocate of double "in", I would simplify to the last and independent publication, but there is contention here. Rich prefers keeping double in. And we all agree it is a rare issue... -- Gregor, 10.12.2004
+   4 Luttrellia monoceras (Drechsler) Khokhr. in Azbukina et al. (eds) in Gornostai <font color="darkred">This is interesting because it was originally published with spelling as 'Lutrellia', and so there is a problem whether this is corrected as a <i>mistake</i> in the original concept (and keep the original orthography as an attribute), or whether we have two concepts - the original and the corrected. If people have used/referred to the original spelling that would imply we needed a concept for each spelling (with a relationship link between the two).</font>
+      * This is the point where I think the TCS philosophy becomes impractical by bloating the number of concepts into a realm that is very difficult to manage. These are not different concepts in terms of hirarchy-concept, type-concept, and character circumscription concept. Biology is so rife with misspellings and orthographical or grammatical corrections and typos, that requiring to relate all these strings with the rich relationship system becomes very hard. What would the relationship between "Luttrellia monoceras" and "Lutrellia monoceras" be according to TCS? I would actually need to know whether the spelling correction (which needs not be published under the bot. code, just used, but without any interest in priority) has been published or not, and whether it does change other aspects of the concept or not. -- Gregor, 10.12.2004
+      * You would not necessarily have to make a new concept with the corrected name for each 'wrong' concept, as traversal of relationships could be done at look up time. The problem is obviously worst when it applies to the genus in a binomial. In 'name only' world it is dificult to see a relationship between "Luttrellia monoceras" and "Lutrellia monoceras", other than "Luttrellia monoceras" orthographical correction "Lutrellia monoceras", classifying them as belonging to the genus "Luttrellia" gets round the problem - and if a genus with a wrong name is created/used, a single correction relationship solves the problem if resolved at look up. Undoubtedly there is baggage/explosion by tracking as concepts and not 'correcting' records. I guess we see benefits as well as disadvantages in using separate concepts rather than versioning/alterring a single concept (which may lead to equally confusing problems of 'who meant what?'). There probably has to be a practical cut off where minor typos can be corrected, but substantive differences are new concepts. 
+
+
+   5 Gelasinospora pseudocalospora Udagawa in Udagawa, Furuya & Horie in Kobayasi et al.
+      * (here citation contains "et al." rather than list of authors)
+   6 Chrysomyxa ledi de Bary var. cassandrae (Peck et Clinton) Savile
+      * (just a random infraspecific name where the redundant species authors are cited)<font color="darkred"> I thought that including the species authors here was 'wrong' and that LC was concerned with representing 'correct' names. If the name was originally published like this would you include it as 'original orthography'?</font>
+     * Replace "correct" with "canonical" and I agree. The name above is a correct name, albeit not canonical. It is permissible under the code, and frequently used such. The question is how does TCS deal with these multiple spellings? -- Gregor, 10.12.2004
+---
+
+<h2>Summary Points from Consideration of Botanical and Fungal Name Examples.</h2>
+-- Main.TrevorPaterson - 02 Dec 2004 
+
+<h4>Nomenclatural information that can be represented as relationships between concepts</h4>
+
+<blockquote>We think that the TCS will only work satisfactorily as a 'wrapper' for <nop>LinneanCore name information if the concept relationships are not reproduced as part of the name elements. We think that TCS should be able to represent all the nomenclatural relationships as relationships between concepts. In the above examples we used the following relatioships.</blockquote>
+      * 'has basionym'
+      * 'has parent' : the basic relationship for classification
+      * but it is necessary to represnt membership of higher taxa at arbirary rank, not just direct parent e.g member of Family or Order; suggested relationship names
+         * 'has parent (with incertae sedis)' <i>seems quite an obscure terminology</i>
+            * I so far never understood this term as meaning classification in tax. hierarchy. I think the terms below are better. -- Gregor
+         * 'is member of'
+         * 'is placed in'
+         * 'included in'<i> confusion with set relationships between concepts?? - i.e not specifically rank based membership</i>
+      * 'has replaced synonym' is more explicit/directional than 'has synonym'
+      * 'is hybrid of'
+      * 'is later homonym of' again has explicit directionality, probably would not be used by an original concept author who should not use a homonym!
+      * 'is nomen novum for' -- <font color="red"><b>lacking</b></font>
+      * 'has isonym' / 'has homotypic homonym' : could be made more explicit by 'has <i>earlier</i> homonym'
+      * 'Name is blocked by' if it is useful/meaningful to record this
+      * 'is combination novum of' <i> we were using 'has recombination' (erroneously?) for this </i> 
+         * what is the difference between this and has basionym?
+
+
+<h4>Separating Classification from Nomenclatural Information</h4>
+
+<blockquote>We think that the TCS will only work satisfactorily as a 'wrapper' for <nop>LinneanCore name information if the concept relationships are not reproduced as part of the name elements. In particular we view taxonomic classification as only meaningful between concepts as used by taxonomists. Unfortunately the rules of nomenclature mean that naming is governed by clasification...</blockquote>
+
+   * representing classification in names:
+      * binomials and trinomials inherently contain classification information (i.e. Genus species subspecies), which is why names change as classifications change
+      * compounding monomials would do something similar - but these are not code compliant and we dont think should be used as Name strings. Rather, these classifications should be represented concept relationships. e.g.:
+         * Acmopyleaceae subfam. Acmopyleoideae
+         * Saxifragaceae trib. Argophylleae
+         * Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm.
+         * <i>Cajanus</i> sect. <i>Cantharospermum</i> (Wight & Arn.) Benth.</br>
+
+   * disambiguating the genus in binomials:<br/>Reading Sally's comments makes it clear that a major aim from the nomenclators view point is to provide a means to identify the correct genus in a binomial - where there is a choice amongst several possible identical genus strings. This comes about because the genus author name is not given in a binomial (nor is the species epithet author given in a trinomial). LinneanCore currently has a referencing mechanism to point to the correct parent name in these cases. From the TCS standpoint this is a classification issue, and can be expressed by relating one concept (e.g. with a binomial name) to the parent genus concept. So we consider that this requirement can be adequately provided in the TCS wrapper and does not need to be reproduced in the LC.
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1147084443" from="UBIF.TcsNameExamples" to="UBIF.LinneanCoreTcsNameExamples"}%
+@
+
+
+1.14
+log
+@rename
+@
+text
+@d1 2
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1103205689" format="1.0" version="1.13"}%
+d11 9
+a19 9
+<font color="blue"> view our TCS compliant [[http://www.prometheusdb.org/download/FamilyNameExamples.xml XML(ABCD)]] for these examples (and also TCS_LC [[http://www.prometheusdb.org/download/FamilyNameExamples_LC.xml XML(LC)]] examples).	</font>
+		1 <i>Acmopyleaceae</i> (Pilg.) A. P. Melikyan & A.V.Bobrov - in Proc. Internat. Conf. Pl. Anat. & Morphology, St. Petersburg, 1997: 93 (1997): <b>basionym:</b> Acmopyleaceae subfam. Acmopyleoideae
+		  <font color="darkred">APPROACH: needs two _Original_ Concepts with a relation 'has basionym' between them. The Concept for the basionym merely contains the <nop>NameSimple string 'Acmopyleaceae subfam. Acmopyleoideae', and is of Rank 'subfamily'. We are a bit confused about this name - as we had been led to believe that it would be represented by the string 'Acmopyleoideae', (which could be related to the parent family 'Acmopyleaceae' by creating a further concept and a classification relationship).</font> 
+			* I think the name of the subfamily alone is canonical, adding the name of the family is redundant but common. As usual I am confused about the TCS concept types. If the basionym record does not contain anything more than the name string (i.e. not even a publication) than why is it Original type rather than incomplete or nominal type? -- Gregor, 10.12.2004
+			* Touche - in this case the information to make a meaningful original concept for the basionym is missing - so it should be flagged as of type 'incomplete' ( if we had a bit more information we could make the original concept - i.e. the according to ) -- Main.TrevorPaterson - 13 Dec 2004
+		2 <i>Alzateaceae</i> S.A.Graham - Ann. Missouri Bot. Gard. 71 (3): 775 (1984 publ. 1985). <font color="darkred">APPROACH: only problem seems to be representing the two publication dates ? maybe solved by a better Publication structure ? <nop>AlexandriaCore </font>
+			* Current <nop>AlexandriaCore support both the year on publication and true publication date. However, it is valid criticism of LC whether this would not have to be duplicated inside LC to avoid too much of a dependency. I have no clear view whether the decoupling or avoiding redundancy is more important. -- Gregor, 10.12.2004
+		3 <i>Argophyllaceae</i> (Engler) A.Takhtadzhyan - Sistema Magnoliofitov (Systema Magnoliophytorum): 208 (1987) <b>basionym:</b> Saxifragaceae trib. Argophylleae  <font color="darkred">APPROACH: similar to first example.</font>
+		4 <i>Asteraceae</i> Martinov -  Tekhno-Bot. Slovar 55. 1820 <b>remarks:</b> nom. alt.: Compositae. <font color="darkred">APPROACH: similar to first example: but relationship is 'has replaced synonym' or similar...</font>
+d22 1
+a22 1
+	ii <b>Infra familial:</b> (all examples taken from Orchidaceae)
+d25 3
+a27 3
+		1 subtrib. <i>Anthogoniinae</i> S. C. Chen , Z. H. Tsi & G. H. Zhu - in Acta Phytotax. Sin., 37(2): 116 (1999). 
+		2 trib. <i>Bletieae</i> Benth. - Fl. Austral. 6: 270, 302. 1873 [23 Sep 1873] <b>remarks:</b> as "Bletideae"
+		3 subfam. <i>Codonorchidoideae</i> (P. J. Cribb) M.A.Clem. & D.L.Jones - Orchadian 13(10): 439 (30 Jan. 2002). <b>basionym:</b> Orchidaceae trib. Codonorchideae P. J. Cribb - in Lindleyana, 15(3): 169 (2000). 
+d29 1
+a29 1
+	iii <b>Genera:</b>
+d31 39
+a69 39
+			* Would the relationship to a family according to IPNI have to be "sec. IPNI"? And *would IPNI have to deliver two record for each name*, one sec. original author, one revision to express the family? -- Gregor, 10.12.2004
+			* I think IPNI could decide what they are representing: are they creating original concepts as defined by the original authors of those concepts and then putting them into IPNIs classification (then we have (A) original concept <nop>AccordingTo oldguy, <nop>RelationshipAssertion 'is child of' taxonconcept, <nop>AccordingTo IPNI, where the parent concept may be IPNIs or someone else's.) Or IPNI could deliver revision concepts which include the clasfication relationships as part of the concpt definition; and yes in this case they would probably be delivering two concepts (1) the original (2) IPNIs revision which refers to the original, bur now includes classification information. -- Main.TrevorPaterson - 13 Dec 2004
+			* speaking for IPNI - our family classifications are rather 'accidental' and don't express anything that coherent. It could code one of two things - either what family was considered correct according to the institution entering the data at the time -OR it could indicate which family the author had put the genus in. The former is IPNI's classification, the latter, part of the original author's classification. Either way it doesn't belong in LC, and the canonical name (and the label) should NOT include it. (nor for Infrafamilial as well) -- Main.SallyHinchcliffe - 14 Dec 2004
+
+		1 <i>Cuenotia</i> Rizzini - Dusenia 7: 303. 1956 <b>family (acc. to IPNI)</b> Acanthaceae <font color="darkred">APPROACH: In our [[http://www.prometheusdb.org/download/Cuenotia.xml XML(ABCD)]] (or [[http://www.prometheusdb.org/download/Cuenotia_LC.xml XML(LC)]]) for this example we have chosen to represent Rizzini's original concept for Cuenotia, and an original concept authored by IPNI for the family Acanthaceae. We have related the concepts in two (alternative) ways (i) by including the relationship 'has 'child' Cuenotia in the definiton of Acanthaceae, or (ii) by a 'third party' taxonomic assertion that Cuenotia is a child of Acanthaceae.</font>
+		2 x <i>Carruanthophyllum</i> G. D.Rowley - Name that Succulent: 200 (1980). <b>family (acc. to IPNI)</b> Aizoaceae. <b>Hybrid Parentage:</b> Aizoaceae <i>Machairophyllum</i> × Aizoaceae <i>Carruanthus</i> Schwantes ex N.E.Br. in Journ. Bot., Lond. lxvi. 325 (1928); vide Ingram in Baileya, xvi. 141 (1969).  <font color="darkred">Our approach to representing hybrids is tied to the ABCD Name structure. Each parent Genus is represented as an original concept, and the hybrid genus has relationships 'is hybrid child of' to each of those. We are not represnting classification of all of these as members of the Aizoaceae family. We are not sure what it means biologically to have a hybrid genus? Our attempted [[http://www.prometheusdb.org/download/hybridGenus.xml XML(ABCD)]] and [[http://www.prometheusdb.org/download/hybridGenus_LC.xml XML(LC)]] is shown.</font>
+			* To my knowledge, a hybrid genus is simply a hybrid of individuals from species from two different genera. THe biology of a hybrid species and a species in a hybrid genus is not really different, it is a question of opinion or phylogeny whether to distantly related species are in the same or different genera. However, the special hybrid genus name form is introduced to highlight this unusual case of hybridization across genera. -- Gregor, 10.12.2004
+
+		3 <i>Caesia</i> Vell. - Fl. Flum. 107 (1825); iii. t. 23 (1827). <b>family  acc.to IPNI:</b> Rhamnaceae <font color="darkred"> APPROACH: seems to be a similar example to 1.</font>
+		4 <i>Caesia</i> R.Br. - Prodromus Florae Novae Hollandiae 1810 <b>family acc. to IPNI</b> Liliaceae, or Anthericaceae, depending on what record you select ... <font color="darkred"> APPROACH: again seems to be a similar example to 1, but now with some confusion in the taxonomic relationships captured. these can be 'resolved' by relating the concept to separate concepts for both Liliaceae and Anthericaceae (which may be related to each other by some kind of synonymy assertion.</font>
+		5 <i>Calanticaria</i> (B. L. Rob. & Greenm.) E. E. Schill. &amp; Panero - Bot. J. Linn. Soc. 140(1): 73 (2002). <b>family acc. to IPNI:</b> Compositae (or Asteraceae if you prefer). <b>basionym:</b> Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm. <font color="darkred"> APPROACH:  similar example to iii.1, but now with basionym relationship as well (as in i.1). Again unsure of representing the name in the basionym concept: can hold full string  for the basionym name 'Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm.' of rank subgenus - but should it be simply 'Calanticaria B.L.Rob. & Greenm.' of rank subgenus?</font>
+
+
+	iv <b>Infrageneric:</b>
+		1 <i>Caesia</i> sect. <i>Crinagrostis</i> F.Muell. - Fragmenta Phytographiae Australiae 10 1877. <b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell. <font color="darkred"> This would seem to be a classification not nomenclatural issue. To represent the first use and definition of the name 'Crinagrostis F.Muell.' an original concept would be created with the Name 'Crinagrostis F.Muell.', <nop>AccordingTo 'F.Muell (1877)', of Rank 'section', possibly with a parent relationship to some genus concept named Caesia. (Again we are not sure about representing multiple Monomial strings such as 'Caesia sect. Cringrostis F.Muell.' as the Name of a single concept - though TCS could handle this if it is a correct interpretation.)</font>
+			* Any infrageneric/supraspecific taxa need the genus as part of their canonical name, else you would not have identity. Not sure that is what you are asking??? But the genus is name identity, as well as classification. See my attempt to discuss this in LinneanCoreDisentangle -- Gregor, 10.12.2004
+			* OK i missed some of the implications in this. The original concept resembles a species binomial: to represent the first use and definition of the name 'Caesia sect. Crinagrostis F.Muell.' an original concept would be created with the Name 'Caesia sect. Crinagrostis F.Muell.', <nop>AccordingTo 'F.Muell (1877)', of Rank 'section', (possibly with a parent relationship to some genus concept named Caesia). The rule seems to be for anything below Genus represent the whole name including Genus - is this true - are Suprageneric Genus' different? -- Main.TrevorPaterson - 13 Dec 2004
+			* Not sure if this has been disentangled but my idea in putting in the comment '<b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell.' was NOT to suggest that we include the family (i.e. to put in classification information) but to illustrate the problem of homonyms in the hope that any LC schema we came up with would handle it. In my opinion linking a child (Crinagrostis F.Muell) to the correct parent (Caesia R.Br. and not Caesia Vell.) is the job of the nomenclator and should be handled within LC by using a reference to the correct genus rather than just filling in the (ambiguous) genus name  -- Main.SallyHinchcliffe - 14 Dec 2004
+		2 <i>Cajanus</i> sect. <i>Cantharospermum</i> (Wight & Arn.) Benth. - Plantae Junghuhnianae enumeratio plantarum 1852 <b>family (acc. to IPNI)</b>Fabaceae.  <b>basionym:</b><i>Cantharospermum</i> Wight & Arn. - Prodromus Florae Peninsulae Indiae Orientalis 1 1834 <font color="darkred"> No new issues here: classification as member of Fabaceae is a TCS issue; classification as a section of Cajanus in the Name String is unresolved. </font>
+		3 <i>Calamagrostis</i> ser. <i>Muticae</i> Keng ex Keng f. - in Bull. Bot. Res. North-East. Forest. Inst., 4(3): 195 (1984). <b>family (acc. to IPNI):</b> Gramineae, or Poaceae if you prefer. <font color="darkred"> same issues</font>
+			* ... this was a slightly mischeivous example from me. Gramineae is a conserved name for Poaceae (or Poaceae is another way of saying Gramineae). It is one example where the same concept (those grassy things) has two names: Gramineae if you are old fashioned, and Poaceae if you like your family names to be consistent. As far as I know the differences between Gramineae and Poaceae are purely terminological, but a real botanist, taxonomist or nomenclaturalist may wish to differ. -- Main.SallyHinchcliffe - 14 Dec 2004
+			* I agree, for 8 vascular plant familes (Apiaceae/Umbelliferae, Arecaceae/Palmae, Asteraceae/Compositae, Brassicaceae/Cruciferae, Clusiaceae/Guttiferae, Fabaceae/Leguminosae, Lamiaceae/Labiatae, Poaceae/Gramineae) the code allows concurrent synonyms, none is preferred and usage differs widely. It is an exceptional case in the code - but extremely common in usage. In my mind this case is easier treated if the information model behind accepts that a "name object" or TCS concept may be related to multiple name-string variants. As far as I understand, TCS proposes to treat "<i>Poa alpina</i> L." and "<i>Poa alpina</i> Linne" and "<i>Poa alpina</i> Linné" and "<i>Poa alpina</i> Linneaeus" as separate records with separate ID, and then map relationships between them. My confusion is that I do not see how this scales, if we have several hundreds circumscription concepts (this number is my estimate for monographs and floras, not including checklists or ecological involving the species). Rather than only defining the relationships between the circumscription concepts, we have to multiply them out with the name variants, and draw relationships between them. -- Main.GregorHagedorn - 14 Dec 2004
+
+		4 <i>Calamagrostis</i> subgen. <i>Calamagrostis</i> Adans. - Feddes Repertorium Specierum Novarum Regni Vegetabilis 63 1961 <b>remarks: </b>This is an autonym, which APNI includes, but the other parts of IPNI does not. Should we  be dealing with them as well? <font color="darkred">  The name has clearly been introduced in an original publication, probably with a definition (even if implicitly just 'not Calamagrostis subgenus xyz') so can be validly represented with a TCS original concept. </font> 
+
+	v <b>Species:</b>
+		1 <i>Caesia spinosa</i> Vell. - Fl. Flum. 107 (1825); iii. t. 23 (1827). <b>Family (acc. to IPNI):</b> Rhamnaceae, so presumably a child of <i>Caesia</i> Vell., not <i>Caesia</i> R.Br. <font color="darkred"> again this seems to be only an issue of classification not nomenclature. The TCS schema probably needs a further 'relationship' type to capture a classification between any hierarchichal levels. i.e. species Y.z. 'is placed in' family X; otherwise we require to make the recursive relationships species Y.z. 'is child of' genus Y 'is child of' Family X. This relationship is obviously taxonomic not nomenclatural, alternative names for this relationship might be 'is member of', 'is child of (with incertae sedis)', 'is included in' (but we already use this for set-based relationships  <i>sensu </i> Koperski <i>et al.</i>).</font>
+		2 <i>Caesia spiralis</i> Endl. - Plantae Preissianae 2(1) 1848 <b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell. <font color="darkred"> again this seems to be only an issue of classification not nomenclature </font>
+			* I disagree, the issue Sally is mentioning is _which_ genus the species has been published in. This is not retrievable from the name string (genus authors are lacking, so genus has no identity), but is a question of nomenclature. Only one genus can be zoology.available = botany.valid, so whether the species has which status depends on the answer. Knowing this is essential to determine which is the correct name for an accepted character circumscription concept. -- Gregor, 10.12.2004
+			* Yes this was exactly my point (see my rather more longwinded explanation above -- Main.SallyHinchcliffe - 14 Dec 2004
+			* OK IPNI seems to include the concept Caesia Vell. from IndexKew. for completeness - to allow it to be noted as a replaced synonym for Cormonema. The original concept for Caesia Vell. is judged by the 'rules' to be invalid because the name has already been used for a different concept Caesi R.Br. This can be recorded as a relationship assertion: concept named Caesia Vell. is invalid name for Concept named Cormonema ( or as in IPNI, the reverse relationship 'Cormonema has synonym Caesia Vell.'): Because IPNI save the relationship in one direction, the Caesia Vell. concept is a dead end - only used as a synonym link - why would there be confusion about whether to use it or Caesia R.Br. - the original concept for Caesia R.Br. does not have an invalid assertion associated with it, and has been included in IPNIs classification.  i.e. Caesia spiralis is a child of Caesi R.Br., similarly Caesia spinosa Vell. is only used as a dead end synonym record for Cormonema spinosum. (IPNI has also classified Caesia Vell. and Caesia spinosa Vell. into Rhamnaceae.) The difficulties are obviously in trying to build the nomenclatural history from the modern standpoint - it may be easier for IPNI to include the 'invalid' relationship in their representation of Caesia Vell. - but then it really isnt the original concept they are representing - but a modern, IPNI concept.......TCS just treats the Name "<i>Caesia spiralis</i> Endl." as  string, the classification information for this concept is stored as relationships. We dont think you should store and try and retreive classification information in the string - of course because of this horrible binomial system the name was generated from the classification...hence the source of all confusion. TCS tries to disambiguate the meaning of the string as used in a concept by use of definitions and relationships, rather than by dissecting semantics in the string. If you want to know which genus or  family a species is classified in - look up the classification relationships. -- Main.TrevorPaterson 13 Dec 2004
+			* ...well, IPNI includes both Caesia Vell. and Caesia spinosa Vell. because they were published even though they oughtn't to have been (I believe in 1825 IPNI was not online so Vell. may not have been aware that R.Br. had got there first with his genus name) Both are invalid but they're out there and need to be recorded in IPNI so there's somewhere for us to say that the later homonym is invalid & for people to look at the names and not keep making the mistake. Somehow either LC or TCS has to handle the issue of the children of homonyms NOT by my implied method of looking at the family and guessing, but explicitly by reference to the id of the parent record the child is in. -- Main.SallyHinchcliffe - 14 Dec 2004
+		3 <i>Daboecia cantabrica</i> (Huds.) K.Koch - Dendrologie 2(1): 13 (1872). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <b>isonym: </b>Ericaceae Daboecia cantabrica (Huds.) Britten & Rendle List Brit. Seed.-Pl. Ferns 18 (1907). <font color="darkred"> This is straight forward to represent using three original concepts; Huds.'s is recorded as the basionym for Koch's; Britten and Rendle's is marked as a later Homonym of Huds.'s. (We dont have the relationship 'Isonym' or 'homotypic homonym' in our schema - but could add it if required). Note, to more accurately reflect the original concepts as (implicitly) defined when they were originally defined, Koch's can relate to the (earlier) basionym, but not the later isonym, so this relationship is stored in the isonym. A database system could traverse relations ineither direction, or implement this in a number of ways. Example [[http://www.prometheusdb.org/download/Isonym.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/Isonym_LC.xml XML(LC)]]. </font>
+		4 <i>Daboecia cantabrica</i> (Huds.) Britten & Rendle - List Brit. Seed.-Pl. Ferns 18 (1907). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <font color="darkred"> Because we have created these concepts for the previous example, creating the basionym relationship is simple. In the [[http://www.prometheusdb.org/download/Isonym.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/Isonym_LC.xml XML(LC)]] example I have included this as part of the definition of Britten and Rendle's concept. </font>
+		5 <i>Vaccinium cantabricum</i> Huds. - Fl. Angl. ed. I. 143. <b>family (acc. to IPNI):</b> Ericaceae <font color="darkred"> This is a classification not a Name: would need to relate the concept for  V.c. to one for Ericaceae.</font>
+		6 <i>Daboecia × scotica</i> D.<nop>McClintock - in Garden, 103(3): 116 (1978). <b>family (acc. to IPNI): </b>Ericaceae <b>Remarks: </b> Cultivation. (D. azoria x cantabrica) <font color="darkred"> My interpretation is that this is a hybrid, therefore would be represented by creating  an original concept having this Name, <nop>AccordingTo/referenced  <nop>McClintock, and with two 'is hybrid child of' relationships to concepts representing the parents species. The family relationship would also be stored by a relationship to an 'Ericaceae' concept.</font> 
+		7 <i>Dacryodes belemensis</i> Cuatrec. - Trop. Woods no. 106: 58. 1957 <b>family (acc. to IPNI):</b> Burseraceae <font color="darkred"> No new issues? Family: Buseraceae is a classification </font>
+		8 <i>Dacryodes peruviana</i> (Loes.) Lam. - Ann. Jard. Bot. Buitenzorg 42: 202. 1932 <b>family (acc. to IPNI):</b> Burseraceae <b>Basionym: </b>Burseraceae Pachylobus peruvianus Loes. Bot. Jahrb. Syst. 37: 569. 1906  <font color="darkred"> No new issues? but Burseraceae is not part of the name of the basionym - must be a classification too.</font>
+		9 x <i>Carruanthophyllum hybridum</i> (Haw.) G.D.Rowley - in Cact. Succ. J. Gr. Brit., 44(1): 2 (1982):. <b>family (acc. to IPNI)</b> Aizoaceae <b>basionym: </b>Aizoaceae Mesembryanthemum hybridum <font color="darkred"> No new issues? but Aizoaceae is not part of the name of the basionym - must be a classification too.</font>
+d71 1
+a71 1
+	vi <b>Infraspecific:</b>
+d74 5
+a78 5
+			* Would TCS *not* want to deal with the classification issue here? How shall a machine reason whether a subspecies belongs to which species (e.g. in the case of homonyms)? -- Gregor, 10.12.2004
+			* Machines can only 'reason' by applying algorithms to stored data. we store the data in relationships not in the name string. Do you want to store the information in a name string - in which case you are right  - you will never know whether you have the genus Caesia Vell. or Caesia R.Br. in a binomial string -- Main.TrevorPaterson - 13 Dec 2004
+			* I am not suggesting to derive it from the name string, but pointing out that TCS somewhat incorrectly treats this ONLY has an issue of hierarchy, and not also of the name. I can change many things in the hierarchy without changing the name, but if I change those parts of the hierarchy also embedded in the canonical name identity, without changing the name, I produce nonsense. -- Gregor, 10.12.2004
+			* OK - I've checked the latest version of LC &amp; the genus element within the CanonicalName element has a string (e.g. Caesia) and a property which is a reference (e.g. <i>this</i>Caesia and not <i>that</i>Caesia - or Caesia Vell. and not Caesia R.Br.). We put this in from the start to handle homonyms, and that's why I included lots of Homonym examples in my data, to try and bring this debate out. So the question is, are we sneaking some Concepts into our names by doing this? Or are we simply providing an unambiguous way of providing nomenclatural information that makes explicit what the binomial fails to do? My opinion is the latter ... -- Main.SallyHinchcliffe - 14 Dec 2004
+			* <font color="red">OK - we missed the significance of these 'ref' attributes for Genus and <nop>SpeciesEpithet- as they are not commented. It isn't clear what they reference....other instances of LC objects ie a Genus record, or a species record? would the only use of the <nop>SpeciesEpithet 'ref' be for subspecies?? TCS view is that this really is an issue of classification, the concept with the name  Caesia spinosa Vell. would have the relationship 'is child of' a concept for the genus with the name Caesia Vell. --Main.TrevorPaterson 16 Dec 2004</font>
+d81 8
+a88 8
+		1 <i>Dacryodes peruviana</i> (Loes.) Lam. var. <i>caroniensis</i> Cuatrec. - Trop. Woods no. 106: 61. 1957 
+			* Note these are non-canonical name strings. The canonical equivalent for above would be "<i>Dacryodes peruviana</i> var. <i>caroniensis</i> Cuatrec". If TCS wants to use the original name as used in the publication, where does the canonical name occur in TCS? Or reversely, if the database editors apply canonicalization rules to the name string as used in the publication, different editors may apply different rules (less in the redundant authorship example above than in grammatical corrections). I think TCS needs to define the expected behaviour. -- Gregor, 10.12.2004
+			* TCS is not 'using' names: it is an exchange schema to represent and transfer stored information as represented by the originators of the information. A schema can't/shouldn't try to automatically standardize information to some view according to a A.Scrutineer, unless the information then becomes 'accrding to A.Scrutineer'. It can be used to record A.Scrutineer's opinion on what a standard/valid name  for an earlier concept 'should' be.....people can then use this standard scrutinized concept as the source of the name in their work. If different scrutineers provide alternative representations relating back to the same original concept - we can then pick our favourite - ie the one according to our favourite scrutineer - or make an aggregate concept 'all of X,Y and Z' -- Main.TrevorPaterson 13Dec2004.
+
+		2 <i>Daboecia cantabrica</i> (Huds.) K.Koch subsp. <i>azorica</i> (Tutin & E.F.Warburg) <nop>McClintock - Bot. J. Linn. Soc. 101(3): 280 (1989):. <b>family (acc. to IPNI): </b>Ericaceae <b>basionym: </b>Ericaceae Daboecia azorica Tutin & E.F.Warb. in Journ. Bot. 1932, lxx. 12. 
+		3 <i>Daboecia cantabrica</i> (Huds.) K.Koch nothosubsp. <i>scotica</i> (D. C. <nop>McClint.) E.C.Nelson - in New Plantsman, 3(2): 84 (1996):. <b>family (acc. to IPNI): </b>Ericaceae <b>basionym: </b>Ericaceae Daboecia × scotica. (D. C. <nop>McClint.) 
+			* Note that this is a subspecific nothotaxon without information about the parents. I do not know myself whether there should be a "x" here or not... -- Gregor, 10.12.2004
+		4 <i>Poa alpina</i> L. subsp. <i>stefanovii</i> Fiserova - in Preslia, 46(3): 223 (1974). <b>family (acc. to IPNI):</b> Gramineae, or Poaceae if you prefer.
+d96 21
+a116 21
+	1 <i>Opegrapha endoleuca</i> Nyl., (1855)<br/> Replaced synonym: <i>Opegrapha enteroleuca</i> Fée, 1827; Competing synonym: non <i>Opegrapha enteroleuca</i> Ach., 1814. This is a basic nom. nov. to replace a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=396387][(IF ref)]]. 
+		* <font color="darkred"> TCS can represent this by creation of three original concepts. The last concept (<nop>AccordingTo Nyl.) has as part of its definition a relationship 'is Nom.Nov.' to the concept of Fee. When Fee made his erroneous homonym concept - he presumably did not know or was ignoring that of Ach.; therefore Fee's concept has no relationships recorded about Ach or the later Nyl. concept. However we can record assertions linking (i) Fee 'is a later homonym of' Ach. and (ii) Fee 'has Nom.Nov.' Nyl. - these <nop>RelationshipAssertions are <nop>AccordingTo Nyl. see our TCS conformant [[http://www.prometheusdb.org/download/FungiNomNov.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/FungiNomNov_LC.xml XML(LC)]]</font>
+		* The distinction between original relationships and relationship assertion is good, but somewhat problematic in practice, in that I would guess most data providers do not know this. For some relationships this can be assumed (like basionym), if explicit knowledge is required by the code. The rest would go into assertions. Contrary to what you say however I see little chance to have the assertion according to Nyl. This is not a critique of TCS, but TCS has to discuss this and how to react as a provider. -- Gregor, 10.12.2004
+		* yes - i suspect that actually it will be simpler if  the assertions would belong /be made by the database provider, so that in the case of ITIS all the classification hierarchy relationships are according to ITIS, and all the synonym assertions pointing out to concepts not in 'their' classification are also according to ITIS. Correctly ascribing assertion relationships is proably only feasible (and worthwhil?) for new taxonomic work - where it is possible for the author to do this themeselves - it is proably not something that database aggregators would be interested in doing.-- Trevor 
+
+	2 <font color="darkred"> [3] </font><i>Cortinarius luteobrunneus</i> Peintner & M.M. Moser, Mycotaxon 81: 180 (2002)<br/> Replaced synonym: <font color="darkred"> [1] </font><i>Thaxterogaster leoninus</i> E. Horak, 1973; Competing synonym: non <font color="darkred"> [2] </font> <i>Cortinarius leoninus</i> (Velen.) G. Garnier, 1991. A basic nom. nov. to prevent creation of a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=484714][(IF ref)]]. <font color="darkred"> I think that this is esssentially the same as the previous example: three concepts are created 1,2 & 3 - the definition of 3 includes 'is Nom.Nov. of' 1. The assertion "1 'has Nom.Nov.' 3" can be recorded <nop>AccordingTo Peinter & Moser; but in this case 1 & 2 are not homonyms. I am not sure what if any relationship is needed to capture the fact that the existence of 2 blocks moving the epithet of 1 to 3. On reflection we probably need a relation 'Name is blocked by' in the TCS schema which would be part of the definition of concept 3: i.e. concept 3 - Name = <i>Cortinarius luteobrunneus</i> Peintner & M.M. Moser; <nop>AccordingTo Peintner & M.M. Moser (2002) (+ref); relationship 'is Nom.Nov. for' concept 1; relationship 'Name is blocked by' concept 2.</font>
+	3 <i>Nectria mauritiicola</i> (Henn.) Seifert & Samuels, in Seifert, Stud. Mycol. 27: 160 (1985)<br/> Basionym: <i>Corallomyces mauritiicola</i> Henn., 1904; Unavailable basionym and competing synonym: <i>Corallomyces elegans</i> Berk. & M.A. Curtis, 1853 non <i>Nectria elegans</i> Y. Yamam. & Maeda, 1957; Anamorph: <i>Rhizostilbella hibisci</i> (Pat.) Seifert 1985. A combination using a later synonym because the one which has priority cannot be used because the combination would create a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=104547][(IF ref)]].<font color="darkred"> A Possible TCS representation would be :</font>
+		* <font color="darkred">CONCEPT 1: <i>Corallomyces elegans</i> Berk. & M.A. Curtis, 1853 (sec. Berk. & M.A. Curtis, 1853) </font>
+		* <font color="darkred">CONCEPT 2: <i>Corallomyces mauritiicola</i> Henn., 1904 (sec. Henn. 1904) </font>
+		* <font color="darkred">CONCEPT 3: <i>Nectria elegans</i> Y. Yamam. & Maeda, 1957 (sec. Yamam & Maeda, 1957)</font>
+		* <font color="darkred">CONCEPT 4: <i>Rhizostilbella hibisci</i> (Pat.) Seifert 1985. 'is Anamorph of' [5] (sec. Seifert, 1985)</font>
+		* <font color="darkred">CONCEPT 5: <i>Nectria mauritiicola</i> (Henn.) Seifert & Samuels, in Seifert. ' is Comb.Nov. for' [1]; 'has basionym' [2]; 'Name is blocked by' [3]; 'is teleomorph of' [4] (sec. Seifert, 1985)</font>
+		* <font color="darkred">RELATIONSHIP 1: [2] 'is later homonym of' [1] (sec. Seifert, 1985)</font></br></br> <font color="darkred">NOTE: this uses two relations not (yet) in TCS: (i) 'is Comb.Nov. for' [we have 'is recombination of' which is probably equivalent ??)(ii)  'Name is blocked by'</font>
+	4 <i>Entoloma amplifolium</i> Hesler, (1967)<br/> Replaced synonym: <i>Pleuropus entoloma</i> Murrill, 1945; Competing synonym: <i>Entoloma entoloma</i>; ("tautonym prevention"). A nom. nov. to prevent a tautonym (note GH: tautonyms like "Bufo bufo" are ok in Zoology, but not in Botany). [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=330423][(IF ref)]]. <font color="darkred"> A Possible TCS representation would be :</font>
+		* <font color="darkred">CONCEPT 1: <i>Pleuropus entoloma</i> Murrill, 1945(sec. Murrill, 1945) </font>
+		* <font color="darkred">CONCEPT 2: <i>Entoloma entoloma</i> 'has basionym' [1]; (sec. Hesler, 1967 ??)</font>
+		* <font color="darkred">CONCEPT 3: <i>Entoloma amplifolium</i> Hesler, (1967)  'has rejected name' [2]; 'is Comb.Nov. for' [1]; 'is nom.nov. for' [1]; (sec. Hesler, 1967)</font></br></br> <font color="darkred">NOTE: is concept 2 like a dummy concept? - i.e. never really created other than to record the fact that it would have been a name if not a tautonym. Or would there be no need ever to represent this invalid and unused name? The name of [3] seems to be both a new name and a new combination  - are these both recorded?</font>
+	5 <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888)<br/> Replaced synonym: <i>Ptychogaster albus</i> Richon; Competing synonym: <i>Ceriomyces albus</i> var. <i>albus</i>; ("autonym creation prevention"). A nom. nov. to prevent creation of a homotypic autonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=187612][(IF ref)]]. <font color="darkred"> A Possible TCS representation would be :</font>
+		* <font color="darkred">CONCEPT 1: <i>Ptychogaster albus</i> Richon (sec. Richon) </font>
+		* <font color="darkred">CONCEPT 2: <i>Ceriomyces albus</i> var. <i>albus</i>;  (sec. Hesler, 1967 ??)</font>
+		* <font color="darkred">CONCEPT 3: <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888) 'is comb.nov. for' [1]; 'is nom.nov. for' [1]; 'Name is blocked by' [2](sec. Sacc., 1888)</font></br></br> <font color="darkred">NOTE: is concept 2 like a dummy concept? - i.e. never really created other than to record the fact that it would have been a name if not a tautonym. Or - further confusion for me - I read elsewhere (UBIF.LCNameAuthorshipConventions) that creating a variety in a species automatically creates an autonym variety - i.e. <i>Ceriomyces albus</i> var. <i>albus</i>: so is this actually (or implicitly) created by the creation of <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888)? And presumably there needs to be something captured in the definition of <i>Ceriomyces albus</i> var. <i>albus</i> about its relationships to other concepts (e.g. <i>Ceriomyces albus</i>). </font>
+d123 16
+a138 16
+		* I think you overlook that both the ":" and the "ex" express a relationship between concepts and name publications... How do you model the botany.invalid name which later is validated or sanctioned in TCS? -- Gregor, 10.12.2004
+		* the later concept has a name  (Aus bus Smith ex Jones) and a relationship ('is valid name for' or 'sanctions') -  to another concept - which may be incomplete? or have the definition of their use of the name, and which has the original authors name (Aus bus Smith). 
+	1 Candida vini (J.N. Vallot ex Desm.) Uden & H.R. Buckley ex S.A. Mey. & Ahearn in Lodder
+	2 Chlorociboria aeruginosa (Pers. : Fr.) Seaver ex Ramamurthi, Korf & L. R. Batra
+	3 Oudemansiella longipes (P. Kumm. : Fr.) Boursier in Moser in Gams <font color="darkred"> For some reason I picked this name to scrutinize to see if I could understand why double ins occured. The cited reference is actually co-authored by Moser and Gams, so why is it not longipes (P. Kumm. : Fr.) Boursier in Moser, Gams and Fischer. ( Index Fungorum Record: Oudemansiella longipes (P. Kumm.) Boursier, in Moser in Gams, Kleine Kryptogamenflora, Edn 2 (Stuttgart) IIb: 88 (1955); actual publication: Kleine Kryptogamenflora. Bd. 2 b. Basidiomyceten?T. 2. Die Röhrlinge, Blätter- und Bauchpilze (Agaricales und Gastromycetales). [Bearb.] von Meinhard Moser  von Meinhard Moser, Helmut Gams, G. Fischer (1955) ). Maybe the 'double in' is a typo? Anway they are so rare according to Gregor's statistics that maybe they don't matter.</font>
+		* G. Fischer is the publisher, so not an author. The German "[Bearb.]" means that this part of the flora has been done by Moser alone, while the entire flora is edited by the team. I am not an advocate of double "in", I would simplify to the last and independent publication, but there is contention here. Rich prefers keeping double in. And we all agree it is a rare issue... -- Gregor, 10.12.2004
+	4 Luttrellia monoceras (Drechsler) Khokhr. in Azbukina et al. (eds) in Gornostai <font color="darkred">This is interesting because it was originally published with spelling as 'Lutrellia', and so there is a problem whether this is corrected as a <i>mistake</i> in the original concept (and keep the original orthography as an attribute), or whether we have two concepts - the original and the corrected. If people have used/referred to the original spelling that would imply we needed a concept for each spelling (with a relationship link between the two).</font>
+		* This is the point where I think the TCS philosophy becomes impractical by bloating the number of concepts into a realm that is very difficult to manage. These are not different concepts in terms of hirarchy-concept, type-concept, and character circumscription concept. Biology is so rife with misspellings and orthographical or grammatical corrections and typos, that requiring to relate all these strings with the rich relationship system becomes very hard. What would the relationship between "Luttrellia monoceras" and "Lutrellia monoceras" be according to TCS? I would actually need to know whether the spelling correction (which needs not be published under the bot. code, just used, but without any interest in priority) has been published or not, and whether it does change other aspects of the concept or not. -- Gregor, 10.12.2004
+		* You would not necessarily have to make a new concept with the corrected name for each 'wrong' concept, as traversal of relationships could be done at look up time. The problem is obviously worst when it applies to the genus in a binomial. In 'name only' world it is dificult to see a relationship between "Luttrellia monoceras" and "Lutrellia monoceras", other than "Luttrellia monoceras" orthographical correction "Lutrellia monoceras", classifying them as belonging to the genus "Luttrellia" gets round the problem - and if a genus with a wrong name is created/used, a single correction relationship solves the problem if resolved at look up. Undoubtedly there is baggage/explosion by tracking as concepts and not 'correcting' records. I guess we see benefits as well as disadvantages in using separate concepts rather than versioning/alterring a single concept (which may lead to equally confusing problems of 'who meant what?'). There probably has to be a practical cut off where minor typos can be corrected, but substantive differences are new concepts. 
+
+
+	5 Gelasinospora pseudocalospora Udagawa in Udagawa, Furuya & Horie in Kobayasi et al.
+		* (here citation contains "et al." rather than list of authors)
+	6 Chrysomyxa ledi de Bary var. cassandrae (Peck et Clinton) Savile
+		* (just a random infraspecific name where the redundant species authors are cited)<font color="darkred"> I thought that including the species authors here was 'wrong' and that LC was concerned with representing 'correct' names. If the name was originally published like this would you include it as 'original orthography'?</font>
+	  * Replace "correct" with "canonical" and I agree. The name above is a correct name, albeit not canonical. It is permissible under the code, and frequently used such. The question is how does TCS deal with these multiple spellings? -- Gregor, 10.12.2004
+d147 16
+a162 16
+		* 'has basionym'
+		* 'has parent' : the basic relationship for classification
+		* but it is necessary to represnt membership of higher taxa at arbirary rank, not just direct parent e.g member of Family or Order; suggested relationship names
+			* 'has parent (with incertae sedis)' <i>seems quite an obscure terminology</i>
+				* I so far never understood this term as meaning classification in tax. hierarchy. I think the terms below are better. -- Gregor
+			* 'is member of'
+			* 'is placed in'
+			* 'included in'<i> confusion with set relationships between concepts?? - i.e not specifically rank based membership</i>
+		* 'has replaced synonym' is more explicit/directional than 'has synonym'
+		* 'is hybrid of'
+		* 'is later homonym of' again has explicit directionality, probably would not be used by an original concept author who should not use a homonym!
+		* 'is nomen novum for' -- <font color="red"><b>lacking</b></font>
+		* 'has isonym' / 'has homotypic homonym' : could be made more explicit by 'has <i>earlier</i> homonym'
+		* 'Name is blocked by' if it is useful/meaningful to record this
+		* 'is combination novum of' <i> we were using 'has recombination' (erroneously?) for this </i> 
+			* what is the difference between this and has basionym?
+d169 7
+a175 7
+	* representing classification in names:
+		* binomials and trinomials inherently contain classification information (i.e. Genus species subspecies), which is why names change as classifications change
+		* compounding monomials would do something similar - but these are not code compliant and we dont think should be used as Name strings. Rather, these classifications should be represented concept relationships. e.g.:
+			* Acmopyleaceae subfam. Acmopyleoideae
+			* Saxifragaceae trib. Argophylleae
+			* Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm.
+			* <i>Cajanus</i> sect. <i>Cantharospermum</i> (Wight & Arn.) Benth.</br>
+d177 1
+a177 1
+	* disambiguating the genus in binomials:<br/>Reading Sally's comments makes it clear that a major aim from the nomenclators view point is to provide a means to identify the correct genus in a binomial - where there is a choice amongst several possible identical genus strings. This comes about because the genus author name is not given in a binomial (nor is the species epithet author given in a trinomial). LinneanCore currently has a referencing mechanism to point to the correct parent name in these cases. From the TCS standpoint this is a classification issue, and can be expressed by relating one concept (e.g. with a binomial name) to the parent genus concept. So we consider that this requirement can be adequately provided in the TCS wrapper and does not need to be reproduced in the LC.
+d179 1
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1103105596" format="1.0" version="1.12"}%
+d78 2
+d177 2
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="SallyHinchcliffe" date="1103040928" format="1.0" version="1.11"}%
+d33 1
+a33 1
+* speaking for IPNI - our family classifications are rather 'accidental' and don't express anything that coherent. It could code one of two things - either what family was considered correct according to the institution entering the data at the time -OR it could indicate which family the author had put the genus in. The former is IPNI's classification, the latter, part of the original author's classification. Either way it doesn't belong in LC, and the canonical name (and the label) should NOT include it. (nor for Infrafamilial as well) -- Main.SallyHinchcliffe - 14 Dec 2004
+d48 1
+a48 1
+* Not sure if this has been disentangled but my idea in putting in the comment '<b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell.' was NOT to suggest that we include the family (i.e. to put in classification information) but to illustrate the problem of homonyms in the hope that any LC schema we came up with would handle it. In my opinion linking a child (Crinagrostis F.Muell) to the correct parent (Caesia R.Br. and not Caesia Vell.) is the job of the nomenclator and should be handled within LC by using a reference to the correct genus rather than just filling in the (ambiguous) genus name  -- Main.SallyHinchcliffe - 14 Dec 2004
+d51 2
+a52 2
+
+* ... this was a slightly mischeivous example from me. Gramineae is a conserved name for Poaceae (or Poaceae is another way of saying Gramineae). It is one example where the same concept (those grassy things) has two names: Gramineae if you are old fashioned, and Poaceae if you like your family names to be consistent. As far as I know the differences between Gramineae and Poaceae are purely terminological, but a real botanist, taxonomist or nomenclaturalist may wish to differ. -- Main.SallyHinchcliffe - 14 Dec 2004
+d60 3
+a62 4
+Yes this was exactly my point (see my rather more longwinded explanation above -- Main.SallyHinchcliffe - 14 Dec 2004
+			* OK IPNI seems to include the concept Caesia Vell. from IndexKew. for completeness - to allow it to be noted as a replaced synonym for Cormonema. The original concept for Caesia Vell. is judged by the 'rules' to be invalid because the name has already been used for a different concept Caesi R.Br. This can be recorded as a relationship assertion: concept named Caesia Vell. is invalid name for Concept named Cormonema ( or as in IPNI, the reverse relationship 'Cormonema has synonym Caesia Vell.'): Because IPNI save the relationship in one direction, the Caesia Vell. concept is a dead end - only used as a synonym link - why would there be confusion about whether to use it or Caesia R.Br. - the original concept for Caesia R.Br. does not have an invalid assertion associated with it, and has been included in IPNIs classification.  i.e. Caesia spiralis is a child of Caesi R.Br., similarly Caesia spinosa Vell. is only used as a dead end synonym record for Cormonema spinosum. (IPNI has also classified Caesia Vell. and Caesia spinosa Vell. into Rhamnaceae.) The difficulties are obviously in trying to build the nomenclatural history from the modern standpoint - it may be easier for IPNI to include the 'invalid' relationship in their representation of Caesia Vell. - but then it really isnt the original concept they are representing - but a modern, IPNI concept.......TCS just treats the Name "<i>Caesia spiralis</i> Endl." as  string, the classification information for this concept is stored as relationships. We dont think you should store and try and retreive classification information in the string - of course because of this horrible binomial system the name was generated from the classification...hence the source of all confusion. TCS tries to disambiguate the meaning of the string as used in a concept by use of definitions and relationships, rather than by dissecting semantics in the string. If you want to know which genus or  family a species is classified in - look up the classification relationships. --Main.TrevorPaterson 13Dec2004
+
+ * ...well, IPNI includes both Caesia Vell. and Caesia spinosa Vell. because they were published even though they oughtn't to have been (I believe in 1825 IPNI was not online so Vell. may not have been aware that R.Br. had got there first with his genus name) Both are invalid but they're out there and need to be recorded in IPNI so there's somewhere for us to say that the later homonym is invalid & for people to look at the names and not keep making the mistake. Somehow either LC or TCS has to handle the issue of the children of homonyms NOT by my implied method of looking at the family and guessing, but explicitly by reference to the id of the parent record the child is in. -- Main.SallyHinchcliffe - 14 Dec 2004
+d75 3
+a77 4
+
+			* Machines can only 'reason' by applying algorithms to stored data. we store the data in relationships not in the name string. Do you want to store the information in a name string - in which case you are right  - you will never know whether you have the genus Caesia Vell. or Caesia R.Br. in a binomial string -- Main.TrevorPaterson 13Dec2004
+
+* OK - I've checked the latest version of LC & the genus element within the CanonicalName element has a string (e.g. Caesia) and a property which is a reference (e.g. <i>this</i>Caesia and not <i>that</i>Caesia - or Caesia Vell. and not Caesia R.Br.). We put this in from the start to handle homonyms, and that's why I included lots of Homonym examples in my data, to try and bring this debate out. So the question is, are we sneaking some Concepts into our names by doing this? or are we simply providing an unambiguous way of providing nomenclatural information that makes explicit what the binomial fails to do? My opinion is the latter ... -- Main.SallyHinchcliffe - 14 Dec 2004
+d124 1
+a124 1
+	2 Chlorociboria aeruginosa (Pers. : Fr.) Seaver ex Ramamurthi, Korf & L.R. Batra
+d144 1
+a144 2
+<Blockquote> We think that the TCS will only work satisfactorily as a 'wrapper' for <nop>LinneanCore name information if the concept relationships are not reproduced as part of the name elements. We think that TCS should be able to represent all the nomenclatural relationships as relationships between concepts. In the above examples we used the following relatioships.</Blockquote>
+
+d165 1
+a165 1
+<Blockquote> We think that the TCS will only work satisfactorily as a 'wrapper' for <nop>LinneanCore name information if the concept relationships are not reproduced as part of the name elements. In particular we view taxonomic classification as only meaningful between concepts as used by taxonomists. Unfortunately the rules of nomenclature mean that naming is governed by clasification...</Blockquote>
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1102947660" format="1.0" version="1.10"}%
+d33 1
+d48 1
+d51 3
+d60 1
+d62 2
+d79 2
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1102936611" format="1.0" version="1.9"}%
+d118 1
+a118 1
+	  * G. Fischer is the publisher, so not an author. The German "[Bearb.]" means that this part of the flora has been done by Moser alone, while the entire flora is edited by the team. I am not an advocate of double "in", I would simplify to the last and independent publication, but there is contention here. Rich prefers keeping double in. And we all agree it is a rare issue... -- Gregor, 10.12.2004
+d120 4
+a123 1
+	  * This is the point where I think the TCS philosophy becomes impractical by bloating the number of concepts into a realm that is very difficult to manage. These are not different concepts in terms of hirarchy-concept, type-concept, and character circumscription concept. Biology is so rife with misspellings and orthographical or grammatical corrections and typos, that requiring to relate all these strings with the rich relationship system becomes very hard. What would the relationship between "Luttrellia monoceras" and "Lutrellia monoceras" be according to TCS? I would actually need to know whether the spelling correction (which needs not be published under the bot. code, just used, but without any interest in priority) has been published or not, and whether it does change other aspects of the concept or not. -- Gregor, 10.12.2004
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1102694793" format="1.0" version="1.8"}%
+d15 1
+d32 1
+d44 1
+a44 1
+		1 <i>Caesia</i> sect. <i>Crinagrostis</i> F.Muell. - Fragmenta Phytographiae Australiae 10 1877. <b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell. <font color="darkred"> This would seem to be a classification not nomenclatural issue. To represent the first use and definition of the name 'Cringrostis F.Muell.' an original concept would be created with the Name 'Cringrostis F.Muell.', <nop>AccordingTo 'F.Muell (1877)', of Rank 'section', possibly with a parent relationship to some genus concept named Caesia. (Again we are not sure about representing multiple Monomial strings such as 'Caesia sect. Cringrostis F.Muell.' as the Name of a single concept - though TCS could handle this if it is a correct interpretation.)</font>
+d46 1
+d55 1
+d68 3
+d73 2
+d88 2
+a89 1
+	  * The distinction between original relationships and relationship assertion is good, but somewhat problematic in practice, in that I would guess most data providers do not know this. For some relationships this can be assumed (like basionym), if explicit knowledge is required by the code. The rest would go into assertions. Contrary to what you say however I see little chance to have the assertion according to Nyl. This is not a critique of TCS, but TCS has to discuss this and how to react as a provider. -- Gregor, 10.12.2004
+d113 2
+a114 1
+	  * I think you overlook that both the ":" and the "ex" express a relationship between concepts and name publications... How do you model the botany.invalid name which later is validated or sanctioned in TCS? -- Gregor, 10.12.2004
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1102595535" format="1.0" version="1.7"}%
+d14 3
+a16 1
+		2 <i>Alzateaceae</i> S.A.Graham - Ann. Missouri Bot. Gard. 71 (3): 775 (1984 publ. 1985). <font color="darkred">APPROACH: only problem seems to be representing the two publication dates ? maybe solved by a better Publication structure ? <nop>AlexandrianCore </font>
+d30 2
+d34 2
+d38 1
+a38 1
+		5 <i>Calanticaria</i> (B. L. Rob. & Greenm.) E. E. Schill. &amp; Panero - Bot. J. Linn. Soc. 140(1): 73 (2002). <b>family acc. to IPNI:</b> Compositae (or Asteraceae if you prefer). <b>basionym:</b> Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm. <font color="darkred"> APPROACH:  similar example to iii.1, but now with basionym relationship aswell (as in i.1). Again unsure of representing the name in the basionym concept: can hold full string  for the basionym name 'Compositae Gymnolomia subgen. Calanticaria B.L.Rob. & Greenm.' of rank subgenus - but should it be simply 'Calanticaria B.L.Rob. & Greenm.' of rank subgenus?</font>
+d42 2
+a43 1
+		1 <i>Caesia</i> sect. <i>Crinagrostis</i> F.Muell. - Fragmenta Phytographiae Australiae 10 1877. <b>Family acc. to IPNI</b> Liliaceae, so this is presumably a child of <i>Caesia</i> R.Br. and not <i>Caesia</i> Vell. <font color="darkred"> This would seem to be a classification not nomenclatural issue. To represent the first use and definition of the name 'Cringrostis F.Muell.' an original concept would be created with the Name 'Cringrostis F.Muell.', <nop>AccordingTo 'F.Muell (1877)', of Rank 'section', possibly with a parent relationship to some genus concept named Caesia.(Again we are not sure about representing multiple Monomial strings such as 'Caesia sect. Cringrostis F.Muell.' as the Name of a single concept - though TCS could handle this if it is a correct interpretation.)</font>
+d51 2
+a52 1
+		3 <i>Daboecia cantabrica</i> (Huds.) K.Koch - Dendrologie 2(1): 13 (1872). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <b>isonym: </b>Ericaceae Daboecia cantabrica (Huds.)Britten & Rendle List Brit. Seed.-Pl. Ferns 18 (1907). <font color="darkred"> This is straight forward to represent using three original concepts; Huds.'s is recorded as the basionym for Koch's; Britten and Rendle's is marked as a later Homonym of Huds.'s. (We dont have the relationship 'Isonym' or 'homotypic homonym' in our schema - but could add it if required). Note, to more accurately reflect the original concepts as (implicitly) defined when they were originally defined, Koch's can relate to the (earlier) basionym, but not the later isonym, so this relationship is stored in the isonym. A database system could traverse relations ineither direction, or implement this in a number of ways. Example [[http://www.prometheusdb.org/download/Isonym.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/Isonym_LC.xml XML(LC)]]. </font>
+d54 1
+a54 1
+		5 <i>Vaccinium cantabricum</i> Huds. -Fl. Angl. ed. I. 143. <b>family (acc. to IPNI):</b> Ericaceae <font color="darkred"> This is a classification not a Name: would need to relate the concept for  V.c. to one for Ericaceae.</font>
+d63 1
+d65 1
+d68 1
+d77 4
+a80 1
+	1 <i>Opegrapha endoleuca</i> Nyl., (1855)<br/> Replaced synonym: <i>Opegrapha enteroleuca</i> Fée, 1827; Competing synonym: non <i>Opegrapha enteroleuca</i> Ach., 1814. This is a basic nom. nov. to replace a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=396387][(IF ref)]]. <font color="darkred"> TCS can represent this by creation of three original concepts. The last concept (<nop>AccordingTo Nyl.) has as part of its definition a relationship 'is Nom.Nov.' to the concept of Fee. When Fee made his erroneous homonym concept - he presumably did not know or was ignoring that of Ach.; therefore Fee's concept has no relationships recorded about Ach or the later Nyl. concept. However we can record assertions linking (i) Fee 'is a later homonym of' Ach. and (ii) Fee 'has Nom.Nov.' Nyl. - these <nop>RelationshipAssertions are <nop>AccordingTo Nyl. see our TCS conformant [[http://www.prometheusdb.org/download/FungiNomNov.xml XML(ABCD)]] or [[http://www.prometheusdb.org/download/FungiNomNov_LC.xml XML(LC)]]</font>
+d103 1
+a103 1
+
+d107 3
+a109 1
+	4 Luttrellia monoceras (Drechsler) Khokhr. in Azbukina et al. (eds) in Gornostai <font color="darkred">This is interesting because it was originally published with spelling as 'Lutrellia', and so there is a problem whether this is corrected as a <i>mistake</i> in the original concept (and keep the original orthography as an attribute), or whether we have two concepts - the original and the corrected. If people have used/referred to the original spelling that would imply we needad a concept for each spelling (with a relationship link between the two).</font>
+d114 1
+d128 1
+d135 1
+a135 2
+		* 'is nomen novum for'</br>
+<font color="red"><b>lacking</b></font></br>
+d139 2
+d144 1
+a144 1
+<Blockquote> We think that the TCS will only work satisfactorily as a 'wrapper' for <nop>LinneanCore name information if the concept relationships are not reproduced as part of the name elements. In particular we view taxonomic classification as only meaningful between concepts as used by taxonomists. Unfortunately the rules of nomenclature mena that naming is governed by clasification...</Blockquote>
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1102354342" format="1.0" version="1.6"}%
+d3 1
+a3 1
+<font color="darkred">Napier TCS team has started looking at these Botanical Name examples from Sally to see if we can represent the Nomenclatural relations in TCS, and what problems remain. We are currently using the ABCD Name structure in TCS - which causes some problems, and would hope to use a better Name representation. We also have a bit of difficulty mapping the publication fields to RP's endnote style fields, and again would like a better (easier?) citation record representation.</font>
+d5 1
+d7 1
+a7 1
+-- Main.TrevorPaterson - 30 Nov 2004 after UBIF.LinneanCoreExampleNames  -- Main.SallyHinchcliffe -- 03 Nov 2004 -- <nop>PaulKirk  and Main.GregorHagedorn  -- 8 Nov 2004 
+d11 1
+a11 1
+<font color="blue"> view our TCS compliant [[http://www.prometheusdb.org/download/FamilyNameExamples.xml XML(ABCD)]] for these examples (and also TCS_LC [[http://www.prometheusdb.org/download/FamilyNameExamples_LC.xml XML(LC)]] examples).  [NOTE: TCS v088.xsd uses the ABCD <nop>NameDetailed; we are currently experimenting with using parts of the <nop>LinneanCore schema within the TCS:NameDetailed element, creating TCS_LC. We may not wish to use all LC fields and may require some further or alternative fields.] </font>
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1101992205" format="1.0" version="1.5"}%
+d10 1
+a10 1
+<font color="blue"> view our [[http://www.prometheusdb.org/download/FamilyNameExamples.xml TCS]] for these examples. </font>
+d19 1
+a19 1
+<font color="blue"> view our [[http://www.prometheusdb.org/download/InfraFamilyNameExamples.xml TCS]] for these examples. </font>
+d27 2
+a28 2
+		1 <i>Cuenotia</i> Rizzini - Dusenia 7: 303. 1956 <b>family (acc. to IPNI)</b> Acanthaceae <font color="darkred">APPROACH: In our [[http://www.prometheusdb.org/download/Cuenotia.xml XML]] for this example we have chosen to represent Rizzini's original concept for Cuenotia, and an original concept authored by IPNI for the family Acanthaceae. We have related the concepts in two (alternative) ways (i) by including the relationship 'has 'child' Cuenotia in the definiton of Acanthaceae, or (ii) by a 'third party' taxonomic assertion that Cuenotia is a child of Acanthaceae.</font>
+		2 x <i>Carruanthophyllum</i> G. D.Rowley - Name that Succulent: 200 (1980). <b>family (acc. to IPNI)</b> Aizoaceae. <b>Hybrid Parentage:</b> Aizoaceae <i>Machairophyllum</i> × Aizoaceae <i>Carruanthus</i> Schwantes ex N.E.Br. in Journ. Bot., Lond. lxvi. 325 (1928); vide Ingram in Baileya, xvi. 141 (1969).  <font color="darkred">Our approach to representing hybrids is tied to the ABCD Name structure. Each parent Genus is represented as an original concept, and the hybrid genus has relationships 'is hybrid child of' to each of those. We are not represnting classification of all of these as members of the Aizoaceae family. We are not sure what it means biologically to have a hybrid genus? Our attempted [[http://www.prometheusdb.org/download/hybridGenus.xml XML]] is shown.</font>
+d43 2
+a44 2
+		3 <i>Daboecia cantabrica</i> (Huds.) K.Koch - Dendrologie 2(1): 13 (1872). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <b>isonym: </b>Ericaceae Daboecia cantabrica (Huds.)Britten & Rendle List Brit. Seed.-Pl. Ferns 18 (1907). <font color="darkred"> This is straight forward to represent using three original concepts; Huds.'s is recorded as the basionym for Koch's; Britten and Rendle's is marked as a later Homonym of Huds.'s. (We dont have the relationship 'Isonym' or 'homotypic homonym' in our schema - but could add it if required). Note, to more accurately reflect the original concepts as (implicitly) defined when they were originally defined, Koch's can relate to the (earlier) basionym, but not the later isonym, so this relationship is stored in the isonym. A database system could traverse relations ineither direction, or implement this in a number of ways. Example [[http://www.prometheusdb.org/download/Isonym.xml XML]]. </font>
+		4 <i>Daboecia cantabrica</i> (Huds.) Britten & Rendle - List Brit. Seed.-Pl. Ferns 18 (1907). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. <font color="darkred"> Because we have created these concepts for the previous example, creating the basionym relationship is simple. In the [[http://www.prometheusdb.org/download/Isonym.xml XML]] example I have included this as part of the definition of Britten and Rendle's concept. </font>
+d65 1
+a65 1
+	1 <i>Opegrapha endoleuca</i> Nyl., (1855)<br/> Replaced synonym: <i>Opegrapha enteroleuca</i> Fée, 1827; Competing synonym: non <i>Opegrapha enteroleuca</i> Ach., 1814. This is a basic nom. nov. to replace a homonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=396387][(IF ref)]]. <font color="darkred"> TCS can represent this by creation of three original concepts. The last concept (<nop>AccordingTo Nyl.) has as part of its definition a relationship 'is Nom.Nov.' to the concept of Fee. When Fee made his erroneous homonym concept - he presumably did not know or was ignoring that of Ach.; therefore Fee's concept has no relationships recorded about Ach or the later Nyl. concept. However we can record assertions linking (i) Fee 'is a later homonym of' Ach. and (ii) Fee 'has Nom.Nov.' Nyl. - these <nop>RelationshipAssertions are <nop>AccordingTo Nyl. see our TCS conformant [[http://www.prometheusdb.org/download/FungiNomNov.xml XML]]</font>
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1101983904" format="1.0" version="1.4"}%
+d30 1
+a30 1
+		4 <i>Caesia</i> R.Br. - Prodromus Florae Novae Hollandiae 1810 <b>family acc. to IPNI</b> Liliaceae, or Anthericaceae, depending on what record you select ... <font color="darkred"> APPROACH: again seems to be a similar example to 1, but now with some confusion in the taxonomic relationships captured. these can be 'resolved' by relating Liliaceae and Anthericaceae.</font>
+d41 1
+a41 1
+		1 <i>Caesia spinosa</i> Vell. - Fl. Flum. 107 (1825); iii. t. 23 (1827). <b>Family (acc. to IPNI):</b> Rhamnaceae, so presumably a child of <i>Caesia</i> Vell., not <i>Caesia</i> R.Br. <font color="darkred"> again this seems to be only an issue of classification not nomenclature. The TCS schema probably needs a further 'relationship' type to capture a classification between any hierarchichal levels. i.e. species Y.z. 'is placed in' family X; otherwise we require to make the recursive relationships species Y.z. 'is child of' genus Y 'is child of' Family X. This relationship is obviously taxonomic not nomenclatural, alternative names might be 'is member of', 'is child of (with incertae sedis)', 'is included in' (but we already use this for set-based relationships  <i>sensu </i> Koperski <i>et al.</i>).</font>
+d46 1
+a46 1
+		6 <i>Daboecia × scotica</i> D.<nop>McClintock - in Garden, 103(3): 116 (1978). <b>family (acc. to IPNI): </b>Ericaceae <b>Remarks: </b> Cultivation. (D. azoria x cantabrica) <font color="darkred"> My interpretation is that this is a hybrid, therefore would be represented by creating  an original concept having this Name, <nop>AccordingTo/referenced  <nop>McClintock, and with two 'is hybrid child of' relationships to concepts representing the parents species. The family relationship would also be sored by a relationship to an 'Ericaceae' concept.</font> 
+d92 1
+a92 1
+	4 Luttrellia monoceras (Drechsler) Khokhr. in Azbukina et al. (eds) in Gornostai <font color="darkred">This is interesting because it was originally published with spelling as 'Lutrellia', and so there is a problem whether this is corrected as a <i>mistake</i> in the original concept (and keep the original orthography as an attribute), or whether we have two concepts - the original and the corrected </font>
+d99 35
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1101918015" format="1.0" version="1.3"}%
+d3 1
+a3 1
+<font color="darkred">Napier TCS team has started looking at these Botanical Name examples from Sally to see if we can represent the Nomenclatural relations in TCS, and what problems remain. We are currently using the ABCD Name structure in TCS - which causes some problems, and would hope to use a better Name representation. We also have a bit of difficulty mapping the publication fields to RPsendnote style fields, and again would like a better (easier?) citation record representation.</font>
+d87 2
+d91 2
+a92 2
+	3 Oudemansiella longipes (P. Kumm. : Fr.) Boursier in Moser in Gams
+	4 Luttrellia monoceras (Drechsler) Khokhr. in Azbukina et al. (eds) in Gornostai
+d96 1
+a96 1
+		* (just a random infraspecific name where the redundant species authors are cited)
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1101899019" format="1.0" version="1.2"}%
+d72 2
+a73 2
+		* <font color="darkred">CONCEPT 5: <i>Nectria mauritiicola</i> (Henn.) Seifert & Samuels, in Seifert. ' is Comb.Nov. for' [1]; 'has basionym' [2]; 'has unavailable basionym' [1]; 'Name is blocked by' [3]; 'is teleomorph of' [4] (sec. Seifert, 1985)</font>
+		* <font color="darkred">RELATIONSHIP 1: [2] 'is later homonym of' [1] (sec. Seifert, 1985)</font></br></br> <font color="darkred">NOTE: this uses three relations not (yet) in TCS: (i) 'is Comb.Nov. for' (ii) 'has unavailable basionym' (is this covered by 'is Comb.Nov. for'?) & (iii) 'Name is blocked by'</font>
+d77 5
+a81 2
+		* <font color="darkred">CONCEPT 3: <i>Entoloma amplifolium</i> Hesler, (1967)  'has rejected name' [2]; 'has unavailable basionym' [1]; 'is Comb.Nov. for' [1] (sec. Hesler, 1967)</font></br></br> <font color="darkred">NOTE: is concept 2 like a dummy concept - i.e. never really created other than to record the fact that it would have been a name if not a tautonym </font>
+	5 <i>Ceriomyces albus</i> var. <i>richonii</i> Sacc., (1888)<br/> Replaced synonym: <i>Ptychogaster albus</i> Richon; Competing synonym: <i>Ceriomyces albus</i> var. <i>albus</i>; ("autonym creation prevention"). A nom. nov. to prevent creation of a homotypic autonym [[http://82.43.123.182/IndexFungorum/Names/NamesRecord.asp?RecordID=187612][(IF ref)]].
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1101825431" format="1.0" version="1.1"}%
+d6 1
+a6 1
+-- Main.TrevorPaterson - 30 Nov 2004 
+d41 1
+a41 1
+		1 <i>Caesia spinosa</i> Vell. - Fl. Flum. 107 (1825); iii. t. 23 (1827). <b>Family (acc. to IPNI):</b> Rhamnaceae, so presumably a child of <i>Caesia</i> Vell., not <i>Caesia</i> R.Br. <font color="darkred"> again this seems to be only an issue of classification not nomenclature </font>
+d44 6
+a49 6
+		4 <i>Daboecia cantabrica</i> (Huds.) Britten & Rendle - List Brit. Seed.-Pl. Ferns 18 (1907). <b>family (acc. to IPNI):</b> Ericaceae <b>basionym: </b>Ericaceae Vaccinium cantabricum Huds. Fl. Angl. ed. I. 143. 
+		5 <i>Vaccinium cantabricum</i> Huds. -Fl. Angl. ed. I. 143. <b>family (acc. to IPNI):</b> Ericaceae
+		6 <i>Daboecia × scotica</i> D.<nop>McClintock - in Garden, 103(3): 116 (1978). <b>family (acc. to IPNI): </b>Ericaceae <b>Remarks: </b> Cultivation. (D. azoria x cantabrica) 
+		7 <i>Dacryodes belemensis</i> Cuatrec. - Trop. Woods no. 106: 58. 1957 <b>family (acc. to IPNI):</b> Burseraceae
+		8 <i>Dacryodes peruviana</i> (Loes.) Lam. - Ann. Jard. Bot. Buitenzorg 42: 202. 1932 <b>family (acc. to IPNI):</b> Burseraceae <b>Basionym: </b>Burseraceae Pachylobus peruvianus Loes. Bot. Jahrb. Syst. 37: 569. 1906 
+		9 x <i>Carruanthophyllum hybridum</i> (Haw.) G.D.Rowley - in Cact. Succ. J. Gr. Brit., 44(1): 2 (1982):. <b>family (acc. to IPNI)</b> Aizoaceae <b>basionym: </b>Aizoaceae Mesembryanthemum hybridum
+d52 2
+d59 3
+a61 1
+-- Main.SallyHinchcliffe -- 03 Nov 2004
+d63 1
+d65 28
+a92 1
+<font color="darkred">-- Main.TrevorPaterson - 30 Nov 2004</font>
+@

@@ -1,0 +1,97 @@
+%META:TOPICINFO{author="NicoCellinese" date="1286122965" format="1.1" version="1.17"}%
+%META:TOPICPARENT{name="WebHome"}%
+---+ Working Meeting at TDWG 2010
+
+We held a full-day hands-on working meeting at the 2010 TDWG Conference in Woods Hole, MA, on Wednesday, Sep 29. The meeting took place in room MRC #310 (in the [[http://www.tdwg.org/fileadmin/2010conference/graphics/WHMapv2.pdf][building marked with 8 in the MBL building map]]).
+
+We started with short introductions around the room, and then decided on development targets according to participants' interests.
+
+---++ Participants
+
+<div style="float: right; width: 305px; margin-left: 5px;"><img src="%ATTACHURLPATH%/TDWG_Phylo_2010-1.jpg" alt="TDWG_Phylo_2010-1.jpg" width="300px" />
+<span style="font-size: x-small;">Elena Herzog, Dan Rosauer, Kate Rachwal, and Chris Goddard are unfortunately missing from this photo.</span>
+</div>
+| *Name* | *Institution* |
+| Nico Cellinese | Florida Museum of Natural History, University of Florida |
+| Torsten Eriksson | Swedish Museum of Natural History, Stockholm |
+| Chris Goddard | Florida Museum of Natural History, University of Florida |
+| Elena Herzog | Bik-F - Biodiversity and Climate Research Center |
+| Hilmar Lapp | NESCent |
+| Kate Rachwal | Florida Museum of Natural History, University of Florida |
+| Dan Rosauer | Yale University |
+| Arlin Stoltzfus | NIST, University of Maryland |
+
+---++ Development targets
+
+The [[https://docs.google.com/document/pub?id=1ihH6MGKBCpH10sqvDK5ahLgvz6P_qP-TaN-vLt6O9j8][meeting abstract]], which incorporated the input obtained from interest group members through the mailing list, suggested several targets. These were further narrowed down at the meeting to the list below.
+
+   1. LinkingTrees2010 (Dan, Jamie, Arlin, Torsten, Elena)
+      * Work out *best practices for publishing a tree electronically*,  via an archive such as [[http://www.treebase.org TreeBase]] or [[http://datadryad.org Dryad]], or via the semantic web (presumably using [[http://www.evolutionaryontology.org/cdao CDAO]]).  At minimum, get some actual trees (+/- matrices) ready to submit.   At best, draft a how-to guide for publication. 
+      * Make it easy for users to put species name (or other taxonomic identifier), specimen or source identifier, and geographic coordinates into their trees. 
+   1. Further develop the [[http://www.evoio.org/wiki/Phyloreferencing_subgroup][Phyloreferencing standard]].  _Hilmar Lapp_, _Nico Cellinese_
+      * Compare with Mike Keesey's [[http://namesonnodes.org/][Names on Nodes]].
+      * [[https://spreadsheets.google.com/pub?key=0AmUeHhtnDeCZdGRFMHQ5U2RVSG9CNFBRanpKZlJHYVE&hl=en&output=html][Phyloreferencing vocabulary draft]] started at the 2009 !VoCamp.
+      * [[http://sourceforge.net/apps/mediawiki/treebase/index.php?title=API][TreeBASE API]] and the full [[https://spreadsheets.google.com/pub?key=0Av8UW3JvZsgcckwtLU83cHloUjhGY25uRzUtb2ZBbHc&hl=en&single=true&gid=0&output=html][Metadata query vocabulary used by TreeBASE]]
+   1. Increase the support for the emerging data standards (e.g., !NeXML) among  tree visualization tools (Kate)
+      * For example, [[http://jsphylosg.com][jsPhyloSVG]] supports !phyloXML, but not !NeXML. Same with [[http://code.google.com/p/phylobox][Phylobox]].
+      * Or, write an XSLT to translate [[http://www.phyloxml.org][phyloXML]] to [[http://www.nexml.org][NeXML]], and vice versa.  The good news is that XML is emerging as a standard for serializing trees and associated data.  The bad news is that there are 2 different schemas. 
+   1. Ruby-on-Rails / Web-application version  of Phenex functionality (Chris)
+
+---++ Outcomes  
+
+---+++ LinkingTrees2010
+
+_Dan, Jamie, Arlin, Torsten, Elena_
+
+Best practices for publishing a tree so that it is reusable and can be linked to other data.
+
+Outcomes
+   * Identified key features that maximize potential for reuse or integration (accn, lsid or other taxo ref, geo coord)
+   * identified resources available (file formats, data archives, tools)
+   *  !TreeBASE supports archiving with capacity to add key features (NCBI or UBio name matching) 
+      * Tested with reasonable success using files from Mesquite and Bio::NEXUS 
+      * !TreeBASE steps one through the process.
+   * found out how !NeXML and !PhyloXML can represent key features
+   * (partly) created set of matching test files in different formats
+   * Planned follow-up (Dan, Arlin)
+      * Report for TDWG
+      * request comments from a larger group of stakeholders
+      * possible manuscript for publication.
+   
+---+++ Further develop the [[http://www.evoio.org/wiki/Phyloreferencing_subgroup][Phyloreferencing standard]] 
+_Hilmar, Nico_
+
+Outcomes
+   1. Trying to understand what [[http://namesonnodes.org][Names on Nodes]] (Keesey) might  contribute 
+      * Relative to previous effort, doesn't add biologically significant use cases (except perhaps to remind us that crown and stem clade modifiers are not yet included in the phyloreference specification). 
+      * The tool has a very nice UI, and the code (Macromedia Flash) could possibly be modified to accept phyloreference expressions, in addition to !MathML, which it was written for. (It does apparently already support !NeXML.)
+   1. [[https://spreadsheets.google.com/pub?key=0AmUeHhtnDeCZdGRFMHQ5U2RVSG9CNFBRanpKZlJHYVE&hl=en&output=html][Standard vocabulary]] for pinning down the semantics of specifiers in phyloreferences (such as denoting taxon identifier, scientific name, specimen identifier, sequence accession numbers, etc. This was left hanging from the !VoCamp.
+      * Determined that this significantly overlaps with, and hence should be merged into the !PhyloWS query predicate vocabulary, for which !TreeBASE currently publishes the de-facto draft (see [[http://treebase.svn.sourceforge.net/viewvc/treebase/trunk/treebase-core/src/main/resources/treebase.owl][treebase-core/src/main/resources/treebase.owl]] in the !TreeBASE codebase).
+      * *Follow-up step:* Need to create a draft master query predicate vocabulary as part of the !PhyloWS standard specification, then merge in terms needed for phyloreferencing but currently lacking from the vocabulary.
+      * *Follow-up step:* Need to initiate a discussion whether the !PhyloWS query predicate should stand on its own, or should  in the long run better be merged into Darwin Core or CDAO. 
+   1. Taxonomy broker: This was tabled at the 2009 !VoCamp. A taxonomy broker returns species names (tip labels) in exchange for higher-level taxon names, !PhyloCode names, type specimen identifiers, and other "canonical" metadata that not every phylogenetic data provider might have for every tree.
+      * Determined that this is a key piece of infrastructure, and a current gap. Without it, some of the most intuitive use-cases will not work, such as querying for all trees containing _some_ "Aves" when most trees won't have internal node labels.
+      * We thought that a limited, yet still useful implementation could be scoped such that it is feasible as a Summer of Code project, so that the benefits could be demonstrated. The implementation would work on top of an existing taxonomy or nomenclatural authority, such as the NCBI taxonomy, and !RegNum.  
+      * Based on a conversation with Rich Pyle, it also appears that  GNA (Global Names Architecture) may have many of the necessary pieces and services.
+      * *Follow-up steps:* Check the GNA codebase for relevant pieces (once published?). Write Summer of Code project idea (Feb 2011).
+
+---+++ !PhyloXML to !NeXML interconversion 
+_Kate_
+
+Using XSLT to convert between two emerging XML standards for phylogenetics: 
+   * Started with a stylesheet that takes as input a !phyloXML document and converts to !NeXML.
+   * Planned follow-up:
+      * Kate commits for another week 
+      * expects to finish XSLT that converts at least the trees !phyloXML to !NeXML. 
+      * finishing the job might be doable within a month.
+
+---+++ Web interface to phenex functionality 
+_Chris_
+
+Web-based ontology annotation of phylogenetic data: porting Phenex to the web
+   * Preliminary work is on !GitHub: [[http://github.com/c1sgo/rjs_phenex]]
+   * Started with the basic framework classes and windows.
+   * Might take only around 2-3 weeks to make an initially functional  version.
+   * Chris is committed to at least a few weeks more work on this
+
+%META:FILEATTACHMENT{name="TDWG_Phylo_2010-1.jpg" attachment="TDWG_Phylo_2010-1.jpg" attr="" comment="" date="1285949256" path="TDWG Phylo 2010-1.jpg" size="1257206" stream="TDWG Phylo 2010-1.jpg" user="Main.HilmarLapp" version="1"}%

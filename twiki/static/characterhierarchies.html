@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"> 
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+ <link rel="stylesheet" type="text/css" href="sdd1.css">
+</head>
+<body bgcolor="#ffffff">
+<a name="PageTop"></a>
+<p />
+<h2><a name="SDD_Part_0_Introduction_and_Prim"></a> SDD Part 0: Introduction and Primer to the SDD Standard </h2>
+<p />
+<h3><a name="3_8_Character_heirarchies"></a> 3.8 Character heirarchies </h3>
+<p />
+The &lt;characters&gt; element in SDD is used to define a flat, unordered list of characters and states. However, some consuming applications may require characters to be ordered and/or to be arranged into hierarchies to, for example, enable easier navigation of characters in interactive keys, provide grouping mechanisms in listings and reports, and provide headers in natural language descriptions. 
+<p />
+An example of a simple character tree is given below.
+<p />
+<img alt="character_trees_example.gif" src="http://wiki.tdwg.org/twiki/static/_publish/character_trees_example.gif" />
+<p />
+In this example there are eight characters (Petal number, Petal shape, Leaf length etc) arranged into four (nested) groups (Flowers, Petals, Sepals and Leaves).
+<p />
+In SDD, a character tree is created using three elements: <ul>
+<li> Characters are defined in &lt;Characters&gt;
+</li> <li> Grouping concepts (such as the grouping nodes above) are defined in <a href="descriptiveconcepts.html">&lt;DescriptiveConcepts&gt;</a>
+</li> <li> One or more character trees are defined, using the characters and concepts defined above, in &lt;CharacterTrees&gt;
+</li></ul> 
+<p />
+<img alt="charactertrees.gif" src="http://wiki.tdwg.org/twiki/static/_publish/charactertrees.gif" />
+<p />
+<h4><a name="Example_3_8_1_A_simple_character"></a> Example 3.8.1 - A simple character hierarchy </h4>
+<p />
+<table bgcolor="#ddddff" border="0" width="100%" cellpadding="5" cellspacing="5" style="border-collapse: collapse" bordercolor="#111111">
+<p />
+<tr>
+<td>
+<p />
+<pre>
+    &#60;Characters&#62;
+      &#60;QuantitativeCharacter id&#61;&#34;c1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Petal Number&#60;/Label&#62;
+        &#60;/Representation&#62;
+      &#60;/QuantitativeCharacter&#62;
+      &#60;CategoricalCharacter id&#61;&#34;c2&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Petal Shape&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;States&#62;
+          &#60;StateDefinition id&#61;&#34;s1&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;ovate&#60;/Label&#62;
+            &#60;/Representation&#62;
+          &#60;/StateDefinition&#62;
+          &#60;StateDefinition id&#61;&#34;s2&#34;&#62;
+            &#60;Representation&#62;
+              &#60;Label&#62;linear&#60;/Label&#62;
+            &#60;/Representation&#62;
+          &#60;/StateDefinition&#62;
+        &#60;/States&#62;
+            ... etc (for more detail see the topic &#60;Characters&#62;)            
+    &#60;/Characters&#62;
+
+     &#60;DescriptiveConcepts&#62;
+      &#60;DescriptiveConcept id&#61;&#34;dc1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Flowers&#60;/Label&#62;
+        &#60;/Representation&#62;
+      &#60;/DescriptiveConcept&#62;
+      &#60;DescriptiveConcept id&#61;&#34;dc2&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Petals&#60;/Label&#62;
+        &#60;/Representation&#62;
+            ... etc (for more detail see the topic &#60;DescriptiveConcepts&#62;)
+    &#60;/DescriptiveConcepts&#62;
+
+       &#60;CharacterTrees&#62;
+      &#60;CharacterTree id&#61;&#34;ct1&#34;&#62;
+        &#60;Representation&#62;
+          &#60;Label&#62;Default Feature Tree&#60;/Label&#62;
+        &#60;/Representation&#62;
+        &#60;DesignedFor&#62;
+          &#60;Role&#62;InteractiveIdentification&#60;/Role&#62;
+        &#60;/DesignedFor&#62;
+        &#60;Nodes&#62;
+          &#60;Node id&#61;&#34;cn1&#34;&#62;
+            &#60;DescriptiveConcept ref&#61;&#34;dc1&#34;/&#62;
+          &#60;/Node&#62;
+          &#60;Node id&#61;&#34;cn2&#34;&#62;
+            &#60;Parent ref&#61;&#34;cn1&#34;/&#62;
+            &#60;DescriptiveConcept ref&#61;&#34;dc2&#34;/&#62;
+          &#60;/Node&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn2&#34;/&#62;
+            &#60;Character ref&#61;&#34;c1&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn2&#34;/&#62;
+            &#60;Character ref&#61;&#34;c2&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn2&#34;/&#62;
+            &#60;Character ref&#61;&#34;c3&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;Node id&#61;&#34;cn3&#34;&#62;
+            &#60;Parent ref&#61;&#34;cn1&#34;/&#62;
+            &#60;DescriptiveConcept ref&#61;&#34;dc3&#34;/&#62;
+          &#60;/Node&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn3&#34;/&#62;
+            &#60;Character ref&#61;&#34;c4&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn3&#34;/&#62;
+            &#60;Character ref&#61;&#34;c5&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;Node id&#61;&#34;cn4&#34;&#62;
+            &#60;DescriptiveConcept ref&#61;&#34;dc4&#34;/&#62;
+          &#60;/Node&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn4&#34;/&#62;
+            &#60;Character ref&#61;&#34;c6&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn4&#34;/&#62;
+            &#60;Character ref&#61;&#34;c7&#34;/&#62;
+          &#60;/CharNode&#62;
+          &#60;CharNode&#62;
+            &#60;Parent ref&#61;&#34;cn4&#34;/&#62;
+            &#60;Character ref&#61;&#34;c8&#34;/&#62;
+          &#60;/CharNode&#62;
+        &#60;/Nodes&#62;
+      &#60;/CharacterTree&#62;
+    &#60;/CharacterTrees&#62;
+</pre>
+</td>
+</tr>
+</table>
+<p />
+The first node in this tree, node "cn1" references the descriptive concept "dc1" (Flowers). The second node, "cn2",  references the descriptive concept "dc2" (Petals). The third node, "cn3", references the first true character in the hierarchy, "c1" (Petal number). Each node references it's parent (the node supporting the character "Petal number" references the descriptive concept "Petals" which is its immediate parent) and the character or concept which is tied to it. If a descriptive concept is tied to a node this is declared within the &lt;Node&gt; element, if a character is tied to a node this is declared in a &lt;CharNode&gt; element, which references its supporting node.
+<p />
+<p />
+The &lt;Representation&gt; element provides a label for the character tree. This may be useful if the instance document includes multiple trees for different purposes, or is intended for publication in multiple languages (see the topic Language support in SDD).
+<p />
+&lt;DesignedFor&gt; specifies this character tree's purpose. Important roles are interactive identification, natural language reporting, or filtering.
+<p />
+The &lt;Nodes&gt; element is used to define the structure of the character tree. It contains an unordered list of &lt;Node&gt; and &lt;Char&gt; elements, each of which specifies a parent &lt;Node&gt;. The list can be used by a consuming application to construct a character tree.
+<p />
+The &lt;CharacterTrees&gt; element is also used to declare <a href="sdddependencies.html">dependencies</a>
+<p />
+-- DonovanSharp - 01 Jun 2006
+<p />
+<p />
+</body></html> 

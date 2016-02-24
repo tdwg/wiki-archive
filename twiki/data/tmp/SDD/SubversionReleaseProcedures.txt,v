@@ -1,0 +1,281 @@
+head	1.8;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.8
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.05.17.10.01.41;	author BobMorris;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.05.15.07.50.15;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.05.15.04.56.44;	author BobMorris;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.05.15.03.34.51;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.05.14.21.44.00;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.05.14.00.18.18;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.05.13.20.40.51;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.8
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="BobMorris" date="1147860101" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="WebHome"}%
+This topic is for discussion, but it reflects procedures Main.BobMorris and Main.JacobAsiedu have put in place for a  release and revision control management based on Subversion. Comments are welcome. The discussion is cast as if fait d'accomplit, and though it reflects our current deployment, we welcome suggestions for  improvements. If you are already familiar with Subversion, you might go directly to SubversionRepository.
+
+%TOC%
+
+---++++++ Why use a revision control system and why Subversion?
+Properly used revision control systems allow it to be known which versions of resources one is actually using, which ones contribute to a particular release, and who released what changes. They allow multiple developers to work at the same time on a system, and make provision for dealing with merging files which may have been changed by several people since last updated in the repository. To effectively use these facilities, somebody has to set up a server for the revision control system (we have done so) and anybody who wants all its benefits has to use special client software. If you just want to read or download files maintained under a revision control system, you usually can access them with a web browser. For example, http://aardvark.cs.umb.edu/svn/sdd/ has the entire SDD SVN repository, and you can find all the files there, even though with a standard web browser you can't see the associated metadata such as revision levels.
+
+[[http://subversion.tigris.org/][Subversion]] (SVN) is a highly regarded modern open source revision control system which is rapidly replacing the revered [[http://www.nongnu.org/cvs/][CVS]], especially for new deployments. Subversion has some philosophical differences from CVS which take getting used to, but which become natural after a while (or sooner). Like CVS, Subversion has a wide variety of clients to fit many tastes.
+
+
+---++++++ What Subversion client should I use?
+This will possibly emerge into a separate topic. For now, we strongly suggest that Windows users new to SVN (as we ourselves are) employ [[http://tortoisesvn.tigris.org/][TortoiseSVN]]. The documentation that accompanies !TortoiseSVN is also an excellent introduction to SVN, including about how to set up a server. You can skip that part. However, it does explain how to set up a standalone, lightweight SVN server so you can play around entirely on your own machine to learn more. The rest of the documentation is useful for client use.
+
+!TortoiseSVN is an extension to the Windows Shell (i.e. Windows Explorer). It installs additional functionality on your right mouse button, and some icon overlays to show you the current state of files you have checked out of the SVN server, mainly an indication of whether you made changes after you checked them out. Initial checkout is simple with !TortoiseSVN: you create and empty directory and selecting it you then select SVNCheckout from the right mouse button popup. This will bring up a checkout dialogue, for which you only need specify the repository module you want to check out.
+
+---++++++ Briefly, what is the development process with Subversion?
+In the simplest case there are three steps:
+   * You ask your SVN client to issue a _checkout_ command of the current development version of SDD into an empty directory on your machine. This results in all the files being loaded into that directory (including some SVN metadata that helps manage the process. 
+   * You edit files.
+   * You ask your SVN client to issue a _commit_ command, which incorporates your edits into to the repository. If you keep on developing, you keep on committing.
+      * Gregor: How do I undo the checkout process? What do&acute;you do when you "stop developing"?
+
+---++++++ What should I check out?
+If you are familiar with SVN, browse with your SVN client in the SDD repository !http://aardvark.cs.umb.edu/svn/sdd. We are likely to change this to a more generic URL so that we are not bound to the machine aardvark. Please be warned, and perhaps insure that you are getting email notices of changes to the SDD wiki, as we'll announce any change here. For details of the repository structure, see SubversionRepository. All others, keep reading.
+
+To understand what SVN tracks, you must understand the SVN notion of an _SVN revision,_ simply called a revision in SVN documentation, and here. This is different from CVS's notion of a revision, which is affiliated with each file in the file hierarchy being maintained. Instead, SVN associates a revision with the _entire file hierarchy_. Every time you update one or more files anywhere in the repository (including in subrepositories discussed below) the _entire_ hierarchy revision number is incremented. However, with your SVN client you can easily see what was the latest revision in which any particular file was last updated and as with wiki, you can always compare revisions to one another even on a per-file basis.
+
+Because "revision" is a special term in SVN (and CVS), we'll refer to different versions of SDD as _releases_, never "revisions" or "revs". They will get names that distinguish them from one another, using some convention that the SDD or TDWG community adopts. Up to now, these releases have had names like "SDD1.1b12", "SDD1.1-RC1" and we have established the repository and a release procedure so that it should survive either such an ad-hoc, or a more structured, release nomenclature. See SubversionRepository for details.
+
+The short story about checkout is this: following a widely adopted SVN convention, the SDD SVN repository has three sub-repositories: trunk, releases, and branches. The simple rule is: _all_ development takes place in the trunk; all things in the releases repository are frozen and only from them are copies placed in other public venues such as this wiki. "branches" will get side tracks such as versions with the double underbar "for discussion" elements in them. 
+
+*Even simpler rule:* If you are a developer, you should always checkout the latest branch from the trunk. If you are not, you should always checkout from the releases  subrepository whichever release you are interested in. 
+
+The trunk is fluid and your checkout should be kept updated as explained in the !TortoiseSVN manual. Developers should always check in to the trunk, never to the wiki. The only thing in the wiki should be released versions. Even if a release is regarded as flawed, development takes place in the trunk until it is agreed to be make another release, whether perfect or not. If a problem critical to you is fixed in a _revision_ before the next _release_ is made, then even if you are not a developer you may wish to check out the latest revision which has the fix. 
+
+When your client checkout dialogue asks you which module you want, the answer will usually be !http://aardvark.cs.umb.edu/svn/sdd/trunk for the most current checked in revision or !http://aardvark.cs.umb.edu/svn/sdd/releases/&lt;ReleaseName&gt; where &lt;ReleaseName&gt; is the name of the release you seek. In the latter case you should normally find it available on this wiki as a zip file, and that will be suitable for most people. 
+
+To complicate matters slightly, SVN documentation often refers generically to "branch" to mean anything in the subtree of the full repository tree, not just something in what we have--following tradition--denoted "branches". If you use !TortoiseSVN and you are working with both the trunk and with releases, your life will get easier if you pay attention to the fact that !TortoiseSVN keeps track of what SVN branch (in the generic sense) you are in and you will study the !TortoiseSVN -&gt;Switch command. This will help you make the checkin and checkout dialogues smarter and also insure that you don't check things into the wrong place.
+ 
+
+---++++++ Firewalls.
+The SVN server hosting the SDD repository runs under an Apache web server listening at port 80. In this configuration it uses the [[http://en.wikipedia.org/wiki/WebDAV][WebDAV]] extensions to http. The biggest issue for people behind aggressive firewalls enforcing access only through proxies will usually be whether the proxy supports the !WebDAV extensions. Most often this is a configuration issue on your client machine and configuration advice can be found on the [[http://subversion.tigris.org/faq.html#proxy][Subversion FAQ Proxy section]]. If anyone in your organization is maintaining web content from behind your firewall, there is a high likelyhood that the firewall permits the !WebDAV extensions since that is how most web content management systems communicate between client and server. If you are an SDD developer, we will work with you to solve your firewall problems, or else work around them with you. 
+
+---++++++ Making a release.
+As above, releases are made in the releases sub-repository. We have partially automated that, but at present it requires executing release scripts on the SVN server and will remain a task delegated to the SVN server administrators, presently Main.BobMorris and Main.JacobAsiedu.
+
+The release procedure is still being tuned. Please make comments about it in DiscussionOfReleaseProcedure.
+
+---++++++ Developer registration.
+The repository is publicly readable. Permission to modify files require a presence on our server that we must presently administer manually. If you are an SDD developer intending to contribute to the SDD schema, please contact Main.BobMorris.
+
+---++++++ Can I test out my client before I whack the repository?
+Yes, we also have a repository !http://aardvark.cs.umb.edu/svn/sandbox where registered developers can  play.
+
+---++++++ Anything else to read?
+Yes: Damian mentions these (also mentioned in the !TortoiseSVN online manual): 
+   * The opensource/free SVN book at http://svnbook.red-bean.com is an excellent resource (as was the cvsbook by the same people, http://cvsbook.red-bean.com/), and may be worth mentioning or linking to. 
+   * Chapter 3. Guided Tour: http://svnbook.red-bean.com/nightly/en/svn-book.html#svn.tour
+   * Appendix A. Subversion for CVS Users: http://svnbook.red-bean.com/nightly/en/svn-book.html#svn.forcvs
+
+---++++++ Differences from CVS. CVS experts take note.
+Most of them stem from putting revision numbers on the entire tree, not on each file.
+
+Damien remarks:
+You made a passing mention of the differences between CVS and SVN, one thing I think you should explicitly mention is the difference between
+cvs update and svn update, and the resulting unexpected merge!! (which is something that caught me out at first, and is quite frustrating as it
+is near on impossible to reverse)
+
+Bob replies: There is a standard working procedure that will make that easy. I forget what it is at the moment.
+
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1147678288" from="SDD.ReleaseProcedures" to="SDD.SubversionReleaseProcedures"}%
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1147679415" format="1.1" version="1.6"}%
+d49 2
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="BobMorris" date="1147669004" format="1.1" version="1.5"}%
+%META:TOPICPARENT{name="DiscussionFor1dot1beta12andRC1"}%
+This topic is for discussion, but it reflects procedures Main.BobMorris and Main.JacobAsiedu have put in place for a  release and revision control management based on Subversion. Comments are welcome. The discussion is cast as if fait d'accomplit, and though it reflects our current deployment, we welcome suggestions for  improvements. If you are already familiar with Subversion, you might go directly to SddSvnRepository.
+d23 1
+d26 1
+a26 1
+If you are familiar with SVN, browse with your SVN client in the SDD repository !http://aardvark.cs.umb.edu/svn/sdd. We are likely to change this to a more generic URL so that we are not bound to the machine aardvark. Please be warned, and perhaps insure that you are getting email notices of changes to the SDD wiki, as we'll announce any change here.For details of the repository structure, see SddSvnRepository. All others, keep reading.
+d28 1
+a28 1
+To understand what SVN tracks, you must understand the SVN notion of an _SVN revision,_ simply called a revision in SVN documentation, and here. This is different from CVS's notion of a revision, which is affiliated with each file in the file hierarchy being maintained. Instead, SVN associates a revision with the _entire file hierarchy_. Every time you update one or more files anywhere in the repository (including in subrepositories discussed below) the _entire_ hiearchy revision number is incremented. However, with your SVN client you can easily what was the latest revision in which any particular file was last updated and as with wiki, you can always compare revisions to one another even on a per-file basis.
+d30 1
+a30 1
+Because "revision" is a special term in SVN (and CVS), we'll refer to different versions of SDD as _releases_, never "revisions" or "revs". They will get names that distinguish them from one another, using some convention that the SDD or TDWG community adopts. Up to now, these releases have had names like "SDD1.1b12", "SDD1.1-RC1" and we have established the repository and a release procedure so that it should survive either such an ad-hoc, or a more structured, release nomenclature. See SddSvnRepository for details.
+d32 1
+a32 1
+The short story about checkout is this: following a widely adopted SVN convention, the SDD SVN repository has three sub-repositories: trunk, releases, and branches. The simple rule is: _all_ development takes place in the trunk; all things in the releases repository are frozen and only from them are copies placed in other public venues such as this wiki. branches (presently empty) will get side tracks such as versions with the double underbar "for discussion" elements in them. 
+a48 1
+
+d56 4
+a59 12
+Yes: Damian mentions these (also mentioned in the !TortoiseSVN online manual)
+
+Also, the opensource/free SVN book at http://svnbook.red-bean.com is an
+excellent resource (as was the cvsbook by the same people,
+http://cvsbook.red-bean.com/), and may be worth mentioning or linking
+to. 
+
+Chapter 3. Guided Tour
+http://svnbook.red-bean.com/nightly/en/svn-book.html#svn.tour
+
+Appendix A. Subversion for CVS Users
+http://svnbook.red-bean.com/nightly/en/svn-book.html#svn.forcvs
+d65 2
+a66 4
+You made a passing mention of the differences between CVS and SVN, one
+thing I think you should explicitly mention is the difference between
+cvs update and svn update, and the resulting unexpected merge!! (which
+is something that caught me out at first, and is quite frustrating as it
+d69 4
+a72 2
+Bob replies: There is a standard working procedure that will make that easy.
+I forget what it is at the moment.
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1147664091" format="1.1" version="1.4"}%
+d16 1
+a16 1
+!TortoiseSVN is an extension to the Windows Shell (i.e. Windows Explorer). It installs additional functionality on your right mouse button, and some icon overlays to show you the current state of files you have checked out of the SVN server, mainly an indication of whether you made changes after you checked them out. Initial checkout is simple with !TortoiseSVN: you create and empty directory and selecting it you then select SVNCheckout from the right mouse button popup. This will bring up a checkout directory for which you only need specify the repository module you want to check out.
+d22 1
+a22 1
+   * You ask your SVN client to issue a _commit_ comman, which incorporates your edits into to the repository. If you keep on developing, you keep on committing.
+d80 1
+a80 1
+I forget what it is at the moment.@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1147643040" format="1.1" version="1.3"}%
+d54 27
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1147565898" format="1.1" version="1.2"}%
+d3 1
+a3 1
+This topic is for discussion, but it reflects procedures Main.BobMorris and Main.JacobAsiedu have put in place for a  revision control management based on Subversion. Comments are welcome. The discussion is cast as if fait d'accomplit, and though it reflects our current deployment, we welcome suggestions for  improvements. If you are already familiar with Subversion, you might go directly to SddSvnRepository.
+d18 5
+d42 1
+a42 1
+---++++++ Firewalls
+d45 1
+a45 1
+---++++++ Making a release
+d49 1
+a49 1
+---++++++ Developer registration
+d51 3
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1147552851" format="1.1" version="1.1"}%
+d3 1
+a3 1
+This topic is for discussion, but it reflects procedures Main.BobMorris and Main.JacobAsiedu have put in place for a  revision control management based on Subversion. Comments are welcome. The discussion is cast as if fait d'accomplit, and though it reflects our current deployment, we welcome suggestions for  improvements.
+d45 1
+a45 1
+The repository is publicly readable. Permission to modify files require a presence on our server that we must presently administer manually. If you are an SDD Developer intending to contribute to the SDD schema, please contact Main.BobMorris.
+@

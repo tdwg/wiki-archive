@@ -1,0 +1,83 @@
+head	1.2;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.2
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.05.10.15.20.22;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147274422" format="1.1" version="1.1"}%
+%META:TOPICPARENT{name="DELTAandSDD"}%
+---++DELTA directives
+
+---+++Synopsis
+
+A discussion of the structure of DELTA directives, and the resulting problems [[DeltaToSDD][importing or converting DELTA data sets]].
+
+---+++Background
+
+Delta data are commonly embedded in directives<sup><a href="#FN1">1</a></sup>. A "directive consists of a star ('*'), a control phrase of up to four words, and data. The star must be at the start of a line, or be preceded by a blank. A blank following the star is optional. The control phrase must be in upper-case letters. Only the first three symbols of each word of the control phrase are significant." (Dallwitz & Paine, 1999). Thus, "{newline}*CHARACTER LIST" = "text !*CHARACTER LIST" = "{newline}* CHA LIS". It is recommended to spell out directives in full, but software reading DELTA must accept the abbreviated form.
+
+---+++Resulting Problems
+
+Problems with this definition are:
+   * The asterisk character ('*') is not excluded from normal text (and neither escaped). A character name may perfectly validly contain a string like "X * CHA LIS". 
+   * DELTA does not define a unique end-of-directive code. The end of the directive is defined through the start of the next directive or the end of a file. 
+
+As a consequence, a DELTA parser has two options:
+   * It knows a list of all DELTA directives, and considers the occurrence of a directive like "X * CHA LIS" inside text or comment data unlikely. !DeltaAccess parses DELTA data in this 'heuristic' mode. It allows '*' and '*' followed by directive-like text if that is not all-uppercase and matches an existing directive. 
+   * It knows not only the name, but also the structure of all DELTA directives and parses them sequentially (i. e. there is no preprocessor segmenting the data into directives). If the internal structure of all directives is recognized, the parser knows that some substructure is text or comment and not eligible to contain a directive. 
+
+A fully compliant DELTA parser must know the complete set of DELTA directives plus their respective syntax. Since the [[DeltaComplexity][list of DELTA directives]] changes with new versions of the CSIRO DELTA programs, other DELTA compatible applications must be continually updated to track these changes. At the moment, ca. 170 directives (of widely varying internal syntax) exist ("User's Guide to the DELTA System" (Edition 4.12 by M. J. Dallwitz, T. A. Paine, and E. J. Zurcher, 2000).
+
+This is not to say that the DELTA directive structure does not work. However, DELTA has a long history and it was optimized, among other, to fullfil the following requirements:
+   * It should be suitable for direct data entry and reading using simple text editors. At the time when DELTA start line editors were still common! 
+   * DELTA data should have minimal storage requirements on disk to allow processing large volumes of data at a time when a 360 kB floppy disk was the edge of technology.
+
+Under these constraints, DELTA has been a very good compromise. Also, in practice it does work for data exchanges, although this may require some understanding of DELTA and some modification of DELTA files by persons who want to port DELTA data to a new application. However, today the constraints of suitability for human editing and storage minimization become less and less important, whereas automatic data interchange, interoperability, and extensibility come into the foreground. This is a major reason why the basic syntax of DELTA and its directives should be given up in favor of a new xml-based standard.
+
+---++++Footnotes
+
+<sup><a name="FN1"id="FN1">1</a></sup> Dallwitz & Paine (1999) state that embedding DELTA data in directives "is not essential, but highly recommended". In practice probably all DELTA data appear embedded in blocks of information called 'directives'.
+
+---+++References
+
+M. J. Dallwitz and T. A. Paine 1999. Definition of the DELTA format. [Distributed as MS Word file with the CSIRO DELTA editor for Windows, version 1.3.0.8]
+
+-----
+
+*See also the overview [[DELTAandSDD][DELTA and SDD]].*
+
+-- Main.GregorHagedorn - 10 May 2006 (First published outside of Wiki on 2003-12-14 by Gregor Hagedorn)
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+@

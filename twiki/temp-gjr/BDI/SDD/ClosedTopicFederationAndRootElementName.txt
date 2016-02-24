@@ -1,0 +1,100 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118871" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+How would BDI.SDD_ look in a federated situation? The scenario that an BDI.SDD_ project may not reside on a single server in a single application (like DELTA applications), but that multiple organisations could collaborate, use shared terminology and serve descriptions, keys, and resources from multiple servers all over the world is one of the key design guidelines of BDI.SDD_. 
+
+I believe that federated projects will still be projects in some sense. BDI.SDD_ does not work without agreeing on a common terminology. Therefore project definition information are probably as appropriate in a federated project as they are in single source projects.
+
+However, the instance document root is also named "Project". To me it is unclear whether that should be changed or not. The question is: how should multiple documents that together form a federated document look like?
+
+If we have:
+<verbatim>
+<root>
+  <section1>
+    <data/>
+  </section1>
+  <section2>
+    <data/>
+  </section2>
+</root>
+</verbatim>
+
+and section 1 and 2 are served from different servers, together they form a complete document (i. e. one where all information to interpret it is available)
+
+Does this work best with 3 documents like:
+<verbatim>
+<root>  
+  <xInclude url-to-section1>
+  <xInclude url-to-section2>
+</root>
+</verbatim>
+
+<verbatim>
+<section1>
+  <data/>
+</section1>
+</verbatim>
+
+<verbatim>
+<section2>
+  <data/>
+</section2>
+</verbatim>
+
+i.e. all documents are simply included? Or is it better to have the 3 documents look like:
+
+<verbatim>
+<root>  
+  <xInclude url-to-section1>
+  <xInclude url-to-section2>
+</root>
+</verbatim>
+
+<verbatim>
+<root>  
+  <section1>
+    <data/>
+  </section1>
+</root>
+</verbatim>
+
+<verbatim>
+<root>  
+  <section1>
+    <data/>
+  </section1>
+</root>
+</verbatim>
+
+The latter case would not allow direct inclusion and would require some xsl to combine the fragment information into a complete document. However, the latter case could support additional information on <em>each</em> fragment document, e. g. who generated it a which time.
+
+I know that changing things through xslt is trivial. However, can anybody with experience in federated data case give some guidelines, so that we don't overlook anything?
+
+---
+
+<p>Some necessary decisions are:</p>
+<ul>
+<li>what is an appropriate and intuitive name for the main root element?</li>
+<li>should we allow multiple root elements in the schema (i. e. use global elements with element references instead of complex types. Currently we don't!).</li>
+<li>do we need some extra mechanisms for the head document, rather than simply relying on a future xInclude?</li>
+</ul>
+
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 20 Nov 2003
+---
+
+We discussed only the topic of root element in a telephone conference between Bob, Kevin and Gregor, and decided to return to Document for the time being.
+
+The general federation issues remain open. Probably better than allowing multiple root elements would be a solution to recast BDI.SDD_ schema into a type library without a namespace, and then provide multiple namespace schemata calling specific types from the type library.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 25 Nov 2003
+---
+
+On agreeing upon an overarching structure for GBIF/TDWG standards, we decided to adopt the ABCD root structure of Datasets/Dataset. A Dataset is equivalent to our previous Document.
+
+See also the topic ModularizationOfSchema!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 16 Mar 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085756981" from="SDD.FederationAndRootElementName" to="SDD.ClosedTopicFederationAndRootElementName"}%

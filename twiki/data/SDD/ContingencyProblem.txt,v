@@ -1,0 +1,257 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2009.11.25.03.14.32;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2009.11.20.02.45.24;	author LeeBelbin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.10.06.08.41.26;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.22.12.40.43;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.03.22.10.41.28;	author MikeDallwitz;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.22.01.21.00;	author KevinThiele;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.7
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118872" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="ResolvedTopicStateAndStatisticalMeasureBothPermitted"}%
+---+!! %TOPIC%
+
+The Contingency Problem is a specific problem of matrix-based keys, and derives from the fact that such keys treat all characters as independent, and there is nowhere in the matrix where IF-THEN statements can be recorded. The problem only occurs when one or more taxa in the key are polymorphic. Polymorphism is usually greater at higher taxonomic levels (e.g. a key to genera or families), but doesn't go away entirely in species-level keys.
+
+Here's an example of the problem. I have a Lucid matrix key to the Families of Flowering Plants of Australia. I have the following characters:
+
+   * Habit
+      * shrub
+      * tree
+      * climber
+   * Leaves
+      * opposite
+      * alternate
+   * Indumentum
+      * simple hairs
+      * stellate hairs
+
+Many families are scored for several states in each of these characters.
+
+Now suppose a user of the key is trying to identify a plant that is a climber with opposite leaves and stellate hairs. They choose these states in the key. They will probably get a long list of matching families. Unfortunately, most of these families are "false matches" and should not actually be in contention.
+
+The problem is that the key returns all families that have some members that are climbers AND have some members that have opposite leaves AND have some members that have stellate hairs. In most families in the list, unfortunately (or rather fortunately! Gregor), no species actually combines all these. So it would be nice to have a way to encode the data in such a way that the list returns all families that have some members that are climbers AND have opposite leaves AND have stellate hairs.
+
+One way to do this is to always encode all data at the species level, but there are obviously problems with this in real life. So it would be nice to be able to encode "This family has stellate hairs ONLY WHEN it's a climber"
+
+Interestingly, the contingency problem is not a problem with pathway (e. g. dichotomous) keys - an area where these keys are superior over matrix keys.
+
+-- Main.KevinThiele - 22 Mar 2004
+
+Could you give a short example illustrating the point in the last paragraph? 
+
+-- Main.MikeDallwitz - 22 Mar 2004   
+
+---
+
+   * Family 1 has (among others) these 3 species:
+      * shrub, opposite leaves, simple hairs
+      * tree, alternate leaves, simple hairs
+      * climber, alternate leaves, stellate hairs
+   * Family 2 has (among others) these 3 species:
+      * shrub, opposite leaves, simple hairs
+      * tree, alternate leaves, simple hairs
+      * climber, opposite leaves, stellate hairs
+
+The generalized diagnostics are:
+
+   * Family 1:
+      * shrub, tree, or climber, opposite or alternate leaves, simple or stellate hairs
+   * Family 2 has (among others) these 3 species:
+      * shrub, tree, or climber, opposite or alternate leaves, simple or stellate hairs
+
+Searching for climber with opposite leaves and stellate hairs returns both families based on generalized descriptions, and only 1 based on species descriptions, which are generalized to family only after identification.
+
+SDD assumes that for most taxa, multiple descriptions (= description containers, or fragments of knowledge) will be generated, based on more basic relations to published source of data, authorship, or specific specimens. These would then be generalized by software routines. If that is done, a smarter identification could look into the non-generalized containers and make the identification there.
+
+What we really don't have is:
+
+a) there is no way to tell such a routine that the species are really only examples - which are expected to cover the range of family descriptions - and which are expected to be meaningful only if after id the taxon name is generalized to family. (I realize this a bad description of the process, please help if you can express it better...)
+
+b) it is still undecided whether generalization information should be stored (and marked up as computed data, and ideally marked up as which data it is based upon. Adding computed aggregation/generalization data the output xml is desirable to allow simple processors, that don't support the aggregation/generalization procedures to consume the data. If computed data are added, in the problem described above it would be vital to recognize them. I think <nop>BioLink has been thinking about this problem, but we had no feedback from them recently.
+
+(PS: I think the title "contingency problem" is a bit confusing; I would think contingency means how to continue in the case of a problem barring the original approach.)
+
+-- Gregor Hagedorn  - 22 Mar 2004
+---@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685124" format="1.1" reprev="1.6" version="1.6"}%
+d56 1
+a56 1
+BDI.SDD assumes that for most taxa, multiple descriptions (= description containers, or fragments of knowledge) will be generated, based on more basic relations to published source of data, authorship, or specific specimens. These would then be generalized by software routines. If that is done, a smarter identification could look into the non-generalized containers and make the identification there.
+d67 1
+a67 1
+---
+@
+
+
+1.5
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1097052086" format="1.0" version="1.4"}%
+%META:TOPICPARENT{name="ResolvedTopicStateAndStatisticalMeasureBothPermitted"}%
+d9 10
+a18 10
+	* Habit
+		* shrub
+		* tree
+		* climber
+	* Leaves
+		* opposite
+		* alternate
+	* Indumentum
+		* simple hairs
+		* stellate hairs
+d34 1
+a34 1
+-- Main.MikeDallwitz - 22 Mar 2004	
+d38 8
+a45 8
+	* Family 1 has (among others) these 3 species:
+		* shrub, opposite leaves, simple hairs
+		* tree, alternate leaves, simple hairs
+		* climber, alternate leaves, stellate hairs
+	* Family 2 has (among others) these 3 species:
+		* shrub, opposite leaves, simple hairs
+		* tree, alternate leaves, simple hairs
+		* climber, opposite leaves, stellate hairs
+d49 4
+a52 4
+	* Family 1:
+		* shrub, tree, or climber, opposite or alternate leaves, simple or stellate hairs
+	* Family 2 has (among others) these 3 species:
+		* shrub, tree, or climber, opposite or alternate leaves, simple or stellate hairs
+d56 1
+a56 1
+SDD assumes that for most taxa, multiple descriptions (= description containers, or fragments of knowledge) will be generated, based on more basic relations to published source of data, authorship, or specific specimens. These would then be generalized by software routines. If that is done, a smarter identification could look into the non-generalized containers and make the identification there.
+a67 1
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1079959243" format="1.0" version="1.3"}%
+%META:TOPICPARENT{name="StateAndStatisticalMeasureBothPermitted"}%
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="MikeDallwitz" date="1079952087" format="1.0" version="1.2"}%
+d3 1
+a3 3
+The Contingency Problem is a specific problem of matrix-based keys, and derives from the fact that such keys treat all characters as independent, and there is nowhere in the matrix where IF-THEN statements can be recorded.
+
+The problem only occurs when there one or more taxa in the key are polymorphic. Polymorphism is usually greater at higher taxonomic levels (e.g. a key to genera or families), but doesn't go away entirely in species-level keys.
+d7 10
+a16 12
+Habit
+	* shrub
+	* tree
+	* climber
+
+Leaves
+	* opposite
+	* alternate
+
+Indumentum
+	* simple hairs
+	* stellate hairs
+d22 1
+a22 1
+The problem is that the key returns all families that have some members that a climbers AND have some members that have opposite leaves AND have some members that have stellate hairs. In most families in the list, unfortunately, no species actually combines all these. So it would be nice to have a way to encode the data in such a way that the list returns all families that have some members that are climbers AND have opposite leaves AND have stellate hairs.
+d26 1
+a26 1
+Interestingly, the contingency problem is not a problem with pathway (e.g. dichotomous) keys - an area where these keys are superior over matrix keys.
+d32 34
+a65 1
+-- Main.MikeDallwitz - 22 Mar 2004	
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1079918460" format="1.0" version="1.1"}%
+d33 5
+@

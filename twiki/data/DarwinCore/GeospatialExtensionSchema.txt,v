@@ -1,0 +1,190 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2006.09.08.18.46.35;	author StephenLong;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.08.24.22.26.40;	author StephenLong;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.08.10.16.24.32;	author StephenLong;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="StephenLong" date="1157741195" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="Trash.DarwinCoreDarwinCoreDoc"}%
+
+
+-- Main.StephenLong - 10 Aug 2006
+<verbatim>
+<?xml version="1.0"?>
+<!-- $Id: GeospatialExtensionSchema.txt,v 1.2 2006/08/24 22:26:40 StephenLong Exp $ -->
+<xsd:schema targetNamespace="http://digir.net/schema/conceptual/darwin/extension/geospatial/1.0" 
+                xmlns="http://digir.net/schema/conceptual/darwin/extension/geospatial/1.0" 
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                xmlns:digir="http://digir.net/schema/protocol/2003/1.0" elementFormDefault="qualified">
+	<xsd:annotation>
+                <xsd:documentation>History: version 1.40 2004-07-03 John Wieczorek. First version designed in concert with Darwin Core 2 v1.4</xsd:documentation>
+		<xsd:documentation>XML Schema describing a geospatial extension to Darwin Core 2 (DwC2) v1.4.</xsd:documentation>
+	</xsd:annotation>
+	<xsd:import namespace="http://digir.net/schema/protocol/2003/1.0" schemaLocation="http://digir.sourceforge.net/schema/protocol/2003/1.0/digir.xsd"/>
+	<xsd:element name="DecimalLatitude" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>The latitude of the location from which the organism or observation was collected, expressed in decimal degrees. Positive values are North of the Equator, negative values are South of the Equator.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:double">
+				<xsd:minInclusive value="-90.0"/>
+				<xsd:maxInclusive value="90.0"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="DecimalLongitude" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>The longitude of the location from which the organism or observation was collected, expressed in decimal degrees. Positive values are East of the Greenwich Meridian, negative values are West of the Greenwich Meridian.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:double">
+				<xsd:minInclusive value="-180.0"/>
+				<xsd:maxInclusive value="180.0"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="GeodeticDatum" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>The geodetic datum to which the latitude and longitude refer. If not known, use "not recorded". This concept should be vocabulary-controlled.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CoordinateUncertaintyInMeters" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>The upper limit of the distance (in meters) from the given latitude and longitude describing a circle within which the whole of the described locality lies. Leave the value empty if the uncertainty is unknown, cannot be estimated, or is not applicable (because there are no coordinates). Zero is not a valid value for this element.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:double">
+				<xsd:minExclusive value="0.0"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="VerbatimCoordinates" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>A text representation of the coordinate data (Latitude/Longitude, UTM, TRS, etc.) from its original source.</xsd:documentation>
+			<xsd:documentation>Example: "470999 1234300"</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="VerbatimCoordinateSystem" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>The name of the system in which the verbatim geographic coordinates were recorded.</xsd:documentation>
+			<xsd:documentation>Examples: "decimal degrees", "degrees minutes seconds", "degrees decimal minutes", "UTM"</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeoreferenceProtocol" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>A reference to the methods used for determining the coordinates and uncertainties.</xsd:documentation>
+			<xsd:documentation>Example: "http://manisnet.org/GeorefGuide.html"</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeoreferenceSources" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>A list of maps, gazetteers or other resources used to georeference the locality. The content of this concept is meant to be specific enough to allow anyone in the future to use the same resource to georeference the same locality.</xsd:documentation>
+			<xsd:documentation>Example: "USGS 1:24000 Florence Montana Quad"</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeoreferenceVerificationStatus" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>A categorical description of the extent to which the georeference has been verified to represent the location where the specimen or observation was collected. This element should be vocabulary-controlled.</xsd:documentation>
+			<xsd:documentation>Examples: "requires verification", "verified by collector", "verified by curator"</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeoreferenceRemarks" type="xsd:string" substitutionGroup="digir:searchableReturnableData" nillable="true">
+		<xsd:annotation>
+			<xsd:documentation>Comments about the spatial description determination, explaining assumptions made in addition or opposition to the those formalized in the method referred to in GeoreferenceProtocol.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="list">
+		<xsd:annotation>
+			<xsd:documentation>A concrete digir:listType specifying all elements available for multiCOP operations.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="digir:listType">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element ref="DecimalLatitude" maxOccurs="unbounded"/>
+						<xsd:element ref="DecimalLongitude" maxOccurs="unbounded"/>
+						<xsd:element ref="GeodeticDatum" maxOccurs="unbounded"/>
+						<xsd:element ref="CoordinateUncertaintyInMeters" maxOccurs="unbounded"/>
+						<xsd:element ref="VerbatimCoordinates" maxOccurs="unbounded"/>
+						<xsd:element ref="OriginalCoordinateSystem" maxOccurs="unbounded"/>
+						<xsd:element ref="GeoreferenceProtocol" maxOccurs="unbounded"/>
+						<xsd:element ref="GeoreferenceSources" maxOccurs="unbounded"/>
+						<xsd:element ref="GeoreferenceVerificationStatus" maxOccurs="unbounded"/>
+						<xsd:element ref="GeoreferenceRemarks" maxOccurs="unbounded"/>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="requiredList" abstract="true" substitutionGroup="digir:requiredList">
+		<xsd:complexType>
+			<xsd:sequence>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
+</verbatim>
+
+
+
+---++ Comments 
+Use the space below to make comments about this page. -- Main.JohnWieczorek - 24 Aug 2006@
+
+
+1.2
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="StephenLong" date="1156458400" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="DarwinCoreDoc"}%
+d8 1
+a8 1
+<!-- $Id: GeospatialExtensionSchema.txt,v 1.1 2006/08/10 16:24:32 StephenLong Exp $ -->
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="StephenLong" date="1155227072" format="1.1" version="1.1"}%
+a4 1
+
+d8 1
+a8 1
+<!-- $Id: geospatial.xsd, version 1.40 2005-08-04 Exp $ -->
+d121 5
+@

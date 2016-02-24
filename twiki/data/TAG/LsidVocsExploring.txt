@@ -1,0 +1,48 @@
+%META:TOPICINFO{author="GregorHagedorn" date="1178555894" format="1.1" reprev="1.4" version="1.4"}%
+%META:TOPICPARENT{name="LsidVocsUsage"}%
+---+ <nop>%TOPIC%
+
+This page explains how to start exploring the LSID Vocabularies - once you have read the LsidVocs page.
+
+The table at the start of the LsidVocs page lists the current vocabularies. Each vocabulary has a wiki page and the table at the start of each of these pages list resources relevant to that vocabulary.
+
+Lets take the !TaxonConcept vocabulary as an example:
+
+The wiki page is TaxonConceptLsidVoc.
+
+The actual vocabulary is located at: http://rs.tdwg.org/ontology/voc/TaxonConcept
+
+It is an RDF/OWL ontology serialized as XML and it is located at its own namespace. If you view this URL with a modern browser it will display as HTML because it contains a XSLT processing instruction. Do view source or load it with a client that doesn't honor the processing instruction to see the real thing. See also the OpeningOWL help topic.
+
+We use the hash namespace convention so anything within the vocabulary is separated with a # e.g.
+
+http://rs.tdwg.org/ontology/voc/TaxonConcept#hasName
+
+This hash is taken over in to the HTML rendering so that it acts as an anchor. Visiting the link for hasName above will take you to that part of the page. The HTML rendering is used in the Firefox LSID browser quite nicely as a kind of online help.
+
+| %ICON{bubble}% Main.RogerHyam - 01 Feb 2007 - The style sheet needs some work if anyone would like to help on it. |
+| %ICON{bubble}% Main.RicardoPereira - 02 Feb 2007 - Is there any specific changes or additions that need to be made, or is it that it just needs layout and design work? We can have our web designer look at it. |
+
+The other two links in the resources section of the wiki page point to 1) an XML Schema that will generate XML documents that comply to the OWL vocabulary 2) an example document.
+
+The XML Schema is complex because the technology is a little 'challenged' when it comes to validating documents with multiple namespaces. You need to have a separate schema for every namespace which means that the TaxonConcept schema has 5 imports for starters and one of those imports has a further import. Once you have the framework for handling the things in place though it all becomes possible and the user doesn't have to see it all. See OpeningXMLSchemata help topic.
+
+Importantly you should currently use the schema from where it is located. You can open it in OxygenXML and presumably in XML Spy from its  current location http://rs.tdwg.org/ontology/voc/tapir/structure/TaxonConcept/schema.xsd and browse around the schema. A downloadable version will be done in the future if needed.
+
+If you create a document based on this schema in Spy or Oxygen it will work fine but the code will look terrible because they don't seem to handle the namespace prefixing very well. This is one of the reasons the template document is supplied. Download and use as the template to mess with instance documents.
+
+| %ICON{bubble}% *Caveat* - the most common error with the template file is that I haven't changed the schema location from local (in my dev environment) to absolute. This is quite easy to correct and I'll put some catch in there to stop me doing it soon |
+
+We do our washing in public so you can see it all unfold on the http://rs.tdwg.org/ontology/voc/ space but unfortunately you can't get directory listings. This is because we are using hash name spacing and have to have a rewrite rule in there so that http://rs.tdwg.org/ontology/voc/TaxonName#specificEpithet will resolve to the right place (see W3C best practice document).  Interesting files should be linked to from the wiki or other files though.
+
+%ICON{bubble}% - The problem above is partially fixed - you can get directory listing if you add a trailing slash to the path when referring to a directory. For example: 
+   * this URL will get a listed: http://rs.tdwg.org/ontology/voc/
+   * while this doesn't: http://rs.tdwg.org/ontology/voc 
+
+A complete fix for the problem is underway.
+
+-- Main.RicardoPereira - 02 Feb 2007
+
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%

@@ -1,0 +1,112 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.01.16.04.12.05;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.10.25.00.22.01;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Sandbox=
+
+This object provides an interface to the outside world. All calls to
+system functions, or handling of file names, should be brokered by
+this object.
+
+
+%TOC%
+
+---++ ClassMethod *new* <tt>($os,$realOS)</tt>
+
+Construct a new sandbox suitable for $os, setting
+flags for platform features that help.  $realOS distinguishes
+Perl variants on platforms such as Windows.
+
+
+
+---++ StaticMethod *untaintUnchecked* <tt>($string) -> $untainted</tt>
+
+Untaints $string without any checks (dangerous).  If $string is
+undefined, return undef.
+
+The intent is to use this routine to be able to find all untainting
+places using grep.
+
+
+
+---++ StaticMethod *normalizeFileName* <tt>($string) -> $filename</tt>
+
+Errors out if $string contains filtered characters.
+
+The returned string is not tainted, but it may contain shell
+metacharacters and even control characters.
+
+
+
+---++ StaticMethod *sanitizeAttachmentName* <tt>($fname) -> ($fileName,$origName)</tt>
+
+Given a file name received in a query parameter, sanitise it. Returns
+the sanitised name together with the basename before sanitisation.
+
+Sanitisation includes filtering illegal characters and mapping client
+file names to legal server names.
+
+
+
+---++ ObjectMethod *sysCommand* <tt>($template,@@params) -> ($data,$exit)</tt>
+
+Invokes the program described by $template
+and @@params, and returns the output of the program and an exit code.
+STDOUT is returned. STDERR is THROWN AWAY.
+
+The caller has to ensure that the invoked program does not react in a
+harmful way to the passed arguments.  sysCommand merely
+ensures that the shell does not interpret any of the passed arguments.
+
+
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d2 1
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d29 1
+a29 1
+STATIC Errors out if $string contains filtered characters.
+d36 10
+@

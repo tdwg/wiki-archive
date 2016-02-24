@@ -1,0 +1,83 @@
+#!/usr/bin/perl -wT
+#
+# TWiki Enterprise Collaboration Platform, http://TWiki.org/
+#
+# Copyright (C) 1999-2007 Peter Thoeny, peter@thoeny.org
+# and TWiki Contributors.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version. For
+# more details read LICENSE in the root of this distribution.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# As per the GPL, removal of this notice is prohibited.
+
+#
+# This script is used to implement the TDWG SSO.
+# It is called by Typo3 and OJS when the user logs in to either system.
+# It sets up a TWiki session and user authentication
+#
+# Note: This script must only be accessible by the servers on the local network
+#
+
+use CGI;
+use CGI::Session;
+
+BEGIN {
+    # Set default current working directory (needed for mod_perl)
+    if( $ENV{"SCRIPT_FILENAME"} && $ENV{"SCRIPT_FILENAME"} =~ /^(.+)\/[^\/]+$/ ) {
+        chdir $1;
+    }
+    # Set library paths in @INC, at compile time
+    unshift @INC, '.';
+    require 'setlib.cfg';
+}
+
+use TWiki::UI;
+TWiki::UI::run( \&main );
+
+
+sub main {
+    my $twikiSession = shift;
+
+    # only local servers can call this script
+    if (($ENV{'REMOTE_ADDR'} ne '192.38.28.102') && 
+	($ENV{'REMOTE_ADDR'} ne '192.38.28.103') &&
+	($ENV{'REMOTE_ADDR'} ne '192.38.28.104') &&
+        ($ENV{'REMOTE_ADDR'} ne '192.38.28.106') ) {
+	
+	print "Content-type: text/plain\n\n";
+	print "Access denied!";
+	return;			
+    }
+    
+    my $query = $twikiSession->{cgiQuery};
+
+    my $cmd = $query->param("command") || '';
+    my $username = $query->param("username") || '';
+
+    $session = $twikiSession->{loginManager}->{_cgisession};
+
+    print "Content-type: text/plain\n\n";
+    print "TDWG Single Sign On";
+
+    if   ($cmd eq 'login')  { 
+	$session->param( 'AUTHUSER', $username );
+	$session->param( 'VALIDATION', 1 );		
+    }
+
+    elsif ($cmd eq 'logout') {
+	$session->clear( [ 'AUTHUSER', 'VALIDATION' ] );
+    }
+
+    print "\n\nStatus:";
+    print "\nSessionId  : ".$session->id();
+    print "\nCommand    : ".$cmd;
+    print "\nAUTHUSER   : ".$session->param( 'AUTHUSER' );
+    print "\nVALIDATION : ".$session->param( 'VALIDATION' );
+}

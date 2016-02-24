@@ -1,0 +1,131 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.04.26.03.05.53;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.04.25.08.36.06;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.04.24.16.37.28;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="BobMorris" date="1177556753" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="LsidVocs"}%
+---+ <nop>%TOPIC%
+
+When modeling relationships within a domain the first decision that has to be made is whether we are dealing with an 'is a' relationship or a 'has a' relationship. It is good to have a policy on this matter rather than having to make the decision afresh every time a new relationship is created. This page is a discussion and description of this policy.
+
+---++ The Problem
+
+Some cats have stripes, some have spots and some have neither. There are two main ways model this:
+
+   1 Class Cat has property Cat::hasMarkings and the possible values of hasMarkings are 'stripes', 'spots' or 'plain'. This is a case 'has a' relationships because and instance of a Cat 'has a' particular marking.
+   1 Class Cat has three subclasses StripedCat, SpottedCat and PlainCat. This is a case of 'is a' relationships because and instance of a Cat 'is a' SpottedCat or a StripedCat etc.
+
+There are arguments in favour of both solutions. The first one is probably easier to implement. It maps simply to technologies that either have single inheritance or no inheritance. The latter case is more complex to map especially if we introduce other types of Cat such as BigCat and SmallCat. Instances of Cat could be both big and striped or we could define a class called BigStripedCat in the central ontology that inherits from both or this could be done on the fly in the data.  What if we have a cat with spots and stripes or we want to extend the range of markings but keep the instance data as usable as possible.
+
+A more realistic example is that of Rank and Nomencaltural code in TaxonNames. 
+
+   1 A zoological species name 'is a' TaxonName that 'has a' rank of Species and has a nomenclatural code of 'ICZN'.
+   1 A zoological species name is a ZoologicalSpeciesTaxonName that inherits from both TaxonName and from ZoologicalTaxonName - or does it inherit from ZoologicalTaxonName that inherits form TaxonName - or perhaps it inherits from SpeciesTaxonName and ZoologicalTaxonName etc etc..
+
+Taking option two (the subclassing route) leads to increased complexity in modeling. We may all agree on the fundamental notion of a TaxonName (and that actually took years to establish) but agreeing on the hierarchical relationships of names and ranks would be very difficult. How would such an ontology respond to the introduction of a new nomenclatural code? We would have to deal in multiple inheritance in the data that is passed and we may have to deal with it in the central ontology.
+
+Taking option one is simpler. It is more or less a tagging exercise. Decide on a few core classes and qualify them with simple properties. The crucial point is that the user can decide if this is a BigStripedCat according to their own criteria rather than something imposed centrally - see below...
+
+---++ The Solution
+
+If you want to choose a bicycle the shop assistant will always ask you what you want to do with it in order to recommend a suitable model.
+
+Whether the subclassing option is preferable to the tagging approach depends on the use of the ontology. The TDWG ontology's principal role is not modeling the entire domain to permit inference but allowing the mark up of data so that it will flow between applications as freely as possible. It has to be something that is easy to map into multiple technologies and something that people can agree on rapidly.
+
+This strongly suggests that the tagging approach should be taken wherever possible. First agree on the basic semantic units and model the rest of the semantics with tagging. Only subclass when absolutely necessary.
+
+---++ OWL Inference
+
+The mainly tagging approach does not rule out using the ontology for inference in the future it actually helps promote it. If you had an application that wanted to make use of a class ZoologicalTaxonName that was restricted to those objects that were in the ICZN you could do something like this:
+
+<verbatim>
+<owl:Class rdf:ID="ZoologicalTaxonName"> 
+  <owl:equivalentClass>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="tdwg:nomenclaturalCode" />
+      <owl:someValuesFrom rdf:resource="tdwg:ICZN" />
+    </owl:Restriction>
+  </owl:equivalentClass>
+</owl:Class>  
+</verbatim>
+
+This doesn't impose your notion of a zoological taxon name on the rest of the world. Another application may have an orthogonal set of class definitions they want to use to reason across the *same* data. If the TDWG Ontology (the data exchange  ontology) imposes too much structure then it will restrict the use of the data. From the [[http://www.w3.org/TR/2004/REC-owl-guide-20040210/#equivalentClass1][OWL guide]]:
+
+"To tie together a set of component ontologies as part of a third it is frequently useful to be able to indicate that a particular class or property in one ontology is equivalent to a class or property in a second ontology. This capability must be used with care. If the combined ontologies are contradictory (all A's are B's vs. all A's are not B's) there will be no extension (no individuals and relations) that satisfies the resulting combination."
+
+An approach which leads to the TDWG ontology being a set of building brick that can be used by 'business logic' ontologies in different applications seems desirable.
+
+[Even if the TDWG ontology is contradictory to the applications own it would be possible for the application to simply override it by proxying the namespaces to another ontology - though this is undesirable]
+
+---++ Your Mileage May Vary
+
+This seems like a good idea today and we have to do something rather than nothing but inference is still in its infancy and what seems good now could seem bad with hindsight - but that is life.
+
+----
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1177490166" format="1.1" reprev="1.2" version="1.2"}%
+d29 1
+a29 1
+Whether the subclassing option is preferable to the tagging approach depends on the use of the ontology. The TDWG ontology's principle role is not modeling the entire domain to permit inference but allowing the mark up of data so that it will flow between applications as freely as possible. It has to be something that is easy to map into multiple technologies and something that people can agree on rapidly.
+d61 1
+a61 1
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1177432648" format="1.1" reprev="1.1" version="1.1"}%
+d12 1
+a12 1
+   1 Class Cat has three subclasses StripedCat, SpottedCat and PlainCat. This is a case of 'is a' relationships because and instance of a Cat 'is a' SpottedCat or a StriptedCat etc.
+d27 1
+a27 1
+If you want to buy a bicycle the shop assistant will always ask you what you want to do with it.
+d54 1
+a54 1
+[Even if the TDWG ontology is contradictory to the applications own it would be possible for the application to simply override it by proxying the namespaces to another ontology - though this is a very undesirable]
+@

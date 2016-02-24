@@ -1,0 +1,67 @@
+---+ Results from the Berlin Protocol Meeting
+
+---+++++ XQuery
+The XqueryLanguage seems not appropiate for now, as not enough free tools are availbale and writing parsers on our own would be too much work and hard to confine.
+
+---+++++ Changes agreed in Berlin
+
+Improvement to the SecondProposal:
+
+   * Terminology
+      * provider=host: a whole provider software installation
+      * datasource=database="collection of objects": a single connected database or a datasubset e.g. visible through a view supporting different ConceptualSchemas
+      * resource: a single datasource bound to a single ConceptualSchema
+   * AccessPoints
+      * for providers supporting all RequestTypes
+     * metadata response returns metadata for the provider and all its datasources
+     * capabilities response returns ???
+     * initially do not merge responses from several datasources, although it might be desireable in the future, esp. for inventories.
+      * for datasources supporting all RequestTypes
+     * metadata response returns metadata for the provider and this datasource incl all "resources"=schemas with their record numbers
+     * capabilities response returns capability of this datasource. that is config&request type capabilities for each resource seperately
+   * Header
+      * leave request <type> attribute and generically name the element following header for all requests details "message"
+      * source repeatable with sequence important and the first source element being the original source
+     * source element keeps resource attribute to allow to specify origin of the data. might be repeated for a response of several datasources
+      * destination element repeatable to submit distributed queries to several and single providers
+     * destination element keeps resource attribute to allow adressing of several datasources within a single request to a provider
+      * remove compression element
+      * move detailed software/components complex type to provider related capability and just keep the overall versioning with <software name="xxx" version="xyz" BerlinMeetingProposal>
+   * RequestTypes
+      * PingRequest
+      * CapabilitiesRequest
+      * MetadataRequest
+      * InventoryRequest
+      * SearchRequest
+      * *open issue:* CustomSearch needed?
+   * metadata response, see MetadataProposalTwo
+      * drop IPR, insert supported schemas incl record count
+      * add logo URL
+      * attach date-last-updated to resource
+   * capabilities response, see CapabilitiesProposalThree
+   * ConceptualBindingProposalOne accepted. OK to use namespace declaration in xml manner. Concept identifier attribute can be called "path".
+   * SearchRequest
+      * search based on the full/partial search for a single configured ConceptualSchema
+      * allows to combine several schemas for a response (to use extension schemas) by specifying a list of qualified concepts instead. See SearchProposalTwo for details.
+      * always returns a valid document. in case mandatory data is missing, drop the record or branch. dont use NULLs in response.
+      * when requesting no concept at all, return only the mandatory concepts.
+      * request the root node of a schema to retrieve the full document
+      * allow to ask for BranchNodes to implicitly request all child LeafNodes
+      * sorting is not appropiate nor doable
+      * specify the top level structure of the search response in the protocol with a slot for metadata and one for the content defined as records.
+     * allow the response of multiple "datasets" with different metadata from a single datasource to suit the needs of databases like fishbase and systax
+     * allow the
+     * allow the metadata definition to be chosen by the provider and make it a mandatory part of the reponse that cannot be altered by any request. Do so for all paging and subsequent responses to the same client.
+   * InventoryRequest
+      * allow multiple concepts to be scanned
+      * optionally request sorting of result list. order by sequence of requested concepts if multiple.
+   * valid filter operators
+      * Logical: AND, OR, NOT with AND + OR taking multiple arguments while NOT is unary.
+      * Comparative: equals, lessThan, lessThanOrEquals, greaterThan, greaterThanOrEquals, like, in, isNull, isMapped
+   * filters
+      * allow search requests without filters (affects both).
+      * evaluate to false if concept is not mapped but compared
+      * insert info/warn diagnostic if unmapped concept encountered in request
+   * use common Error Codes and prefixes for classification of codes. To be specified in more detail.
+   * Using a single POST or GET parameter called "request" which contains either the XML message or an URL pointing to the XML message.
+

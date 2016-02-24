@@ -1,0 +1,35 @@
+%TMPL:DEF{"searched"}%<span class="patternSearched">%MAKETEXT{"Searched:"}% <b><noautolink>%SEARCHSTRING%</noautolink></b></span><span id="twikiNumberOfResultsContainer"></span><span id="twikiModifySearchContainer"></span>%TMPL:END%
+
+
+
+%TMPL:DEF{"count"}%<div class="patternSearchResultCount" id="twikiBottomResultCount">%MAKETEXT{"Number of topics:"}% <b>%NTOPICS%</b></div><!--/patternSearchResultCount-->
+<script type="text/javascript">
+// write results at the top
+//<![CDATA[
+	var results;
+	if (!results) results = [];
+	results.push(%NTOPICS%);
+	var total=0;
+	for (var i=0; i<results.length; ++i) {
+		total += results[i];
+	}
+	var text = "<br />" + "%MAKETEXT{"Number of topics:"}%" + " <b>" + total + " <\/b>";
+	insertHtml(text, 'twikiNumberOfResultsContainer');
+	if (total < 10) {
+		insertHtml('', 'twikiBottomResultCount');
+	}
+//]]>
+</script>%TMPL:END%
+
+
+
+%TMPL:DEF{"header"}%<h4 class="patternSearchResultsHeader" %TMPL:P{"header:style:backgroundcolor"}%><span class="twikiLeft">%TMPL:P{"header:left"}%</span><span class="twikiRight">%TMPL:P{"header:right"}%</span><br class="twikiClear" /></h4>%TMPL:END%
+
+
+%TMPL:DEF{"header:left"}%<b>%MAKETEXT{"Results from [_1] web" args="<nop>%WEB%"}%</b> %MAKETEXT{"retrieved at [_1]" args="%DISPLAYTIME{"$hour:$min ($tz)"}%"}%%TMPL:END%
+
+
+%TMPL:DEF{"header:right"}%%TMPL:END%
+
+
+%TMPL:DEF{"header:style:backgroundcolor"}%%TMPL:END%

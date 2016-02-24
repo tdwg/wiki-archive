@@ -1,0 +1,15 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118875" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---+!! %TOPIC%
+
+In my experience, in all programming languages, novices (like us in the Schema design enterprise) usually find it easier to proliferate identifiers than to let the context distinguish two uses of the same identifier. Sometimes in a program itself you want to use the same identifier from a different context from the one in the current context. Such a situation needs a notation for resolving this conflict which is technically known as the _scope_ of the identifier. One such notation is a kind of scope hierarchy separated by periods. So for example, in Java you might have two declarations
+<verbatim>
+Descriptions.Taxon theTaxon; //an object whose structure is defined in Descriptions
+Terminology.Taxon theTaxonName; //an object whose structure is defined in Terminology
+</verbatim>
+which would allow you to have a data type named Taxon in two contexts and use objects of those types in a single context.
+
+The issue appears particularly with data type names, as opposed to data object names. This issue arose because Main.KevinThiele raised the issue in ClosedTopicTaxonNamesInResources of whether Taxon could be used both for a Taxon name and a Taxon description, with context dictating the result. He wasn't discussing a data _type_, (XML prohibits two types , but not two elements, having the same identifier as their name, so there is no syntactical reason not to use a single identifier, Taxon. However, in a _discussion_, the context might not clear, and I favored using two identifiers Taxon and <nop>TaxonName to aid discussion. The alternative would be to introduce a scope resolution notation, which I find needless complexity here.
+
+In this particular case--- Taxon vs. <nop>TaxonName ---those of us who are also taxonomically challenged appreciate the distinction being signalled. And, I hope, there will ultimately be a lot of computer scientists hacking this stuff so the rest of you can get on with the science. So I will not be alone in needing reminder about the distinction.
+-- Main.BobMorris - 26 Sep 2003

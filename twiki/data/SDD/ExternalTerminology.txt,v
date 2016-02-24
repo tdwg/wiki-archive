@@ -1,0 +1,459 @@
+head	1.14;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.14
+date	2009.11.25.03.14.33;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2009.11.20.02.45.25;	author LeeBelbin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.05.04.11.26.30;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.06.21.11.30.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.05.28.17.17.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.05.27.16.34.51;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.05.15.10.47.36;	author BryanHeidorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.04.19.16.38.41;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.04.18.15.59.45;	author BobMorris;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.04.16.20.01.00;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.04.16.14.59.56;	author BryanHeidorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.04.16.11.28.04;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.04.16.05.28.00;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.14
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118873" format="1.1" version="1.14"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+Since this has come up in the TDWG-SDD mailing list, I'm trying to bring it here, in hopes that the participants there will move to this more easily memorialized format. Possibly this is part of the same discussion as at SDD.AuthoritativeTerminology, though it seems more about implementation than that topic is.
+
+It is probably not that deep in the present SDD architecture, with key/keyref as the major mechanism for separating descriptions from that which is used in them, to use external mechanisms such as registries for the various things like Terminology which are naturally separable in SDD 0.9. There are likely two issues, one minor and one not.
+
+The minor one is that notions of validity checking may become deeper than XML validating parses---if the current architecture is adopted---because an application would have to construct the internal keys on the fly, in essence creating the document to be validated only when it is fully assembled. That's not a big deal.
+
+The more major issue pervades all mechanisms that depend on GUIDs, rather say than some digital signature, to establish a claim that two documents are or are not the same. It is impossible accross time or replicated versions to guarantee the identity contract was enforced. Suppose for i=1, 2 Producer Ai produces document Di with an assertion that it is based on a Terminology Ti with GUID Gi acquired on date Di from Provider Pi, and suppose that G1=G2. Comparability of the documents D1 and D2 rests on a comparing application's belief that G1=G2 is a guarantee that T1=T2, but registries alone cannot guarantee this. Nothing stops a registery or registered provider from intentionally or accidentally providing something that violates this guarantee. Absent a digital signature, the documents might as well carry the Terminology around with them, which is the present design of SDD. Registries may be a good place to acquire Terminologies, but reference to them alone is not enough.
+
+A difference between the SDD architecture and that of SEEK is that a Terminology is not itself a schema or a collection of schemas. It's data just like a Description. But for SEEK, I think, what constrains descriptions are actually schemas, so(?) reasoning about constrained descriptions becomes easier.
+
+
+-- Main.BobMorris - 16 Apr 2004
+
+I think it might make sense to cache terminology in an SDD description, but it is still of great value to include the terminology as an external reference where it exists. For example, if two people use “blade-length” in independent descriptions (not in one SDD), there is no way to insure that those strings were ever intended to mean the same thing. If however, we develop a character registration system, people can have the intention for coordination when they author a description. The registration system might be abused and altered to make this invalid, intentionally or not but that is true of anything. 
+
+Having the global reference to characters, gives more descriptive power then internal terminology storage. I believe this was the intent of the external reference system in SDD for terminology. The difference is that nothing in SDD is built to trust such a service. The character registration system makes it possible to write a species description that you assert is globally consistent with other species descriptions not in the same document. This allows you to pass around the independent description and reuse it, or part of it in other applications.
+
+Even if this service did exist, we would still need a terminology section within SDD for people who choose not to use the service for historical or other reasons.
+
+-- Main.BryanHeidorn - 16 Apr 2004
+
+I didn't mean to suggest that external Terminology is not useful; we've intended it all along. I'd be reluctant to see many individual characters separately externalized for several reasons.
+   * It's difficult to see how to then express relations between characters, something that we're trying to do.
+   * Other than embedded in a Terminology, it could get complicated to give the character context. For example, is blade-length for chain saws supposed to be comparable to blade-length for grasses?
+
+Really, my central point, which you point out is a universal problem, is that GUIDs don't offer a strong contract for comparability but depend on the good will and correct operation of the facility serving the object. My second point is that, unlike the concept schemas that SEEK proposes to register, an external Terminology adds little to validity checking.
+
+-- Main.BobMorris - 16 Apr 2004  
+
+(Prescriptum: I have a small problem with the word GUID: Bob, do you call URIs, which are non-numeric, globally unique entities also "GUID", or only the typical GUID long integer numbers?)
+
+What situation or scenario is meant by "reluctant to see many individual characters separately externalized"? Currently, the envisaged way (not yet expressed in the schema!) is that SDD: 
+   * either has some kind of file or file fragment include mechanism, directly referring to a uri (some xlink statement). This would appear somewhere in the character list and include one to several characters ("a block"). -- I believe all the problems you mention apply to this case, i.e. the uri may change or disappear without notice.
+   * or each character (to use the character objects as an example for the discussion) is always represented within the local SDD document, but it may either be a base definition, or it may extend another character defined elsewhere. In this case the reference to the base definition would have to consist of the <nop>GloballyUniqueName for the project defining the base, and the local key number within that project. Thus issues of context and copyright would always be well defined. But I see two problems:
+      * Perhaps a date when the reference was semantically validated should be added (two related elements: <nop>LastVerified and <nop>InvalidSince are being added to <nop>CitationType in the beta version of SDD 0.91, please see SchemaChangeLog091EarlyBetaVersions).
+      * The issue of the GUID for Projects, i.e. the <nop>GloballyUniqueName is not resolved, i.e. whether for finding that resource we can rely on UDDI mechanisms or need to store a separate URI.
+
+I think we need a real proposal on what is desirable and what not. Can anybody make this?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 19. Apr. 2004
+  
+---
+
+Quite separately: Bob, can you open a new topic summarizing what you know about what SEEK attempts whith "concept schemas that SEEK proposes to register"? Inhowfar do these issue overlas with SDD?
+
+I have another document on this but on another machine and as I leave for the airport I can not get it. I will provide it at the meeting. I agree with Bob that there needs to be "good faith" on the part of the character developers. I do not see chainsaw blade length vs. grass blade length as a problem at all. This is a context of use. We need to include that as part of the name specification for a character. We already do that in the terminology with the character groupings. We can have two "color" characters under two different character groups...I hope.
+
+-- Main.BryanHeidorn - 15 May 2004
+---
+
+See also FederationOfTerminology!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28. May 2004@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685125" format="1.1" reprev="1.13" version="1.13"}%
+d5 1
+a5 1
+Since this has come up in the TDWG-BDI.SDD mailing list, I'm trying to bring it here, in hopes that the participants there will move to this more easily memorialized format. Possibly this is part of the same discussion as at BDI.SDD.AuthoritativeTerminology, though it seems more about implementation than that topic is.
+d7 1
+a7 1
+It is probably not that deep in the present BDI.SDD architecture, with key/keyref as the major mechanism for separating descriptions from that which is used in them, to use external mechanisms such as registries for the various things like Terminology which are naturally separable in BDI.SDD 0.9. There are likely two issues, one minor and one not.
+d11 1
+a11 1
+The more major issue pervades all mechanisms that depend on GUIDs, rather say than some digital signature, to establish a claim that two documents are or are not the same. It is impossible accross time or replicated versions to guarantee the identity contract was enforced. Suppose for i=1, 2 Producer Ai produces document Di with an assertion that it is based on a Terminology Ti with GUID Gi acquired on date Di from Provider Pi, and suppose that G1=G2. Comparability of the documents D1 and D2 rests on a comparing application's belief that G1=G2 is a guarantee that T1=T2, but registries alone cannot guarantee this. Nothing stops a registery or registered provider from intentionally or accidentally providing something that violates this guarantee. Absent a digital signature, the documents might as well carry the Terminology around with them, which is the present design of BDI.SDD. Registries may be a good place to acquire Terminologies, but reference to them alone is not enough.
+d13 1
+a13 1
+A difference between the BDI.SDD architecture and that of SEEK is that a Terminology is not itself a schema or a collection of schemas. It's data just like a Description. But for SEEK, I think, what constrains descriptions are actually schemas, so(?) reasoning about constrained descriptions becomes easier.
+d18 1
+a18 1
+I think it might make sense to cache terminology in an BDI.SDD description, but it is still of great value to include the terminology as an external reference where it exists. For example, if two people use “blade-length” in independent descriptions (not in one BDI.SDD), there is no way to insure that those strings were ever intended to mean the same thing. If however, we develop a character registration system, people can have the intention for coordination when they author a description. The registration system might be abused and altered to make this invalid, intentionally or not but that is true of anything. 
+d20 1
+a20 1
+Having the global reference to characters, gives more descriptive power then internal terminology storage. I believe this was the intent of the external reference system in BDI.SDD for terminology. The difference is that nothing in BDI.SDD is built to trust such a service. The character registration system makes it possible to write a species description that you assert is globally consistent with other species descriptions not in the same document. This allows you to pass around the independent description and reuse it, or part of it in other applications.
+d22 1
+a22 1
+Even if this service did exist, we would still need a terminology section within BDI.SDD for people who choose not to use the service for historical or other reasons.
+d36 1
+a36 1
+What situation or scenario is meant by "reluctant to see many individual characters separately externalized"? Currently, the envisaged way (not yet expressed in the schema!) is that BDI.SDD: 
+d38 2
+a39 2
+   * or each character (to use the character objects as an example for the discussion) is always represented within the local BDI.SDD document, but it may either be a base definition, or it may extend another character defined elsewhere. In this case the reference to the base definition would have to consist of the <nop>GloballyUniqueName for the project defining the base, and the local key number within that project. Thus issues of context and copyright would always be well defined. But I see two problems:
+      * Perhaps a date when the reference was semantically validated should be added (two related elements: <nop>LastVerified and <nop>InvalidSince are being added to <nop>CitationType in the beta version of BDI.SDD 0.91, please see SchemaChangeLog091EarlyBetaVersions).
+d48 1
+a48 1
+Quite separately: Bob, can you open a new topic summarizing what you know about what SEEK attempts whith "concept schemas that SEEK proposes to register"? Inhowfar do these issue overlas with BDI.SDD?
+d57 1
+a57 1
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28. May 2004
+@
+
+
+1.12
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 1
+a5 3
+%META:TOPICINFO{author="GregorHagedorn" date="1146741990" format="1.0" version="1.11"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+Since this has come up in the TDWG-SDD mailing list, I'm trying to bring it here, in hopes that the participants there will move to this more easily memorialized format. Possibly this is part of the same discussion as at SDD.AuthoritativeTerminology, though it seems more about implementation than that topic is.
+d7 1
+a7 1
+It is probably not that deep in the present SDD architecture, with key/keyref as the major mechanism for separating descriptions from that which is used in them, to use external mechanisms such as registries for the various things like Terminology which are naturally separable in SDD 0.9. There are likely two issues, one minor and one not.
+d11 1
+a11 1
+The more major issue pervades all mechanisms that depend on GUIDs, rather say than some digital signature, to establish a claim that two documents are or are not the same. It is impossible accross time or replicated versions to guarantee the identity contract was enforced. Suppose for i=1, 2 Producer Ai produces document Di with an assertion that it is based on a Terminology Ti with GUID Gi acquired on date Di from Provider Pi, and suppose that G1=G2. Comparability of the documents D1 and D2 rests on a comparing application's belief that G1=G2 is a guarantee that T1=T2, but registries alone cannot guarantee this. Nothing stops a registery or registered provider from intentionally or accidentally providing something that violates this guarantee. Absent a digital signature, the documents might as well carry the Terminology around with them, which is the present design of SDD. Registries may be a good place to acquire Terminologies, but reference to them alone is not enough.
+d13 1
+a13 1
+A difference between the SDD architecture and that of SEEK is that a Terminology is not itself a schema or a collection of schemas. It's data just like a Description. But for SEEK, I think, what constrains descriptions are actually schemas, so(?) reasoning about constrained descriptions becomes easier.
+d18 1
+a18 1
+I think it might make sense to cache terminology in an SDD description, but it is still of great value to include the terminology as an external reference where it exists. For example, if two people use “blade-length” in independent descriptions (not in one SDD), there is no way to insure that those strings were ever intended to mean the same thing. If however, we develop a character registration system, people can have the intention for coordination when they author a description. The registration system might be abused and altered to make this invalid, intentionally or not but that is true of anything. 
+d20 1
+a20 1
+Having the global reference to characters, gives more descriptive power then internal terminology storage. I believe this was the intent of the external reference system in SDD for terminology. The difference is that nothing in SDD is built to trust such a service. The character registration system makes it possible to write a species description that you assert is globally consistent with other species descriptions not in the same document. This allows you to pass around the independent description and reuse it, or part of it in other applications.
+d22 1
+a22 1
+Even if this service did exist, we would still need a terminology section within SDD for people who choose not to use the service for historical or other reasons.
+d27 2
+a28 2
+	* It's difficult to see how to then express relations between characters, something that we're trying to do.
+	* Other than embedded in a Terminology, it could get complicated to give the character context. For example, is blade-length for chain saws supposed to be comparable to blade-length for grasses?
+d36 5
+a40 5
+What situation or scenario is meant by "reluctant to see many individual characters separately externalized"? Currently, the envisaged way (not yet expressed in the schema!) is that SDD: 
+	* either has some kind of file or file fragment include mechanism, directly referring to a uri (some xlink statement). This would appear somewhere in the character list and include one to several characters ("a block"). -- I believe all the problems you mention apply to this case, i.e. the uri may change or disappear without notice.
+	* or each character (to use the character objects as an example for the discussion) is always represented within the local SDD document, but it may either be a base definition, or it may extend another character defined elsewhere. In this case the reference to the base definition would have to consist of the <nop>GloballyUniqueName for the project defining the base, and the local key number within that project. Thus issues of context and copyright would always be well defined. But I see two problems:
+		* Perhaps a date when the reference was semantically validated should be added (two related elements: <nop>LastVerified and <nop>InvalidSince are being added to <nop>CitationType in the beta version of SDD 0.91, please see SchemaChangeLog091EarlyBetaVersions).
+		* The issue of the GUID for Projects, i.e. the <nop>GloballyUniqueName is not resolved, i.e. whether for finding that resource we can rely on UDDI mechanisms or need to store a separate URI.
+d48 1
+a48 1
+Quite separately: Bob, can you open a new topic summarizing what you know about what SEEK attempts whith "concept schemas that SEEK proposes to register"? Inhowfar do these issue overlas with SDD?
+a57 1
+
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 56
+a56 55
+%META:TOPICINFO{author="GregorHagedorn" date="1087817401" format="1.0" version="1.10"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+Since this has come up in the TDWG-SDD mailing list, I'm trying to bring it here, in hopes that the participants there will move to this more easily memorialized format. Possibly this is part of the same discussion as at SDD.AuthoritativeTerminology, though it seems more about implementation than that topic is.
+
+It is probably not that deep in the present SDD architecture, with key/keyref as the major mechanism for separating descriptions from that which is used in them, to use external mechanisms such as registries for the various things like Terminology which are naturally separable in SDD 0.9. There are likely two issues, one minor and one not.
+
+The minor one is that notions of validity checking may become deeper than XML validating parses---if the current architecture is adopted---because an application would have to construct the internal keys on the fly, in essence creating the document to be validated only when it is fully assembled. That's not a big deal.
+
+The more major issue pervades all mechanisms that depend on GUIDs, rather say than some digital signature, to establish a claim that two documents are or are not the same. It is impossible accross time or replicated versions to guarantee the identity contract was enforced. Suppose for i=1, 2 Producer Ai produces document Di with an assertion that it is based on a Terminology Ti with GUID Gi acquired on date Di from Provider Pi, and suppose that G1=G2. Comparability of the documents D1 and D2 rests on a comparing application's belief that G1=G2 is a guarantee that T1=T2, but registries alone cannot guarantee this. Nothing stops a registery or registered provider from intentionally or accidentally providing something that violates this guarantee. Absent a digital signature, the documents might as well carry the Terminology around with them, which is the present design of SDD. Registries may be a good place to acquire Terminologies, but reference to them alone is not enough.
+
+A difference between the SDD architecture and that of SEEK is that a Terminology is not itself a schema or a collection of schemas. It's data just like a Description. But for SEEK, I think, what constrains descriptions are actually schemas, so(?) reasoning about constrained descriptions becomes easier.
+
+
+-- Main.BobMorris - 16 Apr 2004
+
+I think it might make sense to cache terminology in an SDD description, but it is still of great value to include the terminology as an external reference where it exists. For example, if two people use “blade-length” in independent descriptions (not in one SDD), there is no way to insure that those strings were ever intended to mean the same thing. If however, we develop a character registration system, people can have the intention for coordination when they author a description. The registration system might be abused and altered to make this invalid, intentionally or not but that is true of anything. 
+
+Having the global reference to characters, gives more descriptive power then internal terminology storage. I believe this was the intent of the external reference system in SDD for terminology. The difference is that nothing in SDD is built to trust such a service. The character registration system makes it possible to write a species description that you assert is globally consistent with other species descriptions not in the same document. This allows you to pass around the independent description and reuse it, or part of it in other applications.
+
+Even if this service did exist, we would still need a terminology section within SDD for people who choose not to use the service for historical or other reasons.
+
+-- Main.BryanHeidorn - 16 Apr 2004
+
+I didn't mean to suggest that external Terminology is not useful; we've intended it all along. I'd be reluctant to see many individual characters separately externalized for several reasons.
+	* It's difficult to see how to then express relations between characters, something that we're trying to do.
+	* Other than embedded in a Terminology, it could get complicated to give the character context. For example, is blade-length for chain saws supposed to be comparable to blade-length for grasses?
+
+Really, my central point, which you point out is a universal problem, is that GUIDs don't offer a strong contract for comparability but depend on the good will and correct operation of the facility serving the object. My second point is that, unlike the concept schemas that SEEK proposes to register, an external Terminology adds little to validity checking.
+
+-- Main.BobMorris - 16 Apr 2004  
+
+(Prescriptum: I have a small problem with the word GUID: Bob, do you call URIs, which are non-numeric, globally unique entities also "GUID", or only the typical GUID long integer numbers?)
+
+What situation or scenario is meant by "reluctant to see many individual characters separately externalized"? Currently, the envisaged way (not yet expressed in the schema!) is that SDD: 
+	* either has some kind of file or file fragment include mechanism, directly referring to a uri (some xlink statement). This would appear somewhere in the character list and include one to several characters ("a block"). -- I believe all the problems you mention apply to this case, i.e. the uri may change or disappear without notice.
+	* or each character (to use the character objects as an example for the discussion) is always represented within the local SDD document, but it may either be a base definition, or it may extend another character defined elsewhere. In this case the reference to the base definition would have to consist of the <nop>GloballyUniqueName for the project defining the base, and the local key number within that project. Thus issues of context and copyright would always be well defined. But I see two problems:
+		* Perhaps a date when the reference was semantically validated should be added (two related elements: <nop>LastVerified and <nop>InvalidSince are being added to <nop>CitationType in the beta version of SDD 0.91, please see SchemaChangeLog091EarlyBetaVersions).
+		* The issue of the GUID for Projects, i.e. the <nop>GloballyUniqueName is not resolved, i.e. whether for finding that resource we can rely on UDDI mechanisms or need to store a separate URI.
+
+I think we need a real proposal on what is desirable and what not. Can anybody make this?
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 19. Apr. 2004
+  
+---
+
+Quite separately: Bob, can you open a new topic summarizing what you know about what SEEK attempts whith "concept schemas that SEEK proposes to register"? Inhowfar do these issue overlas with SDD?
+
+I have another document on this but on another machine and as I leave for the airport I can not get it. I will provide it at the meeting. I agree with Bob that there needs to be "good faith" on the part of the character developers. I do not see chainsaw blade length vs. grass blade length as a problem at all. This is a context of use. We need to include that as part of the name specification for a character. We already do that in the terminology with the character groupings. We can have two "color" characters under two different character groups...I hope.
+
+-- Main.BryanHeidorn - 15 May 2004
+---
+
+See also FederationOfTerminology!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28. May 2004
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085764620" format="1.0" version="1.9"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085675690" format="1.0" version="1.8"}%
+d5 1
+a5 1
+It is probably not that deep in the present SDD archictecture, with key/keyref as the major mechanism for separating descriptions from that which is used in them, to use external mechanisms such as registries for the various things like Terminology which are naturally separable in SDD 0.9. There are likely two issues, one minor and one not.
+d42 1
+a42 1
+-- Gregor Hagedorn - 19. Apr. 2004
+d51 5
+a55 2
+---
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BryanHeidorn" date="1084618056" format="1.0" version="1.7"}%
+d50 3
+a52 1
+-- BryanHeidorn - 15 May 2004
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082392721" format="1.0" version="1.6"}%
+d46 5
+a50 2
+Quite separately: Bob, can you open a new topic summarizing what you know about what SEEK attempts whith "concept schemas that SEEK proposes to register"? Inhowfar do these issue overlas with SDD?
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082303985" format="1.0" version="1.5"}%
+d24 3
+a26 1
+I didn't mean to suggest that external Terminology is not useful; we've intended it all along. I'd be reluctant to see many individual characters separately externalized for several reasons. 
+d28 1
+a28 1
+  - It's difficult to see how to then express relations between characters, something that we're trying to do.
+d30 1
+a30 1
+  - Other than embedded in a Terminology, it could get complicated to give the character context. For example, is blade-length for chain saws supposed to be comparable to blade-length for grasses?
+d32 1
+d34 5
+a38 1
+Really, my central point, which you point out is a universal problem, is that GUIDs don't offer a strong contract for comparability but depend on the good will and correct operation of the facility serving the object. My second point is that, unlike the concept schemas that SEEK proposes to register, an external Terminology adds little to validity checking.
+d40 1
+a40 1
+-- Main.BobMorris - 16 Apr 2004  
+d42 1
+d44 4
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082145660" format="1.0" version="1.4"}%
+d3 1
+a3 1
+Since this has come up in the TDWG-SDD mailing list, I'm trying to bring it here, in hopes that the participants there will move to this more easily memorialized format.
+d35 1
+a35 2
+  
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BryanHeidorn" date="1082127596" format="1.0" version="1.3"}%
+d23 14
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082114884" format="1.0" version="1.2"}%
+d15 8
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1082093280" format="1.0" version="1.1"}%
+d9 1
+a9 1
+The more major issue pervades all mechanisms that depend on GUIDs, rather say than some digital signature, to establish a claim that two documents are or are not the same. It is impossible accross time or replicated versions to guarantee the identity contract was enforced. Suppose for i=1, 2 Consumer Ai produces document Di with an assertion that it is based on a Terminology Ti with GUID Gi acquired on date Di from Provider Pi, and suppose that G1=G2. Comparability of the documents D1 and D2 rests on a comparing application's belief that G1=G2 is a guarantee that T1=T2, but registries alone cannot guarantee this. Nothing stops a registery or registered provider from intentionally or accidentally providing something that violates this guarantee. Absent a digital signature, the documents might as well carry the Terminology around with them, which is the present design of SDD. Registries may be a good place to acquire Terminologies, but reference to them alone is not enough.
+@

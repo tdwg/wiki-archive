@@ -1,0 +1,47 @@
+%META:TOPICINFO{author="LeeBelbin" date="1269489108" format="1.1" version="1.7"}%
+%META:TOPICPARENT{name="WebHome"}%
+---++!!Other Systems Documentation
+
+
+---+++SVN
+
+To add new users to the SVN repository, follow these instructions:
+
+1) Log on to owl.tdwg.org as root (using SSH)
+2) Edit the file /var/www/html/rs.tdwg.org/devel/emacs access_control.txt
+3) Add a new line with your TDWG account name followed by "= rw", under
+the existing names, such as:
+
+RicardoPereira = rw
+
+4) Save the file and go for it!
+
+---+++Schema Repository
+This documentation came from Walter Berendsohn asking about how to update the *rs.tdwg.org* pages for ABCD. The following conversations from Markus and Jorg.
+
+"Roger pointed out this is the subversion backed part of TDWG. It can either be fully access through subversion with the primary folders having seperate access control lists.
+Alternatively you can also mount the latest version (=trunk) as a web dav drive to modify the trunk. I would recommend to use subversion as it give you more control and you can tag/branch files."
+
+"Walter, apart from the admins you are the only one to have write access to the abcd folder: [/abcd] WalterBerendsohn = rw. The login is your regular tdwg login. Please let me know if you want anyone else with a tdwg account to have write access."
+
+"Regarding content we had at some point agreed to make use of RDDL for the schema repository. I would think this is still the case, but we should at least make sure all the different schema folders are done the same way. I would also be curious if all the rs.tdwg.org files are in sync with the archives served from the main pages - at least for NCD I have some doubts."
+
+"Jörg, what is your exact TDWG account, JoergHoletschek?"
+"Yes"
+
+"Jörg, you should have write access now, please give it a try". Markus
+
+"Jörg, it is simply the https version of the regular url. To checkout ABCD you should be able to use this:
+
+svn co https://rs.tdwg.org/abcd --username JoergHoletschek"
+
+
+---+++LSIDS.sourceforge.net
+
+It turns out I was wrong about it using WordPress. Instead it uses a custom-installed Typo3 (http://typo3.com) as the CMS. The installation was referring to a location for web-application file storage that does no longer exist. I created the necessary file structure at the new location, and restored the content from a backup I found among the website files, which was apparently taken Apr 7, 2008.
+
+SourceForge backed up the files from the old webserver file storage location, but at a location that's not accessible through the normal shell access. Due to the nested directory structure I would need to use something like rsync to pull it down recursively, and if we encounter problems with the restore from backup I can look into that.  
+However, looking around there and spot checking the files seemed to be all of the same date and size as in the backup I used for restoring, so maybe we're good already in terms of having the latest version before it all went broke. BTW this must have happened on Sep 18, 2008; I guess the site was broken for almost a year ...
+
+SourceForge now provides hosted apps that are customizable but maintained by Sf.net. Not surprisingly, they advise against installing your own, as projects have to maintain and upgrade those themselves. I have enabled MediaWiki and WordPress but there are other options too (https://sourceforge.net/apps/trac/sourceforge/wiki/Hosted%20Apps
+). Sooner or later the content should be probably migrated away from the custom Typo3 installation to one of these hosted applications, unless someone knows of a specific advantage of sticking with Typo3.

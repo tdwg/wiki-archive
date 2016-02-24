@@ -1,0 +1,24 @@
+DonaldHobern on mailing list (in reply to IdentifiersAtMOBOT):
+
+Thanks, Chuck for this detailed response.  You are quite right that we need to be clear what we mean by "specimen".  Your clarification of MOBOT's use of identifiers shows not only that there are many identifiers in use, but also they may apply to any in a series of increasingly refined objects (or sets of objects), and that there are good reasons for wanting to be able to identify each item in that series.  If we think of this in software modeling terms, each of these could be a separate object which could be manipulated and referenced independently of the others.
+
+Different communities within biological collections, will clearly have different series of identifiable objects.  For example an entomological collection could have the following series:
+
+(Survey?) -> Contents of an (malaise/light/water/etc.) trap -> Individual insect -> Insect part (genitalia preparation, leg removed for DNA analysis) -> (DNA preparation?)
+
+Handling of plankton samples, culture collections and seedbank accessions will be different again.  Within botanical collections, is there any attempt to indicate that two separate collecting events relate to the same plant or clonal population?
+
+Depending on the needs and purpose of an individual collection, it may track different items in these series.  Individual insects may be part of a numbered series or have their own numbers.
+
+As Chuck suggests, this means that it is not clear that we have a single common definition of "specimen" that would be accepted by all of us.  My use of the word "subsample" and the phrase "identifiable set" in my original question was an attempt to recognise that one group's specimen may be seen by another group as just a part of a specimen or as a set of specimens.  The ABCD Schema uses the general term Unit to reflect the variation between different items recorded by different providers.
+
+It seems to me that there are various ways that we can try to handle this:
+
+   1.  We could try to develop wording that explains what we agree to be a reasonable shared definition of a specimen that can be applied by each collection to select an appropriate identifier or require them to generate a new one.  This seems unlikely ever to be successful given the wide range of situations, collections and databases that need to be covered.
+   1.  We could let each provider give an indication of the nature of the item being referenced (sample with multiple organisms, individual organism, tissue, etc.; living material, dead material) using terminology that is appropriate to their community.  This may help human readers of the data to interpret the data but does not allow us to reason reliably about the data we receive.  This is close to the approach followed today by Darwin Core (BasisOfRecord) and the ABCD Schema (Unit/RecordBasis).  
+   1.  We could work as a community to develop and enforce a controlled terminology for the nature of items referenced.  By limiting the range of terms that can be used, it should in many cases be possible to reason more clearly about what each record describes.
+   1.  We could go further and manage the controlled terminology as an ontology that includes hierarchically-arranged definitions (e.g. a CultureCollection isA LiveUnit, a HerbariumSheet isA DeadUnit) and other relationships (e.g. a Tissue derivesFrom a DeadUnit).  There would be more work in doing this, but the BioMOBY project provides one example of how to build such an ontology as an open community activity.
+
+As we consider the use of GUIDs, I would really also like us to think about the fourth of these options.  Any "Unit" (or whatever else we may use as a generic term for a biological item being recorded) can be identified as belonging to a particular class of objects identified within a shared ontology.  We can do this by having an element whose value must be the identifier for an object class registered in the ontology.  This allows an institution to make an assertion that one record relates to an individual dead organism and that another relates to a tissue sample, and for those assertions to be ones that software applications can process.  Better still, the presence of GUIDs for each of these records would allow us to add an extra element to the tissue sample record that securely identifies the specimen from which it was taken.
+
+The bottom line here is that we certainly need to do some work to make sure that we know what we are talking about when we speak of a "specimen" (or any other similar term), but that we can use a combination of GUIDs and a shared ontology to transcend the difficulties this could present, and to construct subtle and informative webs of information.

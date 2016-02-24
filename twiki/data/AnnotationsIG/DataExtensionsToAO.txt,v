@@ -1,0 +1,126 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2011.07.06.19.35.40;	author PaulJMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2011.04.07.17.35.11;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@none
+@
+text
+@%META:TOPICINFO{author="PaulJMorris" date="1309980940" format="1.1" reprev="1.2" version="1.2"}%
+%META:TOPICPARENT{name="WebHome"}%
+Members of the [[http://etaxonomy.org/FilteredPush][FilteredPush data annotation project (FP)]] have been working with Paolo Ciccarese to merge our ideas about data annotation into the W3-incubated [[http://code.google.com/p/annotation-ontology/][Annotation Ontology (AO)]] activity.  AO will be submitted to !W3C to begin the formal, and time consuming, process toward a full !W3C Recommendation. We will be participating in this activity and will keep the TDWG community informed on this wiki, with occasional pointers to it on the tdwg-content mailing list. You can put yourself on the AnnotationsIG notification list by adding your !WikiName to the [[http://wiki.tdwg.org/twiki/bin/view/AnnotationsIG/WebNotify][AnnotationsIG notification page]]. Presently, all TDWG Wiki change notifications are sent once a day.
+
+This note sketches the concepts we have proposed be introduced, and points at a strawman extension http://etaxonomy.org/ontologies/ao/aod.owl to hold them,  and at some examples using AO with AOD. FP is an NSF funded project to build a platform for distributed annotations of distributed data, with special emphasis on notifications to data curators, or other interested parties, of the existence of an annotation on their data, even at the sub-record level. The present work has focus on quality control (QC) and other aspects of data curation of biodiversity data (specimen metadata, ecological data, etc.) and on the use of data-centered workflows  for such curation. 
+
+This work is inspired by ideas for an annotation ontology that were presented in a workshop at TDWG 2009, sketched in the now [[http://etaxonomy.org/mw/Annotation_Stake_In_The_Ground][obsolete stake in the ground]]. Hilmar Lapp encouraged us to explore what AO might need to do the job. At the moment, it seems that only a few classes need be added to accomplish this.
+
+It is our expectation that issues special to biodiversity data will be discussed on this wiki.  We'll also report on generic AO issues as they emerge elsewhere.
+
+---++ Proposed AOD Extensions to AO
+Annotating data is already familiar in the molecular biology community in the form of gene annotations. We believe that a few simple extensions to AO can support data annotation in a more general context. In what follows, an Annotator might be either human or a software agent.
+
+For the moment, we prefix these with &#8220;aod&#8221;, though the point would be to add them to the AO core. The major proposed concepts are
+
+aod:Motivation: what is the purpose for which this Annotation is made
+
+aod:Evidence (a subclass of Motivation):  what is the evidence for the assertions made in the AO annotation Topic(s)
+
+aod:Expectation: what does the Annotator hope will be the outcome of consumption of the Annotation, especially by holder(s) of the annotated object(s).
+
+For clarity we introduced some convenience object properties aod:hasMotivation, aod:hasEvidence, and aod:hasExpection. Some of them might be accomplished by 
+
+---++ WHERE TO GET THE AOD EXTENSIONS AND EXAMPLES.
+http://etaxonomy.org/ontologies/ao has our aod extensions in a file aod.owl and six data annotation example files focused on biodiversity data. At this writing service that corresponds to a rev 624 of our svn tree with a tag 20110406 of our repository.  If you want the bleeding edge, you can poke in the Filtered Push svn repo http://etaxonomy.org/svn/FP/FP-Network into trunk/design/ontologies/ao  Illustrations of the examples can be found at http://etaxonomy.org/mw/AOD_Extension_of_AO_for_Data#Examples
+
+---+++Caveats:
+   1. Start by looking for instances of aod:DataAnnotation, or in aod_example_1a.owl for an instance of ao:AnnotationSet
+   1.  We're not entirely consistent between the examples.
+   1.  Note that the examples are cast as OWL ontologies which we produce with Protege4, even though their purpose is to describe domain data and annotation data thereon. That's because we know of no good open source editor for Owl instance data. Protege has some pain associated with its use this way, not the least of which is that the Manchester format requires declarations of every property used, which can make a simple file large and unpleasant to render with other than Protege or something that behaves like it. In turn, that can cause stuff to mysteriously disappear if you switch back and forth between RDF and Manchester serializations. Also, some special characters, e.g.,'?' in URIs seem to be resisted in Manchester but not RDF/XML formats.
+
+
+---++ Issues for the AO group
+Several issues that we will raise separately in the AO group. Most are generic and not special to biodiversity data, so probably won't be discussed on this wiki very much
+
+1. Cardinality and containers.
+There are cardinality issues on several AO (and AOD) concepts, probably all of those in the AO core. For example, annotations may require several Topics, in which case it becomes difficult to assign the  Evidence to Topics. One solution is to have a generic Container at the (not presently existing?) ao:topProperty and a recursive(?) object property inContainer. That may raise several issues, including how/if various other properties are inherited through inContainer, whether there is risk of falling out of DL, transitivity, ...
+
+2. Data Selectors.
+We defined two but haven't imposed any semantics on them. They are aod:EmbeddedDataSelector and aod:ReferencedDataSelector.  The former is meant to allow specific data sets, records, or fragments to be specified in some domain vocabulary. The latter is meant to refer to such objects, perhaps even by a dereferencable URI that makes a query. We aren't sure if these two can be fleshed out enough to cover all use cases.  The examples we have described so far of Data Selectors are row based - they select rows out of data sets, but Data Selectors could equally well be column based.
+
+3. Objects with both string and structured representations.
+Sometimes we want to have, for example, an Evidence that has one or both of a text and a structured representation. In a few examples we introduced a data property aod:asText. In other examples we used dc:description, but we argue among ourselves whether that's appropriate.
+
+4.Scope.
+We believe that the AOD concepts probably are applicable to document annotation also, especially in the sciences.
+
+5. Opaque assertions in Topics (and elsewhere?)
+Sometimes sensitive content must be in an Annotation. This creates a need for  relatively fine-grained mechanism for access control on parts of the Annotation.  Other forms of opacity appear when some structured vocabulary is intentionally not used in its full context. For example, some XML data may lack a reference to an XML schema, or reference a different schema than one which the annotator is motivated to use for schema validity checking. In an early incarnation of our ideas, we called this notion "interpretable objects". The idea was that namespaces alone might not be enough to provide annotation consumers with enough information about external vocabularies to interpret the content of an annotation. Attached to an interpretable object was a property called "interpretationURI" which was supposed to identify some agreed upon community mechanism for interpreting the objects.
+
+At the moment, it is unclear whether these kinds of content opacity issues can be adequately addressed with the present AO, whether the above two cases are really distinct, whether existing external mechanisms are adequate, etc. (Surely the access control issue is addressed in the RDF community?).
+
+-- Main.BobMorris - 07 Apr 2011
+
+6. Annotations carrying domain specific concepts
+Most of the AOD examples assert new determinations of specimens or images.  They make these assertions in more than one way.   Most of the AOD examples reference specimen records, and again, they do this in more than one way, including more than one representation of the triplet of institution, catalognumberseries, catalognumber.  Guidance on how to use DarwinCore and other vocabularies to assert typical sorts of annotations within the biodiversity domain is likely a fertile ground for discussions in the AnnotationsIG. -- Main.PaulJMorris - 06 Jul 2011
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1302197711" format="1.1" reprev="1.1" version="1.1"}%
+d12 1
+a12 1
+Annotating data is already familiar in the molecular biology community in the form of gene annotations. We believe that a few simple extensions to AO can support data annotation in a more general context. In what follows, an Annotater might be either human or a software agent.
+d20 1
+a20 1
+aod:Expectation: what does the Annotater hope will be the outcome of consumption of the Annotation, especially by holder(s) of the annotated object(s).
+d22 1
+a22 1
+For clarity we intruduced some convenience object properties aod:hasMotivation, aod:hasEvidence, and aod:hasExpection. Some of them might be accomplished by 
+d25 1
+a25 1
+http://etaxonomy.org/ontologies/ao has our aod extensions in a file aod.owl and six data annotation example files focused on biodiversity data. At this writing service that corresponds to a rev 624 of our svn tree with a tag 20110406 of our repository.  If you want the bleeding edge, you can poke in the Filtered Push svn repo http://etaxonomy.org/svn/FP/FP-Network into trunk/design/ontologies/ao
+d28 1
+a28 1
+   1. Start by looking for instances of aod:DataAnnotation, or in aod_example_1.owl for an instance of ao:AnnotationSet
+d30 1
+a30 2
+   1. There are probably unreferenced entities that need to be cleaned up
+   1.  Note that the examples are cast as OWL ontologies which we produce with Protege4, even though their purpose is to describe domain data and annotation data thereon. That's because we know of no good opensource editor for Owl instance data. Protege has some pain associated with its use this way, not the least of which is that the Manchester format requires declarations of every property used, which can make a simple file large and unpleasant to render with other than Protege or something that behaves like it. In turn, that can cause stuff to mysteriously disappear if you switch back and forth between RDF and Manchester serializations. Also, some special characters, e.g.,'?' in URIs seem to be resisted in Manchester but not RDF/XML formats.
+d36 1
+a36 1
+1. Cardinality and containiers.
+d40 1
+a40 1
+We defined two but haven't imposed any semantics on them. They are aod:EmbeddedDataSelector and aod:ReferencedDataSelector.  The former is meant to allow specific data sets, records, or fragments to be specified in some domain vocabulary. The latter is meant to refer to such objects, perhaps even by a dereferencable URI that makes a query. We aren't sure if these two can be fleshed out enough to cover all use cases.
+d53 1
+d55 2
+a56 2
+
+-- Main.BobMorris - 07 Apr 2011
+@

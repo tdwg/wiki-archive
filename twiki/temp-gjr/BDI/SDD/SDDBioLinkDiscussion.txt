@@ -1,0 +1,98 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118876" format="1.1" version="1.4"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---+!! %TOPIC%
+
+Topic: How can the <nop>BioLink model and BDI.SDD_ relate? Can <nop>BioLink use BDI.SDD_ to report descriptions?
+
+PLEASE DO CORRECT ANY OF THE FOLLOWING, WHERE I MAKE FALSE ASSUMPTIONS!
+
+As far as I understand <nop>BioLink, it allows in a kind of free-form text description editor the selection of terminology-driven structured parts, that can then be surrounded by free-form text. Is this approximately correct?
+
+I fully agree that audience-mechanism provided by BDI.SDD_ has no relation to this. For the terminology-driven parts, multiple audiences may be interesting, they do allow multiple wordings for essentially the same thing.
+
+BDI.SDD_ coded descriptions are a bit more structured. They attempt to support a structured terminology for more things than DELTA. This layer is called "modifiers", indicating that DELTA-like character-state or character-measure-value statements (which is essentially a variable-value model) are modified. The most important modifiers are frequency, certainty, spatial and temporal modifieres. Beyond this, also general modifiers, both for entire character, and in the categorical case for individual states.
+
+This has no equivalent in <nop>BioLink, which treats these parts as unstructured text. BDI.SDD_ does also allow free-form text (called Notes), but the position of it has no semantics. That is, every 
+
+   * Categorical Character has
+      * modifiers modifying the entire character (esp. spatial/temporal/certainty)
+      * Images associated with the character in a specific description <small>(in addition to those explaining or representing the character or state as a whole, which are found in the terminology)</small>
+      * coding Status values (inapplicable, unknown, not interpretable, not-to-be scored, etc.)
+      * free-form text Notes for the entire character.
+      * States, each of which may have:
+         * frequency modifier
+         * modifier of degree ("strongly")
+         * free-form text Notes for a single state
+
+This model does not allow to have a note before or after the character or state, respectively. This is thought to be necessary, to allow a multilingual, translatable structure, since the subtleties of positional placements may only depend on language, or may try to express real content, which is then almost impossible to translate.
+
+However, the <nop>NaturalLanguageDescriptions essentially have very similar model, without the constraints. They allow free-form text anywhere. This text may or may not correspond (be marked up) with an element in the terminology.
+
+I believe that what <nop>BioLink attempts is an authoring tools for <nop>NaturalLanguageDescriptions. Although BDI.SDD_ was mostly thinking about markup of legacy data, I see no problems in using this structure also for authoring new descriptions.
+
+Is this wrong? In the discussion with Steve Shattuck where he was explaining <nop>BioLink to me I could see no point that should not work. As everything in BDI.SDD_, this requires testing, of course. I write this topic to get as early feedback as possible - before testing. We urgently do need a semi-stable (for a year) version, that is no longer called beta!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 14 Sep 2004
+
+---
+
+Bob writes:
+<verbatim>
+> As I understand it Biolink conventionally supports two kinds of 
+> human-targeted output about CodedDescriptions. One is brief and more
+> or less in one-one correspondence with the coded description. A second
+> is more traditional plain text, natural language descriptions. Both,
+> however, are part of a CodedDescription in SDD sense. Both may exist
+> in several languages.
+</verbatim>
+
+Why do you think so? Why is the second kind not served by <nop>NaturalLanguageDescription? What make the first kind necessarily <nop>CodedDescription? I think these answers may help us to better understand the position of these two kinds of description in the context of <nop>BioLink.
+
+
+Bob writes:
+<verbatim>
+> it is completely possible that sentences
+> are not necessarily tied to specific parts, e.g. to a specific
+> character/state, but perhaps combine several. Thus the brief one might
+> be
+>     wings: yellow
+>     legs: two
+> But the extended one might be
+>     With yellow wings and two legs.
+> In that case, I don't see how my proposal would help him since the
+> text associated with yellow wings and that associated with two legs
+> have nothing to do with each other.
+</verbatim>
+
+I think the following covers exactly this, or not?
+
+<verbatim>
+With <Categorical debugref="wing color">
+<State debugref="yellow">yellow</State> wings</Categorical > and 
+<Quantitative debugref="leg number">
+<Measure ref="mean" value="2">two</Measure> legs </Quantitative>
+</verbatim>
+
+Note that the above is not real BDI.SDD_, I left away the real id-refs, and the Text markup elements which are required to avoid xml-mixed content. Thus the same a bit more valid:
+
+<verbatim>
+<NaturalLanguageDescription>
+<Header><ClassName ref="23456"/></Header>
+<NaturalLanguageData>
+  <Text>With </Text>
+  <Categorical ref="234" debugref="wing color">
+     <State ref="24634" debugref="yellow"><Text>yellow </Text></State>
+     <Text>wings </Text>
+  </Categorical >
+  <Text> and </Text>
+  <Quantitative ref="354" debugref="leg number">
+     <Measure ref="mean" value="2"><Text>two </Text></Measure>
+     <Text>legs </Text>
+  </Quantitative>
+</NaturalLanguageDescription>
+</NaturalLanguageData>
+</verbatim>
+
+Not sure the above is truly valid, but it will be close enough for discussion.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 14 Sep 2004

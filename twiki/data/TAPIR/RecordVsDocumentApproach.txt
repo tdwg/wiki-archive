@@ -1,0 +1,142 @@
+---+ RecordVsDocumentApproach
+
+[[#recbased][The Record based approach]]
+
+[[#docbased][The Document based approach]]
+
+
+---+++++ Introduction
+There are 2 fundamentally different approaches regarding retrieval of results.
+The record based approach retrieves a list of things - records or objects - whereas the document based approach always returns a single document with 1 root element. 
+You can still consider parts of a document to represent a record and therefore allow paging and resultset limitations, but for this you will additionally need to define an explicit RecordDefinition inherent to each ConceptualSchema.
+
+
+<a name="recbased"></a>
+---+ Record Based Approach
+The record based approach treats each RecordObject separate from each other. The protocol is used to transfer objects defined in XML.
+
+*Advantages*
+   * A more native programming way of dealing with records and objects.
+   * Easy extension of schemas ([[#recextension][see below]]).
+   * Uses a common SearchResponseTopStructure defined by the protocol for dealing with metadata and records.
+
+
+*Disadvantages*
+   * The interlinking of objects needs to be resolved in a generic way. As the protocol cannot deal with documents that relate objects to each other (which is highly relevant for SDD and even for the NapierSchema), there needs to be a global pointer for an object so it can be referenced from anywhere. Each object could reside in its own namespace and there is no xml validation mechanism available to ensure the completeness of a set of objects.
+   * Possible solution: Establish a separate service to retrieve and assemble documents on top of record based services.
+   * Schema extension can only happen in the record (root) level.
+
+---+++++ Record Based Search Proposal
+Please take a look at the SearchProposalTwo for details and examples.
+
+---+++++ WFS Object Approach
+The proposal just mentioned above is similar to the OpenGis object approach. In their WebFeatureService architecture a FeatureMember corresponds to our record idea. But instead of having a ConceptualBinding using a qualified path only, they are relying on a type (global element with a corresponding complex type) and a path to refer to elements of this type which they call properties of this type. Thus a schema with a single namespace can expose multiple "objects" as types by defining multiple global elements. The WFS defines also a method "DescribeFeatureType" for a client to retrieve the xml schema definition of all known types of this service.
+
+<a name="recextension"></a>
+---+++++ Schema Extension Mechanism
+The record based approach can extend a schema by another on its record level, because a record element is defined by the protocol schema. This allows to create valid xml by listing all requested ConceptualSchema responses for one record as a list next to each other.
+
+Please take a look at the SearchProposalTwo for details and examples.
+
+
+<a name="docbased"></a>
+---+ DocumentBasedApproach
+
+The document centric approach handles complete documents instead of lists of RecordObjects.
+So every document search response returns only a single complex document with one root element.
+
+It is still possible to treat parts of the document as representing records by giving an inherent RecordDefinition when creating a ConceptualSchema. This - possibly list of - RecordDefinition should be visible to the outside and listed in the capabilities response of a datasource as shown in the DatasourceCapabilitiesProposal.
+
+So consider this ABCD document:
+<verbatim>
+<acbd>
+ <units>
+  <unit id="34">
+   ...
+  <unit id="37">
+   ...
+  <unit id="156">
+   ...
+</verbatim>
+
+With a RecordDefinition being RecordVsDocumentApproachabcd/units/unit this document represents 3 records which can be used for counting and paging.
+
+
+*Advantages*
+   * Allows the definition of relations between object in a ConceptualSchema
+   * Allows extension of schemas ([[#docextension][see below]]).
+
+
+*Disadvantages*
+   * A common SearchResponseTopStructure needs to be defined in each ConceptualSchema on the basis of a common agreement like the UBIF framework schema.
+   * Extensions are bound to the XML Schema definition (either through the definition of slots, or through the entire definition of new XML Schemas importing others and using a new namespace)
+
+<a name="docextension"></a>
+---+++++ Document Based Search Proposal
+Please take a look at DocSearchProposal for details and examples (it doesn't use the extension mechanism defined below).
+
+
+---+++++ Schema Extension Mechanism
+To allow the extension of a ConceptualSchema in the document based approach, an ExtensionSlot has to be reserved when defining a schema. This is usually done by using the <xml:any> element.
+All available slots for a given ConceptualSchema therefore need to be listed in a datasources capabilities. 
+
+To use an extension schema with another, the request has to specify a base schema which is specifying the document root element. The extension itself could be specified by a concept of another schema and the path to the extension slot of the base schema which should be used.
+
+So imagine a base schema like this with two extension slots:
+<verbatim>
+<root xmlns="http://www.anywhere.org">
+  <unit>
+    <id>
+    <name>
+    <location>
+      <institute>
+      <person>
+      <xml:any>     -> slot1
+    <xml:any>       -> slot2
+<root>
+
+ext-slot1 = RecordVsDocumentApproachroot/unit/location/person
+ext-slot2 = RecordVsDocumentApproachroot/unit/location
+</verbatim>
+
+A request could then use an extension schema that could produce an instance document like this to be attached in one of the slots:
+<verbatim>
+<postalAddress xmlns="http://www.extension.com">
+  <town RecordVsDocumentApproach>
+  <zip RecordVsDocumentApproach>
+  <addressline RecordVsDocumentApproach> *
+<postalAddress>
+</verbatim>
+
+A possible request could be:
+<verbatim>
+<docsearch>
+  <baseschema base:xmlns="http://www.anywhere.org">
+    <concept path="base:/root"/> *
+  </baseschema>
+  <extension slot="base:/root/unit/location/person" ext:xmlns="http://www.extension.com">
+    <concept path="ext:/postalAddress"/> *
+  </extension>
+</docsearch>
+</verbatim>
+
+to retrieve a document like this:
+<verbatim>
+<root xmlns="http://www.anywhere.org">
+  <unit>
+    <id></id>
+    <name></name>
+    <location>
+      <institute></institute>
+      <person>
+        <postalAddress xmlns="http://www.extension.com">
+          <town></town>
+          <zip></zip>
+          <addressline RecordVsDocumentApproach>
+        </postalAddress>
+      </person>
+    </location>
+  </unit>
+<root>
+</verbatim>
+

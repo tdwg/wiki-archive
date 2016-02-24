@@ -1,0 +1,429 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.16.04.11.57;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.25;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::Plugins=
+
+This module defines the singleton object that handles Plugins
+loading, initialization and execution.
+
+This class uses Chain of Responsibility (GOF) pattern to dispatch
+handler calls to registered plugins.
+
+
+%TOC%
+
+Note that as of version 1.026 of this module, TWiki internal
+methods are _no longer available_ to plugins. Any calls to
+TWiki internal methods must be replaced by calls via the
+=$SESSION= object in this package, or via the Func package.
+For example, the call:
+
+=my $pref = TWiki::getPreferencesValue('URGH');=
+
+should be replaced with
+
+=my $pref = TWiki::Func::getPreferencesValue('URGH');=
+
+and the call
+
+=my $t = TWiki::writeWarning($message);=
+
+should be replaced with
+
+=my $pref = $TWiki::Plugins::SESSION->writeWarning($message);=
+
+Methods in other modules such as Store must be accessed through
+the relevant TWiki sub-object, for example
+
+=TWiki::Store::saveTopic(...)=
+
+should be replaced with
+
+=$TWiki::Plugins::SESSION->{store}->saveTopic(...)=
+
+Note that calling TWiki internal methods is very very bad practice,
+and should be avoided wherever practical.
+
+The developers of TWiki reserve the right to change internal
+methods without warning, unless those methods are clearly
+marked as PUBLIC. PUBLIC methods are part of the core specification
+of a module and can be trusted.
+
+
+---++ PUBLIC constant $VERSION
+
+This is the version number of the plugins package. Use it for checking
+if you have a recent enough version.
+
+---++ PUBLIC $SESSION
+
+This is a reference to the TWiki session object. It can be used in
+plugins to get at the methods of the TWiki kernel.
+
+You are _highly_ recommended to only use the methods in the
+[[TWikiFuncDotPm][Func]] interface, unless you have no other choice,
+as kernel methods may change between TWiki releases.
+
+
+---++ ClassMethod *new* <tt>($session)</tt>
+
+Construct new singleton plugins collection object. The object is a
+container for a list of plugins and the handlers registered by the plugins.
+The plugins and the handlers are carefully ordered.
+
+
+
+---++ ObjectMethod *load* <tt>($allDisabled) -> $loginName</tt>
+
+Find all active plugins, and invoke the early initialisation.
+Has to be done _after_ prefs are read.
+
+Returns the user returned by the last =initializeUserHandler= to be
+called.
+
+If allDisabled is set, no plugin handlers will be called.
+
+
+
+---++ ObjectMethod *settings* <tt>()</tt>
+
+Push plugin settings onto preference stack
+
+
+
+---++ ObjectMethod *enable* <tt>()</tt>
+
+Initialisation that is done after the user is known.
+
+
+
+---++ ObjectMethod *getPluginVersion* <tt>() -> $number</tt>
+
+Returns the $TWiki::Plugins::VERSION number if no parameter is specified,
+else returns the version number of a named Plugin. If the Plugin cannot
+be found or is not active, 0 is returned.
+
+
+
+---++ ObjectMethod *addListener* <tt>($command,$handler)</tt>
+
+   * =$command* - name of the event
+   * =$handler= - the handler object.
+
+Add a listener to the end of the list of registered listeners for this event.
+The listener must implement =invoke($command,...)=, which will be triggered
+when the event is to be processed.
+
+
+
+---++ ObjectMethod *haveHandlerFor* <tt>($handlerName) -> $boolean</tt>
+
+   * =$handlerName= - name of the handler e.g. preRenderingHandler
+Return: true if at least one plugin has registered a handler of
+this type.
+
+
+
+---++ ObjectMethod *registrationHandler* <tt>()</tt>
+
+Called by the register script
+
+
+
+---++ ObjectMethod *beforeCommonTagsHandler* <tt>()</tt>
+
+Called at the beginning (for cache Plugins only)
+
+
+
+---++ ObjectMethod *commonTagsHandler* <tt>()</tt>
+
+Called after %INCLUDE:"..."%
+
+
+
+---++ ObjectMethod *afterCommonTagsHandler* <tt>()</tt>
+
+Called at the end (for cache Plugins only)
+
+
+
+---++ ObjectMethod *preRenderingHandler* <tt>($text,\%map)</tt>
+
+   * =$text= - the text, with the head, verbatim and pre blocks replaced with placeholders
+   * =\%removed= - reference to a hash that maps the placeholders to the removed blocks.
+
+Placeholders are text strings constructed using the tag name and a sequence number e.g. 'pre1', "verbatim6", "head1" etc. Placeholders are inserted into the text inside \1 characters so the text will contain \1_pre1\1 for placeholder pre1.
+
+Each removed block is represented by the block text and the parameters passed to the tag (usually empty) e.g. for
+<verbatim>
+<pre class='slobadob'>
+XYZ
+</pre>
+the map will contain:
+<pre>
+$removed->{'pre1'}{text}:   XYZ
+$removed->{'pre1'}{params}: class="slobadob"
+</pre>
+</verbatim>
+
+Iterating over blocks for a single tag is easy. For example, to prepend a line number to every line of a pre block you might use this code:
+
+foreach my $placeholder ( keys %$map ) {
+    if( $placeholder =~ /^pre/i ) {
+       my $n = 1;
+       $map->{$placeholder}{text} =~ s/^/$n++/gem;
+    }
+}
+
+
+
+---++ ObjectMethod *postRenderingHandler* <tt>(\$text)</tt>
+
+   * =\$text= - a reference to the HTML, with the head, verbatim and pre blocks replaced with placeholders
+
+
+
+---++ ObjectMethod *startRenderingHandler* <tt>()</tt>
+
+Called just before the line loop
+
+*DEPRECATED* Use preRenderingHandler instead. This handler correctly 
+handles verbatim and other TWiki ML block types, and exposes them to 
+the plugin.
+
+
+
+---++ ObjectMethod *outsidePREHandler* <tt>()</tt>
+
+Called in line loop outside of &lt;PRE&gt; tag
+
+*DEPRECATED* Use preRenderingHandler instead. 
+This handler correctly handles pre and other 
+TWiki ML block types, and is called only once 
+instead of line-by-line.
+
+
+
+---++ ObjectMethod *insidePREHandler* <tt>()</tt>
+
+Called in line loop inside of &lt;PRE&gt; tag
+
+*DEPRECATED* Use preRenderingHandler instead. 
+This handler correctly handles pre and other 
+TWiki ML block types, and is called only once 
+instead of line-by-line.
+
+
+
+---++ ObjectMethod *endRenderingHandler* <tt>()</tt>
+
+Called just after the line loop
+
+*DEPRECATED* Use postRenderingHandler instead.
+
+
+
+---++ ObjectMethod *beforeEditHandler* <tt>()</tt>
+
+Called by edit
+
+
+
+---++ ObjectMethod *afterEditHandler* <tt>()</tt>
+
+Called by edit
+
+
+
+---++ ObjectMethod *beforeSaveHandler* <tt>()</tt>
+
+Called just before the save action
+
+
+
+---++ ObjectMethod *afterSaveHandler* <tt>()</tt>
+
+Called just after the save action
+
+
+
+---++ ObjectMethod *afterRenameHandler* <tt>($oldWeb,$oldTopic,$oldAttachment,$newWeb,$newTopic,$newAttachment)</tt>
+
+Called just after the rename/move/delete action of a web, topic or attachment.
+
+   * =$oldWeb= - name of old web
+   * =$oldTopic= - name of old topic (empty string if web rename)
+   * =$oldAttachment= - name of old attachment (empty string if web or topic rename)
+   * =$newWeb= - name of new web
+   * =$newTopic= - name of new topic (empty string if web rename)
+   * =$newAttachment= - name of new attachment (empty string if web or topic rename)
+
+
+
+---++ ObjectMethod *mergeHandler* <tt>()</tt>
+
+Called to handle text merge.
+
+
+
+---++ ObjectMethod *beforeAttachmentSaveHandler* <tt>($attrHashRef,$topic,$web)</tt>
+
+This code provides Plugins with the opportunity to alter an uploaded attachment between the upload and save-to-store processes. It is invoked as per other Plugins.
+   * =$attrHashRef= - Hash reference of attachment attributes (keys are indicated below)
+   * =$topic= -     | Topic name
+   * =$web= -       | Web name
+
+Keys in $attrHashRef:
+| *Key*       | *Value* |
+| attachment  | Name of the attachment |
+| tmpFilename | Name of the local file that stores the upload |
+| comment     | Comment to be associated with the upload |
+| user        | Login name of the person submitting the attachment, e.g. 'jsmith' |
+
+Note: All keys should be used read-only, except for comment which can be modified.
+
+Example usage:
+
+<pre>
+   my( $attrHashRef, $topic, $web ) = @@_;
+   $$attrHashRef{'comment'} .= " (NOTE: Extracted from blah.tar.gz)";
+</pre>
+
+
+
+---++ ObjectMethod *afterAttachmentSaveHandler* <tt>($attachmentAttrHash,$topic,$web,$error)</tt>
+
+deal with an uploaded attachment between the upload and save-to-store processes. It is invoked as per other plugins.
+
+   * =$attrHashRef= - Hash reference of attachment attributes (keys are indicated below)
+   * =$topic= -     | Topic name
+   * =$web= -       | Web name
+   * =$error= -     | Error string of save action, empty if OK
+
+Keys in $attrHashRef:
+| *Key*       | *Value* |
+| attachment  | Name of the attachment |
+| tmpFilename | Name of the local file that stores the upload |
+| comment     | Comment to be associated with the upload |
+| user        | Login name of the person submitting the attachment, e.g. 'jsmith' |
+
+Note: The hash is *read-only*
+
+
+
+---++ ObjectMethod *writeHeaderHandler* <tt>() -> $headers</tt>
+
+Called by TWiki::writePageHeader. *DEPRECATED* do not use!
+
+*DEPRECATED* Use modifyHeaderHandler instead. it is a lot 
+more flexible, and allows you to modify existing headers 
+as well as add new ones. It also works correctly when 
+multiple plugins want to modify headers.
+
+
+
+---++ ObjectMethod *modifyHeaderHandler* <tt>(\@@headers,$query)</tt>
+
+
+
+---++ ObjectMethod *redirectCgiQueryHandler* <tt>() -> $result</tt>
+
+Called by TWiki::redirect
+
+
+
+---++ ObjectMethod *renderFormFieldForEditHandler* <tt>($name,$type,$size,$value,$attributes,$possibleValues) -> $html</tt>
+
+This handler is called before built-in types are considered. It generates the HTML text rendering this form field, or false, if the rendering should be done by the built-in type handlers.
+   * =$name= - name of form field
+   * =$type= - type of form field
+   * =$size= - size of form field
+   * =$value= - value held in the form field
+   * =$attributes= - attributes of form field 
+   * =$possibleValues= - the values defined as options for form field, if any. May be a scalar (one legal value) or an array (several legal values)
+Return HTML text that renders this field. If false, form rendering continues by considering the built-in types.
+
+Note that a common application would be to generate formatting of the
+field involving generation of javascript. Such usually also requires
+the insertion of some common javascript into the page header. Unfortunately,
+there is currently no mechanism to pass that script to where the header of
+the page is visible. Consequentially, the common javascript may have to
+be emitted as part of the field formatting and might be duplicated many
+times throughout the page.
+
+
+
+---++ ObjectMethod *renderWikiWordHandler* <tt>() -> $result</tt>
+
+Change how a WikiWord is rendered
+
+Originated from the TWiki:Plugins.SpacedWikiWordPlugin hack
+
+
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d15 1
+a15 1
+$SESSION object in this package, or via the Func package.
+d18 1
+a18 1
+my $pref = TWiki::getPreferencesValue('URGH');
+d22 1
+a22 1
+my $pref = TWiki::Func::getPreferencesValue('URGH');
+d26 1
+a26 1
+my $t = TWiki::writeWarning($message);
+d30 1
+a30 1
+my $pref = $TWiki::Plugins::SESSION->writeWarning($message);
+d35 1
+a35 1
+TWiki::Store::saveTopic(...)
+d39 1
+a39 1
+$TWiki::Plugins::SESSION->{store}->saveTopic(...)
+d51 1
+d56 1
+d85 6
+d106 1
+d117 1
+d148 1
+a148 1
+---++ ObjectMethd preRenderingHandler( $text, \%map )
+d165 1
+d177 1
+d248 13
+@

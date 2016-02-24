@@ -1,0 +1,35 @@
+%META:TOPICINFO{author="AimeeStewart" date="1161983949" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="GeoAppInter"}%
+---++ Carrying out an fundamental ecological niche analysis
+
+*Proposer:* Main.TimSutton
+
+*Status:* This use case scenario is still in draft!
+
+*Scenario:* Joe is a researcher interested in discovering the hypothetical distribution range of a species. He wants to be able to find species occurrence data using the GBIF portal and then pass it to openModeller. He starts by entering a species name into a web page. When he submits the page a message appears telling him that the name he has used is actually a synonym and perhaps he'd like to use the preferred name rather? He chooses yes to use the preferred name and is presented with a new page providing a list of occurrences for his species. Each occurence includes the latitude, longitude and a globally unique identifier. He can click on the globally unique identifier to find all the provenance for that occurrence. 
+
+The points are also represented as a map, and a simple interface allows the Joe to discard occurrences he does not wish to use. In addition there is an option to let Joe use the Biogeomancer Data Tester to automate testing of the occurrences and remove 'bad' data.
+
+A link on the page offers the option to perform an fundamental ecological niche analysis using the points provided. He clicks this link and a new form appears asking a few questions. When he submits the request, a new page appears telling him that he will be sent an email when his job is complete. Some minutes later and email arrives in his inbox telling him his model is done! Clicking a link in the email takes him to a page that lets him visualise the resulting model in a web mapping application with the original occurrence points overlaid.
+
+*Summary of technical requirements:* 
+
+   * A name searching service *???*
+   * An occurrences service that takes as input one name and its synonyms. *WFS*
+   * An occurrences validation and testing service that takes as input a WFS resource with a query constraint and makes the result available as a new WFS resource (is this possible??) *WFS*
+   * The openModeller Web Service *OMWS*
+   * A mapping service that can be used to retrieve the results in map form. *WMS*
+   * A web site that integrates the services outlined above.
+
+*Notes:* 
+
+While the above use case resembles the simple NicheAnalysisProcess, 'under the hood' things are very very different. The key emphasis here will be on promoting interacions using open standards as far as possible. This is going to be acronym soup on steroids.
+
+*Candidate Technologies:*
+  
+|Name|Description|Contact|
+|SEEK Taxon Service | A service to resolve taxonomy given a (possibly ambiguous) species name| Aimee Stewart |
+|GBIF Portal| Need programmatic access for pulling records from the cache | ?? |
+|Data Tester| A service to check for inconsistencies in occurrence data | Renato de Giovanni | 
+|Biogeomancer | A service to georeference some occurrence data | Reed Beaman | 
+|openModeller| Provides a web services for running niche models | TimSutton & Renato de Giovanni|

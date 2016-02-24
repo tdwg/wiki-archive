@@ -1,0 +1,420 @@
+head	1.17;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.17
+date	2009.11.25.03.14.30;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2009.11.20.02.45.22;	author LeeBelbin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2006.05.04.11.26.28;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.12.18.02.28.06;	author BobMorris;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.12.17.23.02.11;	author BobMorris;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.12.17.18.51.57;	author BobMorris;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.06.21.11.30.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.05.28.17.35.56;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.05.28.15.26.23;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2003.11.24.10.38.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2003.10.10.06.11.04;	author BobMorris;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2003.10.09.20.59.15;	author KevinThiele;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2003.10.06.21.49.37;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2003.10.05.20.24.52;	author BobMorris;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.10.05.18.58.34;	author BobMorris;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.10.05.17.13.00;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.17
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118870" format="1.1" version="1.17"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+XML supports the specification of a natural language through use of the "lang" attribute on an element. BDI.SDD_ means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an <nop>AudienceDefinition object has three required attributes:
+   * a key by which keyrefs can be used elsewhere to indicate that this <nop>AudienceDefinition is the one referenced
+   * a lang attribute. It is of type xs:language, which will require it (under validation) to have one of the ISO standard language abbreviations as required by xxxx
+   * an <nop>ExpertiseLevel  The value of this must be one of the integers 1-5 (this constraint is enforced by the schema by declaring a data type <nop>ExpertiseLevelType. That means future changes---hopefully backward compatible---could permit other values simply by changing that type.
+
+It is the attributes which most applications will find most useful, because they will use the latter two in tailoring user interfaces. A typical use of Audience references might be in a <nop>CharacterDefinition that has several different text parts, each with a different intended Audience. The application could select the accompanying text based on the Audience.
+
+In addition to those attributes there are two subelements - a label and a description, both strings. 0.62 ascribes no enforceable semantics to these,  but the intent is captured by the schemadoc entry:
+<verbatim>
+<xs:documentation source="G. Hagedorn" xml:lang="en">An audience is a combination of language (including dialect) and expertise (pupil, beginner, expert). Multiple audiences can be defined for the same language and expertise, distinguished only by their label.</xs:documentation>
+</verbatim>
+
+Presumably, the label and description of an audience would be in the language and perhaps presumed ability of the audience,  if an application is going to be able to make use of them for descriptions of the audience itself. However, such a description is not really within the scope of BDI.SDD_, so there is no semantic recommendation at this writing.
+
+A documentation element in the 0.62 schema records the committee's design intention for the integers in the <nop>ExpertiseLevel. They are described by this schema doc element on the 
+<verbatim>
+<xs:documentation source="G. Hagedorn" xml:lang="en">ExpertiseLevel is restricted to values from 1-5. These categories allow to communicate expected expertise between different applications using the SDD schema. The recommended interpretation is:
+ 1 = elementary school (year 1 to 6);
+ 2 = middle school (year 7 to 10);
+ 3 = high school (year 11 above) and general public (trying to avoid any specialized terminology or jargon);
+ 4 = university students or (partly) trained personnel (using terminology, but avoiding or explaining problematic terminology);
+ 5 = experts (using the full range of terminology).</xs:documentation>
+</verbatim> 
+
+In 0.91, <nop>AudienceDefinitions are described in the <nop>GeneralDeclarations section and referenced in many places by keyrefs in attributes always of name "audience". 
+
+-- Main.BobMorris - 05 Oct 2003/ Gregor Hagedorn 28. May 2004
+
+---
+In 1.0 versions, <nop>AudienceRelationID, which defines the pattern for Audience keys, is defined by restriction from UBIF's <nop>RelationID. However, that must be an integer, whereas we intend(?) to have mnemonic audience keys in BDI.SDD_, using some brief strings like en5. XML Spy2004v4 does not enforce this (undesirable) constraint, though Apache does (I think) and so does the embedded parser in Stylus Studio Home Edition
+-- Main.BobMorris - 17 Dec 2004 
+
+%META:TOPICMOVED{by="BobMorris" date="1065374722" from="SDD.AudienceDefinitionsAndUse" to="SDD.AudienceDefinitionAndUse"}%
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685122" format="1.1" reprev="1.16" version="1.16"}%
+d5 1
+a5 1
+XML supports the specification of a natural language through use of the "lang" attribute on an element. BDI.SDD means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an <nop>AudienceDefinition object has three required attributes:
+d17 1
+a17 1
+Presumably, the label and description of an audience would be in the language and perhaps presumed ability of the audience,  if an application is going to be able to make use of them for descriptions of the audience itself. However, such a description is not really within the scope of BDI.SDD, so there is no semantic recommendation at this writing.
+d34 1
+a34 1
+In 1.0 versions, <nop>AudienceRelationID, which defines the pattern for Audience keys, is defined by restriction from UBIF's <nop>RelationID. However, that must be an integer, whereas we intend(?) to have mnemonic audience keys in BDI.SDD, using some brief strings like en5. XML Spy2004v4 does not enforce this (undesirable) constraint, though Apache does (I think) and so does the embedded parser in Stylus Studio Home Edition
+@
+
+
+1.15
+log
+@Added topic name via script
+@
+text
+@d1 2
+d5 4
+a8 6
+%META:TOPICINFO{author="GregorHagedorn" date="1146741988" format="1.0" version="1.14"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an <nop>AudienceDefinition object has three required attributes:
+	* a key by which keyrefs can be used elsewhere to indicate that this <nop>AudienceDefinition is the one referenced
+	* a lang attribute. It is of type xs:language, which will require it (under validation) to have one of the ISO standard language abbreviations as required by xxxx
+	* an <nop>ExpertiseLevel  The value of this must be one of the integers 1-5 (this constraint is enforced by the schema by declaring a data type <nop>ExpertiseLevelType. That means future changes---hopefully backward compatible---could permit other values simply by changing that type.
+d17 1
+a17 1
+Presumably, the label and description of an audience would be in the language and perhaps presumed ability of the audience,  if an application is going to be able to make use of them for descriptions of the audience itself. However, such a description is not really within the scope of SDD, so there is no semantic recommendation at this writing.
+d34 1
+a34 1
+In 1.0 versions, <nop>AudienceRelationID, which defines the pattern for Audience keys, is defined by restriction from UBIF's <nop>RelationID. However, that must be an integer, whereas we intend(?) to have mnemonic audience keys in SDD, using some brief strings like en5. XML Spy2004v4 does not enforce this (undesirable) constraint, though Apache does (I think) and so does the embedded parser in Stylus Studio Home Edition
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="BobMorris" date="1103336885" format="1.0" version="1.13"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1103324531" format="1.0" version="1.12"}%
+d32 1
+a32 1
+In 1.0 versions, <nop>AudienceRelationID, which defines the pattern for Audience keys, is defined by restriction from UBIF's RelationID. However, that must be an integer, whereas we intend(?) to have mnemonic audience keys in SDD, using some brief strings like en5. XML Spy2004v4 does not enforce this (undesirable) constraint, though Apache does (I think) and so does the embedded parser in Stylus Studio Home Edition
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1103309517" format="1.0" version="1.11"}%
+d27 1
+a27 1
+In 0.91, <nop>AudienceDefinitions are described in the GeneralDeclarations section and referenced in many places by keyrefs in attributes always of name "audience". 
+d32 1
+a32 1
+In 1.0 versions, AudienceRelationID, which defines the pattern for Audience keys, is defined by restriction from UBIF's RelationID. However, that must be an integer, whereas we intend(?) to have mnemonic audience keys in SDD, using some brief strings like en5. XML Spy2004v4 does not enforce this (undesirable) constraint, though Apache does (I think) and so does the embedded parser in Stylus Studio Home Edition
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1087817400" format="1.0" version="1.10"}%
+d3 32
+a34 27
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an <nop>AudienceDefinition object has three required attributes:
+	* a key by which keyrefs can be used elsewhere to indicate that this <nop>AudienceDefinition is the one referenced
+	* a lang attribute. It is of type xs:language, which will require it (under validation) to have one of the ISO standard language abbreviations as required by xxxx
+	* an <nop>ExpertiseLevel  The value of this must be one of the integers 1-5 (this constraint is enforced by the schema by declaring a data type <nop>ExpertiseLevelType. That means future changes---hopefully backward compatible---could permit other values simply by changing that type.
+
+It is the attributes which most applications will find most useful, because they will use the latter two in tailoring user interfaces. A typical use of Audience references might be in a <nop>CharacterDefinition that has several different text parts, each with a different intended Audience. The application could select the accompanying text based on the Audience.
+
+In addition to those attributes there are two subelements - a label and a description, both strings. 0.62 ascribes no enforceable semantics to these,  but the intent is captured by the schemadoc entry:
+<verbatim>
+<xs:documentation source="G. Hagedorn" xml:lang="en">An audience is a combination of language (including dialect) and expertise (pupil, beginner, expert). Multiple audiences can be defined for the same language and expertise, distinguished only by their label.</xs:documentation>
+</verbatim>
+
+Presumably, the label and description of an audience would be in the language and perhaps presumed ability of the audience,  if an application is going to be able to make use of them for descriptions of the audience itself. However, such a description is not really within the scope of SDD, so there is no semantic recommendation at this writing.
+
+A documentation element in the 0.62 schema records the committee's design intention for the integers in the <nop>ExpertiseLevel. They are described by this schema doc element on the 
+<verbatim>
+<xs:documentation source="G. Hagedorn" xml:lang="en">ExpertiseLevel is restricted to values from 1-5. These categories allow to communicate expected expertise between different applications using the SDD schema. The recommended interpretation is:
+ 1 = elementary school (year 1 to 6);
+ 2 = middle school (year 7 to 10);
+ 3 = high school (year 11 above) and general public (trying to avoid any specialized terminology or jargon);
+ 4 = university students or (partly) trained personnel (using terminology, but avoiding or explaining problematic terminology);
+ 5 = experts (using the full range of terminology).</xs:documentation>
+</verbatim> 
+
+In 0.91, <nop>AudienceDefinitions are described in the GeneralDeclarations section and referenced in many places by keyrefs in attributes always of name "audience". 
+
+-- Main.BobMorris - 05 Oct 2003/ Gregor Hagedorn 28. May 2004
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085765756" format="1.0" version="1.9"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085757983" format="1.0" version="1.8"}%
+d3 2
+a4 2
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an AudienceDefinition object has three required attributes:
+	* a key by which keyrefs can be used elsewhere to indicate that this AudienceDefinition is the one referenced
+d8 1
+a8 1
+It is the attributes which most applications will find most useful, because they will use the latter two in tailoring user interfaces. A typical use of Audience references might be in a <nop>CharacterDefinition that has several different text parts (the poorly named Trash.TextualDefinitions), each with a different intended Audience. The application could select the accompanying text based on the Audience.
+d27 1
+a27 1
+In 0.62, <nop>AudienceDefinitions are described in the Resource definition section and referenced in many places by keyrefs. 
+d29 1
+a29 1
+-- Main.BobMorris - 05 Oct 2003
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1069670280" format="1.0" version="1.7"}%
+d8 1
+a8 1
+It is the attributes which most applications will find most useful, because they will use the latter two in tailoring user interfaces. A typical use of Audience references might be in a <nop>CharacterDefinition that has several different text parts (the poorly named TextualDefinitions), each with a different intended Audience. The application could select the accompanying text based on the Audience.
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1065766264" format="1.0" version="1.6"}%
+d6 1
+a6 1
+	* an <nop>ExpertiseLevel  The value of this must be one of the integers 1-5 (this constraint is enforced by the schema by declaring a data type ExpertiseLevelType. That means future changes---hopefully backward compatible---could permit other values simply by changing that type.
+d27 1
+a27 2
+In 0.62, <nop>AudienceDefinitions are described in the Resource definition section and referenced in many places by keyrefs. Here is a simple AudienceDefinitionsAndUseExample.
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1065733155" format="1.0" version="1.5"}%
+d3 1
+a3 1
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to support applications that recognize more properties of a human user than just language. As of Version 0.62 an AudienceDefinition object has three reqired attributes:
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1065476976" format="1.0" version="1.4"}%
+d3 1
+a3 1
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to support applications to that recognize more properties of a human user than just language. As of Version 0.62 an AudienceDefinition object has three reqired attributes:
+d6 1
+a6 1
+	* an <nop>ExepertiseLevel  The value of this must be one of the integers 1-5 (this constraint is enforced by the schema by declaring a data type ExpertiseLevelType. That means future changes---hopefully backward compatible---could permit other values simply by changing that type.
+d10 1
+a10 1
+In addition to those attributes there are two subelements, a label and a description both strings. 0.62 ascribes no enforceable semantics to these,  but the intent is captured by the schemadoc entry:
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1065385492" format="1.0" version="1.3"}%
+d3 1
+a3 1
+XML supports the specification of a natural language through use of the "lang" attribute on an element. SDD means to extend this notion to aupport applications to that recognize more properties of a human user than just language. As of Version 0.62 an AudienceDefinition object has three reqired attributes:
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1065380314" format="1.0" version="1.2"}%
+d27 2
+a28 1
+In 0.62, AudienceDefinitions are described in the Resource definition section and referenced in many places by keyrefs. 
+a29 1
+Here's an AudienceDefinitionExample and here's an AudienceUseExample.
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1065373980" format="1.0" version="1.1"}%
+d27 3
+@

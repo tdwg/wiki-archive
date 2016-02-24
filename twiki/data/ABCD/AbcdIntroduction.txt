@@ -1,0 +1,275 @@
+%META:TOPICINFO{author="WalterBerendsohn" date="1181412475" format="1.1" reprev="1.40" version="1.40"}%
+---+ An Introduction to the ABCD Schema v2.0
+This document provides an introduction to the proposed TDWG standard XML schema for Access to Biological Collection Data. The proposed standard itself is the XML schema, in its version 2.06, available on the World Wide Web under the URL
+
+ . http://www.bgbm.org/TDWG/CODATA/Schema/ABCD_2.06/ABCD_2.06.XSD.
+This document is not part of that standard.
+
+<a name="Background"></a>
+
+---++ Background
+Biodiversity collections exist in different scientific sub-disciplines:
+
+   * Preserved collections, such as those in museums and herbaria
+   * Living collections, like botanical and zoological gardens, aquaria, seed banks, microbial strain and tissue collections
+   * Data collections, from surveys of objects in the field, such as observations, floristic and faunistic mapping and inventories
+   * DNA samples produced by molecular biologists, natural substance samples produced by pharmacists, etc. 
+Research conducted since the beginning of the 1990ies has revealed that all these collections have most of their attributes in common, although the terminology used to describe them may differ substantially.
+
+These collections represent an immense knowledge base on global biodiversity. The objects contained in collections can be a physical resource of great value for research and industry. Preserved objects represent the historical perspective, providing a falsifiable source of information. For example, specimens of fish from a particular area can be examined to determine mercury levels at the time of collection. Associated field and research notes contain detailed data on the locality, time, and often the appearance of organisms.
+
+It is estimated that between 2 and 3 billion objects exist in natural history collections alone. Currently, this knowledge base is largely under-utilized, because it is highly distributed, heterogeneous, and the complex scientific nature obstructs efficient information retrieval.
+
+Databasing and networking is now seen as the key to unlocking the value of biological collections for science, government, education, the public, and businesses, operating in the environmental sector, including land management; in biotechnology or in biodiversity research. International collaboration on the standardization of information models and standard data used in collection databases can enhance the efficiency of this process.
+
+<a name="Purpose"></a>
+
+---+++ Purpose
+ABCD - Access to Biological Collections Data - Schema is a common data specification for biological collection units, including living and preserved specimens, along with field observations that did not produce voucher specimens. It is intended to support the exchange and integration of detailed primary collection and observation data.
+
+All of the world's biological collections contain a number of data items including specimen specific (e.g. taxon, altitude, sex) and collection specific (e.g. holding institution) elements. The set of elements used varies from collection to collection. ABCD provides a reconciled set of element names and their definition for scientists and curators to use. It is not expected (or even possible) for any collection to use more than a fraction of the elements defined in the standard.
+
+A design goal of the data specification was to be both comprehensive and general, to include a broad array of concepts that might be available in a collection database, but to mandate only the bare minimum of elements required to make the specification functional. ABCD deliberately does not cover taxonomic data, such as synonymy, other than the use of names in identifications. Likewise, taxon-related information, such as distribution range, indicator values, etc., is also not included. The elements and concepts that are used provide as much compatibility as is possible with other standards in the field of biological collection data, such as HISPID, Darwin Core, and others.
+
+The data specification is cast as an XML schema.
+
+<a name="DesignPrinciples"></a>
+
+---+++ Design principles
+ABCD was designed with the following principles in mind:
+
+1. Full coverage approach: ABCD is comprehensive and therefore complex. It explicitly aims to define the semantics of all elements, in order to:
+
+   * Provide a unified approach for the natural history collection community
+   * Accept detailed information, where available
+   * Develop a proto-ontology as a first step towards a collection ontology
+
+2. Polymorphism: Variable atomisation allows provision of data in different degrees of detail and standardisation, in order to:
+   * Accept data from a wide variety of sources
+   * Enable data integration
+
+3. (Almost) no internal referencing: A single-root document without relational structures that use IDs - to make processing easier and faster.
+
+4. Extensible Slots: Extensions are not meant for individualised adaptations of the schema, but instead to allow:
+
+   * Fast community support in case of missing elements, before integration into a subsequent version
+   * Inclusion of third-party-schemas (or parts thereof), in order to prevent duplication of developments in other communities (e.g. geographical data)
+
+5. Flexible containers: Element-element or element-attribute couples for category-value pairs allow freely defined and repeatable data fields (e.g., higher taxa, measurements, morphological features). In addition, there is often provision for free-text data where it is impractical to provide atomised data.
+
+6. No recursive structures
+
+7. Machine-readable annotations: Structured element annotations will permit their evaluation by program tools (e.g. a semantic search by the Configuration Assistant)
+
+8. Language support: Language can be be made explicit for most text elements
+
+9. Typing: The use of complex types and the deposition in a common type library allows type-sharing with other communities (e.g. Structure of Descriptive Data [SDD])
+
+---+++ History
+The ABCD content definition effort is based on data modelling and database development projects which were carried on throughout the 1990ies (see http://www.bgbm.org/TDWG/acc/Referenc.htm for some results). TDWG with its Subgroup on Biological Collection Data provided a forum for developers and efforts to standardise collection data. Some exchange standards developed by the community were spearheading developments, such as the ITF format for botanical garden records and the Australian HISPID standard for herbarium records. However, data standardisation became a pressing issue only when the Internet matured and global data access to distributed heterogeneous resources became possible.  
+
+Development of the ABCD content definition started after the 2000 meeting of the Taxonomic Databases Working Group (TDWG) in Frankfurt/Main, where the decision was made to specify both a protocol and a data structure to enable interoperability of the numerous heterogeneous biological collection databases then available. As a consequence, the TDWG/CODATA subgroup on Access to Biological Collection Data (ABCD) was established, with one sub-section working on search and retrieval protocols, and a second working on a specification for biological collection data (the content development group).
+
+Protocol development resulted in a limited and non-hierarchical set of data elements, named the Darwin Core (!DwC, see http://www.tdwg.org/activities/darwincore/), as a workable specification to be used with the !DiGIR protocol near-term, whilst the ABCD content development resulted in a comprehensive and highly structured standard for data about objects in biological collections, which was in turn picked up by the developers of the !BioCASe protocol.
+
+An early achievement of the working group had been to bring together existing networks on specimen information to discuss common access, namely !ENHSIN, !ITIS, !ITIS-CA, !REMIB, !Species Analyst, !speciesLink, and the Virtual Australian Herbarium. In addition, the TDWG subgroup was recognised as a CODATA Working Group for 2001/2002. The discussion that had been started during the TDWG meeting in Frankfurt (2000) was picked up in a sequence of workshops:
+
+   * First workshop, Santa Barbara (June 2001)
+   * Second workshop, Sydney (November 2001)
+   * Informal meeting, Sydney (March 2002)
+   * Editorial meeting, Singapore (December 2002)
+   * Third workshop, Indaiatuba, Brazil (October 2002)
+   * Fourth workshop, Oeiras, Portugal (October 2003)
+   * Fifth workshop, Tervuren, Belgium (July 2006) 
+
+
+The first workshop in Santa Barbara produced an XML DTD, using a combination of top-down conceptualisation (and organisation) and bottom-up use of existing relevant specifications, such as the TDWG endorsed standards, !HISPID and !ITF.
+
+In preparation for the second workshop in Sydney, this DTD was transformed into an XML schema and extended by elements from the !BioCISE information model and the British !NBN/Recorder model. For part of this meeting, the option of using the Gathering Event rather than the Collection Unit as the root concept of the hierarchical data structure was discussed, since observations data is usually organized by place and time first and then by taxon.
+
+Nevertheless, the decision was made to stay with the structure that uses Unit as the root concept for two reasons:
+
+   * The goal at that time was to achieve clarity, universality, completeness, and simplicity in the semantics of the standard
+   * Collection databases implemented as flat data structures (of which there are many) will not easily be able to export a hierarchical dataset with a normalized gathering event as the root concept and therefore will be restrained from participating in a federation based on this alternative.
+By the time of the informal meeting in Sydney, March 2002, the European !BioCASE project had started. Its schema definition group (The Natural History Museum in London and the Botanic Garden and Botanical Museum Berlin-Dahlem) was to provide a collection-level schema (!BioCASE only) and a unit-level schema (!CODATA/TDWG and !BioCASE), so that this group was able to dedicate personnel resources to the schema definition process.
+
+The priority was to develop a consensus about which elements should be included. The annotation tag was structured to hold metadata about each element and a schema-viewer, developed in Berlin, was established to allow XML non-specialists to browse the schema and view the annotations in a structured way. The documentation gathered here was later transferred to the ABCD Wiki site and used to annotate the individual "!ABCDConcepts".
+
+The ENHSIN and BioCASE projects drove the process during 2001/2002, providing drafts that were discussed during TDWG and other meetings and which were exposed in a Request for Comment process. An editorial meeting sponsored by the Global Biodiversity Information Facility (GBIF) held in December 2002 in Singapore, led to the version that has been used in the first round of reference implementations (v. 1.2).
+
+In 2002 the ABCD Schema was accepted by GBIF. A protocol supporting ABCD was provided by the !BioCASE reference implementation in 2003, and in October, GBIF decided to integrate the BioCASE network into the nascent GBIF network along with the DiGIR protocol and !DarwinCore. The primary difference between the two standards is that DiGIR handles only flat schemas, such as !DarwinCore, whereas the !BioCASe protocol can handle structured schemas, such as ABCD. !DarwinCore is ideal for resource discovery purposes in particular, while ABCD records hold the additional data that may be required by researchers once a selection has been made.
+
+Recognising the importance of the developments, CODATA decided to raise the status of the group to the level of a CODATA Task Group for 2003/2004 (renewed for 2005/2006). 
+
+At the fourth Workshop in October 2003, a major point of discussion was the need for more guidance at the user-interface as well as at provider level. The very broad coverage of ABCD leaves it to the user to determine how to map their data. The structure looks too complicated for the average user and should thus be hidden from them. It will be the task of programmers to reassemble the different uses of the structure into a presentation layer that supports user requirements. 
+
+A reference portal implementation was constructed by the Paris BioCASE team, work that has been picked up by the SYNTHESYS project. The Berlin team has implemented preliminary interfaces as an intermediate measure. GBIF supported a project to produce a configuration assistant in a generic interface to map between database schemas and federation schemas such as ABCD, so that providers get recommendations on how to map elements, on preferred points for searches, what to do if an element is empty and so forth.  
+
+In September 2005, ABCD version 2.06 was ratified as a TDWG standard under the than valid TDWG procedures. 
+
+The 6th workshop in Tervuren, 2006, provided a charter for the subgroup and discussed the future of the standard (see http://www.tdwg.org/uploads/media/ABCDJuly2006Report_01.pdf ). 
+
+During the TDWG meeting in St. Louis in September 2006, a joint meeting with the !DarwinCore and Observations groups led to the formation of a new TDWG Interest Group for Observation and Specimen Records. DwC, Observations and ABCD now form Task Groups within the OSR Interest Group. 
+
+---+++ Future versions
+Some further changes have become necessary and a new minor upgrade will be released in 2007 (ABCD version 2.06c, see http://www.tdwg.org/proceedings/article/view/62 for an explanation of the upgrade policy). This version will be put forth under the new procedural rules of TDWG. Because its inherent mechanisms for extensions allows for preliminary accommodation of new elements, we think that v. 2.06 can be kept stable and in use for a reasonable time period. We expect that the next major version will form part of a system of biodiversity data standards, with common modules across several TDWG standards, e.g. for metadata, images, agents, and bibliography.
+
+-----
+
+---++ Top Level Structure
+The ABCD schema is highly structured in order to manage the large quantity of data that a record may contain.
+
+The top level of the schema is arranged as follows:
+
+ . DATASETS
+  . DATASET
+   . - GUID AbcdIntroduction Contacts (technical and content) AbcdIntroduction Other providers - Metadata - Units (Observations and Specimens)
+From this it can be seen that an XML document based on ABCD may contain records from several datasets, each of which is treated separately. Each dataset has a Globally Unique Identifier (GUID) along with information about who may be contacted for further details, for the content of the dataset and for technical information.
+
+There are then two major groups, one holding metadata about the entire dataset and the other holding the actual data records.
+
+The Metadata section holds information about an entire dataset and has the following structure:
+
+ . METADATA
+  . - Description - Icon URI - Scope (Geo-ecological and Taxonomic) - Version - Revision data (Creator, Contributors, Creation and Modification dates) - Owners - Intellectual Property Rights (IPR) statements
+The second major section, called UNITS, holds all the records selected and exported from the original dataset, each one of which is a UNIT. This is by far the largest component of ABCD and has the following high-level structure:
+
+ . UNITS
+  . UNIT
+   . Here we can distinguish several areas. Most of these do not show up in the actual XML hierarchy, because ABCD 2.06 avoids using container elements that serve only to group items together:  - Unit-level metadata - Record basis and Kind Of Unit - Identifications - Collection domain-specific data - Unit relationships (Associations and Assemblages) AbcdIntroduction Named collections and surveys - Gathering event and site characteristics - Measurements and Facts - Unit extension area
+---++ The ABCD v2.06 Element Groups
+For the purpose of this documentation, the data items (XML elements and attributes) are classified according to their content and arranged in groups. On the ABCD documentation Wiki (http://ww3.bgbm.org/abcddocs/), a list of the nearly 1200 concepts in ABCD is provided, with individual documentation pages for each of them that include the classification according to the groups and subgroups outlined below.
+
+---+++ Metadata
+The Metadata items record information such as who created the dataset, record, or linked object (e.g. an image), from what source and on which date, along with the Intellectual Property Rights (IPR) and other statements that govern the usage of the data. It also includes technical data items, such as "IDs" needed to access the data.
+
+Items belonging to this group may change in future versions in order to harmonise with the suite of standards that are being developed through TDWG. Areas that are common to more than one standard, such as metadata, will be adjusted so that they are the same in each. The framework for this is currently under development as UBIF - the Unified Biosciences Information Framework.
+
+The are five subgroups for metadata:
+
+ . __ Identifiers __
+These are the names or codes that identify data objects or physical objects. Codes include record identifiers or keys, institution codes, accession numbers and collector's field numbers. Names include named collections, but for personal or corporate names see under Agents.
+
+Identifiers include:
+
+Globally unique identifiers (GUID) for datasets and for individual unit records, currently optional. Discussions underway at TDWG indicate that this may be an LSID (Life Science Identifier), a development from the bioinformatics domain, which would have the benefit of linking collection, observation and sequence data.
+
+Apart from the GUID, each unit record contains four identifier elements, three of which are mandatory. These are:
+
+   * an identification code for the source institution
+   * an identification code for the data source that is unique within the source institution
+   * an identification code for the unit record within the data source
+In the interim, a GUID can be synthesised from the hierarchy of these three mandatory elements. Optionally, if the unit ID is alphanumeric, the numeric part can be separately placed in the unit ID numeric element for sorting purposes. The Record Basis element provides an indication of what the unit record describes, such as a preserved specimen or a multimedia object. A short list of preferred terms is available for this and for several other elements. Using a term from such a list provides a degree of consistency that makes subset retrieval considerably more accurate. Preferred terms here include PreservedSpecimen, LivingSpecimen, FossilSpecimen, OtherSpecimen, HumanObservation, MachineObservation, DrawingOrPhotograph, and MultimediaObject. Note that these categories should also be used if the data were copied from a publication, a fact that can be indicated using the element Source Reference.  The Kind of Unit element descibes the part(s) of organism or class of materials represented by the unit, such as whole organism, DNA, fruit and so forth. For consistency, terms should be chosen from the short list of preferred terms.
+
+Further identifiers in the schema include Other providers (referencing an ID in the UDDI registry), Multimedia object ID (e.g. for images), Collector's field number, Observation unit identifier, Unit assemblage ID, Named collection or survey including the unit, and Specimen loan identifier.
+
+ . __ Record Basis and Kind of Unit __
+The Record Basis element provides an indication of what the unit record describes, such as a preserved specimen or a multimedia object. A short list of preferred terms is available for this and for several other elements. Using a term from such a list provides a degree of consistency that makes subset retrieval considerably more accurate. Preferred terms here include PreservedSpecimen, LivingSpecimen, FossilSpecimen, OtherSpecimen, HumanObservation, MachineObservation, DrawingOrPhotograph, and MultimediaObject. Note that these categories should also be used if the data were copied from a publication, a fact that can be indicated using the element Source Reference.
+
+The Kind of Unit element describes the part(s) of the organism or class of materials represented by the unit, such as whole organism, DNA, fruit, etc. For consistency, terms should be chosen from the short list of preferred terms.
+
+ . __ IPR, Versioning, Edit History and other Statements __
+Intellectual Property Rights (IPR) play an increasingly important part in the use of shared data and it is important that full use is made of the capabilities of ABCD to record statements on copyright, licensing, terms of use, disclaimers, acknowledgements and citations. It is equally important that proper accreditation is given to data sources.
+
+Versioning refers to the numbering and date of the dataset version, which may be used in citations and to determine the currency of the data. The creator of a dataset or record and the date of creation is recorded and never changes. Provision is also made to identify the date of the most recent edit and the name of the editor, again as an indicator of data currency.
+
+ . __ Language and Character Sets __
+Many elements have an attribute that can indicate the language of the text that they hold. This is valuable for sorting and searching purposes. Data should be provided in either UTF-8 or UTF-16 encodings of Unicode, which are both valid for use with XML.
+
+ . __ UDDI Registry Items __
+UDDI (Universal Description, Discovery, and Integration) is a platform-independent, XML-based directory that enable businesses worldwide to list themselves and their services on the Internet. The Global Biodiversity Information Facility currently uses a UDDI registry. The relevant ABCD elements are Technical Contacts and Content Contacts.
+
+---+++ Identification Event
+A unit may be identified by one or more identification events. The Identification Event has two main parts, being the identifications themselves and a free text identification history. For every individual identification event the data include the date; the method; references and verification details. The identifier may be a person or an organisation. A flag can be used to indicate a preferred identification where several events in the history of the specimen took place. Likewise, a negative identification can be flagged as such, in addition to one of the identifications that is used to indicate where a specimen is stored (a useful feature e.g. for mixed samples or for type specimens). If there are several identifications of a mixed sample, the individual role may be indicated (e.g. as parasite or host). The outcome of the identification event is an identification result.
+
+---+++ Identification Result
+ . __ Non-taxonomic Result __
+ABCD has a provision to use the schema for the identification of non-biological materials together with the taxonomic identification of an organism. This is used, inter alia, to describe a specimen consisting of a substratum and the organism, e.g. a certain rock type and a lichen crust on that rock. Currently there is only a single text element (Material identified) to accommodate this type of data. However, especially for collections from geo-sciences, ABCD will be expanded to include full cover of the "taxonomy" used in these fields. For the time being, a temporary Extension can be made using the respective element typed as xs:any.
+
+ . __ Taxonomic Result __
+This is the structure provided for the taxon identified as the result of an identification event.
+
+ABCD considers the classification of the taxon identified in higher taxa not to be within the domain of the collection schema. Nevertheless, for convenience a higher taxon element is included. In contrast to Darwin Core, ABCD handles higher taxa through a repeatable element pair, one for name and one for rank.
+
+The "Full Scientific Name String" element is one of the few mandatory elements in ABCD (if a taxonomic identification is provided at all). This holds the concatenated scientific name, preferably formed in accordance with a named Code of Nomenclature. It should thus be a monomial, bionomial, or trinomial plus author(s) or author team(s) and, where relevant, the year. It could also hold the name of a cultivar or cultivar group, or of a hybrid formula.
+
+If the name does not conform to a Code of Nomenclature, e.g. a common name, provision is made for it to be recorded as an informal name.
+
+In addition to the Full Scientific Name element described above, a structure is provided for recording names in a fully atomised form, adapted to each of the four main naming conventions (Codes) - for botanical, zoological, bacterial and viral names. The structure is completed with elements for an identification qualifier, where doubts may exist about the accuracy of the identification, and an element for a name addendum such as "sensu lato".
+
+Both, the Full scientific name and the atomised structure are also used for the typified name in the section of the schema treating nomenclatural type designations (see under Specimen Collections below).
+
+---+++ Collection Domain-specific Items
+Most of the data handled by ABCD are common to all the subject domains, both in collections and observations. However, there are some data that are very specific to certain domains, such as the morphotype of a lichen. This section of ABCD provides a place for such data so that specialists may easily identify which subsections are relevant to their data and which are not.
+
+This section is also used to accommodate domain specific standard data, some of which may be characterised as legacy data but which is still provided or used in specialised networks.
+
+ABCD can be extended into new domains by the creation of an additional domain-specific section. Temporary additions should make use of the Unit Extension feature.
+
+ . __ Observation Records __
+Most data about observation records are under the Gathering group of elements, since observers work with place as priority rather than taxon. However, there is a place here for numbers or other registration marks which may be associated with an observation record as the equivalent of the Accession Number used with specimen collections.
+
+Observation records indicating the absence of an organism from a site are accommodated by means of a record with a negative identification.
+
+ . __ Specimen Collections __
+Data on ownership of the physical specimen (as opposed to the data record), including ownership history, acquisition and accession can be placed here, along with information on the type status of the specimen, preparation technique and details of any markings and labels.
+
+The type section of the schema provides information on the status and kind of nomenclatural type, but also allows full documentation of the verification process of the type status.
+
+In addition, each collection has a set of elements for holding data that are specific to the content of the collection. As mentioned under Collection Domain-specific Items above, ABCD version 2.06 provides containers for the following specialisms: Microbial Genetic Resources (a.k.a. Culture Collections), Mycological (including Lichenological) Collections, Herbaria, Botanic Gardens, Plant Genetic Resources, Zoological Collections and Palaeontological Collections.
+
+---+++ Measurements and Facts
+The main difference between measurements and facts is that measurements are numeric whilst facts are textual. These are treated generically, rather than providing an individual place for everything that could be measured, with one or two exceptions that are noted later. The atomised version of measurements/facts captures essentials such as what is being measured, by what method, using which units and so on, as well as the actual value or value range. A free-text alternative is available if the data are not easily available in atomised form.
+
+Measurements and Facts appear at several places in ABCD:
+
+ . __Gathering-related Measurements and Facts__
+These are the measurements or facts taken at the collection locality at the time of collection, such as water or air temperature, slope, weather conditions etc. Separate elements are available for Altitude, Depth and Height, due to the complex relationships between these. Biotype measurements or facts allow linking of all biotope-related measurement to the site description.
+
+ . __ Unit-related Measurements and Facts __
+These relate directly to the Unit which is the subject of the record.
+
+ . __ Molecular Sequence Data __
+A container is provided for sequence data, thus offering the ability to link sequence data back to the specimen from which the sequenced molecule was derived. Links to public repositories such as GeneBank as well as to unpublished material are accommodated.
+
+ . __ Stage, Age and Sex __
+The final subgroup covers stages (such as egg, larval or adult), age and sex.
+
+---+++ Multimedia and References
+Pointers to additional material that relates to the unit may be placed in the Multimedia and References group. Elements are available for the URI of either a "raw" file or a rendered product, such as an HTML or JavaScript resource. The relationship between the resource and the unit in this record can be recorded in a context element. Further elements are available for recording technical data, especially for digital images. The subgroups are:
+
+ . __ Multimedia __
+Photographs, diagrams, sound files and other types of electronic resources.
+
+ . __ Bibliographic References __ Literature can be referenced in several places in the schema. As mentioned before, the data for the entire unit record may have been extracted from the literature, but it is also possible to record instances in which the specimen was cited in the literature. The key and/or description used in an identification event may be referenced there, as could be an identification taken from literature. All measurements and facts can be related to a publication, including molecular sequences. Finally, the nomenclatural reference to the original description(s) of a taxon are recorded within the type designation section.
+ABCD uses a very simple structure for bibliographic references, which may be changed to a more elaborate design at a later stage.
+
+ . __ Record URI __
+This relates to the Web address of the page where the original of this particular record in its database can be found, rather than the address of the whole dataset, which is available in the Metadata group of elements under metadata description representation.
+
+---+++ Agents
+The Agents group of elements contains information about the persons and organisations that are associated with collections and observations and their roles. This is an example of a re-usable set of elements that occur in several places within ABCD. Contact details, such as address, telephone number and email, may be recorded here with the permission of the subject.
+
+---+++ Gathering
+The Gathering group of elements provides places for a comprehensive set of data about the event and place of collection or observation, including agents, date and georeference coordinate systems. Provision is made for the use of GML (Geographic Markup Language), WMS (Web Map Server) and WFS (Web Feature Server) data, based on the standards promoted by the Open GIS Consortium.
+
+Additional elements can hold details of permits, methods, projects, site images, site-specific measurements, biotope, synecology and stratigraphy, along with others.
+
+---+++ Unit Relations: Associations and Assemblages
+The relationships between units can be recorded in this group of elements.
+
+ . __ Associations __
+Associations are the relationships of this unit with other units in ABCD conformant datasets, using the institution ID, database ID and unit ID triplet for the record within the database. The type of association can be recorded, such as host and parasite, predator and prey etc.
+
+This may also be useful in linking the records for several preparations from the same specimen, such as when a zoological specimen yields skeleton and tissue preparations.
+
+ . __ Assemblages __
+A unit assemblage describes symmetric relationships between several units, such as herds and flocks or several fossils embedded in a rock. A common identifier links the members of the assemblage.
+
+<a name="UnitExtensions"></a>
+
+---+++ Unit Extensions
+The Unit Extension is a temporary home to accommodate urgent inter-version additions to the ABCD schema. For example, if a specific community (e.g. culture collections) discover that there are elements missing in the current version of ABCD, they may communicate that to the group responsible for schema development. If it is necessary to move rapidly, for example due to project pressures, these elements may be added to the current version as an extension schema until the best placement for them has been decided.
+
+---+++ Other
+The final group is Other, which contains data that does not fit anywhere else, such as Notes. Notes may contain any text that is relevant to this unit that cannot be placed elsewhere within the record.

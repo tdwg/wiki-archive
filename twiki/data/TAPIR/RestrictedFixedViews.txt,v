@@ -1,0 +1,55 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@The idea to only allow StaticViews instead of DynamicViews in the protocol.
+It is still possible to cater for both in the protocol, but allow services to only implement StaticViews which have to be announced in their CapabilitiesResponse.
+
+If we would limit views to be restricted external ones only, so no inline views in searches, what would we lose? 
+Providers would select the views they are supporting, probably mainly the ConceptualSchemas themselves. 
+Then requests that would like custom structures to be returned would include an xsl stylesheet in their request and could even ask the provider to do the transformation for them. This provider side transformation is important if we want existing applications to use TAPIR views as a simple URL, e.g. RSS Readers. They need the already tranformed result.
+
+The only disadvantage I can see is that you cannot combine concepts from different views. But is this needed? We could create a super-darwin view with all known extension schemas included and it would be a matter of a partial search or xslt to reduce the response structure to the desired one.
+
+---+++ Cautionary Thoughts from a TapirLite Perspective
+
+Provider side XSLT transformations should definitely be optional as:
+ 1 the provider might not do XSLT at all.
+ 1 they may be expensive to support.
+ 1 they may encourage the 'wrong' use of a service.
+
+This may illustrate why providers may be reluctant to do custom views. Imagine IPNI being polled every 10 minutes by 100 user's browsers and each one requires a distributed internal db search and a XSLT transformation of the results. If a large data supplier wanted to provide such a service then they could provide a Tapir view that looked like an RSS feed but the back end was actually very heavily cached compared with their regular data retrieval views. They probably would not want people coming along and treating their regular data searching service as an RSS feed. This is why RSS feeds are usually static files updated by a cron job. Basically RestrictedFixedViews allow providers to know a little more about what they are letting themselves in for though they may still be open to abuse! -- RogerHyam
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d9 9
+@

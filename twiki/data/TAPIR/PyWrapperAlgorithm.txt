@@ -1,0 +1,260 @@
+see [[#empty][below]] for the*empty repeatable region problem*
+---+ PyWrapperAlgorithm
+
+This algorithm is used by the PyWrapper to process a custom ResponseStructure for a CustomSearch. 
+Internally the PyWrapper uses [[http://www.biocase.org/dev/wrapper/CMF.shtml][CMF]] files with a very similar structure as the ResponseStructure definition to represent different ConceptualSchemas.
+So the algorithm used for them and for a CustomSearch could probably be the same.
+
+Imagine an example xml structure like this, with* marking repeatable elements and @ marking xml attributes:
+<verbatim>
+A
+  B*
+    C*
+      D
+      E
+    F
+  G*
+   @H
+   @J
+   @K
+  M
+</verbatim>
+
+For a given provider this structure is mapped to table fields as follows:
+
+<verbatim>
+A
+  B*
+    C*
+      D   t1.fA
+      E   t2.fB
+    F     t1.fB
+  G*
+   @H     t3.fA
+   @J     t4.fA
+   @K     t1.fC
+  M       t3.fB
+</verbatim>
+
+---+++++ The Algorithm
+
+Determine for each RepeatableElement or "RepNode" the "locked" tables to loop over using their (compound) primary keys.
+
+Top down approach:
+<br>For each "RepeatableRegion" list all mapped tables that haven't been locked by a higher (parental) RepNode.
+
+A RepeatableRegion are all elements between 2 RepNodes including the top RepNodes' mapped tables. The root region is the root element and all child elements until the first encountered RepNode.
+
+For the above example this would be:
+
+<verbatim>
+root region
+---------
+A
+  M
+
+
+rep region B
+----------
+B
+  F
+
+
+rep region C
+----------
+C
+  D
+  E
+
+
+rep region G
+----------
+G
+ @H
+ @J
+ @K
+
+</verbatim>
+
+The tables involved are:
+<verbatim>
+root region
+---------
+A
+  M
+-> t3
+=> t3
+
+
+rep region B
+----------
+B
+  F
+-> t1
+=> t1
+
+
+rep region C
+----------
+C
+  D
+  E
+-> t1, t2
+=> t2
+
+
+rep region G
+----------
+G
+ @H
+ @J
+ @K
+-> t1, t3, t4
+=> t1, t4
+
+</verbatim>
+
+The root region is never repeated, as there should always be only a single root element. 
+Therefore t3 is not used in creating loops at all in this example.
+
+
+<a name="empty"></a>
+---+++++ The Empty Repeatable Region Problem
+The only known problem so far is occuring when there is an empty rep-region above another rep region that contains mappings.
+
+E.g.:
+
+<verbatim>
+A
+  B*
+    C*
+      D     t1.fA
+</verbatim>
+
+In this case the algorithm suggests to use table t1 to loop at RepNode C to create multiple D elements:
+<verbatim>
+A
+  B
+    C
+      D1
+    C
+      D2
+    C
+      D3
+</verbatim>
+
+But this might be a wrong interpretation and actually RepNode B should have been looped over:
+
+<verbatim>
+A
+  B
+    C
+      D1
+  B
+    C
+      D2
+  B
+    C
+      D3
+</verbatim>
+
+A more real life example would be:
+<verbatim>
+DataSet
+    Specimen*
+        Identification*
+            FullName         t1.attrA
+</verbatim>
+
+If we have a single table with each record representing a specimen, containing only one identification as a single field, the algorithm would interpret the different names of each record as multiple identifications for a single specimen. But remeber that this is only a problem because there is an empty RepeatableRegion "Specimen". If we add for example the catalog number to the structure, we would not face this problem anymore (unless a provider doesnt have a catalog number mapped) and the algorithm would use <Specimen> for its loop:
+<verbatim>
+DataSet
+    Specimen*
+        CatalogNumber        t1.ID
+        Identification*
+            FullName         t1.attrA
+</verbatim>
+
+
+On provider configuration level in BioCASE it is possible to manually set a "don't repeat" flag for a RepNode that does not make any sense for the specific provider's database structure.
+In the example above one could tell the wrapper not to consider "Identification" as a RepNode.
+
+In the case of the CustomSearch in the protocol, this cannot be defined as we are dealing with different providers with different database structures and dynamic requests.
+
+We think there is a better solution by analyzing entire repeatable regions instead of sole concepts. A conceptual binding for a RepNode could also help in solving this problem. But even this method has its limits and some requests depending on missing mappings will have no results returned cause the wrapper has to return an error in such cases!
+
+---+++++ Answers to the empty rep region problem
+
+*The problem again:*
+The main problem is when we face a structure definition, analyze the concept-bindings and local database mappings and then are confronted with an "empty repeatable region":
+
+<verbatim>
+A
+  B*
+    C*
+      D  ->mapped to table1.attr1
+  E
+</verbatim>
+In this case B+E and C+D form repeatable regions. So if B is repeated, E needs also to be repeated.
+Since there is no indication of a table belonging to this region, table1 can be used for looping over B or C.
+And that is the problem. We have no idea about the meaning of B or C and the results returned might not make sense.
+
+
+*Entity Mapping*
+EntityMapping would solve the secondary empty repeatable regions described below.
+
+*Primary empty repeatable regions: *
+So if we face a request containing an empty RepRegion in the first place (before evaluating the conceptual bindings and their underlying local mappings) this is clearly an error and can be rejected.
+
+*Secondary empty repeatable regions: *
+But what happens if we receive a request like this:
+
+<verbatim>
+A
+  B*
+    C*
+      D  -> abcd:concept1
+  E      -> abcd:concept2
+</verbatim>
+
+... and one of the provider doesnt have the dwc:concept2 mapped.
+What should we do? We could raise a fatal error, but then it would be difficult to retrieve complex data from the entire network. Only core items everybody has mapped could then easily be retrieved.
+
+So the problem arises if we have RepRegions with only one or few concepts attached to it that might not be mapped by providers. To solve this we could asign to a rep node a list of concepts which are all considered to define the idea behind this rep node or even use an existing rep node of a conceptual schema that defines them like ABCD. 
+
+As an extensive list of concepts is not really a possible solution for custom response structures that is not feasable and maybe not even needed. So instead of attaching a list of concepts to the rep node, it would be enough to assign it to the appropiate rep region of a known standard. But as a "primary empty rep region" in a request is an error, each rep region already has at least one concept assigned to it. And this can then also be used to identify a rep region of the conceptual schema. So we would not need any further domain/concept assignments to branch nodes, but rather analyze the rep regions referred to by the normal conceptual binding.
+
+
+So in the above case:
+<verbatim>
+A
+  B*
+    C*
+      D  -> abcd:concept1
+  E      -> abcd:concept2
+</verbatim>
+
+if abcd:concept2 is not mapped by a provider, we take a look at the rep region of that concept in the original standard=conceptual schema:
+
+The excerpt of the underlying conceptual schema showing only the RepRegion for abcd:concept2 with abcd:concept3 being the repeatable element of that region:
+<verbatim>
+
+...
+abcd:concept3*
+  abcd:concept4
+  abcd:concept2
+  abcd:concept5
+   ...
+</verbatim>
+
+We could then check if any of the 4 concepts is being mapped by the provider.
+If not, bad luck, we have to raise an error again.
+
+But if not, the algorithm could check if the mapped tables used in this rep region are already containing the table used for the local abcd:concept1 mapping.
+If the same table is already used in the rep region of concept2, then we should use B to iterate over the db-resultset.
+If our table1 of concept1 is not used in the rep region of concept2, then we should rather use C for looping.
+
+In the PyWrapper code I used to call the rep nodes that are used for looping "active rep nodes".
+So analyzing and comparing rep regions from the custom structure with the ones defined in the conceptual schemas could help us decide which rep node to activate if the algorithm faces secondary emtpy rep regions.
+
+For conceptual schemas like the current Darwin Core which does not define any repeatable regions (cardinality) there would be no such mechanism though. But we dont think with darwin core empty repeatable region problems will emerge anyway very often. And hopefully the future Darwin Core standard could at least group some of its concepts...

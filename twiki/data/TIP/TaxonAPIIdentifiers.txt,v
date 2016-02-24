@@ -1,0 +1,127 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2005.11.25.13.31.24;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2005.11.25.12.31.05;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.2
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1132925484" format="1.1" version="1.2"}%
+%META:TOPICPARENT{name="TaxonAPI"}%
+---+ Identifiers Used in the TaxonAPI
+
+---++ Introduction
+
+This sounds complex but is actually quite simple. As most publishers will use internal data base IDs or simple hashings of them for their TCS object IDs the implementation implications of these recommendations are likely to be minor.
+
+TaxonConcepts and TaxonNames both have ID fields. The TaxonConceptSchema does not specify what the identifiers used in these fields should be other than that they should be unique within a class of objects within a single document. 
+
+TCS has the ability to label references to objects with the linkType attribute. The references can be:
+   * local = This is the id of another element within this document
+   * external =  A link to a resource in another document. It is presumed that the target will be returned as a valid TCS instance.
+   * other =  A link to another resource external to the current document that is not in TCS format. e.g. a jpeg, html page or pdf.
+'local' is the default value. These are the definitions in the schema.
+
+TCS does not provide a way for a client to tell where the 'external' and 'other' references will resolve to without parsing the content of the link.
+
+The TaxonAPI is stateless. It does not associate different calls as coming from the same client or have a notion of a session.
+
+The TaxonAPI uses object IDs extensively to link between different calls. A request will return objects that contain IDs of other objects that can be retrieved.
+
+---++ References govern where IDs resolve
+
+A publisher may supply a document that has a TaxonConcept which references a TaxonName defined within the same document like this:
+<verbatim>
+<Name scientific="true"  linkType="local" ref="123" >Bellis perenis</Name>
+</verbatim>
+The document (i.e. the results of this call) must include a TaxonName object with an ID of 123. This ID is local to the document. Calling the end point with [[TaxonAPIGetTNamesByID()][GetTNamesByID()]] and passing the id 123 _may not_ return the same object or any object at all.
+
+If the reference looked like this:
+<verbatim>
+<Name scientific="true"  linkType="external" ref="123" >Bellis perenis</Name>
+</verbatim>
+The document may or may not include a TaxonName with an ID of 123 but calling [[TaxonAPIGetTNamesByID()][GetTNamesByID()]] and passing the id 123 _must_ return the TaxonName object with ID 123.
+
+It is *recommended* that if a publisher provides an id that can be a target of linkType="external" references for one object then all objects of that class should be issued with IDs that can be resolved in the same way.
+
+In the first example above a publisher may only be interested in issuing TaxonConcepts and is only providing TaxonName objects as a means of parsing out the name data. In this case a call to [[TaxonAPIGetTNamesByID()][GetTNamesByID()]] would throw a 'Not supported' error (they don't issue TaxonNames at all). In such a case the use of local references is perfectly valid.
+
+If the reference looked like this:
+<verbatim>
+<Name scientific="true"  linkType="other" ref="123" >Bellis perenis</Name>
+</verbatim>
+Then the client should read the content of the ref attribute and try and figure out what to do with it. It may be an encoding of a call to another end point i.e. an http get or an LSID. Contrary to the TCS documentation the results of this call could be in TCS format.
+
+---++ Refining the meaning of TCS linkType
+Note the above slightly refines the interpretation of the linkType attribute. 
+   * local = This is the id of another element within this document. May or may not resolve at the end point you got this document from.
+   * external =  External to the document but may also be included. Can be resolved from the end point you got this document from.
+   * other =  Go figure it for yourself from the contents of the ref. No assertion is made as to the type of the target.
+
+---++ ID Quasi-Permanence
+   *  Ideally the publisher should provide an assurance that they will never change and that a call to the same end point will always return the same object (though the contents of the object may change).
+   * At a minimum the publisher should guarantee that the IDs will be valid for 24hrs (a nominal period deemed to be the maximum duration of a set of client/server interactions).
+   * Realistically publishers will use internal database IDs that are likely to remain permanent.
+
+---++ Resolvable GUIDs
+Use of linkTypes local or external implies the ID referenced should be resolved in the document or back to the end point the document came from even if the actual string making up the ID is resolvable via some other means such as a URL, LSID or DOI. Only if the linkType is 'other' should the client try and resolve by other means.
+
+If an object (TaxonName or TaxonConcept) has an ID that is resolvable then the client may infer that it can get the object from somewhere other that the end point.
+
+
+-- Main.RogerHyam - 25 Nov 2005@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1132921865" format="1.1" version="1.1"}%
+d15 1
+a15 1
+'local' is the default value.
+d47 5
+a51 2
+---++ Bending the meaning of TCS linkType
+Note the above slightly bends the interpretation of the linkType attribute. 'external' is taken to mean external to the document but from the same end point. 'other' is take to mean external to the end point i.e. some where else.
+d53 4
+d58 2
+d61 1
+a61 4
+---++ IDs should be.
+   *  _quasi-permanent_. Ideally the publisher should provide an assurance that they will never change and that a call to the same end point will always return the same object (though the contents of the object may change).
+   * At a minimum the publisher should guarantee that the IDs will be valid for 24hrs ( a nominal period deemed to be the maximum duration of a set of client interactions).
+   * Realistically the publisher should 
+a62 1
+References made in TCS documents returned by the TaxonAPI should have the following qualities:
+d64 1
+a64 5
+
+
+
+
+-- Main.RogerHyam - 25 Nov 2005
+@

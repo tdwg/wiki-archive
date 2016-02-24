@@ -1,0 +1,60 @@
+%META:TOPICINFO{author="RogerHyam" date="1133174460" format="1.1" version="1.3"}%
+%META:TOPICPARENT{name="TaxonAPI"}%
+---+ How matching works in TaxonAPI
+
+(This still needs a little work...)
+
+---++ Introduction
+
+There are two methods in the TaxonAPI that allow matching [[TaxonAPIGetTNamesMatching][GetTNamesMatching()]] and [[TaxonAPIGetTConceptsMatching][GetTConceptsMatching()]]. Matching is synonymous with filtering in.
+
+For both of these methods an array of name=value pairs is passed in and only objects that match them all are returned. 
+
+In the case of [[TaxonAPIGetTNamesMatching][GetTNamesMatching()]] the key=value pairs passed in all correspond to concepts within TaxonName. The TaxonNames that match are returned.
+
+In the case of [[TaxonAPIGetTConceptsMatching][GetTConceptsMatching()]] the key=value pairs correspond to concepts within both TaxonName and TaxonConcept. The publisher performs a join on the TaxonConcepts and TaxonNames internally in order to return TaxonConcepts that match by virtue of their related TaxonName objects.
+
+If the value passed in contains a * then approximate matching is employed equivelent to replacing the * with a % and doing a SQL LIKE.
+
+Example:
+
+Genus = Rhododendron; !SpeciesEpithet = pon\*
+
+This is the equivalent of an SQL statement similar to:
+<verbatim>
+  WHERE Genus = 'Rhododendron' AND 'SpeciesEpithet' LIKE 'pon%'
+</verbatim>
+
+All string matching is case insensitive.
+
+---++ Parameters
+
+|*Name*| *TCS Concept* | *Possible Values*|*Notes* |
+|!NomenclaturalCode| !TaxonName/@nomenclaturalCode | only codes in TCS | |
+|!TaxonNameRank| !TaxonName/Rank/@code |only codes in TCS| For calls of [[TaxonAPIGetTConceptsMatching][GetTConceptsMatching()]] on publishers who don't support TaxonNames then this maps to !TaxonConcept/Rank/@code  |
+|!TaxonNameSimple|!TaxonName/Simple| string of name may include authorship and date |  |
+|!TaxonNameTrinomial|!TaxonName/CanonicalName/Simple| string of name minus rank and authorship |  |
+|!TaxonNameAuthorship|!TaxonName/CanonicalAuthorship/Simple| the author string | |
+|!TaxonNameYear|!TaxonName/Year|four digit year| |
+|!TaxonNamePublished|!TaxonName/PublishedIn| the entire publication citation string | |
+|!TaxonNameTypification|!TaxonName/Typification/Simple| string describing the typification | |
+|!TaxonConceptAccordingTo|!TaxonConcept/AccordingTo/AuthorTeam/Simple| Authors of concept | |
+|!TaxonConceptYear| !TaxonConcept/AccordingTo/AuthorTeam/Year| four digit year | |
+|FIXME - this list needs refining |
+
+
+---++ Special Cases
+
+There are two special case parameters that are treated differently. These are for the most common case of wanting to do more than just filter on equivalence which is to get items that have been modified before or after a particular date. 
+
+Two parameters have a greater than and less than associated with them.
+
+FIXME - this will be expanded.
+
+---++ Alternative implementations
+
+---+++ Greater-than Less-than
+One way that has worked successfully in the past for implementing > and < functionality is to have the key names appended with either a + or a -. The publisher then knocks the + or - off the string to get the key and applies the appropriate logic to the filter. This could be considered a bit of a 'hack' to put it mildly but is worth considering as a convention.
+
+---+++ Key Names
+Paths to concepts within TCS could be used directly as keys to fields. At some point in the future these concepts may be identified by URIs in a RDF form.

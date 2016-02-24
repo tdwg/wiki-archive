@@ -1,0 +1,252 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@Currently, output model mapping uses the following piece of XML Schema: 
+
+<verbatim>
+<xsd:element name="mapping">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="node" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice maxOccurs="unbounded">
+            <xsd:element ref="concept"/>
+            <xsd:element ref="literal"/>
+            <xsd:element ref="variable"/>
+          </xsd:choice>
+          <xsd:attribute name="path" type="simpleXPathType" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="automapping" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+</xsd:element>
+</verbatim>
+
+The suggested changes would require this new schema:
+
+<verbatim>
+<xsd:element name="mapping">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="node" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice maxOccurs="unbounded">
+            <xsd:element ref="interrelatableClass"/>
+            <xsd:element ref="property"/>
+            <xsd:element ref="literal"/>
+            <xsd:element ref="variable"/>
+          </xsd:choice>
+          <xsd:attribute name="path" type="simpleXPathType" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+</verbatim>
+
+Where the new element references are defined as:
+
+<verbatim>
+<xsd:element name="property" type="propertyType" substitutionGroup="simpleExpression"/>
+
+<xsd:complexType name="propertyType">
+  <xsd:complexContent>
+    <xsd:extension base="qualifiedConceptReferenceType">
+      <xsd:attribute name="class" type="xsd:String" use="required"/>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:element name="class" type="classType"/>
+
+<xsd:complexType name="classType">
+  <xsd:complexContent>
+    <xsd:extension base="qualifiedConceptReferenceType">
+      <xsd:attribute name="alias" type="xsd:String" use="optional"/>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:element name="interrelatableClass" type="interrelatableClassType" ProposedChangesToOutputModelMapping>
+
+<xsd:complexType name="interrelatableClassType">
+  <xsd:complexContent>
+    <xsd:extension base="classType">
+       <xsd:sequence>
+          <xsd:element ref="relationshipLink" maxOccurs="unbounded"/>
+       </xsd:sequence>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:element name="relationshipLink" type="relationshipLinkType" ProposedChangesToOutputModelMapping>
+
+<xsd:complexType name="relationshipLinkType">
+  <xsd:complexContent>
+    <xsd:extension base="qualifiedConceptReferenceType">
+       <xsd:sequence>
+          <xsd:element ref="interrelatableClass" minOccurs="1"/>
+       </xsd:sequence>
+      <xsd:attribute name="myRole" type="xsd:String" use="required"/>
+      <xsd:attribute name="othersRole" type="xsd:String" use="required"/>
+    </xsd:extension>
+  </xsd:complexContent>
+</xsd:complexType>
+
+</verbatim>
+
+Notes: 
+
+   * The substitutionGroup attribute in the property element is related to its use in filters.
+   * The class element is not directly used by the output model mapping, but it's a convenient definition that can be used by other parts of the protocol.
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d58 10
+d72 1
+a72 1
+    <xsd:extension base="qualifiedConceptReferenceType">
+d74 1
+a74 1
+          <xsd:element ref="relationship" maxOccurs="unbounded"/>
+a75 1
+      <xsd:attribute name="alias" type="xsd:String" use="optional"/>
+d80 1
+a80 1
+<xsd:element name="relationship" type="relationshipType" ProposedChangesToOutputModelMapping>
+d82 1
+a82 1
+<xsd:complexType name="relationshipType">
+d96 4
+a99 1
+Note: the substitutionGroup attribute in the property element is related to its use in filters.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d48 1
+a48 1
+<xsd:element name="property" type="propertyType" ProposedChangesToOutputModelMapping>
+d86 2
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d45 1
+a45 1
+Where the element references are defined as:
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d77 1
+a77 1
+          <xsd:element ref="interrelatableClass"/>
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d51 5
+a55 3
+  <xsd:extension base="qualifiedConceptReferenceType">
+    <xsd:attribute name="class" type="xsd:String" use="required"/>
+  </xsd:extension>
+d61 8
+a68 6
+  <xsd:extension base="qualifiedConceptReferenceType">
+     <xsd:sequence>
+        <xsd:element ref="relationship" maxOccurs="unbounded"/>
+     </xsd:sequence>
+    <xsd:attribute name="alias" type="xsd:String" use="optional"/>
+  </xsd:extension>
+d74 9
+a82 7
+  <xsd:extension base="qualifiedConceptReferenceType">
+     <xsd:sequence>
+        <xsd:element ref="interrelatableClass"/>
+     </xsd:sequence>
+    <xsd:attribute name="myRole" type="xsd:String" use="required"/>
+    <xsd:attribute name="othersRole" type="xsd:String" use="required"/>
+  </xsd:extension>
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d44 36
+@

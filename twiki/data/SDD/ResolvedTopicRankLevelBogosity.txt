@@ -1,0 +1,88 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118876" format="1.1" version="1.12"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+Of course, <nop>RankLevel of a Class (e.g. genus, species, etc.) is "merely" a human readable string, but there is no way to keep it consistent with the results of a presumably authoritative return from the optional <nop>ServiceProvider which gives the true story of what the name of this Class is. For example, something named _Quercus alba_ could be assigned a <nop>RankLevel Order. That said, it is perhaps mainly in biological taxonomy that names are actually related to the taxonomy itself. Certainly that is far from true in genomics, for example. I wonder if something more mechanistic is possible also, e.g. references to some standardized taxonomic rank names when they exist in the discipline.
+
+Also, there may be issues about the (non)relation of this element to data in any hierarchy the Class belongs to ...
+
+For the above reasons, <nop>RankLevel seems to have a high [[http://www.jargon.net/jargonfile/b/bogosity.html bogosity]]
+
+-- Main.BobMorris - 03 Jan 2004
+
+---
+
+It would be excellent to discuss this. The schema annotation marks this as one of the problems in 0.9:
+
+"@@ For biological taxonomic names: order, family, species. Needs discussion: should this be constrained vocabulary, or in any language?"
+
+Some background for the non-biologists: the name often indicates the rank. For infraspecific ranks (only botany) through required rank indicators (subspecies, varietas, forma specialis), etc. For supraspecific ranks through use of a required suffix (-ales for order, aceae for botanical families). However, the suffixes differ between the zoological and even within the botanical groups (-mycetes, -phycetes, etc.). 
+
+However, many supraspecific ranks do not have a suffix, some generally recognized infraspecific ranks are not in the codes, and for infraspecific the rank may be spelled out, or written or abbreviated in different forms.
+
+
+The problem is:
+
+<ul class="compact">
+<li>Does a complete list of standard ranks exist (= constrained vocabulary)? Is only a list including rarely used ranks (subsubfamily, super or hyperfamily) complete? How do we differentiated between the different taxonomic codes, does this have to be known to SDD?</li>
+<li>would the service provider provide the data in this format, or may it be delivered in any other format?</li>
+</ul>
+
+Perhaps one should step back and ask: What do we need the <nop>RankLevel for (i.e. is it worth it)? Which functionality depends on it in a descriptive data application? 
+
+<ul class="compact">
+<li>Class names need to be formatted (can this be done by analysing the class name string itself?)</li>
+<li>The hierarchy may be detailed (with sub- and subsubfamilies), but only certain levels are desirable as 
+  grouping levels in reports.</li>
+<li>Errors in the created hierarchy can be detected if the hierarchy of ranks is known. Also, much smarter hierarchy editors can be created: The list of applicable nodes to be added to a given node would be only a small subset of all available classes.</li>
+</ul>
+
+Anything more?
+
+
+Gregor Hagedorn - 05 Jan 2004 
+
+(BTW: Genomics has absolutely no means to give better rank definitions. I believe there is no way to say what a genus, it is an operational definition, not a scientific one. Only exception is species, which you can verify under the biological or phylogenetic species concepts.)
+
+---
+
+Kevin wrote: "Concerning rank, from our point of view at Lucid I must say it doesn't concern us much, as we work with rank-free hierarchies. Bit of a cop-out I know. In most cases in taxonomy, of course, the rank can be looked-up from the name. Is it only in autonymic cases that two ranks will have the same name?"
+
+The biggest problems are intermediate ranks between genus and species, I believe. They may well have names identical with genus names.
+
+I would prefer to leave the rank issue to the taxonomic systems as well. However, descriptive data applications may have to deal with ranks to provide meaningful reports for descriptive data. If somebody has a rich rank hierarchy, formatting the various elements in the hierarchy may require to know something about ranks. Maybe I am wrong, this is just my feeling about how I would program it. 
+
+If ranks are simply informational, it can be left an optional, unconstrained, what language-ever data item. If the reporting process needs to make decisions based on rank, it would be wise to refer to some standard.
+
+Please, do comment on your perception for the need <strong>inside SDD</strong> for ranks as unconstrained optional and in any language versus constrained against standard taxonomic rank list for all available codes (i.e. bacteria, zoo, bot, cult. plants, viruses (if they have ranks, don't even know...)).
+
+
+Gregor Hagedorn - 10 Feb 2004 
+
+---
+
+I have just come back from an NSF workshop entitled _Establishing a Comprehensive Database for Plant Systematics_ organised by Reed Beaman and others. It included botanists and informaticists. Among the former were quite a few very open-minded cladists who wanted to know the new way of doing business (so we quickly disabused them of the notion that _a_ Comprensive Database is the right idea). Computer people there included me, Donald Hobern, Dave Thau, Jim Beach, Alex Chapman, Bryan Heidorn, and a number of people from Florida where the meeting was held. All this is to preface to a new found respect for, at least, the _enterprise_ of cladistics (I pushed SDD on some of the cladistically oriented db projects) and hence this sudden opinion formed when Jacob and I find further problems mapping our data into <nop>RankLevel
+
+Either instead or in addition to the present structure, maybe there should be a way to make <nop>RankLevel be a keyref into a <nop>ClassHierarchy. In fact (see previous paragraph on cladistics) maybe a way to reference into several hierarchies. Then, all questions of the properties of a particular hierarchy are could be resolved that way. There could still be a human readable string(s) and/or UIDs and/or return from a service.
+
+-- Main.BobMorris - 12 Feb 2004
+
+A different, much smaller, point: in some organization of data, people (including us) pretend that sex, morph, and life stage are like an infra-specific taxonomic rank. Is it an oddity if software generates "male" or "larva" as a <nop>RankLevel?
+
+-- Main.BobMorris - 12 Feb 2004
+
+---
+
+Regarding the first issue "make <nop>RankLevel be a keyref into a <nop>ClassHierarchy": I do not see how this would work. The class is already uniquely referenced from the <nop>ClassHierarchy, the class hierarchy is a tree of Class instances (type: <nop>ClassNameConnectorType in SDD 0.9). A reference from Class to <nop>ClassHierarchy node I think is a redundant back-pointer.
+
+Also, the rank is a way that tries to express that <strong>all</strong> genera in the <nop>ClassHierarchy have something in common, i.e. they are of rank "Genus". This is not expressed in the tree.
+
+
+Regarding the second issue: I agree it is a convenient solution certain contexts, but I feel distinctly uncomfortable with it. The reason is that life history stages and sex are not hierarchically embedded in the rank hierarchy. As an example, think of different races of dogs (rank = "race"). The females and males respectively of all dog races have more in common, than differences exist between the races. It does not make sense to define for each race what distinguishes the sexes. In essence this again is multiple inheritance: a female poodle inherits from sex: female and race: poodle. Easily done in relational models, but difficult in Java... 
+Same for stages. The stage "Children" of chinese and african metapopulations are indepent of the population rank.
+
+Now, the real question is perhaps whether we want to ADD stage and sex to the SDD model? Otherwise Bob's proposal to treat them as rank is a workaround limitations of the model... To remember the issue I have added Stage and Sex to the 0.91 version. Can be deleted very quickly! <em>Shall I delete them?</em> :-)
+
+-- Gregor Hagedorn - 13 Feb 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1145954209" from="SDD.RankLevelBogosity" to="SDD.ResolvedTopicRankLevelBogosity"}%

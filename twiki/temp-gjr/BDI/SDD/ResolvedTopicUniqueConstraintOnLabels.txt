@@ -1,0 +1,38 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118876" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="StoredIdentificationKeys"}%
+---+!! %TOPIC%
+
+I noticed that there is a unique_key constraint on Key/Label/Representation/Text .
+This means that two Keys in the same Document cannot have the same text description.
+Two versions of our PLDs(which we are getting ready to convert to BDI.SDD_) have exactly the
+same descriptive text.
+
+Can anybody clarify?
+
+-- Main.JacobAsiedu - 09 Feb 2004
+
+---
+
+Since I am responsible, let my try to explain my reasoning:
+
+How can two different things have the same label, if the label is the only thing that enables a user to make a distinction among the objects? Imagine a scenario, where you list all available keys on your system and the user may select the one she or he is going to use. You could list the label PLUS an ID, but I find this not very helpful. The ID tells the user nothing, it will still be confusing. Also I think it is good practice to have separate machine and human readable keys and not bother humans with machine keys.
+
+If there is a difference between the keys (including versions) you currently have to include that in the label text. What would your solution be? How would you guarantee that differnent objects can be distinguished in the user interface?
+
+For conversion routines, I suggest that if they detect a duplication, they attempt to add a note including a random number. That allows to delay clean-up up to a later time, rather than having to deal with it immediately or receive failure-errors. I would, however, suggest a text like: "[Please edit the label; random code 62378463 was added by conversion routine to prevent duplicate]". That is my solution, many others are possible.
+
+BTW: the xml schema identity constraint allows two audiences with the same label text for a single key, or even:
+<verbatim>
+Key 1
+ audience="en" Text="Fungi"
+ audience="de" Text="Pilze"
+Key 2
+ audience="en" Text="Mushrooms"
+ audience="de" Text="Fungi"
+</verbatim>
+
+-- Gregor Hagedorn  - 09 Feb 2004   
+
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1086849386" from="SDD.UniqueConstraintOnKeyLabelRepresentationText" to="SDD.ResolvedTopicUniqueConstraintOnLabels"}%

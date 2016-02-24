@@ -1,0 +1,122 @@
+%TMPL:INCLUDE{"page"}%
+%TMPL:INCLUDE{"logo"}%
+%TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%TMPL:INCLUDE{"viewbottombar"}%
+
+
+
+%TMPL:DEF{"templatejavascript"}%
+<script type="text/javascript">
+//<![CDATA[
+	var pageElem = null;
+	addLoadEvent(setPageElem);
+	function setPageElem() {
+		pageElem = document.rename;
+	}
+//]]>
+</script>
+<script type="text/javascript" src="%PUBURLPATH%/%TWIKIWEB%/TWikiJavascripts/twiki_renamebase.js"></script>%TMPL:P{"subtemplatejavascript"}%
+%TMPL:END%
+
+
+
+%TMPL:DEF{"bodyclassname"}%patternNoViewPage patternRenamePage%TMPL:END%
+
+
+
+%TMPL:DEF{"allownonwikiword"}%<input type="checkbox" class="twikiCheckbox" id="nonwikiword" name="nonwikiword" %NONWIKIWORDFLAG% /><label for="nonwikiword">%MAKETEXT{"Allow non <nop>WikiWord for the new topic name"}%</label>%TMPL:END%
+
+
+
+%TMPL:DEF{"toolbar"}%<div class="patternTop">%TWISTYSHOW{id="renamehelp" link="%MAKETEXT{"Show help"}%" imgleft="%ICONURLPATH{toggleopen-small}%"}%%TWISTYHIDE{id="renamehelp" link="%MAKETEXT{"Hide help"}%" imgleft="%ICONURLPATH{toggleclose-small}%"}%
+</div><!--//patternTop-->%TMPL:END%
+
+
+%TMPL:DEF{"pagehelp"}%%TWISTYTOGGLE{id="renamehelp" mode="div" class="twikiHelp" remember="on" noscript="hide"}%%TMPL:P{"notes"}%%ENDTWISTYTOGGLE%%TMPL:END%
+
+%TMPL:DEF{"pagehelp_nojavascript"}%<br />%TWISTYTOGGLE{id="pagehelp_nojavascript" mode="div" class="twikiHelp" start="hide"}%%TMPL:P{"notes"}%%ENDTWISTYTOGGLE%%TMPL:END%
+
+
+
+%TMPL:DEF{"notes"}%%TMPL:P{"notegethelp"}%%TMPL:P{"notecheckmarkedtopics"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"notegethelp"}%
+   * %MAKETEXT{"Get help on <a target='ManagingTopics' onclick=\"return launchWindow('[_1]','ManagingTopics')\" href=\"[_2]\" rel='nofollow'>Renaming and moving topics</a>." args="%TWIKIWEB%,%SCRIPTURLPATH{"view"}%/%TWIKIWEB%/ManagingTopics"}%
+%TMPL:END%
+
+%TMPL:DEF{"notecheckmarkedtopics"}%   * %MAKETEXT{"The checkmarked topics will be updated (another form will appear which will _eventually_ allow you to rename any topics that were locked)"}%
+%TMPL:END%
+
+
+
+%TMPL:DEF{"pagetitle"}%<h1 class="patternTemplateTitle">%TMPL:P{"webaction"}% %TOPIC%</h1>%TMPL:END%
+
+
+
+%TMPL:DEF{"changefromtitle"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"changefrom"}%<div class="twikiFormStep">
+%TMPL:P{"changefromtitle"}%
+</div><!-- /twikiFormStep-->%TMPL:END%
+
+
+
+%TMPL:DEF{"toweb"}%<div class="twikiFormStep">
+%TMPL:P{"towebtitle"}%
+%TMPL:P{"newweb"}%%TMPL:P{"movewebhelp"}%</div><!-- /twikiFormStep-->%TMPL:END%
+
+
+
+%TMPL:DEF{"totopic"}%<div class="twikiFormStep twikiLast">
+%TMPL:P{"totopictitle"}%
+%TMPL:P{"newtopic"}%%TMPL:P{"namehelp"}%</div><!-- /twikiFormStep-->%TMPL:END%
+
+
+
+%TMPL:DEF{"renameformsteps"}%<div class="twikiFormSteps">
+%TMPL:P{"changefrom"}%%TMPL:P{"toweb"}%%TMPL:P{"totopic"}%
+</div><!-- /twikiFormSteps-->%TMPL:END%
+
+
+
+%TMPL:DEF{"formstart"}%<form method="post" name="rename" action="%SCRIPTURLPATH{"rename"}%/%WEB%/%TOPIC%">%TMPL:END%
+
+
+%TMPL:DEF{"formend"}%</form>%TMPL:END%
+
+
+%TMPL:DEF{"checkuncheck"}%<hr />
+<p>
+<input type="button" class="twikiButton" value='%MAKETEXT{"Select all"}%' onclick="checkAll(true);" />&nbsp;<input type="button" class="twikiButton" value='%MAKETEXT{"Clear all"}%' onclick="checkAll(false);" /> %MAKETEXT{"checkboxes of referenced topics"}%</p>%TMPL:END%
+
+
+
+%TMPL:DEF{"searchresults"}%<div class="patternSearchResults">
+---+++ %MAKETEXT{"Notices:"}%
+%TMPL:P{"updatenote"}%<div class="patternBlockquote">
+---++++ %MAKETEXT{"Change links in topics that refer to [_1] in the [_2] Web:" args="%TOPIC%, <nop>%WEB%"}%
+%LOCAL_SEARCH%
+</div>
+<div class="patternBlockquote">
+---++++ %MAKETEXT{"Change links in topics that refer to [_1] in any Web:" args="[[%WEB%.%TOPIC%]]"}%
+%GLOBAL_SEARCH%
+%TMPL:P{"checkuncheck"}%
+</div>
+</div><!-- /patternSearchResults-->%TMPL:END%
+
+
+
+%TMPL:DEF{"content"}%<div class="patternTopic">
+%TMPL:P{"pagetitle"}%
+%TMPL:P{"toolbar"}%
+%TMPL:P{"pagehelp"}%
+%TMPL:P{"formstart"}%
+%TMPL:P{"renameformsteps"}%%TMPL:P{"searchresults"}%
+%TMPL:P{"topicaction"}%
+%TMPL:P{"formend"}%
+%TMPL:P{"pagehelp_nojavascript"}%
+</div><!-- /patternTopic-->%TMPL:END%

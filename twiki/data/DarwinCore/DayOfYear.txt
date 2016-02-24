@@ -1,0 +1,61 @@
+%META:TOPICINFO{author="JohnWieczorek" date="1205677944" format="1.1" version="1.6"}%
+%META:TOPICPARENT{name="DarwinCoreDraftStandard"}%
+---++Element Description: Day of Year
+The ordinal day of the year on which the object or observation was collected (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366). If the EarliestDateCollected and LatestDateCollected do not occur on the same day, do not populate !DayOfYear.
+
+---++++ Open Questions:
+
+See Open Discussion at: [[http://circa.gbif.net/Public/irc/tdwg/dwcrev/newsgroups?n=dwcrev][GBIF Circa Registries, etc.]]
+
+---++++ Change Log:
+
+&#8226;	03 Aug 2005 - amended the limits on Julian day to values between 1 and 366, inclusive (Wieczorek, per Ginzbarg).
+
+&#8226;	13 Sep 2005 - renamed !JulianDay to !DayOfYear to avoid confusion with the Julian Calendar date system. (Wieczorek, per Hagedorn).
+
+---+++ Comments 
+Use the space below to make comments about this page. -- Main.StephenLong - 24 Aug 2006
+
+------
+
+%ICON{bubble}% *JulianDay element*
+Posted by: Steve Ginzbarg [mailto:sginzbar@biology.as.ua.edu]   Date: Mon, 01 Aug 2005, 22:38:40
+
+!JulianDay has documentation: "The ordinal day of the year (the number of days since December 31 of the previous year)..." Possible values are non-negative integers from 0 through 365 inclusive. When can an ordinal number have a value of zero? What about leap years when Dec 31 is the 366th ordinal day of the year? Why is the data type of the element String if its values are restricted to non-negative integers?
+------
+
+%ICON{bubble}% *Date Recommendation*
+Posted by gkamp at 2005-09-28 08:44 PM
+
+"3 Sep 2005 - Recommendation that Month, Day, Year, and Time concept combinations be collapsed into single ISO 8601 date and time concepts. !YearCollected, !MonthCollected, !DayCollected, !TimeCollected would become !DateCollected, while !YearIdentified, !MonthIdentified, !DayIdentified would become !DateIdentified. This change would simplify representation of date ranges on events (_e.g._, !BeginDateCollected, !EndDateCollected.)"
+
+This is problematic when there is missing information for historical records. We have insect labels with only pieces of this information (only a day and month; only a month and year; only a year) that never successfully fit into a true "date" as defined above. This is true not only for collecting dates but even more so for identification (determination) dates, which for insects anyway, are generally only a year. I submit that it is important to keep these fields separated for data entry, but to allow the calculation of a date when all fields are represented.
+
+Gail Kampmeier
+------
+<DL>
+<DD>%ICON{bubble}% *Agree*
+Posted by ChuckMiller at 2005-09-29 07:57 AM
+
+I agree with Gail. If Darwin Core is to enable the exchange of basic specimen data, one of the most basic elements of that data is the collection date. Collectors of the past were notoriously bad about taking shortcuts in their field notes and their labels. Specific dates are often missing. Sometimes even months are missing. To my mind, collapsing date components into a single date representation is a computer-world notion. It seems efficient, but it can result in loss of validly useful information - that some detail is missing. Forcing a label annotation like January 1801 to be arbitrarily changed to January 1, January 15, or January 31 seems unnecessarily problematic to me. Certainly the computers have no problem with the date element separations. They can easily either map the values from database date format to Month, Day, Year or map from Month, Day, Year fields if they exist. So, why consolidate during data exchange? I think if any change in this date area were needed, it would the addition of three more elements, for Ending Date, Month and Year, and thus enabling a date range, say from January 1801 to March 1801. But, not to an artificially constructed date value. 
+
+Chuck Miller, Missouri Botanical Garden
+</DL>
+------
+<DL>
+<DD>%ICON{bubble}% *Re: date recommendation*
+Posted by lapham at 2005-10-01 07:01 AM
+
+Accees, at least, will accepet dates without the day in a DateTime field, if the data is so fragmenteded it only has a year portion it won't go into a DateTime field and a verbatrim date field woud be requied for that. It takes a whole lot less code to extract a range for DateTime field that it does for the atomized fields and fragmented dates are relatively rare.
+
+Charlie Lapham
+------
+<DL>
+<DD>%ICON{bubble}% *Re: Agree*
+Posted by fini at 2005-12-19 02:38 AM
+
+"They can easily either map the values from database date format to Month, Day, Year or map from Month, Day, Year fields if they exist."
+
+Even this should be done with great caution (especially if the data was ever to be exported from the db), since using database date fields will also tend to disallow incomplete dates, this could unintentionally result in converting dates like 00-12-2005 into 01-12-2005 or simply result in a database error, blank dates etc.
+</DL>
+------

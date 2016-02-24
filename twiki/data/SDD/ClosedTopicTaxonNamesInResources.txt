@@ -1,0 +1,68 @@
+%META:TOPICINFO{author="LeeBelbin" date="1258685123" format="1.1" reprev="1.10" version="1.10"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+Main.KevinThiele 25 Sep 2003: we currently have:
+ <verbatim>
+ <Resources>
+  <TaxonNames>
+   <TaxonName key="Viola_hederacea">
+    <FreeFormDescription>Viola hederacea Labill</FreeFormDescription>
+   </TaxonName>
+   <TaxonName key="Viola_someothercea">
+    <FreeFormDescription>Viola someothercea Labill</FreeFormDescription>
+   </TaxonName>
+  </TaxonNames>
+ </Resources>
+ </verbatim>
+What's meant by <nop>FreeFormDescription? We need to split the epithet and author in the name e.g.
+ <verbatim>
+<Resources>
+ <Taxa>
+  <Taxon key="Viola_hederacea">
+   <TaxonName>Viola hederacea</Name>
+   <TaxonAuthor>Labill.</TaxonAuthor>
+  </Taxon>
+  ....etc
+ </Taxa>
+</Resources>
+ </verbatim>
+is better?
+---
+Main.BobMorris - 26 Sep 2003: Ah, this arises from our desire to recognize that (a)Resources of all kinds may often have external definitions (e.g. for a <nop>TaxonName, it might be a URI designating an authority for the name) and (b)when elments have a lot of commonality, they should be required to be declared as being of a named datatype. In this case the draft Schema calls for <nop>TaxonName, Specimen, Publication, and maybe others TBD, to be of type <nop>ResourceConnectorType, which is a datatype that provides for two kinds of external reference (details irrelevant for this discussion) and a bit of text meant mainly to be passed on to humans. That's the text enclosed in the tag <nop>FreeFormText. The tag name is chosen to be mnemonic I think.
+
+However, your point is that a <nop>TaxonName deserves more structure--and maybe even should make the <nop>FreeFormText either optional or prohibited, requiring instead more structure to the name. This can be done pretty easily by making a type derived from <nop>ResourceConnectorType in a way that would support your alternative. I'll modify my guerrilla-action Schema to do that and edit this page when done. As you observed below, it remains for bioligists to discuss---perhaps after the Lisbon Taxonomic Names session---exactly what should be the structure of a <nop>TaxonomicName.
+---
+Main.KevinThiele 25 Sep 2003: We will need to conform with TDWG Taxon Names eventually, but they will surely have something like this.
+I've used &lt;Taxa&gt; and &lt;Taxon&gt; rather than &lt;TaxonNames&gt; and &lt;TaxonName&gt; because surely we will later add further resources to the taxa, and name is only one part.
+ 
+Having &lt;Taxon&gt; as a child of &lt;Resources&gt; and &lt;Taxon&gt; also as a child of &lt;Descriptions&gt; won't cause problems, will it?
+---
+Main.BobMorris - 26 Sep 2003: No it won't. _But_ the idea here is that a _<nop>TaxonName_ is a resource to be used elsewhere---perhaps in many places---whereas a Taxon is one of the things that can be described. So while it won't make any difference to a parser examining an instance document, it could confuse any discussion that omits the context. This is a general ProblemOfResolvingIdentifiers which in my opinion is  best sidestepped by using two different identifiers in this case. 
+
+BTW, I doubt we do (can?) enforce  in the Descrptions section, that there is at most one Taxon referring to any given <nop>TaxonName (i.e. loosely, only one description of any given Taxon). If that's right, we need a specification of which one counts or discuss whether it's OK.
+---
+Main.KevinThiele 25 Sep 2003: Also, is it sensible for the taxon list to be part of &lt;Resources&gt; but the characters list to be part of &lt;Terminology&gt;. It seems to me that they are pretty equivalent things. Maybe we should have 4 base elements
+<verbatim>
+   * <Features> - the character list
+   * <Taxa> - the taxon list
+   * <Descriptions> -the descriptions
+   * <Resources> - associated resources e.g. images, references etc.
+</verbatim>
+That way, &lt;Resources&gt; can be optional but &lt;Taxa&gt; required - clearly, it's important to be able to query a project for its taxon list.
+---
+Main.BobMorris - 26 Sep 2003: Well, that might be OK if Taxa were the only things ever described. But we intend others, such as Specimens.
+Now, aside from the "minor" elements like <nop>ProjectDefinition, the current situation is only _three_ things:
+<verbatim>
+   * <Terminology> - which includes both what you are here calling Features and Taxa
+   * <Descriptions>
+   * <Resources>
+</verbatim>
+(Here you mean Taxa you mean <nop>TaxonNames ...)
+But Terminology includes much more than just <nop>TaxonNames. Notably it presently includes <nop>ModifierDefinitions and a few other global things involved in the specification of states.
+---
+Main.BobMorris - 26 Sep 2003: Hey wait a minute. Just when I thought that after all these years I'd finally understood the difference between a Taxon and a Taxon name, now you are confusing me again... 
+
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1085765904" from="SDD.TaxonNamesInResources" to="SDD.ClosedTopicTaxonNamesInResources"}%

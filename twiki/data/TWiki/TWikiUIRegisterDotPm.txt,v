@@ -1,0 +1,184 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.4
+date	2007.01.16.04.11.58;	author TWikiContributor;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.06.25.16.26.33;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.01.05.55.43;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.26;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.4
+log
+@buildrelease
+@
+text
+@---+ Package =TWiki::UI::Register=
+
+User registration handling.
+
+
+%TOC%
+
+---++ StaticMethod *register_cgi* <tt>($session)</tt>
+
+=register= command handler.
+This method is designed to be
+invoked via the =TWiki::UI::run= method.
+
+
+
+---++ StaticMethod *passwd_cgi* <tt>($session)</tt>
+
+=passwd= command handler.
+This method is designed to be
+invoked via the =TWiki::UI::run= method.
+
+
+
+---++ StaticMethod *bulkRegister* <tt>($session)</tt>
+
+  Called by ManageCgiScript::bulkRegister (requires authentication) with topic = the page with the entries on it.
+   1 Makes sure you are an admin user ;)
+   2 Calls TWiki::Data::DelimitedFile (delimiter => '|', content =>textReadFromTopic)
+   3 ensures requiredFieldsPresent()
+   4 starts a log file
+   5 calls registerSingleBulkUser() for each row 
+   6 writes output to log file, sets [[TWiki.TOPICPARENT]] back to page with entries on it.
+   7 redirects to log file
+
+
+
+---++ StaticMethod *registerAndNext* <tt>($session,$tempUserDir)</tt>
+
+This is called when action = register or action = ""
+
+It calls register and either Verify or Finish.
+
+Hopefully we will get workflow integrated and rewrite this to be table driven
+
+
+
+---++ StaticMethod *register* <tt>($session)</tt>
+
+This is called through: TWikiRegistration -> RegisterCgiScript -> here
+
+   1 gets rows and fields from the query
+   2 calls _validateRegistration() to ensure required fields correct, else OopsException 
+
+
+
+---++ StaticMethod *resetPassword* <tt>($session)</tt>
+
+Generates a password. Mails it to them and asks them to change it. Entry
+point intended to be called from TWiki::UI::run
+
+
+
+---++ StaticMethod *changePassword* <tt>($session)</tt>
+
+Change the user's password and/or email. Details of the user and password
+are passed in CGI parameters.
+
+   1 Checks required fields have values
+   2 get wikiName and userName from getUserByEitherLoginOrWikiName(username)
+   3 check passwords match each other, and that the password is correct, otherwise 'wrongpassword'
+   4 TWiki::User::updateUserPassword
+   5 'oopschangepasswd'
+
+The NoPasswdUser case is not handled.
+
+An admin user can change other user's passwords.
+
+
+
+---++ StaticMethod *verifyEmailAddress* <tt>($session,$tempUserDir)</tt>
+
+This is called: on receipt of the activation password -> RegisterCgiScript -> here
+   1 calls _reloadUserContext(activation password)
+   2 throws oops if appropriate
+   3 calls emailRegistrationConfirmations
+   4 still calls 'oopssendmailerr' if a problem, but this is not done uniformly
+
+
+
+---++ StaticMethod *finish* <tt></tt>
+
+Presently this is called in RegisterCgiScript directly after a call to verify. The separation is intended for the RegistrationApprovals functionality
+   1 calls _reloadUserContext (throws oops if appropriate)
+   3 calls createUserTopic()
+   4 if using the htpasswdFormatFamily, calls _addUserToPasswordSystem
+   5 calls the misnamed RegistrationHandler to set cookies
+   6 calls addUserToMapping
+   7 writes the logEntry (if wanted :/)
+   8 redirects browser to 'oopsregthanks'
+
+reloads the context by code
+these two are separate in here to ease the implementation of administrator approval 
+
+
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@d9 1
+d17 1
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d92 1
+a92 1
+   3 calls newUserFromTemplate()
+d95 1
+a95 1
+   6 calls addUserToTWikiUsersTopic
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d72 3
+a74 1
+The NoPasswdUser case is not handled
+a102 5
+
+ generate user entry
+ If a password exists (either in Data{PasswordA} or data{CryptPassword}, use it.
+ Otherwise generate a random one, and store it back in the user record.
+
+@

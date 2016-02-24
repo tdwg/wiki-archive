@@ -1,0 +1,41 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118871" format="1.1" version="1.5"}%
+%META:TOPICPARENT{name="CIPResDevelopment"}%
+---+!! %TOPIC%
+
+Character Keywords sensu Dallwitz are unordered sets of characters.
+
+BDI.SDD_ Concept Trees have a Type element that takes its values from an enumeration whose values come from the <nop>ConceptTreeTypeEnum. One of these is <nop>SubsetFilter, whose intended semantics I don't follow. Maybe this is a suitable choice for an unordered set but I suspect not. It would seem harmless to add to the enumeration a new value <nop>UnorderedSet and declare its semantics to be as its name. If a thus declared special kind of tree is too much overhead, we could introduce a new thing at the level of Concept Trees, but I favor declaring a Type of tree to be unordered even with the extra overhead. The generating application could in this case choose any "tree" arrangement it wanted, e.g. N siblings all children of the root node. Applications need to be able to do arbitrary tree traversal anyway, so the only extra imposition on a consuming application is to manage any special things believes necessary in distinguishing an unordered set from a tree.
+
+Ditto for TaxonKeywords.
+
+-- Main.BobMorris - 23 Jun 2004
+---
+
+I believe Bob is referring to Intkey commands (not DELTA directives, see Define Char/Names/Taxa in [[http://www.DiversityCampus.net/Projects/TDWG-BDI.SDD_/SDD_DELTA_CompComplexity.html][Complexity of BDI.SDD_ versus DELTA]] and [[http://www.DiversityCampus.net/Projects/TDWG-BDI.SDD_/SDD_DELTA_Export2BDI.SDD.html][Exporting DELTA to BDI.SDD_]]). The "User’s Guide to Intkey" (Edition 1.09, Dallwitz, Paine, &amp; Zurcher) states:
+<verbatim>
+Syntax of command line – DEFINE keywords
+DEFINE CHARACTERS keyword c1 c2 ...
+DEFINE TAXA keyword t1 t2 ...
+DEFINE NAMES keyword n1, n2, ...
+where c1, c2 ... are character numbers, ranges or previously defined keywords, t1, t2 ... are taxon numbers, ranges or previously defined keywords, and n1, n2 ... are taxon names. Taxon names must be separated by a comma or the end of a line. If the keyword contains spaces, it must be enclosed in quotation marks ("). If a keyword is defined in terms of a previously defined keyword, the meaning of the new keyword is fixed at the time of its definition – that is, it is not affected by subsequent changes in the meaning of the previously defined keyword. The NAMES form of the command is mainly intended for use in INPUT files.
+Examples
+DEFINE CHARACTERS "reproductive organization" 12 23–24
+RESTART
+USE 13,2 27,1
+DEFINE TAXA g1 remaining
+The keyword ‘g1’ continues to represent those taxa with attributes ‘13,2 27,1’, even though the set of taxa represented by the keyword ‘remaining’ may change later in the session.
+DEFINE NAMES cereals Echinochloa, Eleusine, Oryza, Panicum, Zea
+</verbatim>
+
+I agree that Intkey Character keywords are equivalent to concept trees, and probably Bob is correct in pointing out that there may be a problem with the type. Besides the semantically defined types: <nop>PropertyHierarchy, <nop>MethodHierarchy, <nop>PartCompositionHierarchy, <nop>PartGeneralizationHierarchy, three further types are a bit a mixture of things:
+
+   * <nop>OtherConceptHierarchy: Used for concept trees that fall into none of the categories property, method, part. Such trees may be intended only for internal purposes (e.g. defining dependency rules) or for browsing by the user.
+   * <nop>PresentationTable: <nop>PresentationTable concept trees are small sets of a usually a few characters that allow to display data in a tabular arrangement. It is possible to define tables in more than 2 dimensions. By default the innermost dimension is considered cells in a row, the next rows in a table. Any further dimension may be displayed as multiple 2-dimensional tables one below the other. However, applications may also offer a browser based on pivot tables. - Note: Trees of type <nop>PresentationTable should not be offered in the user interface when selecting a browsing tree.
+   * <nop>SubsetFilter: A concept tree of type <nop>"SubsetFilter" is intended only for the purpose of filtering characters. It will often be a flat list of characters. Applications should not offer it as a choice when the user selects a hierarchy for displaying or reporting purposes. Note that conversely, the filter selection dialog in applications should not be restricted to trees of type <nop>SubsetFilter. Any concept tree, including part, method or property hierarchies may be used as a filter to define character subsets.
+
+They mix information about what the tree is with the display purpose. So <nop>SubsetFilter is an unordered set, intended for filtering purposes. As Bob already suspects, I believe we should not have both <nop>SubsetFilter and <nop>UnorderedSet, but make a choice. I am willing to simply exchange terms, but have some reservation as to a) there may be a more fundamental confusion here, in the overlap between Type and "DesignedFor" (see newer versions in CurrentSchemaVersion). b) I thought the "unordered" assumption would be the default for the use of the word set. This is the case at least in the RDF collection types, which distinguish between bag, alt, seq, and set.
+
+Question for help: a) Bob says he cannot follow the definition in the schema cited in the bullet list above. Can some native speaker help making them better? b) Can someone comment whether <nop>UnorderedSet is better than <nop>SubsetFilter? c) can someone look at <nop>ConceptTreeDefType/Specification/DesignedFor? I do not like it, and keep changing it without great success. Someone else looking at this would be a great help!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] -- 24. June 2004
+---

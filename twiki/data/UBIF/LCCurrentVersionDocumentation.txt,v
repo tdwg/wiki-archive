@@ -1,0 +1,210 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.12.13.16.12.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.11.15.22.13.00;	author RichardPyle;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1102954349" format="1.0" version="1.2"}%
+%META:TOPICPARENT{name="LinneanCoreCurrentVersion"}%
+This page includes docmentation notes associated with each [[LinneanCoreCurrentVersion][version]] of LC that is uploaded.
+
+<h3>Version 0.1.1 (Christchurch Version) Documentation Notes:</h3>
+
+The most current version is the one that Gregor distributed at Christchurch, after his initial set of edits. Subsequent tinkerings by me were not worth saving (for several reasons). One of the Action Items is for Sally Hinchliffe to further develop the Christchurch version, and submit it to this group (targeted for November 5th). That will be the Current Version, from which we can base our subsequent discussion. Note: Gregor: I fixed the file slightly on Nov. 3, to allow to view it in Internet explorer.</br>
+-- Main.RichardPyle, 03 November 2004
+
+<h3>Version 0.1.3 Documentation Notes:</h3>
+I have added version 0.1.3 in a zip file (internally I called it 0.1.2c), which also includes some instance documents which relate to the LinneanCoreExampleNames (at the moment there are only a few of these, but I will try to generate some more). Please note, this is mainly to trigger discussion. It was drafted by me with comments from Gregor and Rich. It has not been completely revised. If you open up the schema and look at the comments, those bits prefaced SCH are from me, and those prefaced GH are Gregor's fault. We have only really deeply thought about the following parts of the schema: 'Label', 'NameRecordId', 'CanonicalName', 'CanonicalAuthorship', 'NameExtension', 'Rank'. The rest are not much changed from Christchurch.</br>
+Sally Hinchcliffe - 05 Nov 2004
+
+<h3>Version 0.1.4 Documentation Notes:</h3>
+After mulling over Sally's version over the weekend, I have uploaded a new version which is identical with Sally's except that both for "CanonicalName" and "CanonicalAuthorship" I have added a second proposal (see LinneanCoreCanonicalName and LinneanCoreCanonicalAuthorship for discussion) . I believe the way I changed the schema allows us to compare the original and my second proposal - so you would not have to download 0.1.3. Otherwise everything that Sally said is still true: the stuff to be revised towards the end has not been cleaned up any further by me. The only major change I did is to insert a dummy-copy of the current AlexandriaCore into the schema, since some foundation of this is necessary to discuss the authorship part.</br>
+Gregor -- 8 Nov 2004
+
+---
+
+<h3>Version 0.1.5 Documentation Notes:</h3>
+To help facilitate discussion within the context of TCS, I have made a new version of LC as 0.1.5. The zip file contains both LC 0.1.5, and a slightly modified version of TCS v085a to illustrate how I imagine the LC schema would fit within TCS. I've stripped out a lot of the redundant elements of previous versions of LC. In all cases where I made a change to 0.1.4, I have included a bulleted comments below.</br>
+-- Main.RichardPyle, 15 Nov 2004
+
+<h4>Specific Modifications incorporated into LC v0.1.5:</h4>
+	* Embeded LC within TCS, replacing the "ABCDNamesTypes" insertion with LC0.1.5 insertion.
+	* Changed name of root element to "ScientificName", to give it more appropriate context within LC.
+	* Deleted "NameRecordID" -- this can be inherited from the <nop>TaxonConcept attribute "id", withion TCS. I am continuing under the proposal that a LC "Name" GUID would be inherited from its TCS "Nominal COncept" equivalent.  I think this should be separate from a TCS "Origincal Concept", because the latter (to me) represents the concept as defined by the authors who created the original name, whereas the former could be used as a GUID for the *name* as defined by the same authors in the same publication.
+	* Deleted the original "CanonicalName" as drafted by Sally, replacing it instead with what was previously called "CanonicalName_Proporal2" (now re-named "CanonicalName").
+	* Within the newly named "CanonicalName" (formerly "CanonicalName_Proporal2"), I have:
+		* deleted the "flat" version of the atomized elements as created by Gregor for discussion purposes only
+		* changed "monomial" to "uninomial" as per LCMonomialDiscussion
+	* Deleted the original "CanonicalAuthorship" as drafted by Sally, replacing it instead with what was previously called "CanonicalAuthorship_Proporal2" (now re-named "CanonicalAuthorship").
+	* Within the newly named "CanonicalAuthorship" (formerly "CanonicalAuthorship_Proporal2"), I have:
+		* Renamed "ProtonymCitation" and "CombinationCitation" to "ProtonymAuthorship" and "CombinationAuthorship".
+		* Removed the "Alexandria Core" place-holder publication details section, and replaced it with a TCS-style "PublishedIn" pointer.  This solution assumes that all LC records will be contained in a TCS wrapper, and that publication details will be stored the way that TCS stores them (i.e., within the "Publications" container of TCS).
+		* Added to the annotation of the "Location" element.
+	* I left "NameExtensions" and "Rank" intact -- but these both require further discussion within the context of TCS -- particularly with regard to whether this "Rank" is necessarily different from the TCS Rank (i.e., are there two different meanings of "Rank" (concept & Name), or only one?  I think it definitely has a nomenclatural (Code-relevant) meaning, and as such needs to be included in some form in LC.  If TCS can inherit Rank from LC, then should be no problem.
+	* Deleted "AuthorsTaxonomicPlacement"  -- this seems clearly a concept-related attribute of the "Original Concept" instance, and therefore part of TCS that is outside the domain of LC.
+	* Replaced "ProtonymLocalKey" with "Protonym", that is of type "ReferenceType".  See annotation for this element in schema file.
+	* Deleted "ProtonymAuthors", "ProtonymYear", "ProtonymLocationInLit", "ProtonymIsInCItation", and "ProtonymCitation", as these are adequately covered by the existing "CanonicalAuthorship" structure.
+	* Deleted "ProtonymURI", as I *think* this is the same as the new "Protonym" pointer discussed above.
+	* Deleted "ReplacedNameURI" and "RelplacedNameLocalKey", as I *think* these can be accomodated by the new "Protonym" pointer discussed above.
+	* Deleted "CombinationAuthors", "CombinationYear", "CombinationPageInLit", "CombinationIsInCitation", and "CombinationCitation", as these are adequately covered by the existing "CanonicalAuthorship" structure.
+	* I have left the "Nomenclature" element intact.  There needs to be more discussion & elaboration of the elements in this container. In particular, I think that "NomenclaturalCode" actually belongs in the root, and probably should be required.  I believe that all scientific name records should be presented only in the context of the Code that it is governed by. This element may replace "Kingdom" in TCS.
+	* I have left "EditorialStatus" intact, but my feeling is that this information belongs somewhere else -- maybe in a Metadata container somewhere.
+	* I have left "TypeSpecimen" intact -- but I think we need more discussion about how to deal with this in the larger context of TCS.
+	* I moved the "IsAnamorph" flag up next to "IsNovum".  I think all of these sorts of flags should be clustered together somewhere.
+	* I don't really understand the function of "TeleomorphNameURI" and "TelomorphNameLocalKey", but I kept them next to "IsAnamorph".
+	* Deleted "ThisNameURI", as I think it is represented within the TCS wrapper <nop>TaxonConcept "id" attribute.
+	* Deleted "ThisNameProvider", "DateCreated", and "DateModified", as I think these are Metadata that should be represented somewhere else.
+	* Deleted "__CurrentFamilyPlacement" and "__CurrentAcceptedName", as neither of these belong in LC, and should be represented elsewhere in the TCS wrapper of a name record (if necessary)
+
+<h4>Specific Modifications incorporated into TCS v085a:</h4>
+	* I didn't assign this a new version number, but instead amended the name of the file to "v085aWithLC.xsd".
+	* Replaced the "ABCDNameTypes.xsd" include with a "LinneanCore_0.1.5.xsd" include.
+	* Changed the annotation of "NameSimple" to suggest that it be used to record the verbatim name-string as it appears in the "AccordingTo" publication, as a means to capture lapsus mis-spellings and other variants not dealt with in LC.
+	* Replaced "NameDetailed" element with a Choice for one of potentially several sub-schemas for detailed, atmoized name information. "ScientificName" option is where LC fits in; "VernacularName" is given as a representation for a different name subsctructure to accomodate non-scientific names.
+	* Moved complextype "ReferenceType" out of the TCS schema file and into the LC schema file (I didn't know how else to make it available to both schemas)
+	* Added <nop>DateTimeISOType directly in the TCS schema file (it used to be referenced from within the "ABCDNameTypes.xsd" included file)
+
+---
+
+<h3>Version 0.1.6 Documentation Notes:</h3>
+
+I am uploading a temporary version. It contains a number of minor clean-up issues and some reworking in Nomenclature which we have not discussed so far.
+
+The only thing I would like to be rethought about Richard's previous changes is the removal of "AuthorsTaxonomicPlacement". -- Richard writes: "this seems clearly a concept-related attribute of the "Original Concept" instance, and therefore part of TCS that is outside the domain of LC." I contradict insofar as I consider this information that may be required for nomenclatural evaluation (was a fungus published as algae, fungus, or animal?). Even if not, it may be vital to understand the original description text and it is usally not part of it. And I view it as free-form text, quite distinct from a hierarchical parent-child relation. However, if the nomenclators do not currently have this piece of information (Sally? Paul?) it may still best go away...
+
+Other than that, please let us focus on reviewing the alternative for names and author atomization discussed in 
+
+<h4>Minor Changes probably uncontentious or at least not relevant at the moment</h4>
+
+Rich replaced the inline-<nop>AlexandriaCore proposal with a reference model (assumed to point to TCS publications). As a consequence, I replaced the remaining citations (Nomenclature/NomenclaturalSources", "EditorialStatus/LiteratureSources") as well (and changed the element name tentatively to "AccordingTo") and then removed the <nop>SimpleCitation type (= copied AlexandriaCore from UBIF) and all types used therein. This drastically reduces the amount of UBIF-import types and hopefully focusses the discussion. Did the heading indeed made you read this? Good.
+
+<nop>CanonicalName: Annotations added to the model agreed in previous discussion. Also an alternative model added, see "Open Problems" below. <nop>CanonicalAuthorship: The Authors collection inside <nop>NameCitation is made optional, to allow providing non-atomized authors but occurence of a reference pointer or location (e.g. protologue page number).  Also an alternative model added, see "Open Problems" below.
+
+Added tentatively an <nop>OriginalDescriptions/OriginalDescription structure. This is not thought to compete with the <nop>CharacterCircumscription of TCS, it is supposed to reflect the original text as published rather than any operationalization of it (using markup or structured descriptions).
+
+Changes in Nomenclature 
+	* Nomenclature renamed to Nomenclatural
+	* Unbounded (= multiple occurrence) moved from Sequence group to the element itself.
+	* <nop>NomenclaturalStatus renamed to Status, content changed from directly containing enumerated values to two attributes (enumerated "code" and free-form "text"), similar to the Rank.
+	* Added doubtful attribute as a flag to Status, compare the Berlin Model (thanks to Marc Geoffrey for discussing this!)
+	* <nop>NomenclaturalCode renamed to Code
+	* <nop>NomenclaturalNote renamed to Note
+	* Removed <nop>StatusQualification - I believe this should already be covered by the more complete Status enumeration and the option to use text in status instead of only an enumeration.
+	* <nop>NomenclaturalSources: name changed to "AccordingTo", type from inline-citation to a ref
+	* <nop>BlockingNames changed to <nop>RelatedName, made plural into singular. This is an attempt to simplify the structure. Please present cases where this must be plural! I assume that if multiple earlier homonyms are present, only the first is cited in the core. Is this acceptable - or do we need a collection of related names here? I think having a collection inside a collection makes it really difficult to use this for SIMPLE data exchange. We still may have to do it, but note that already Nomenclatural is repeated...
+
+Further cleanup: Rich mentioned the anamorph/teleomorph problem. The relation of anamorph to teleomorph name I believe to be very well placed in the concept domain (fellow mycologists Jerry &amp; Paul: do you think this is nomenclatural?). I therefore removed <nop>TeleomorphNameURI and <nop>TeleomorphNameLocalKey. However, for the time being I left "IsAnamorph" although it is an odd item. It is, however, information about the intent of creating a name and special rules apply to the "parallel" name for anamorphs in mycology.
+
+I split the reference type into <nop>NameReference and <nop>PublicationReference. My purpose is only to type distinguish versus name-name references.
+
+I added a type "__ECAT_EXTENSIONS" which we please should *not discuss any further*. It is just placeholder for things that may be desirable to add to a VERY flat format, essentially an Excel spreadsheet for low-tech ECAT providers (like __CurrentFamilyPlacement and __CurrentAcceptedName). I also made some minor changes/updates in the UBIF included stuff (below the "####...") that should be ignored for the moment.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]], 13 Dec 2004
+---
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1100556780" format="1.0" version="1.1"}%
+d3 96
+a98 54
+This page includes docmentation notes associated with each version of LC that is uploaded.
+
+<h3>Version 0.1.1 (Christchurch Version) Documentation Notes:</h3>
+The most current version is the one that Gregor distributed at Christchurch, after his initial set of edits. Subsequent tinkerings by me were not worth saving (for several reasons). One of the Action Items is for Sally Hinchliffe to further develop the Christchurch version, and submit it to this group (targeted for November 5th). That will be the Current Version, from which we can base our subsequent discussion. Note: Gregor: I fixed the file slightly on Nov. 3, to allow to view it in Internet explorer.</br>
+-- Main.RichardPyle, 03 November 2004
+
+<h3>Version 0.1.3 Documentation Notes:</h3>
+I have added version 0.1.3 in a zip file (internally I called it 0.1.2c), which also includes some instance documents which relate to the LinneanCoreExampleNames (at the moment there are only a few of these, but I will try to generate some more). Please note, this is mainly to trigger discussion. It was drafted by me with comments from Gregor and Rich. It has not been completely revised. If you open up the schema and look at the comments, those bits prefaced SCH are from me, and those prefaced GH are Gregor's fault. We have only really deeply thought about the following parts of the schema: 'Label', 'NameRecordId', 'CanonicalName', 'CanonicalAuthorship', 'NameExtension', 'Rank'. The rest are not much changed from Christchurch.</br>
+Sally Hinchcliffe - 05 Nov 2004
+
+<h3>Version 0.1.4 Documentation Notes:</h3>
+After mulling over Sally's version over the weekend, I have uploaded a new version which is identical with Sally's except that both for "CanonicalName" and "CanonicalAuthorship" I have added a second proposal (see LinneanCoreCanonicalName and LinneanCoreCanonicalAuthorship for discussion) . I believe the way I changed the schema allows us to compare the original and my second proposal - so you would not have to download 0.1.3. Otherwise everything that Sally said is still true: the stuff to be revised towards the end has not been cleaned up any further by me. The only major change I did is to insert a dummy-copy of the current AlexandriaCore into the schema, since some foundation of this is necessary to discuss the authorship part.</br>
+Gregor -- 8 Nov 2004
+
+<h3>Version 0.1.5 Documentation Notes:</h3>
+To help facilitate discussion within the context of TCS, I have made a new version of LC as 0.1.5. The zip file contains both LC 0.1.5, and a slightly modified version of TCS v085a to illustrate how I imagine the LC schema would fit within TCS. I've stripped out a lot of the redundant elements of previous versions of LC. In all cases where I made a change to 0.1.4, I have included a bulleted comments below.</br>
+-- Main.RichardPyle, 15 Nov 2004
+
+<h4>Specific Modifications incorporated into LC v0.1.5:</h4>
+	* Embeded LC within TCS, replacing the "ABCDNamesTypes" insertion with LC0.1.5 insertion.
+	* Changed name of root element to "ScientificName", to give it more appropriate context within LC.
+	* Deleted "NameRecordID" -- this can be inherited from the <nop>TaxonConcept attribute "id", withion TCS. I am continuing under the proposal that a LC "Name" GUID would be inherited from its TCS "Nominal COncept" equivalent.  I think this should be separate from a TCS "Origincal Concept", because the latter (to me) represents the concept as defined by the authors who created the original name, whereas the former could be used as a GUID for the *name* as defined by the same authors in the same publication.
+	* Deleted the original "CanonicalName" as drafted by Sally, replacing it instead with what was previously called "CanonicalName_Proporal2" (now re-named "CanonicalName").
+	* Within the newly named "CanonicalName" (formerly "CanonicalName_Proporal2"), I have:
+		* deleted the "flat" version of the atomized elements as created by Gregor for discussion purposes only
+		* changed "monomial" to "uninomial" as per LCMonomialDiscussion
+	* Deleted the original "CanonicalAuthorship" as drafted by Sally, replacing it instead with what was previously called "CanonicalAuthorship_Proporal2" (now re-named "CanonicalAuthorship").
+	* Within the newly named "CanonicalAuthorship" (formerly "CanonicalAuthorship_Proporal2"), I have:
+		* Renamed "ProtonymCitation" and "CombinationCitation" to "ProtonymAuthorship" and "CombinationAuthorship".
+		* Removed the "Alexandria Core" place-holder publication details section, and replaced it with a TCS-style "PublishedIn" pointer.  This solution assumes that all LC records will be contained in a TCS wrapper, and that publication details will be stored the way that TCS stores them (i.e., within the "Publications" container of TCS).
+		* Added to the annotation of the "Location" element.
+	* I left "NameExtensions" and "Rank" intact -- but these both require further discussion within the context of TCS -- particularly with regard to whether this "Rank" is necessarily different from the TCS Rank (i.e., are there two different meanings of "Rank" (concept & Name), or only one?  I think it definitely has a nomenclatural (Code-relevant) meaning, and as such needs to be included in some form in LC.  If TCS can inherit Rank from LC, then should be no problem.
+	* Deleted "AuthorsTaxonomicPlacement"  -- this seems clearly a concept-related attribute of the "Original Concept" instance, and therefore part of TCS that is outside the domain of LC.
+	* Replaced "ProtonymLocalKey" with "Protonym", that is of type "ReferenceType".  See annotation for this element in schema file.
+	* Deleted "ProtonymAuthors", "ProtonymYear", "ProtonymLocationInLit", "ProtonymIsInCItation", and "ProtonymCitation", as these are adequately covered by the existing "CanonicalAuthorship" structure.
+	* Deleted "ProtonymURI", as I *think* this is the same as the new "Protonym" pointer discussed above.
+	* Deleted "ReplacedNameURI" and "RelplacedNameLocalKey", as I *think* these can be accomodated by the new "Protonym" pointer discussed above.
+	* Deleted "CombinationAuthors", "CombinationYear", "CombinationPageInLit", "CombinationIsInCitation", and "CombinationCitation", as these are adequately covered by the existing "CanonicalAuthorship" structure.
+	* I have left the "Nomenclature" element intact.  There needs to be more discussion & elaboration of the elements in this container. In particular, I think that "NomenclaturalCode" actually belongs in the root, and probably should be required.  I believe that all scientific name records should be presented only in the context of the Code that it is governed by. This element may replace "Kingdom" in TCS.
+	* I have left "EditorialStatus" intact, but my feeling is that this information belongs somewhere else -- maybe in a Metadata container somewhere.
+	* I have left "TypeSpecimen" intact -- but I think we need more discussion about how to deal with this in the larger context of TCS.
+	* I moved the "IsAnamorph" flag up next to "IsNovum".  I think all of these sorts of flags should be clustered together somewhere.
+	* I don't really understand the function of "TeleomorphNameURI" and "TelomorphNameLocalKey", but I kept them next to "IsAnamorph".
+	* Deleted "ThisNameURI", as I think it is represented within the TCS wrapper <nop>TaxonConcept "id" attribute.
+	* Deleted "ThisNameProvider", "DateCreated", and "DateModified", as I think these are Metadata that should be represented somewhere else.
+	* Deleted "__CurrentFamilyPlacement" and "__CurrentAcceptedName", as neither of these belong in LC, and should be represented elsewhere in the TCS wrapper of a name record (if necessary)
+
+<h4>Specific Modifications incorporated into TCS v085a:</h4>
+	* I didn't assign this a new version number, but instead amended the name of the file to "v085aWithLC.xsd".
+	* Replaced the "ABCDNameTypes.xsd" include with a "LinneanCore_0.1.5.xsd" include.
+	* Changed the annotation of "NameSimple" to suggest that it be used to record the verbatim name-string as it appears in the "AccordingTo" publication, as a means to capture lapsus mis-spellings and other variants not dealt with in LC.
+	* Replaced "NameDetailed" element with a Choice for one of potentially several sub-schemas for detailed, atmoized name information. "ScientificName" option is where LC fits in; "VernacularName" is given as a representation for a different name subsctructure to accomodate non-scientific names.
+	* Moved complextype "ReferenceType" out of the TCS schema file and into the LC schema file (I didn't know how else to make it available to both schemas)
+	* Added <nop>DateTimeISOType directly in the TCS schema file (it used to be referenced from within the "ABCDNameTypes.xsd" included file)
+@

@@ -1,0 +1,354 @@
+head	1.6;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.6
+date	2006.04.13.16.41.41;	author RogerHyam;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.04.13.15.24.30;	author RogerHyam;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.04.13.13.42.11;	author RogerHyam;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.04.13.11.59.55;	author RogerHyam;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.13.10.14.19;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.04.13.08.07.21;	author RogerHyam;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.6
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1144946501" format="1.1" version="1.6"}%
+%META:TOPICPARENT{name="TagMeeting1Agenda"}%
+---+ <nop>%TOPIC%
+
+---++ High Level Vision of TDWG Architecture
+   * Biodiversity data will be modeled as a graph of identifiable objects.
+   * The semantics of these objects will be encoded in a series of shared ontologies.
+   * These ontologies will be related to each other on the basis of a shared Base and Core ontologies as a minimum.
+   * A series of interface/protocols will specify how services on the network will expose objects.
+   * These interfaces/protocols will preferably be adopted from existing technologies but created by TDWG if necessary.
+   * Standards will define how objects should be serialized for exchange over the network.
+
+---++ Data Not in 'Identifiable Objects'
+   * Are we interested in sharing data that is not part of an identifiable object?
+   * Yes: For querying. Results of a query (SQL for example) are not identifiable objects.
+
+---++ Objects
+   * Objects are identifable and machine readable.
+   * Objects should be semantically rich but can have opaque binary components.
+   * The result of resolving a GUID will be an object. There needs to be a simple way of identifying the type these objects.
+   * In XML Schema spec.. supplying schema location is not required.  In TDWG All XML objects must have a schema location that resolves to a standard schema that the object will validate against.
+   * TDWG must permanently host schemas that are considered standards but application providers may host their own schemas if they need to.
+   * All TDWG objects in RDF/S must have at least one rdfs:type property.
+   * Libraries need to handle RDF embedded in XHTML.
+   * Need to check that RDDL does not break libraries if we use it - later recommend its adoption.
+
+---+++ How do we define objects 1 - XML Schema.
+   * object structure must be defined as a top level element (- current Schema would have to be modified).
+   * top level elements that define objects should be defined by global complexTypes - this allows automated tools to build binding code.
+   * (Could be done on 'global' element variant versions of existing schemas.)
+   * Whatever these top level objects are they must have a GUID attribute.
+   * A standard pointer structure must be adopted to reference objects.
+
+---+++ How do we define objects 2 - Semantic Web Technologies.
+   * How do we define the standard? - An object is an instance of a class in the ontology.
+   * Objects should be bounded by Concise Bounded Descriptions and identified by a GUID.
+   * Anyone can make assertions about a resource. The definitive form is the one that is returned when the GUID is resolved.
+
+---++ Data Modeling
+   * This is key to integration of TDWG standards.
+   * UML accompanied by natural language description will be used to define a data model for TDWG.
+
+---+++ Recommendations
+   * Natural language descriptions accompanied by UML class diagrams will be used to define the data model.
+   * There will be three levels in the ontology:
+      * Base = Abstract base class and properties for all TDWG objects. (e.g. GUID, title etc) 
+      * Core = Extends base to define classes and properties that are common to multiple domains.
+      * DomainOntologies = Concrete classes for use.
+   * One of TAG's roles is to ensure redundancy does not creep into new standards/ontologies.
+   * Classes and properties within the Base and Core ontologies will have a status attribute that indicates their level of stability/adoption.
+   * Recommend all subgroups present data modeling in this way.
+   * Recommend all data models should extend the Base and Core ontologies and make use of existing ontologies.
+
+---++ Risks
+   * Exchange of UML diagrams other than as pictures may be problematic because of interoperability issues between UML tools.
+   * Although there are numerous commercial UML tools available the open source / free tools appear to be of lower quality.
+   * It may be desirable to use modeling constructs that are not supported by UML.
+
+---+++ Actions
+   * Jessie's group to coordinate development on non-normative 'first-pass' ontology from existing schemas and make recommendation for proceeding with base and core ontologies.
+   * Multiplicity relationships may be key to identifying primary objects.
+   * Jessie's group to come up with recommendations for conversion of UML to semantic web and XML Schema representations.
+  
+Things we are worried about
+   * changing ontologies through time. How do minimise cost and maximise interoperability. Ontology change scenarios. Thought experiment. This needs to be implimentation specific.
+   * integration with GIS, SIS etc with other stuff... Can we express it as GML 
+   * Distributed queries will be difficult. Identify different typical types of distributed query within our community.
+   * Evaluate caching - how suitable are the technologies for building big caches or thematic.
+
+   * Building thematic caches as we think this is a primary use case.
+      1 Take 2 or 3 provider-instances  and make them work with the green box ontologies.
+      1 Build thematic caches 
+      1
+
+---++ GUIDs
+
+   * There is a clear line between classes and instances ( vocabulary and data) but this line will be in different places depending on the application. Some people may consider taxon concepts as classes or descriptive terms etc...
+
+   * We can talk about data and we can talk about vocabularies and we are referring to different sides of this line without specifying where the line is.
+
+   * There are certain things for which LSIDs are not appropriate. It would be legal to use them for RDF resource identifiers for controlled vocabularies and XML Schema locations BUT we would have to extend existing software libraries to do this which is not desirable.
+   * We recommend that LSIDs are not used for controlled vocabularies.
+   * LSIDs should refer to instances.
+   * LSIDs should be limited to URI not IRIs at the moment.
+
+---++ Exploration of Primary Objects
+List of Primary TDWG Objects. Results of a discussion around what the primary objects might be and where they defined in the existing schemas. Later the decision was taken to do this formally, from the bottom up, by looking for primary objects within schemas.
+
+   * Specimen - ABCD + DarwinCore
+   * GeoEvent - ABCD + DarwinCore
+   * TaxonConcept - TCS  + (ABCD) + (SDD)
+   * TaxonName - ABCD + DarwinCore + TCS + ...
+   * Agent...
+      * Institution - ABCD + NCD + DarwinCore + SDD
+      * Collection - NCD + ABCD + DarwinCore
+      * Person - UBIF
+      * Service
+   * DescriptiveTerm (Character, CharacterState, Modifier...) - ABCD + SDD
+   * PublicationCitation - everyone has it.
+   * Description - SDD
+      * SummaryData - SDD
+   * Observation - ABCD, DarwinCore in obs group.
+         * Identification - ABCD, DarwinCore
+         * Measurement - SDD
+   * IdentificationKey - SDD
+   * MediaObject - ABCD + UBIF
+   * Methodology - SDD 
+   * MolecularStuff
+   * Phylogenies
+   * Classification
+
+---++ Naming Problems
+   * Generally confusing for non-technical people to differentiate between protocols and data formats - we should help them by using consistent clear naming.
+   * We are not consistent in the way we name things or in the way we use names.
+   * DiGIR is a protocol but DiGIR2 is an application.
+   * Tapir is a protocol but is usually discussed as if it were an application.
+   * Suggest we use the words 'Format', 'Protocol' and 'Application'  whenever a term is first mentioned or when it may clarify things. e.g. TAPIR Protocol, DarwinCore Format, DiGIR Protocol, DiGIR PHP Application.
+
+DiGIR2 => ??
+PyWrapper and Tapir
+   * Interfaces?
+
+---++ Namespace conventions
+   * http://ns.tdwg.org/<project>/<anything>
+   * All lower case.
+   * Only alpha numeric plus -
+   * there will be a http://ns.tdwg.org/tag/core and http://ns.tdwg.org/tag/base
+   * Same URL convention used for namespaces and schemaLocation
+   * Debate over what should be at the namespace URL.
+   * Action: survey current namespaces and probably set them up as re-directs.
+   * directory listings supported in namespace directories.
+   * Ricardo to look into RDDL
+
+---++ High priority
+   * Urgent need to adopt existing harvesting protocol that could be used alongside LSID resolution to fascilitate new data providers.
+
+---++ Near Term Advice to Implementors
+   * Do not recommend short term replacement of existing technologies as their potential replacements are not mature.
+   * Recommend that any new deployments or changes to deployments address the need for migration to GUID based technologies in the near future.
+
+---++ Benefits of GUIDs
+Recommendation that GUIDs group issue a clear set of benefits for the take up of GUIDs. (or people won't do it)
+   * Linking by resolution.
+   * Merging
+   * Stamping Ownership
+   * Tracking/Reporting usage
+   * Deduplication: Object equivelence reduces to LSID equivelence.
+   * Language independence
+
+---++ Benefits of Semantic Web Way
+   * Relationships 'come for free'
+   * Appears to be logical to do it at same time as GUIDs as the technologies fit so well especially as RDF is recommended return type for LSID getMetadata() call.
+
+----++ What is going to happen by October?
+   * Jessie's group will present work on Thematic things and ontology.
+   * Core ontology 'alpha' version
+   * Results of LSID authority implementations.
+
+
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1144941870" format="1.1" version="1.5"}%
+d141 18
+a159 1
+----
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1144935731" format="1.1" version="1.4"}%
+d70 4
+a73 1
+ * Further specification of Jessie's project ... FIXME
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1144929595" format="1.1" version="1.3"}%
+d70 1
+a70 1
+ * How do we integrate data? 
+a78 1
+
+d80 1
+d84 1
+a84 1
+List of Primary TDWG Objects. Results of a discussion around what the primary objects might be and how they are distributed amongst existing schemas. Later the decision was taken to do this formally, from the bottom up, by looking for primary objects within schemas.
+d114 4
+a117 1
+   * Suggest we use the words 'Format', 'Protocol' and 'Application'  whenever a term is first mentioned or when it may clarify things. e.g. Tapir Protocol, DarwinCore Format, DiGIR Protocol, DiGIR PHP Application.
+d123 1
+a123 1
+   * No alpha numeric plus -
+d127 3
+d131 2
+a132 2
+
+
+d137 1
+a137 1
+   * Urgent need to adopt existing harvesting protocol that could be used alongside LSID resolution to fascilitate new data providers.
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1144923259" format="1.1" version="1.2"}%
+d64 5
+a68 1
+  * What is the application? Coffee....
+d70 1
+d134 1
+a134 1
+%SEARCH{"%TOPIC%" excludetopic="%TOPIC%" header="*Linking Topics*" format="   * $topic" nosearch="on" nototal="on" }%
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1144915641" format="1.1" version="1.1"}%
+d6 1
+a6 1
+   * Biodiversity data will be modeled as a graph of identifiable objects. These objects may be entire documents or embedded in documents.
+d9 2
+a10 2
+   * A series of interface/protocols will specify how nodes on the internet will expose objects.
+   * These interfaces/protocols will be adopted from existing technologies or created by TDWG.
+d18 7
+a24 7
+   * Objects are identified, semantically rich and machine readable.
+   * The result of resolving a GUID will be an object. There needs to be a simple way of identifying these objects.
+   * In XML Schema spec.. supplying schema location is not required. Consuming applications can use their own schemas if they wish.
+   * In TDWG All XML objects must have a schema location that resolves to a standard schema that the object will validate against.
+   * TDWG must permanently host schemas that are considered standards but application providers may host their own schemas if they need.
+   * RDF/S and therefore OWL based on resolvable namespaces.
+   * Libraries need to handle RDF embeded in XHTML.
+a26 1
+
+d28 3
+a30 3
+   * top level element - current Schema would have to be modified.
+   * should also be complex types - so can do data binding. 
+   * Could be done on 'global' element variant versions of existing schemas.
+d32 1
+a32 1
+   * Standard pointer/reference type. 
+d34 4
+a37 4
+---+++ How do we define objects 2 - Semantic Web.
+   * Default to what the GUID owner says it is.
+   * Objects should be Concise Bounded Descriptions?
+   * How do we define the standard? - in the ontology.
+a39 1
+   * "The Green Box"
+d41 2
+a42 1
+   * Need a common representation and discussion method separate to technical implementations.
+d44 9
+a52 4
+   * UML pictures as discussion medium
+   * Base + Core schemas the responsibility of the TAG
+   * Recommend all subgroups present data modeling concepts as UML diagrams for discussion.
+   * Recommend all data models should be based on the Base ontology and extend the core ontology where applicable.
+d60 2
+a61 2
+   * Jessie's group to coordinate development on non-normative 'first-pass' ontology from existing schemas and make recommendation for base and core ontologies.
+   * Multiplicity relationships are key to identifying primary objects.
+d63 3
+d124 3
+a126 3
+  * Do not recommend short term replacement of existing technologies as their potential replacements are not mature.
+  * Recommend that any new deployments or changes to deployments address the need for migration to GUID based technologies in the near future.
+
+a129 1
+
+@

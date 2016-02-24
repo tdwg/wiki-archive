@@ -1,0 +1,420 @@
+head	1.9;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.9
+date	2007.03.06.16.49.12;	author RogerHyam;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.03.06.14.29.23;	author RogerHyam;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.03.06.08.43.38;	author RichardPyle;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.03.06.02.25.23;	author RichardPyle;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.03.05.20.36.59;	author RichardPyle;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.03.05.09.25.54;	author RicardoPereira;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.03.05.01.57.55;	author LeeBelbin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.03.02.15.15.08;	author RogerHyam;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.03.02.13.07.32;	author RicardoPereira;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.9
+log
+@none
+@
+text
+@%META:TOPICINFO{author="RogerHyam" date="1173199752" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="Topics"}%
+---++!! GUIDs for Zoological Names (in ZooBank)
+
+_Extracted from discussion in the [[http://list.afriherp.org/pipermail/zoobank-list/2007-March/000193.html][ZooBank mailing list]]:_
+
+Due to fundamental differences in how zoologists and botanists think of taxon names, it is worth discussing how GUIDs in general and LSIDs in particular would be best applied to zoological names.
+
+Here is a summary of the discussion so far.
+
+---+++ 1. Are GUIDs relevant to zoological names and ZooBank?
+
+*Yes, they are.* GUIDs uniquely identify records in distributed systems much in the same way that primary keys are useful to uniquely identify records in local relational databases systems. Both concepts (GUIDs and primary keys) provide a level of indirection that is necessary to accommodate imperfections that are inherent to any natural language based naming system. This is the reason behind any identifier associated with people, automobiles, airplanes, homes, bank accounts, etc.
+
+Zoological names, as well taxonomic names in general, play a fundamental role in biodiversity information systems and applications, as they identify the basic units of interest in studies in other areas of biology. To be effectively integrated to taxonomic names from other disciplines and be integrated across distributed systems, zoological taxonomic names must be assigned a globally unique identifiers.
+
+See a more detailed explanation for why zoological names should not be used as unique identifiers on [[http://list.afriherp.org/pipermail/zoobank-list/2007-March/000193.html][Rich Pyle's post]].
+
+-- Main.RicardoPereira - 02 Mar 2007
+
+---++++ Comments:
+_Please post your comments on the subject above using the template below._
+
+<!-- %ICON{bubble}% Posted by: Main.RicardoPereira on 02 Mar 2007 -->
+
+
+
+---+++ 2. Why use LSIDs (and not another GUID technology) with zoological names? 
+
+In summary, the main reasons are that:
+
+   * LSIDs can be persistently associated with a name for hundreds of years, as its resolution is not tied to a particular Internet protocol (as opposed as HTTP URL). That is a relevant requirement for taxonomic names as they are likely to be meaningful in that time scale. 
+   * Other Biology disciplines such as Micology and Botany are planning on using LSIDs to identify names. Thus using LSIDs for zoological names will make the task of integrating names across disciplines easier. 
+   * The zoological community can take advantage of the products created by TDWG regarding LSIDs when implementing their GUID solution.
+
+-- Main.RicardoPereira - 02 Mar 2007
+
+---++++ Comments:
+_Please post your comments on the subject above using the template below._
+
+<!-- %ICON{bubble}% Posted by: Main.RicardoPereira on 02 Mar 2007 -->
+
+
+
+---+++ 3. How should we assign LSIDs to zoological names?
+
+Zoologists treat binomial names in a different way from botanist. Under the botanical code the use of a specific epithet in genus other than the one it was published in counts as a nomenclatural act and follows the rules of priority. It is therefore reasonable to treat each combination of genus and specific epithet in botany as a separate name and give it an LSID.
+
+In zoology the use of an epithet in a different genus from the one it was originally published in is not considered a nomenclatural act but simply a 'usage' of the name. Zoologists do not generally keep track of where and when first placement in a particular genus was made.
+
+To use the famous example:  _Aus bus_ Smith 1990 might be used in the genus _Xus_ as _Xus bus_ (Smith, 1990) but no indication is given of who placed it in _Xus_. It may be happening for the first time here and now or it may be a well accepted usage.
+
+It seems clear that _Aus bus_ Smith 1990 should get an LSID but should _Xus bus_ (Smith 1990) get one?
+
+If _Xus bus_ (Smith, 1990) does get one what other combinations of _bus_ Smith, 1990 will get one? Theoretically all possible combinations could have one. i.e. combinations with all possible genera for which it wouldn't create a homonym...
+
+If _Xus bus_ (Smith 1990) does NOT get an LSID and is not tracked by ZooBank then the utility of the database is greatly reduced because one of the main use cases would be a request to clarify the basionym of a combination that lacks clear authorities or to resolve possible homonymy.
+
+[Comment:  The question is not whether different combinations get tracked (in all scenarios, they do).  The question is whether they are tracked as "Name Objects", or as "Usage Instances".  In other words, just because (using he example above) _Xus bus_ (Smith 1990) may not get a *name* LSID from ZooBank, doesn't mean that it woun't have a *usage* LSID, which *is* tracked by ZooBank, and *is* used to clarify the basionym of a combination.  I make the case that it is better for both Botany *and* Zoology to reduce everything to usage instances (in place of trying to pin down the elusive "name object"), so that every community can share a common GUID "currency" to manage anything they want to track -- be it basionyms, combinations, mis-spellings, taxon concepts, or just about anything else relating to taxonomy and nomenclature. -- Main.RichardPyle - 05 Mar 2007]
+
+It should be noted that the zoological code *does* recognize the significance of name placement when it results in homonymy (actually secondary homonymy in this case) See the code here http://www.iczn.org/iczn/index.jsp
+
+Relevant parts are:
+
+53.3. Homonyms in the species group. Two or more available species-group names having the same spelling are homonyms if they were originally established in combination with the same generic name (primary homonymy), or when they are subsequently published in combination with the same generic name (secondary homonymy) (for species-group names combined with homonymous generic names see Article 57.8.1).
+
+57.3.1. Identical species-group names established for different nominal taxa and subsequently brought together in combination with the same generic name are secondary homonyms [Art. 53.3] and the junior is invalid (but see Article 57.8.1), but a junior secondary homonym may be reinstated under certain conditions [Art. 59.2-4].
+
+From the glossary:
+
+junior homonym = Of two homonyms: the later established, or in the case of simultaneous establishment the one not given precedence under Article 24.
+
+Implementing these rules without tracking some usage either in a database or through some library system is impossible, which is why it is so important to include usage instances as a fundamental unit of nomenclaturally-relevant information.
+
+So the choices for assignment of LSIDs for usages (other than the first placement) are:
+
+   1. Don't do it at all.
+   1. Do it for well known usages - those that are in monographs and faunas or the subject of ICZN rulings.
+   1. Do it for all the combinations that are found by any indexing efforts. 
+   1. Open it up to *any* documented usage instance, and derive place-holder GUIDs from this pool of usage instances for things like basionyms, combinations, taxon concepts, and other collections of usage instances for other needs.  See UsageInstanceProposal for more details. (There is an NameUsageRebuttal page!)
+
+Rich Pyle gives some example of the problem in a recent email post reproduced here: RichPylesExamples
+
+[Personal opinion by Main.RogerHyam: The only way I can see forward is that ICZN introduce the notion of effective publication of a new combination for names prior to registration (option 2 above) and that from registration onwards new combinations must be registered to count as real names. But then I am 'only' a bad botanist :) and there may be things preventing this from occurring that I don't appreciate.]
+
+-- Main.RogerHyam - 02 Mar 2007
+
+[Personal opinion by Main.RichardPyle: I see what I believe to be a much more sensible way forward:  don't try to force either community to bend towards the other. Rather, converge on the least-common denominator for all systems (not just of names, but nomenclatural acts and concepts and virtually anything having to do with taxonomy) -- which is to use name usage instances as as the GUID-ed unit of data exchange.  I have hastily written a large blurb on this, which I tacked onto the end of the RichPylesExamples page -- because I couldn't figure out how to create a new page.]
+
+-- Main.RichardPyle - 05 Mar 2007
+
+
+---++++ Comments:
+_Please post your comments on the subject above using the template below._
+
+<!-- %ICON{bubble}% Posted by: Roger Hyam on 02 Mar 2007 -->
+
+
+----
+CategoryTopics
+
+
+-- Main.RicardoPereira - 02 Mar 2007@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1173191363" format="1.1" version="1.8"}%
+d80 1
+a80 1
+   1. Open it up to *any* documented usage instance, and derive place-holder GUIDs from this pool of usage instances for things like basionyms, combinations, taxon concepts, and other collections of usage instances for other needs.  See UsageInstanceProposal for more details. (There is an NameUsageRebutal page!)
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1173170618" format="1.1" version="1.7"}%
+d80 1
+a80 1
+   1. Open it up to *any* documented usage instance, and derive place-holder GUIDs from this pool of usage instances for things like basionyms, combinations, taxon concepts, and other collections of usage instances for other needs.  See UsageInstanceProposal for more details.
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1173147923" format="1.1" version="1.6"}%
+d80 1
+a80 1
+   1. Open it up to *any* documented usage instance, and derive place-holder GUIDS from this pool of usage instances for things like basionyms, combinations, taxon concepts, and other 
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RichardPyle" date="1173127019" format="1.1" version="1.5"}%
+d59 1
+a59 1
+[Comment:  I disagree.  The question is not whether different combinations get tracked (in all scenarios, they do).  The question is whether they are tracked as "Name Objects", or as "Usage Instances".  I make the case that it is better for both Botany *and* Zoology to reduce everything to usage instances, so that every community can share a common GUID "currency" to manage anything they want to track -- be it basionyms, combinations, mis-spellings, taxon concepts, or just about anything else relating to taxonomy and nomenclature. -- Main.RichardPyle - 05 Mar 2007]
+d88 1
+a88 1
+[Personal opinion by Main.RichardPyle: I see what I believe to be a much more sensible way forward:  don't try to force either community to bend towards the other. Rather, converge on the least-common denominator for all systems (not just of names, but nomenclatural acts and concepts and virtually anything having to do with taxonomy) -- which is to use name usage instances as as the GUID-ed unit of data exchange.]
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RicardoPereira" date="1173086754" format="1.1" version="1.4"}%
+d59 3
+a61 1
+The trouble comes in that the zoological code *does* recognize the significance of name placement when it results in homonymy (actually secondary homonymy in this case) See the code here http://www.iczn.org/iczn/index.jsp
+d73 1
+a73 1
+Implementing these rules without tracking some usage either in a database or through some library system is impossible.
+d80 1
+d88 5
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1173059875" format="1.1" reprev="1.3" version="1.3"}%
+d19 2
+d24 1
+a24 1
+%ICON{bubble}% Posted by: Roger Hyam on 02 Mar 2007
+d36 2
+d41 1
+a41 1
+%ICON{bubble}% Posted by: Roger Hyam on 02 Mar 2007
+d83 2
+d88 1
+a88 1
+%ICON{bubble}% Posted by: Roger Hyam on 02 Mar 2007
+d95 1
+a95 1
+-- Main.RicardoPereira - 02 Mar 2007
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RogerHyam" date="1172848508" format="1.1" reprev="1.2" version="1.2"}%
+d22 1
+a22 1
+%ICON{bubble}% Posted by: ??? on 02 Mar 2007
+d37 1
+a37 1
+%ICON{bubble}% Posted by: ??? on 02 Mar 2007
+d82 1
+a82 1
+%ICON{bubble}% Posted by: ??? on 02 Mar 2007
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="RicardoPereira" date="1172840852" format="1.1" reprev="1.1" version="1.1"}%
+d43 1
+a43 1
+_The following is was cut directly from Rich Pyle's message on mailing list. Text may need to be summarized and linked to original post_
+d45 33
+a77 114
+There is going to be an issue regarding how GUIDs (e.g., LSIDs) are assigned
+to taxon names to botanical vs. zoological names.  This comes down to the
+fundamental difference in how zoologists and botanists think of a "name" (or
+as we informatics nerds would say, a "name object" -- the thing to which a
+GUID is attached and/or represents).  Consider these hypothetical names:
+
+_Aus_ L.
+_Xus_ Jones
+_Aus bus_ Smith
+_Xus bus_ (Smith)
+
+The first clue to the differences between zoological and botanical practice
+is that the last of these would be represented as "_Xus bus_ (Smith) Jones",
+where Jones is credited as the first to have placed the species epithet
+"bus" within the genus "Xus".
+
+In our (zoological) realm, we would certainly think of the "original genus"
+as an attribute of a species epithet (at the very least so that we know
+whether to put parentheses around the author), but otherwise we don't track
+combinations under ICZN (rules governing gender matching notwithstanding).
+To a zoologist, the combination is an attribute of the particular usage
+instance.  For example, there may by five publications citing the species
+epithet "bus" and placing it in the genus "Aus" (one of these being the
+original description), and there may be five others placing "bus" within the
+genus "Xus". While it may very well be that Jones was the first to create
+this "Xus bus" combination, we in Zoology do not ascribe any special status
+to that event -- that is, we do not regard it as a Code-governed
+nomenclatural act.
+
+Thus, from the Zoological perspective, there are three GUIDs (LSIDs) needed
+to accommodate the four items above:
+
+<verbatim>
+LSID1: Aus L.
+LSID2: Xus Jones
+LSID3: bus Smith [original genus: LSID1]
+<verbatim>
+
+We would then keep track of combinations through name-usage instances.  For
+example, we might have ten records in out "usage instances" database to
+represent the five published citations of "Aus bus" and the five published
+citations of "Xus bus".  These would all be thought of as usage intances of
+"bus" (LSID3), and an attribute each usage instance would be which genus
+combination it was placed with (five would point to LSID1 as the parent
+genus, and the other five would point to LSID2 as the parent genus). E.g.:
+
+<verbatim>
+Usage#	NameID	ParentID
+--------------------------------
+  1		LSID3		LSID1
+  2		LSID3		LSID1
+  3		LSID3		LSID1
+  4		LSID3		LSID1
+  5		LSID3		LSID1
+  6		LSID3		LSID2
+  7		LSID3		LSID2
+  8		LSID3		LSID2
+  9		LSID3		LSID2
+ 10		LSID3		LSID2
+</verbatim>
+
+From the botanical perspective, however, each combination is treated as a
+distinct (code-governed) "name" (Name-object).  Thus, for botanists, there
+would be four GUIDs, instead of three:
+
+<verbatim>
+LSID1: Aus L.
+LSID2: Xus Jones
+LSID3: Aus bus Smith
+LSID4: Xus bus (Smith) Jones [basionym: LSID3]
+</verbatim>
+
+For usage instance records, instead of having pointers to two GUIDs per
+record (one for the species epithet, one for the genus) there would simply
+be a pointer to the combination as used. E.g.:
+
+<verbatim>
+Usage#	NameID
+-------------------
+  1		LSID3	
+  2		LSID3	
+  3		LSID3	
+  4		LSID3	
+  5		LSID3	
+  6		LSID4	
+  7		LSID4	
+  8		LSID4	
+  9		LSID4	
+  10		LSID4	
+</verbatim>
+
+I'll make two observations about this fundamental difference between the
+botanical and zoological approaches to "names" (name-objects):
+
+1) It may be that this difference ends up being transparent, once we get
+this stuff implemented.  In other words, there may be no problem with
+ZooBank assigning GUIDs by the zoological tradition, and IPNI/IF assigning
+GUIDs by the botanical tradition -- as long as the informatics architecture,
+standards, and protocols are done right, there should be little difficulty
+aggregating botanical and zoological names data together.  On the other
+hand, I can't help but think it will ultimately be to everyone's advantage
+to all be on the "same page" in terms of GUID issuance, so that there is no
+question how a GUID under one code corresponds to a GUID under another (in
+terms of what you do with the metadata attached to that GUID).
+
+2) At first glance, the botanical approach might seem preferable because it
+leads to a (seemingly) simpler way of tracking the relationship between
+"names" and other data (like usages, specimens, etc.) However, I think there
+is compelling reason from an information management perspective (outside of
+personal biases of different taxonomic traditions) to treat "name objects"
+as monomial units (ala zoological tradition), and then layer everything else
+on top of usage instances (without the need to GUID-ify name-combination
+units in-between these two layers).  But I'll save the details of this
+perspective for another discussion.
+@

@@ -1,0 +1,83 @@
+%META:TOPICINFO{author="RenatoDeGiovanni" date="1233689091" format="1.1" version="1.10"}%
+%META:TOPICPARENT{name="WebHome"}%
+The following changes are being considered before submitting TAPIR to the standards track. Please feel free to make any comments or add new suggestions.
+
+---+++ Metadata
+
+---+++++ Distinguish types of related entities (done!)
+
+   * *Description:* Parts of TAPIR metadata were influenced by the UDDI data model, which makes use of "businessEntity" elements to describe parties related with the service. Usually a relatedEntity in TAPIR is an organization, but in some cases there may be no organization related with the service at all. It can be a person, such as a researcher who owns the data and is directly responsible for running the service. The issue is that we can't tell now (in a machine readable way) if a relatedEntity is a person or an organization.
+
+   * *Proposal:* Add an optional "type" attribute to the relatedEntity element indicating either "person" or "organization" (default will be "organization"). Add specific recommendations about the content of the "name" subelement when a relatedEntity is a person (since personal data will already be present as part of contact information).
+
+   * *Impact:* TAPIR clients may want to parse the additional attribute. TAPIR providers with a configuration interface may want to allow users to specify the additional attribute. Existing metadata responses will remain valid.
+
+   * *Status:* Done (2009-01-07). Included @type attribute.
+
+---+++++ Improve the representation of entity location (done!)
+
+   * *Description:* Now only a single string element called "address" can be used (although lat/long can also be specified). Global data portals usually classify providers by country, regional data portals by state, etc.
+
+   * *Proposal:* Add an optional "country" element (to be used with ISO country code), an optional stateProvince element and an optional "zipcode" element after address.
+
+   * *Impact:* TAPIR clients may want to parse the additional elements. TAPIR providers with a configuration interface may want to allow users to specify the additional elements.  Existing metadata responses will remain valid.
+
+   * *Status:* Done (2008-12-19). Included elements regionCode, countryCode and zipCode.
+
+---+++ Capabilities
+
+---+++++ Allow dump files to be declared (done!)
+
+   * *Description:* Since data harvesting can be initially time consuming due to paging and inefficient data representation, providers could periodically produce dump files containing all data.
+
+   * *Proposal:* Add an "archives" section element inside "capabilities". It would contain one or more "archive" elements, each one with a mandatory "format" attribute ("xml" or any custom string), a mandatory "location" attribute, a mandatory "compression" attribute ("gzip" or any custom string), a mandatory "numberOfRecords" attribute, a mandatory "creation" attribute and an optional "outputModel" attribute.
+
+   * *Impact:* TAPIR clients may want to parse the additional elements. Data harvesters may want to use the additional functionality. TAPIR providers may want to allow users to periodically produce the dump files. Existing capabilities responses will remain valid since the new element is optional, unlike the other capabilities level 1 elements.
+
+   * *Comments:*
+      * Tim Robertson
+         * propose dumps" -> "archives"
+         * the spec will need to declare what structure a "CSV" file takes (e.g. single header line, columns declared in header, escape characters etc)
+         *  is this too much for TAPIR itself to handle?
+         * perhaps it could refer to a [[http://www.fieldedtext.org/Introduction.html metafile][FieldedText]]? 
+         * will it have a field indicating perhaps GZip compression?  
+
+   * *Status:* Done (2009-02-03). Included element archives.
+
+---+++++ Allow custom operations to be declared as part of capabilities (done!)
+
+   * *Impact:* None.
+
+   * *Status:* Done (2009-02-02). Included "custom" slot.
+
+---+++++ Remove possibility to declare XSLT support on the server side (done!)
+
+   * *Description:* For security reasons, there are remote possibilities that a provider software will ever allow arbitrary XSLT to be applied on the server side.
+
+   * *Proposal:* Remove the KVP attribute xslt-apply and the xslt element inside capabilities/requests/globalParameters.
+
+   * *Impact:* Existing capabilities responses will remain valid, unless there is any provider declaring this capability (unlikely).
+
+   * *Status:* Done (2009-01-07).
+
+---+++ Search
+
+---+++++ Allow a different HTTP Content-type to be returned when the TAPIR envelope is turned off (done!)
+
+   * *Description:* Now TAPIR forces the Content-type to be always "text/xml", but in some cases, depending on the response structure, it may be more appropriate to allow other types such as "application/rdf+xml".
+
+   * *Proposal:* Allow TAPIR providers to do HTTP content negotiation when the envelope is turned off based on the response structure and on the HTTP request header.
+
+   * *Impact:* Probably none (if we keep providers free to always respond with text/xml if they want).
+
+   * *Status:* Done (2009-01-07).
+
+---+++++ Allow the root element in search responses to be based on any global element defined in the response structure (done!)
+
+   * *Description:* Currently the TAPIR specification says that the root element in search responses must always be based on the first global element definition in the response structure. In some cases, existing XML Schemas with multiple global element definitions may be forced to be separated into multiple documents just to be used by TAPIR.
+
+   * *Proposal:* Add an optional element in the output model definition to indicate the root element. When the root element is not defined, the first global element must be considered the root element.
+
+   * *Impact:* Existing output models will remain valid. New output models using the new root element will not work with existing provider implementations until the implementations are updated.
+
+   * *Status:* Done (2009-01-07). Included "rootElement" with @name attribute.

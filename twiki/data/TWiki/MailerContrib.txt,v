@@ -1,0 +1,657 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.4
+date	2007.01.16.04.11.59;	author TWikiContributor;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.06.25.16.26.31;	author TWikiContributor;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.04.01.05.55.29;	author TWikiContributor;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.02.01.12.01.22;	author TWikiContributor;	state Exp;
+branches;
+next	;
+
+
+desc
+@new-topic
+@
+
+
+1.4
+log
+@buildrelease
+@
+text
+@%META:TOPICINFO{author="TWikiAdminGroup" date="1168425636" format="1.1" version="4"}%
+---+!! %TOPIC%
+
+Add-on to the TWiki kernel that allows users to "subscribe" to regularly scheduled e-mails containing either:
+   * A report on changes to all topics that have changed within a particular TWiki web.
+   * A report on changes to a specific topic or set of topics the user can define flexibly.
+   * The entire content of a specific topic or set of topics. This is referred to as "news mode."
+
+<!--
+
+   PLEASE DO NOT EDIT THIS TOPIC
+
+   It is automatically generated from the subversion repository, and any changes
+   you make will simply be overwritten the next time a release is generated.
+
+   Instead, you could check your fix in, raise a bug in the Bugs web, or mail the author.
+-->
+
+
+*WARNING: TWiki-4 only. If you want to use this extension with an earlier version of TWiki, please see [[http://twiki.org/cgi-bin/view/Plugins/%TOPIC%?rev=1.17][here]]*
+
+%TOC%
+
+---+ <code>tools/mailnotify</code>
+The central component of MailerContrib is a script, =tools/mailnotify=, that generates and sends out the emails based on analysis of
+   1 users' subcriptions listed in the <nop>%NOTIFYTOPIC%  topic in each web, and
+   1  changes within the respective webs.
+This script is designed to be run from =cron= (or an equivalent off-line job scheduler), or from the command-line. 
+
+The script collates the changes emails so that each subscriber only receives one changes notification for all changes in all webs in the TWiki. Furthermore, users can elect to receive just summaries of changes, or the entire content of topics that have changed.
+
+Each web can optionally contain a topic called <nop>%NOTIFYTOPIC%.
+<!-- Included by %TWIKIWEB%.WebChangesAlert -->
+%STARTINCLUDE%
+Users subscribe to email notifications using their %TWIKIWEB%.WikiName or an alternative email address, and can specify the webs/topics they wish to track using one of these bullet list formats:
+
+_three spaces_ * [ _webname_ . ] _wikiName_ - _SMTP mail address_ <br />
+_three spaces_ * [ _webName_ . ] _wikiName_ <br />
+_three spaces_ * _SMTP mail address_ <br />
+_three spaces_ * _SMTP mail address_ : _topics_ <br />
+_three spaces_ * [ _webname_ . ] _wikiName_ : _topics_
+
+In the above examples, _topics_ is a space-separated list of topic names. The user may further customize the specific content they will receive using the following formats:
+   * Specify topics without a _Web._ prefix
+   * Topics must exist in this web.
+   * Topics may be specified using * wildcards
+   * Each topic may optionally be preceded by a '+' or '-' sign. The '+' sign means "subscribe to this topic" (the same as not putting anything). The '-' sign means "unsubscribe" or "don't send notifications regarding this topic". This allows users to elect to filter out certain topics (and their children, to an arbitrary depth). Topic filters ('-') take precedence over topic includes ('+').
+   * Each topic may optionally be followed by an integer in parentheses, indicating the depth of the tree of children below that topic. Changes in all these children will be detected and reported along with changes to the topic itself. _Note_ This uses the TWiki "Topic parent" feature.
+   * Each topic may optionally be immediately followed by an exclamation mark ! or a question mark ? with no intervening spaces, indicating that the topic (and children if there is a tree depth specifier as well) should be mailed out as *complete topics* instead of change summaries. ! causes the topic to be mailed every time even if there have been no changes, ? will mail the topic only if there have been changes to it. This only makes sense for subscriptions.
+
+For example:
+Subscribe Daisy to all changes to topics in this web.
+<verbatim>
+   * daisy.cutter@@flowers.com
+</verbatim>
+Subscribe Daisy to all changes in all webs that start with =Web=.
+<verbatim>
+   * daisy.cutter@@flowers.com: Web*
+</verbatim>
+Subscribe Daisy to changes to topics starting with =Petal=, and their immediate children, !WeedKillers and children to a depth of 3, and all topics that match start with =Pretty= and end with =Flowers= e.g. =PrettyPinkFlowers=
+<verbatim>
+   * DaisyCutter: Petal* (1) WeedKillers (3) Pretty*Flowers
+</verbatim>
+Subscribe !StarTrekFan to changes to all topics that start with =Star= *except* those that end in =Wars=, =sInTheirEyes= or =shipTroopers=.
+<verbatim>
+   * StarTrekFan: Star* - *Wars - *sInTheirEyes - *shipTroopers
+</verbatim>
+Subscribe Daisy to the full content of !NewsLetter whenever it has changed
+<verbatim>
+   * daisy@@flowers.com: NewsLetter?
+</verbatim>
+Subscribe buttercup to !NewsLetter and its immediate children, even if it hasn't changed.
+<verbatim>
+   * buttercup@@flowers.com: NewsLetter! (1)
+</verbatim>
+Subscribe !GardenGroup (which includes Petunia) to all changed topics under !AllnewsLetters to a depth of 3. Then unsubscribe Petunia from the !ManureNewsLetter, which she would normally get as a member of GardenGroup:
+<verbatim>
+   * GardenGroup: AllNewsLetters? (3)
+   * petunia@@flowers.com: - ManureNewsLetter
+</verbatim>
+A user may be listed many times in the <nop>%NOTIFYTOPIC% topic. Where a user has several lines in <nop>%NOTIFYTOPIC% that all match the same topic, they will only be notified about _changes_ that topic _once_ (though they will still receive individual mails for news topics).
+
+If a _TWiki group_ is listed for notification, the group will be recursively expanded to the e-mail addresses of all members.
+
+__%T% Tip:__ List names in alphabetical order to make it easier to find the names.
+%STOPINCLUDE%
+
+In the future it is intended that individual users will be able to control the frequency with which they are notified of topic changes, by changing a schedule specification in their home topic. However at present, the notification schedule is controlled by the frequency of activation of the =cron= job that runs the =mailnotify= script.
+
+%RED% __Note__ =mailnotify= ignores permissions in webs. It is entirely possible for a user to get added to one of the subscription topics in a web, when they are not authorised to view the topics in that web. This could result in them having access to sensitive information, particularly with news mode. %ENDCOLOR%
+
+Note that when using the "news mode" ! or ? specifiers are used the entire topic text is mailed out as HTML. The =newsletter= template is used to generate the content in this mail, using whatever skin is selected in the topic being mailed.
+
+In addition, the %<nop>STARTPUBLISH% and %<nop>STOPPUBLISH% markers used by TWiki:Plugins.PublishContrib to delimit the text to be published are respected.
+
+---+ <code>TWiki/Contrib/MailerContrib</code> code library
+The second part of the module is a code library that provides the services for other applications to modify the subscription topics through a clean, well documented API. This allows (for example) plugin developers to add (for example) a "Register me for this newsletter" button to their pages. The main interface is the =Web<nop>Notify= package described below.
+
+---+ package TWiki::Contrib::MailerContrib::WebNotify
+Object that represents the contents of a %NOTIFYTOPIC% topic in a TWiki web
+
+
+---++ ClassMethod new($web, $topic)
+Create a new object by parsing the content of the given topic in the
+given web. This is the normal way to load a %NOTIFYTOPIC% topic. If the
+topic does not exist, it will create an empty object.
+
+
+---++ ObjectMethod writeWebNotify()
+Write the object to the %NOTIFYTOPIC% topic it was read from.
+If there is a problem writing the topic (e.g. it is locked),
+the method will return an error message. If everything is ok
+it will return undef.
+
+
+---++ ObjectMethod getSubscriber($name, $noAdd)
+   * =$name= - Name of subscriber (wikiname with no web or email address)
+   * =$noAdd= - If false or undef, a new subscriber will be created for this name
+Get a subscriber from the list of subscribers, and return a reference
+to the Subscriber object. If $noAdd is true, and the subscriber is not
+found, undef will be returned. Otherwise a new Subscriber object will
+be added if necessary.
+
+
+---++ ObjectMethod getSubscribers()
+Get a list of all subscriber names (unsorted)
+
+
+---++ ObjectMethod subscribe($name, $topics, $depth)
+   * =$name= - Name of subscriber (wikiname with no web or email address)
+   * =$topics= - wildcard expression giving topics to subscribe to
+   * =$depth= - Child depth to scan (default 0)
+   * =$mode= - ! if this is a non-changes subscription and the topics should
+   be mailed evebn if there are no changes. ? to mail the full topic only
+   if there are changes. undef to mail changes only.
+Add a subscription, adding the subscriber if necessary.
+
+
+---++ ObjectMethod unsubscribe($name, $topics, $depth)
+   * =$name= - Name of subscriber (wikiname with no web or email address)
+   * =$topics= - wildcard expression giving topics to subscribe to
+   * =$depth= - Child depth to scan (default 0)
+Add an unsubscription, adding the subscriber if necessary. An unsubscription
+is a specific request to ignore notifications for a topic for this
+particular subscriber.
+
+
+---++ ObjectMethod stringify() -> string
+Return a string representation of this object, in %NOTIFYTOPIC% format.
+
+
+---++ ObjectMethod processChange($change, $db, $changeSet, $seenSet, $allSet)
+   * =$change= - ref of a TWiki::Contrib::Mailer::Change
+   * =$db= - TWiki::Contrib::MailerContrib::UpData database of parent references
+   * =$changeSet= - ref of a hash mapping emails to sets of changes
+   * =$seenSet= - ref of a hash recording indices of topics already seen
+   * =$allSet= - ref of a hash that maps topics to email addresses for news subscriptions
+Find all subscribers that are interested in the given change. Only the most
+recent change to each topic listed in the .changes file is retained. This
+method does _not_ change this object.
+
+
+---++ ObjectMethod processCompulsory($topic, $db, \%allSet)
+   * =$topic= - topic name
+   * =$db= - TWiki::Contrib::MailerContrib::UpData database of parent references
+   * =\%allSet= - ref of a hash that maps topics to email addresses for news subscriptions
+
+
+---++ ObjectMethod isEmpty() -> boolean
+Return true if there are no subscribers
+
+
+---+ package TWiki::Contrib::MailerContrib::Subscriber
+Object that represents a subscriber to notification. A subscriber is
+a name (which may be a wikiName or an email address) and a list of
+subscriptions which describe the topis subscribed to, and
+unsubscriptions representing topics they are specifically not
+interested in. The subscriber
+name may also be a group, so it may expand to many email addresses.
+
+
+---++ ClassMethod new($name)
+   * =$name= - Wikiname, with no web, or email address, of user targeted for notification
+Create a new user.
+
+
+---++ ObjectMethod getEmailAddresses() -> list
+Get a list of email addresses for the user(s) represented by this
+subscription
+
+
+---++ ObjectMethod subscribe($subs)
+   * =$subs= - Subscription object
+Add a new subscription to this subscriber object.
+The subscription will always be added, even if there is
+a wildcard overlap with an existing subscription.
+
+
+---++ ObjectMethod unsubscribe($subs)
+   * =$subs= - Subscription object
+Add a new unsubscription to this subscriber object.
+The unsubscription will always be added, even if there is
+a wildcard overlap with an existing subscription or unsubscription.
+
+An unsubscription is a statement of the subscribers desire _not_
+to be notified of changes to this topic.
+
+
+---++ ObjectMethod isSubscribedTo($topic) -> $subscription
+   * =$topic= - Topic object we are checking
+   * =$db= - TWiki::Contrib::MailerContrib::UpData database of parents
+Check if we have a subscription to the given topic. Return the subscription
+that matches if we do, undef otherwise.
+
+
+---++ ObjectMethod isUnsubscribedFrom($topic) -> $subscription
+   * =$topic= - Topic object we are checking
+   * =$db= - TWiki::Contrib::MailerContrib::UpData database of parents
+Check if we have an unsubscription from the given topic. Return the subscription that matches if we do, undef otherwise.
+
+
+---++ ObjectMethod stringify() -> string
+Return a string representation of this object, in Web<nop>Notify format.
+
+
+---+ package TWiki::Contrib::MailerContrib::Subscription
+Object that represents a single subscription of a user to
+notification on a page. A subscription is expressed as a page
+spec (which may contain wildcards) and a depth of children of
+matching pages that the user is subscribed to.
+
+
+---++ ClassMethod new($pages, $childDepth, $news)
+   * =$pages= - Wildcarded expression matching subscribed pages
+   * =$childDepth= - Depth of children of $topic to notify changes for. Defaults to 0
+   * =$mode= - ! if this is a non-changes subscription and the topics should
+   be mailed evebn if there are no changes. ? to mail the full topic only
+   if there are changes. undef to mail changes only.
+Create a new subscription.
+
+
+---++ ObjectMethod stringify() -> string
+Return a string representation of this object, in Web<nop>Notify format.
+
+
+---++ ObjectMethod matches($topic, $db, $depth) -> boolean
+   * =$topic= - Topic object we are checking
+   * =$db= - TWiki::Contrib::MailerContrib::UpData database of parent names
+   * =$depth= - If non-zero, check if the parent of the given topic matches as well. undef = 0.
+Check if we match this topic. Recurses up the parenthood tree seeing if
+this is a child of a parent that matches within the depth range.
+
+
+---++ ObjectMethod getMode() -> $mode
+Return ! if this is a non-changes subscription and the topics should
+be mailed even if there are no changes. ? to mail the full topic only
+if there are changes. undef to mail changes only.
+
+
+---
+---+ package TWiki::Contrib::MailerContrib::Change
+Object that represents a change to a topic.
+
+
+---++ ClassMethod new($web)
+   * =$web= - Web name
+   * =$topic= - Topic name
+   * =$author= - String author of change
+   * =$time= - String time of change
+   * =$rev= - Revision identifier
+Construct a new change object.
+
+
+---++ ObjectMethod merge($change)
+   * =$change= - Change record to merge
+Merge another change record with this one, so that the combined
+record is a reflection of both changes.
+
+
+---++ ObjectMethod expandHTML($html) -> string
+   * =$html= - Template to expand keys within
+Expand an HTML template using the values in this change. The following
+keys are expanded: %<nop>TOPICNAME%, %<nop>AUTHOR%, %<nop>TIME%,
+%<nop>REVISION%, %<nop>TEXTHEAD%.
+
+Returns the expanded template.
+
+
+---++ ObjectMethod expandPlain() -> string
+Generate a plaintext version of this change.
+
+
+---+ package TWiki::Contrib::MailerContrib::UpData
+Object that lazy-scans topics to extract
+parent relationships.
+
+
+---++ ClassMethod new($web)
+   * =$web= - Web we are building parent relationships for
+Constructor for a web; initially empty, will lazy-load as topics
+are referenced.
+
+
+---++ ObjectMethod getParent($topic) -> string
+Get the name of the parent topic of the given topic
+
+
+---+ package TWiki::Contrib::Mailer
+
+Package of support for extended Web<nop>Notify notification, supporting per-topic notification and notification of changes to children.
+
+Also supported is a simple API that can be used to change the Web<nop>Notify topic from other code.
+
+
+---++ StaticMethod mailNotify($webs, $session, $verbose)
+   * =$webs= - filter list of names webs to process. Wildcards (*) may be used.
+   * =$session= - optional session object. If not given, will use a local object.
+   * =$verbose= - true to get verbose (debug) output
+
+Main entry point.
+
+Process the Web<nop>Notify topics in each web and generate and issue
+notification mails. Designed to be invoked from the command line; should
+only be called by =mailnotify= scripts.
+
+
+
+---+ Installation Instructions
+You do not need to install anything in the browser to use this extension. The following instructions are for the administrator who installs the extension on the server where TWiki is running.
+
+Like many other TWiki extensions, this module is shipped with a fully automatic installer script written using the Build<nop>Contrib.
+   * If you have TWiki 4.1 or later, and Perl 5.8, you can install from the =configure= interface (Go to Plugins->Find More Extensions)
+      * The webserver user has to have permission to write to all areas of your installation for this to work.
+   * If you have a permanent connection to the internet (and Perl 5.8), you are recommended to use the automatic installer script
+      * Just download the =MailerContrib_installer= perl script and run it.
+   * *Notes:*
+      * The installer script will:
+         * Automatically resolve dependencies,
+         * Copy files into the right places in your local install (even if you have renamed data directories),
+         * check in new versions of any installed files that have existing RCS histories files in your existing install (such as topics).
+         * If the $TWIKI_PACKAGES environment variable is set to point to a directory, the installer will try to get archives from there. Otherwise it will try to download from twiki.org or cpan.org, as appropriate.
+         * (Developers only: the script will look for twikiplugins/MailerContrib/MailerContrib.tgz before downloading from TWiki.org)
+      * If you don't have a permanent connection, you can still use the automatic installer, by downloading all required TWiki archives to a local directory.
+         * Point the environment variable =$TWIKI_PACKAGES= to this directory, and the installer script will look there first for required TWiki packages.
+            * =$TWIKI_PACKAGES= is actually a path; you can list several directories separated by :
+         * If you are behind a firewall that blocks access to CPAN, you can build a local CPAN mini-mirror, as described at http://twiki.org/cgi-bin/view/Codev/BuildingDakar#CPAN_local_minimirror
+   * If you don't want to use the installer script, or have problems on your platform (e.g. you don't have Perl 5.8), then you can still install manually:
+      1 Download and unpack one of the =.zip= or =.tgz= archives to a temporary directory.
+      1 Manually copy the contents across to the relevant places in your TWiki installation.
+      1 Check in any installed files that have existing =,v= files in your existing install (take care *not* to lock the files when you check in)
+      1 Manually edit !LocalSite.cfg to set any configuration variables.
+      1 Run =configure= and enable the module, if it is a plugin.
+      1 Repeat from step 1 for any missing dependencies.
+
+   * To make sure the installation was successful, run the =mailnotify= script from the command line, with no parameters. In this case it will print out what it would have done to STDOUT.
+
+---++ Setting up your cron job(s)
+You need to set up a =cron= (or equivalent) job to run =tools/mailnotify=.
+
+Usage: <code>perl -I &lt;bin&gt; mailnotify [-q] [-news] [ <i>web1 web2 ... webN</i> ]</code>
+&lt;bin&gt; is the path to the TWiki bin directory, so that the script can find the rest of TWiki.
+| =-q= | Don't print progress information |
+| =-news= | Run in news mode (process !NewsNotify instead of <nop>%NOTIFYTOPIC%) |
+| <code><i>web1 web2 ... webN</i></code> | List of webs to process, separated by spaces or commas. Default is to process all legal TWiki webs. Wildcards (*) are supported. |
+For example, assuming TWiki was installed at =/usr/local/twiki=, this cron entry:
+<verbatim>
+0 0 * * * cd /usr/local/twiki && perl -I bin tools/mailnotify -q Public Private
+</verbatim>
+will generate change notifications for the =Public= and =Private= webs every night at midnight.
+<verbatim>
+0 0 * * 0 cd /usr/local/twiki && perl -I bin tools/mailnotify -news
+</verbatim>
+will generate newsletters from *all* webs every week on midnight Saturday.
+
+<!--
+	* Set STUB = TWiki::Contrib::Mailer
+	* Set SHORTDESCRIPTION = Supports e-mail notification of changes.
+-->
+---+ Developer Notes
+The changes mails sent to users are based on a TWiki template called =mailnotify=. This template must contain the following definitions. 
+| =HTML:before= | Section of a HTML mail before the changes |
+| =HTML:middle= | Repeated in a HTML mail for each change |
+| =HTML:after= | Section of a HTML mail after the changes |
+| =PLAIN:before= | Section of a plain text mail before the changes |
+| =PLAIN:middle= | Repeated in a plain text mail for each changes |
+| =PLAIN:after= | Section of a plain text mail after the changes |
+| =MailNotifyBody= | All the above are embedded in this. %<nop>HTML_TEXT% expands to the HTML obtained by expanding the =HTML:*= templates, and %<nop>PLAIN_TEXT% from the =PLAIN:*= templates. |
+The default template sends multipart mails containing both HTML and plaintext versions. You can easily provide a custom version of this template using a local skin.
+
+Newsletters are sent after formatting using the standard =view= template, using whatever skin is selected in the topic being mailed.
+
+---++ Contrib Info
+
+|  Author: | TWiki:Main/CrawfordCurrie (http://c-dot.co.uk) |
+|  Copyright &copy;: | 2004, Wind River Systems; 2006, http://WikiRing.com |
+|  License: | GPL |
+|  Change History: | |
+|  12496 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item3415'>Item3415</a> mailnotify did not send notifications to intranet users because of wrong call to findUser. |
+|  11672 | Added newsletter support, after much harassment from TWiki:Main.LynnwoodBrown |
+|  11534 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item2153'>Item2153</a> Clarified docs.  <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item2698'>Item2698</a> Improved error reporting. |
+|  8808 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1654'>Item1654</a>  mailnotify must enter the command_line context |
+|  8625 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1508'>Item1508</a>  Making the dashes in the separatator clearer |
+|  8606 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1508'>Item1508</a>  MailerContrib: Brushing up HTML mailnotify template |
+|  8602 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1508'>Item1508</a>  MailerContrib: Cleaning up plaintext e-mail template, removing TEXTAREA |
+|  8522 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1511'>Item1511</a>  arguments to getScriptUrl in wrong order :-( |
+|  8434 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1465'>Item1465</a>  Fix 'TWiki.' to '%TWIKIEB%.' |
+|  8398 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1460'>Item1460</a>  polished up the comment a bit |
+|  8308 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1362'>Item1362</a>  moving mailnotify cron script |
+|  7848 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item1167'>Item1167</a>  forced all mail operations to generate absolute URLs |
+|  7568 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item910'>Item910</a>  use SCRIPTURL{view} instead of complex url expr |
+|  6864 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item624'>Item624</a>  mailer templates moved the the right places |
+|  6861 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item624'>Item624</a>  Added proper templates support for plain text mails |
+|  6809 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item623'>Item623</a>  don't print anything if verbosity is switched off. |
+|  6659 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item528'>Item528</a>  Updated MailerContrib. it's working and the sendmail parameter is used. |
+|  6474 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item420'>Item420</a>  removed spurious remove_obsolete_locks from MailerContrib |
+|  5924 | <a rel='nofollow' href='http://develop.twiki.org/~twiki4/cgi-bin/view/Bugs/Item153'>Item153</a>  fix mail URL-fixing scheme |
+|  5269 | Minor doc fixes |
+|  5266 | Doc tidy-ups, added filtering of _ webs, added obsolete lock script |
+|  5264 | Changed default to add web name to user name (I hope) |
+|  5263 | Minor doc tidyups |
+|  5261 | Documentation changes, and fixed to scan all webs. |
+|  5253 | runnable as CGI script, minor bugfixes, removed dependency on DBCacheContrib |
+|  5234 | Minor doc changes |
+|  5231 | Made a change an object, added unit tests to CVS, lots of testing. |
+|  4 March 2005 | 1.010 Dakar release ready. |
+|  12 Oct 2004 | 1.004 Added support for anti-subscriptions. Doc fixes from TWiki:Main.PeterThoeny. Bug fixes to permissions code. Back-off and retry if the mailer can't be reached (should really be in Net::sendEmail) |
+|  6 Oct 2004 | 1.003 Excluded _ webs from processing, added =bin/remove_obsolete_locks= for full reverse-compatibility |
+|  1 Oct 2004 | 1.002 Peter<nop>Thoeny provided additional documentation |
+|  27 Sep 2004 | 1.001 runnable as CGI script, minor bugfixes, removed dependency on DB<nop>CacheContrib |
+|  8 Sep 2004 | 1.000 Initial version |
+|  Home: | TWiki:Plugins/%TOPIC% |
+|  Feedback: | TWiki:Plugins/%TOPIC%Dev |
+|  Appraisal: | http://TWiki.org/cgi-bin/view/Plugins/%TOPIC%Appraisal |
+
+
+@
+
+
+1.3
+log
+@buildrelease
+@
+text
+@d1 1
+d4 4
+a7 1
+Add-on to the TWiki kernel that supports e-mail notification of changes.
+d24 5
+a28 3
+---++ Summary of Contents
+---+++ <code>tools/mailnotify</code>
+The main part of the mailer module is a script, =tools/mailnotify=. This script is designed to be run from 'cron' (or an equivalent offline job scheduler), and processes the contents of the standard <nop>%NOTIFYTOPIC% topic. As well as providing the usual notification service, it also provides per-topic notification services. The script may be run from the command line or a cron job.
+d30 3
+d35 1
+a35 1
+Subscribers are listed in <nop>%NOTIFYTOPIC% following one of these bullet list formats:
+d43 1
+a43 1
+where _topics_ is a space-separated list of topic names.
+d47 1
+d49 1
+a49 1
+   * Each topic may optionally be preceded by a '+' or '-' sign. The '+' sign means "subscribe to this topic" (the same as not putting anything). The '-' sign means "don't send notifications regarding this topic". This allows users to elect to filter out changes to certain topics (and their children, to an arbitrary depth). Topic filters ('-') take precedence over topic includes ('+').
+d52 25
+d78 2
+a79 4
+   * daisy@@flowers.com
+   * daisy@@flowers.com: Web*
+   * DaisyCutter: Petal* (1) WeedKillers (3) Red*Phlox
+   * StarTrekFan: * - *Wars - *sInTheirEyes - *shipTroopers
+d81 1
+a81 1
+A user may be listed many times in the <nop>%NOTIFYTOPIC% topic. Where a user has several lines in <nop>%NOTIFYTOPIC% that all match the same topic, they will only be notified of changes to that topic _once_.
+d90 124
+a213 1
+%RED% __Note__ =mailnotify= ignores permissions in webs. It is entirely possible for a user to get added to a <nop>%NOTIFYTOPIC% topic in a web, when they are not authorised to view the topics in that web. This could result in them having limited access to sensitive information (the topic summaries). %ENDCOLOR%
+a214 2
+---+++ <code>TWiki/Contrib/MailerContrib</code> code library
+The second part of the module is a code library that provides the services for other applications to modify <nop>%NOTIFYTOPIC% through a clean, well documented interface. This allows (for example) plugin developers to add a "Register me for notification" button to their pages. The main interface is the =Web<nop>Notify= package described below.
+d216 139
+a354 5
+---++ Installation Instructions
+This Contrib is pre-installed as part of the TWiki release package, and should only have to be re-installed if an upgrade is required.
+   * Download the ZIP file from the Plugin web (see below)
+   * Unzip ==%TOPIC%.zip== in your twiki installation directory.
+   * Run the installer script =MailContrib_intaller.pl= or alternatively resolve all dependencies manually.
+d357 2
+a358 2
+---++ Setting up your cron job
+You need to set up a =cron= (or equivalent) job to run =mailnotify=.
+d360 2
+a361 2
+<code>Usage: perl -I &lt;bin&gt; mailnotify [-q] [ <i>web1 web2 ... webN</i> ]</code>
+&lt;bin&gt; is the path to the TWiki bin directory (usually =../bin=), so that the script can find the rest of TWiki.
+d363 1
+d365 9
+a373 1
+For example, =perl -I /usr/local/twiki/bin mailnotify -q Public Private= will generate notifications for the Public and Private webs.
+d375 1
+a375 1
+---++ Settings
+d378 13
+d395 1
+a395 1
+|  Copyright &copy;: | 2004, Wind River Systems |
+d397 28
+a424 25
+| Change History: | |
+| 8808 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1654'>Item1654</a>  mailnotify must enter the command_line context |
+| 8625 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1508'>Item1508</a>  Making the dashes in the separatator clearer |
+| 8606 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1508'>Item1508</a>  MailerContrib: Brushing up HTML mailnotify template |
+| 8602 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1508'>Item1508</a>  MailerContrib: Cleaning up plaintext e-mail template, removing TEXTAREA |
+| 8522 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1511'>Item1511</a>  arguments to getScriptUrl in wrong order :-( |
+| 8434 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1465'>Item1465</a>  Fix 'TWiki.' to '%TWIKIEB%.' |
+| 8398 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1460'>Item1460</a>  polished up the comment a bit |
+| 8308 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1362'>Item1362</a>  moving mailnotify cron script |
+| 7848 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item1167'>Item1167</a>  forced all mail operations to generate absolute URLs |
+| 7568 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item910'>Item910</a>  use SCRIPTURL{view} instead of complex url expr |
+| 6864 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item624'>Item624</a>  mailer templates moved the the right places |
+| 6861 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item624'>Item624</a>  Added proper templates support for plain text mails |
+| 6809 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item623'>Item623</a>  don't print anything if verbosity is switched off. |
+| 6659 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item528'>Item528</a>  Updated MailerContrib. it's working and the sendmail parameter is used. |
+| 6474 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item420'>Item420</a>  removed spurious remove_obsolete_locks from MailerContrib |
+| 5924 | <a rel='nofollow' href='http://develop.twiki.org/~develop/cgi-bin/view/Bugs/Item153'>Item153</a>  fix mail URL-fixing scheme |
+| 5269 | Minor doc fixes |
+| 5266 | Doc tidy-ups, added filtering of _ webs, added obsolete lock script |
+| 5264 | Changed default to add web name to user name (I hope) |
+| 5263 | Minor doc tidyups |
+| 5261 | Documentation changes, and fixed to scan all webs. |
+| 5253 | runnable as CGI script, minor bugfixes, removed dependency on DBCacheContrib |
+| 5234 | Minor doc changes |
+| 5231 | Made a change an object, added unit tests to CVS, lots of testing. |
+@
+
+
+1.2
+log
+@buildrelease
+@
+text
+@d1 4
+a4 1
+%META:TOPICINFO{author="TWikiContributor" date="1111929255" format="1.0" version="2"}%
+d12 1
+a12 1
+   Instead, you could check your fix in, raise a bug in the Bugs web, or mail thge author.
+d14 1
+a14 1
+This module is an add-on to the TWiki kernel that supports e-mail notification of changes.
+d20 2
+a21 2
+---+ Summary of Contents
+---++ <code>tools/mailnotify</code>
+d59 1
+a59 1
+---++ <code>TWiki/Contrib/MailerContrib</code> code library
+d62 1
+a62 1
+---+ Installation Instructions
+d69 1
+a69 1
+---+ Setting up your cron job
+d72 2
+a73 2
+<code>Usage: perl -I <bin> tools/mailnotify [-q] [ <i>web1 web2 ... webN</i> ]</code>
+<bin> is the path to the TWiki bin directory, so that the script can find the rest of TWiki.
+d78 3
+a80 3
+---+ Settings
+   * Name of the perl package
+      * Set STUB = TWiki::Contrib::Mailer
+d82 1
+a82 1
+---+ Contrib Info
+d120 1
+a121 1
+__Related Topics:__ %TWIKIWEB%.TWikiPreferences
+a122 1
+-- TWiki:Main/CrawfordCurrie
+@
+
+
+1.1
+log
+@buildrelease
+@
+text
+@d1 2
+a2 1
+%META:TOPICINFO{author="TWikiContributor" date="1111929255" format="1.0" version="1"}%
+d4 7
+d13 2
+d32 5
+a36 5
+	* Specify topics without a _Web._ prefix
+	* Topics must exist in this web.
+	* Topics may be specified using * wildcards
+	* Each topic may optionally be followed by an integer in parentheses, indicating the depth of the tree of children below that topic. Changes in all these children will be detected and reported along with changes to the topic itself. _Note_ This uses the TWiki "Topic parent" feature.
+	* Each topic may optionally be preceded by a '+' or '-' sign. The '+' sign means "subscribe to this topic" (the same as not putting anything). The '-' sign means "don't send notifications regarding this topic". This allows users to elect to filter out changes to certain topics (and their children, to an arbitrary depth). Topic filters ('-') take precedence over topic includes ('+').
+d40 4
+a43 4
+	* daisy@@flowers.com
+	* daisy@@flowers.com: Web*
+	* DaisyCutter: Petal* (1) WeedKillers (3) Red*Phlox
+	* StarTrekFan: * - *Wars - *sInTheirEyes - *shipTroopers
+d61 4
+a64 4
+	* Download the ZIP file from the Plugin web (see below)
+	* Unzip ==%TOPIC%.zip== in your twiki installation directory.
+	* Run the installer script =MailContrib_intaller.pl= or alternatively resolve all dependencies manually.
+	* To make sure the installation was successful, run the =mailnotify= script from the command line, with no parameters. In this case it will print out what it would have done to STDOUT.
+d76 2
+a77 2
+	* Name of the perl package
+		* Set STUB = TWiki::Contrib::Mailer
+d84 25
+a108 1
+|  Change&nbsp;History: | <!-- versions below in reverse order -->&nbsp; |
+@

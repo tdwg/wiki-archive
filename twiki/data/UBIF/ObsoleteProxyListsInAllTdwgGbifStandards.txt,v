@@ -1,0 +1,574 @@
+head	1.19;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.19
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2006.05.08.10.42.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2005.03.21.22.46.09;	author JenniferForman;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2004.07.15.18.24.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2004.06.11.09.08.11;	author GregorHagedorn;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2004.06.10.06.25.41;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.06.07.11.30.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.06.07.03.29.38;	author BobMorris;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.06.06.13.54.09;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.06.05.15.16.25;	author BryanHeidorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.06.03.15.44.37;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.06.03.13.57.08;	author DonaldHobern;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.06.02.11.32.00;	author BobMorris;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.05.30.22.05.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.05.28.17.14.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.28.15.30.31;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.05.28.13.11.27;	author BryanHeidorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.05.28.12.22.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.05.28.11.09.52;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.19
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147084970" format="1.1" version="1.18"}%
+%META:TOPICPARENT{name="ObsoleteTopicObsoleteTopicProxyDataModel"}%
+(This relates to ObsoleteTopicObsoleteTopicProxyDataModel and UBIF.TopLevelStructure, please also check there!)
+---
+
+At the SDD meeting 2003 in Lisbon we decided to distribute the different kind of <nop>ProxyData into two root sections: <em>Entities</em> for <nop>ClassNames, <nop>ClassHierarchies, and <nop>DescribedObjects, because these are central to the task of describing, and <em>Resources</em> for Agents, Geography, Publications, Media. 
+
+This view is clearly SDD-centric and not applicable to other TDWG/GBIF standards. We may have to find a new solution. In UBIF.TopLevelStructure at the bottom a proposal exists to have a section <nop>ProxyData in the general part, followed by <nop>DescriptiveData for SDD-specific parts.
+
+<nop>ExternalDataInterface seems to be complicated, but is the best I can come up with other than <nop>ProxyData itself. None seems to be fully intuitive.
+
+Any suggestions for a better term? That is: what shall we call all these "lists of things in the outside world" which we use while describing or exchanging specimen or taxon name/concept data? "Resources" as used in pre-Lisbon SDD for all kind of external data may indeed by a bad name for it, and I think this is one reason for the decision to call those parts most relevant for SDD "Entities".
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+---
+
+"ExternalDataInterface" is a very descriptive term and should work fine even if it is a bit long. It even conveniently had the abbreviation EDI. Proxy is a poor term because we are not refering to any kind of forwarding or security mechanism nor does "ProxyData" need come from a "ProxyServer". This may not be as much of an issue for non-network people.
+
+-- Main.BryanHeidorn - 28 May 2004   
+
+We settled on Proxy from the Design Pattern sense: "Proxy a surrogate or placeholder for another object to control access to it". This is more general than just stuff available as as external interface of some kind, but does include those, web services and guids (as do our Proxy objects). Almost any of the first few google hits on "Proxy Design Pattern" will give a good overview. I would resist "ExternalDataInterface" because _it_ is not as general as we mean.
+
+-- Main.BobMorris - 28 May 2004
+
+I agree with you, Bob, insofar as that "Proxy" may be used more generally. On the other hand wonder if by naming the section so, we fail to communicate the purpose of this design pattern. This is why I have reservations about calling the section <nop>ProxyData. So can we ask in Bryan's sense: is "ExternalDataInterface" is a good descriptive term for those things actually in there now and conceivably in the future? My feeling is that where the proxy pattern would be used in other ways, the data would not end up in the container section in the GBIF/TDWG common infrastructure part (Grrrr, I want a name for this! See UBIF.ResolvedTopicCommonSchemaSearchingName).
+
+Bob, can you give a scenario/use case/example of a use of proxy data definitions that does not represent an Interface to external data, but which should be bundled with these sections? -- Bryan, do you think the element should rather be named "EDI", or do you mean only that this is useful for documentation and discussion? (Please answer here, before the figure below)
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+
+---
+At the moment I can't, so maybe I have to concede abandoning Proxy. Indeed, your layout below clarifies substantially and makes me pretty willing to go with something other than Proxy. "ExternalDataInterface" is OK with me. "Interface" comes with a lot of baggage for programmers, but I really can't think of anything else. I have minor points on your layout, which I discuss below. -- Main.BobMorris - 02 Jun 2004
+
+---
+
+Any other proposals for the name of this UBIF.ResolvedTopicCommonSchemaSearchingName section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and <nop>ExternalDataInterface.
+
+[In [[http://wiki.cs.umb.edu/twiki/bin/view/SDD/ObsoleteProxyListsInAllTdwgGbifStandards?rev=1.12][version r.12]] of this topic, Bob Morris and I had a discussion caused by a misunderstanding of the diagram. Bob thought it was meant as a proposal with all of Entities, Resources, and <nop>ExternalDataInterface. Please note that the diagram is meant to show two design options in parallel: the previous SDD-centric layout with entities and resources and as a new proposal the <nop>ExternalDataInterface. The new EDI is thought to address all TDWG standards like ABCD, SDD, Taxon Names.]
+
+<p style="text-align:center"><img src="%ATTACHURLPATH%/ProxySectionOldNewEDI.png" alt="ProxySectionOldNewEDI.png"  /><p>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+---
+
+I'm happy to move away from calling these things proxies.  I'd suggest that a possible alternative to <nop>ExternalDataInterface would be <nop>ExternalDataSource, since that is a little closer to what we are describing.
+
+-- Main.DonaldHobern - 03 Jun 2004
+
+I currently view it that we realize an interface to external data sources by using the ObsoleteTopicObsoleteTopicProxyDataModel mechanism. So the proxy idea does not fully disappear, but I propose to name this by purpose rather then by type that is used.
+
+Regarding <strong>ExternalDataSource</strong>: Basically fine as in the above statement. I worry, however, that this is misunderstood as the external datasource for the dataset content (i. e. the <nop>DescriptiveData element in the graph above). Can this be avoid by another modification of the term? So with <nop>ExternalDataInterface I mean: "Interface to external data sources that are being used by the dataset or the payload container (e. g. <nop>DescriptiveData)."
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 03 Jun 2004
+
+I did intend for the term, "ExternalDataInterface" to be used as the name, not just for discussion. I however agree with Bob that the term "interface" does have some programmer baggage that we may not want. The Merriam-Webster definition of proxy is from Middle English 1 : the agency, function, or office of a deputy who acts as a substitute for another 2 a : authority or power to act for another b : a document giving such authority; specifically : a power of attorney authorizing a specified person to vote corporate stock 3 : a person authorized to act for another : PROCURATOR - proxy adjective http://www.merriam-webster.com/cgi-bin/dictionary?book=Dictionary&va=proxy&x=11&y=17
+
+Interestingly, the synonym is "agent" I was tempted for a moment to call it "EnternalDataAgent" but realized that "agent" has nearly as much baggage in computer science as interface. Perhaps the solution is a melding of the two which acknowledges the parallelism between the external data model and the internal. "ExternalDataProxy" captures a little more of the meaning beyond a simple "xml include" statement. It is a bit redundant but I not as worried about that. In fact, I have little objection to any of the names proposed if there is adequate annotation. 
+
+-- Main.BryanHeidorn - 05 Jun 2004   
+---
+
+The more we discuss this, the more I like the "Interface" metaphor. There is certainly some programmer baggage, but I think it is not misleading. First a general definition (from Merriam-Webster's Collegiate Dictionary): interface (noun) 1 a point where two systems, subjects, organizations, etc. meet and interact: the interface between accountancy and the law. There is also a specific computing definition, but the general one seems to me appropriate: The EDI section describes the point where the different biodiversity and external knowledge domains (library science, geography, multimedia management) meet and interact.
+
+Also, in an object-oriented programming sense, "interface" seems to be appropriate to me. The proxy objects inside EDI act like an interface class that defines only properties and no methods. Imagine that multiple publications databases with different, complex, and unknown internal datastructures and operations exist. If all implement the publication proxy interface class (see ProxyDataPublication), thus reducing or mapping their internal data to the proxy interface definition, a biodiversity application e. g. for descriptive data will be able to use these datasources in an interoperable way.
+
+I did not mean to give up the concept of proxies when proposing a more descriptive name for the specific usage of the proxy data pattern in the common data infrastructure part. The individual <nop>ClassName, Agent, Publication objects within the collections (not shown in diagram above) would still be of the proxy type. However, whereas the proxy objects within the <nop>ExternalDataInterface section all provide a more or less extensive data interface extension for the specifics of publication, agents, etc., other classes derived from the proxy base type may be defined inside the descriptive data container, to allow sharing terminology like glossary definitions. Since these would be proxies for known data models, they could contain the native rich model, and only provide the object linking mechanism and the cache functionality in case of temporarily broken connections.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 06 Jun 2004
+---
+
+
+%META:FILEATTACHMENT{name="ProxySectionOldNewEDI.png" attr="h" comment="" date="1085954436" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\ProxySectionOldNewEDI.png" size="25114" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1147084970" from="UBIF.UseProxyListsInAllTdwgGbifStandards" to="UBIF.ObsoleteProxyListsInAllTdwgGbifStandards"}%
+@
+
+
+1.18
+log
+@rename
+@
+text
+@d1 2
+@
+
+
+1.17
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="JenniferForman" date="1111445169" format="1.0" version="1.17"}%
+%META:TOPICPARENT{name="UBIF.ProxyDataModel"}%
+(This relates to UBIF.ProxyDataModel and UBIF.TopLevelStructure, please also check there!)
+d19 1
+a19 1
+-- Main.BryanHeidorn - 28 May 2004	
+d38 1
+a38 1
+[In [[http://wiki.cs.umb.edu/twiki/bin/view/SDD/UseProxyListsInAllTdwgGbifStandards?rev=1.12][version r.12]] of this topic, Bob Morris and I had a discussion caused by a misunderstanding of the diagram. Bob thought it was meant as a proposal with all of Entities, Resources, and <nop>ExternalDataInterface. Please note that the diagram is meant to show two design options in parallel: the previous SDD-centric layout with entities and resources and as a new proposal the <nop>ExternalDataInterface. The new EDI is thought to address all TDWG standards like ABCD, SDD, Taxon Names.]
+d49 1
+a49 1
+I currently view it that we realize an interface to external data sources by using the UBIF.ProxyDataModel mechanism. So the proxy idea does not fully disappear, but I propose to name this by purpose rather then by type that is used.
+d59 1
+a59 1
+-- Main.BryanHeidorn - 05 Jun 2004	
+d71 1
+d73 1
+a73 1
+%META:TOPICMOVED{by="GregorHagedorn" date="1089915684" from="SDD.UseProxyListsInAllTdwgGbifStandards" to="UBIF.UseProxyListsInAllTdwgGbifStandards"}%
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089915840" format="1.0" version="1.16"}%
+d3 68
+a70 68
+(This relates to UBIF.ProxyDataModel and UBIF.TopLevelStructure, please also check there!)
+---
+
+At the SDD meeting 2003 in Lisbon we decided to distribute the different kind of <nop>ProxyData into two root sections: <em>Entities</em> for <nop>ClassNames, <nop>ClassHierarchies, and <nop>DescribedObjects, because these are central to the task of describing, and <em>Resources</em> for Agents, Geography, Publications, Media. 
+
+This view is clearly SDD-centric and not applicable to other TDWG/GBIF standards. We may have to find a new solution. In UBIF.TopLevelStructure at the bottom a proposal exists to have a section <nop>ProxyData in the general part, followed by <nop>DescriptiveData for SDD-specific parts.
+
+<nop>ExternalDataInterface seems to be complicated, but is the best I can come up with other than <nop>ProxyData itself. None seems to be fully intuitive.
+
+Any suggestions for a better term? That is: what shall we call all these "lists of things in the outside world" which we use while describing or exchanging specimen or taxon name/concept data? "Resources" as used in pre-Lisbon SDD for all kind of external data may indeed by a bad name for it, and I think this is one reason for the decision to call those parts most relevant for SDD "Entities".
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+---
+
+"ExternalDataInterface" is a very descriptive term and should work fine even if it is a bit long. It even conveniently had the abbreviation EDI. Proxy is a poor term because we are not refering to any kind of forwarding or security mechanism nor does "ProxyData" need come from a "ProxyServer". This may not be as much of an issue for non-network people.
+
+-- Main.BryanHeidorn - 28 May 2004	
+
+We settled on Proxy from the Design Pattern sense: "Proxy a surrogate or placeholder for another object to control access to it". This is more general than just stuff available as as external interface of some kind, but does include those, web services and guids (as do our Proxy objects). Almost any of the first few google hits on "Proxy Design Pattern" will give a good overview. I would resist "ExternalDataInterface" because _it_ is not as general as we mean.
+
+-- Main.BobMorris - 28 May 2004
+
+I agree with you, Bob, insofar as that "Proxy" may be used more generally. On the other hand wonder if by naming the section so, we fail to communicate the purpose of this design pattern. This is why I have reservations about calling the section <nop>ProxyData. So can we ask in Bryan's sense: is "ExternalDataInterface" is a good descriptive term for those things actually in there now and conceivably in the future? My feeling is that where the proxy pattern would be used in other ways, the data would not end up in the container section in the GBIF/TDWG common infrastructure part (Grrrr, I want a name for this! See UBIF.ResolvedTopicCommonSchemaSearchingName).
+
+Bob, can you give a scenario/use case/example of a use of proxy data definitions that does not represent an Interface to external data, but which should be bundled with these sections? -- Bryan, do you think the element should rather be named "EDI", or do you mean only that this is useful for documentation and discussion? (Please answer here, before the figure below)
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+
+---
+At the moment I can't, so maybe I have to concede abandoning Proxy. Indeed, your layout below clarifies substantially and makes me pretty willing to go with something other than Proxy. "ExternalDataInterface" is OK with me. "Interface" comes with a lot of baggage for programmers, but I really can't think of anything else. I have minor points on your layout, which I discuss below. -- Main.BobMorris - 02 Jun 2004
+
+---
+
+Any other proposals for the name of this UBIF.ResolvedTopicCommonSchemaSearchingName section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and <nop>ExternalDataInterface.
+
+[In [[http://efgblade.cs.umb.edu/twiki/bin/view/SDD/UseProxyListsInAllTdwgGbifStandards?rev=1.12][version r.12]] of this topic, Bob Morris and I had a discussion caused by a misunderstanding of the diagram. Bob thought it was meant as a proposal with all of Entities, Resources, and <nop>ExternalDataInterface. Please note that the diagram is meant to show two design options in parallel: the previous SDD-centric layout with entities and resources and as a new proposal the <nop>ExternalDataInterface. The new EDI is thought to address all TDWG standards like ABCD, SDD, Taxon Names.]
+
+<p style="text-align:center"><img src="%ATTACHURLPATH%/ProxySectionOldNewEDI.png" alt="ProxySectionOldNewEDI.png"  /><p>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+---
+
+I'm happy to move away from calling these things proxies.  I'd suggest that a possible alternative to <nop>ExternalDataInterface would be <nop>ExternalDataSource, since that is a little closer to what we are describing.
+
+-- Main.DonaldHobern - 03 Jun 2004
+
+I currently view it that we realize an interface to external data sources by using the UBIF.ProxyDataModel mechanism. So the proxy idea does not fully disappear, but I propose to name this by purpose rather then by type that is used.
+
+Regarding <strong>ExternalDataSource</strong>: Basically fine as in the above statement. I worry, however, that this is misunderstood as the external datasource for the dataset content (i. e. the <nop>DescriptiveData element in the graph above). Can this be avoid by another modification of the term? So with <nop>ExternalDataInterface I mean: "Interface to external data sources that are being used by the dataset or the payload container (e. g. <nop>DescriptiveData)."
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 03 Jun 2004
+
+I did intend for the term, "ExternalDataInterface" to be used as the name, not just for discussion. I however agree with Bob that the term "interface" does have some programmer baggage that we may not want. The Merriam-Webster definition of proxy is from Middle English 1 : the agency, function, or office of a deputy who acts as a substitute for another 2 a : authority or power to act for another b : a document giving such authority; specifically : a power of attorney authorizing a specified person to vote corporate stock 3 : a person authorized to act for another : PROCURATOR - proxy adjective http://www.merriam-webster.com/cgi-bin/dictionary?book=Dictionary&va=proxy&x=11&y=17
+
+Interestingly, the synonym is "agent" I was tempted for a moment to call it "EnternalDataAgent" but realized that "agent" has nearly as much baggage in computer science as interface. Perhaps the solution is a melding of the two which acknowledges the parallelism between the external data model and the internal. "ExternalDataProxy" captures a little more of the meaning beyond a simple "xml include" statement. It is a bit redundant but I not as worried about that. In fact, I have little objection to any of the names proposed if there is adequate annotation. 
+
+-- Main.BryanHeidorn - 05 Jun 2004	
+---
+
+The more we discuss this, the more I like the "Interface" metaphor. There is certainly some programmer baggage, but I think it is not misleading. First a general definition (from Merriam-Webster's Collegiate Dictionary): interface (noun) 1 a point where two systems, subjects, organizations, etc. meet and interact: the interface between accountancy and the law. There is also a specific computing definition, but the general one seems to me appropriate: The EDI section describes the point where the different biodiversity and external knowledge domains (library science, geography, multimedia management) meet and interact.
+
+Also, in an object-oriented programming sense, "interface" seems to be appropriate to me. The proxy objects inside EDI act like an interface class that defines only properties and no methods. Imagine that multiple publications databases with different, complex, and unknown internal datastructures and operations exist. If all implement the publication proxy interface class (see ProxyDataPublication), thus reducing or mapping their internal data to the proxy interface definition, a biodiversity application e. g. for descriptive data will be able to use these datasources in an interoperable way.
+
+I did not mean to give up the concept of proxies when proposing a more descriptive name for the specific usage of the proxy data pattern in the common data infrastructure part. The individual <nop>ClassName, Agent, Publication objects within the collections (not shown in diagram above) would still be of the proxy type. However, whereas the proxy objects within the <nop>ExternalDataInterface section all provide a more or less extensive data interface extension for the specifics of publication, agents, etc., other classes derived from the proxy base type may be defined inside the descriptive data container, to allow sharing terminology like glossary definitions. Since these would be proxies for known data models, they could contain the native rich model, and only provide the object linking mechanism and the cache functionality in case of temporarily broken connections.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 06 Jun 2004
+---
+
+@
+
+
+1.15
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="GregorHagedorn" date="1086944891" format="1.0" version="1.15"}%
+%META:TOPICPARENT{name="ProxyDataModel"}%
+(This relates to ProxyDataModel and TopLevelStructure, please also check there!)
+d8 1
+a8 1
+This view is clearly SDD-centric and not applicable to other TDWG/GBIF standards. We may have to find a new solution. In TopLevelStructure at the bottom a proposal exists to have a section <nop>ProxyData in the general part, followed by <nop>DescriptiveData for SDD-specific parts.
+d25 1
+a25 1
+I agree with you, Bob, insofar as that "Proxy" may be used more generally. On the other hand wonder if by naming the section so, we fail to communicate the purpose of this design pattern. This is why I have reservations about calling the section <nop>ProxyData. So can we ask in Bryan's sense: is "ExternalDataInterface" is a good descriptive term for those things actually in there now and conceivably in the future? My feeling is that where the proxy pattern would be used in other ways, the data would not end up in the container section in the GBIF/TDWG common infrastructure part (Grrrr, I want a name for this! See ResolvedTopicCommonSchemaSearchingName).
+d36 1
+a36 1
+Any other proposals for the name of this ResolvedTopicCommonSchemaSearchingName section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and <nop>ExternalDataInterface.
+d49 1
+a49 1
+I currently view it that we realize an interface to external data sources by using the ProxyDataModel mechanism. So the proxy idea does not fully disappear, but I propose to name this by purpose rather then by type that is used.
+d72 1
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086848741" format="1.0" version="1.14"}%
+d25 1
+a25 1
+I agree with you, Bob, insofar as that "Proxy" may be used more generally. On the other hand wonder if by naming the section so, we fail to communicate the purpose of this design pattern. This is why I have reservations about calling the section <nop>ProxyData. So can we ask in Bryan's sense: is "ExternalDataInterface" is a good descriptive term for those things actually in there now and conceivably in the future? My feeling is that where the proxy pattern would be used in other ways, the data would not end up in the container section in the GBIF/TDWG common infrastructure part (Grrrr, I want a name for this! See CommonInfrastructureSearchingName).
+d36 1
+a36 1
+Any other proposals for the name of this CommonInfrastructureSearchingName section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and <nop>ExternalDataInterface.
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086607800" format="1.0" version="1.13"}%
+d64 1
+a64 1
+Also, in an object-oriented programming sense, "interface" seems to be appropriate to me. The proxy objects inside EDI act like an interface class that defines only properties and no methods. Imagine that multiple publications databases with different, complex, and unknown internal datastructures and operations exist. If all implement the publication proxy interface class (see ProxyDataPublicationProxy), thus reducing or mapping their internal data to the proxy interface definition, a biodiversity application e. g. for descriptive data will be able to use these datasources in an interoperable way.
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1086578978" format="1.0" version="1.12"}%
+d36 1
+a36 5
+[Note: I almost would withdraw this bit entirely. Gregor is right that I thought he was proposing two congruent things, one internal and one external "interfaces". I leave it here for the moment for historical reasons. Most people should ignor it and skip this bit altogether. -- Main.BobMorris - 07 Jun 2004  
+
+[Note [[Main.GregorHagedorn][Gregor Hagedorn]]: The following Note by Bob is based partly on a misunderstanding of my diagram, which we clarified in separate email, because his comments left me confused. I intended to show two design options in the diagram: the previous SDD-centric layout with entities and resources split, and then a new proposal with <nop>ExternalDataInterface as a solution that would address all TDWG standards like ABCD, SDD, Taxon Names. Bob misunderstood this as keeping both and using one for internal proxy data having no link to the outside, and the other as those that exist in external data sources. Bob writes:]
+
+The (almost) symmetric layout between the internal and external stuff is a big help. Would it help more or hinder to perfect that symmetry and make the internal one live inside an element named <nop>InternalDataInterface and also split the external one into two parts like the internal one. On the one hand, it doesn't exactly feel like the internal things are "interfaces". On the other, it makes clear that the external stuff is generally the same kind of stuff as the internal, but just behind a wall that makes its details invisible while still making it usable within a Description in the same way that a corresponding internal one would be. This dichotomy brings me back to favoring Proxy a little, but then I'm stuck even more on what to call the internal stuff as a whole. Whatever a good name, say "X" for that is, the external stuff could be "XProxies" and then I think even in common (Amercan?) English the intent would be clear.
+d38 1
+a38 5
+Whatever the resolution, the separation certainly promotes use of shared references to external things. There is an unavoidable(?) issue that each kind of external thing is likely to be an inclusion followed by the local declarations of the external things of that kind. A way around that is to allow multiple "XProxies" sections each having the same structure. That would allow an author to organize the "XProxies" in any convenient way. But then, probably that would have to be supported for the "X" section also. An example here might be a document that had both flora and fauna. An author might be motivated to separate the stuff used for for flora from those used for fauna. To stretch the point even more, imagine a document that describes both medical conditions (e.g. <nop>CoronaryArteryDisease, <nop>KidneyDisease,...,) and the treatment modalities for them, (e.g. Surgery, <nop>BottleOfPills, Acupuncture, ...).  Maybe this is all handled ok in the <nop>ClassHierarchies, but the scenario is that they are  treated together more for utility in finding them (either by human or software) within the document, rather than because they fit in a named hierarchy. This is a small point that could await Version 1.1, because I think evolving something from 0-1 to 0-unbounded is harmless. 
+
+-- Main.BobMorris - 02 Jun 2004
+---
+Any other proposals for the name of this CommonInfrastructureSearchingName section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and <nop>ExternalDataInterface.
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086530049" format="1.0" version="1.11"}%
+d35 3
+d77 2
+a78 2
+---
+
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BryanHeidorn" date="1086448585" format="1.0" version="1.10"}%
+d33 1
+d35 2
+d39 1
+a39 2
+Whatever the resolution, the separation certainly promotes use of shared references to external things. There is an unavoidable(?) issue that each kind of external thing is likely to be
+an inclusion followed by the local declarations of the external things of that kind. A way around that is to allow multiple "XProxies" sections each having the same structure. That would allow an author to organize the "XProxies" in any convenient way. But then, probably that would have to be supported for the "X" section also. An example here might be a document that had both flora and fauna. An author might be motivated to separate the stuff used for for flora from those used for fauna. To stretch the point even more, imagine a document that describes both medical conditions (e.g. <nop>CoronaryArteryDisease, <nop>KidneyDisease,...,) and the treatment modalities for them, (e.g. Surgery, <nop>BottleOfPills, Acupuncture, ...).  Maybe this is all handled ok in the <nop>ClassHierarchies, but the scenario is that they are  treated together more for utility in finding them (either by human or software) within the document, rather than because they fit in a named hierarchy. This is a small point that could await Version 1.1, because I think evolving something from 0-1 to 0-unbounded is harmless. 
+d60 1
+a60 5
+I did intend for the term, "ExternalDataInterface" to be used as the name, not just for discussion. I however agree with Bob that the term "interface" does have some programmer baggage that we may not want. The 
+Merriam-Webster definition of proxy is from Middle English 1 : the agency, function, or office of a deputy who acts as a substitute for another
+2 a : authority or power to act for another b : a document giving such authority; specifically : a power of attorney authorizing a specified person to vote corporate stock
+3 : a person authorized to act for another : PROCURATOR
+- proxy adjective http://www.merriam-webster.com/cgi-bin/dictionary?book=Dictionary&va=proxy&x=11&y=17
+d66 10
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086277477" format="1.0" version="1.9"}%
+d57 10
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonaldHobern" date="1086271027" format="1.0" version="1.8"}%
+d41 1
+a41 1
+Any other proposals for the name of this "common data infrastructure" section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and <nop>ExternalDataInterface.
+d50 8
+a57 2
+-- Main.DonaldHobern - 03 Jun 2004
+
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1086175920" format="1.0" version="1.7"}%
+d47 5
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085954700" format="1.0" version="1.6"}%
+d32 6
+d39 3
+a41 1
+Any other proposals for the name of this "common data infrastructure" section? Below I provide a figure to show the layout options, please comment on the annotation text before Entities/Resources and ExternalDataInterface.
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085764440" format="1.0" version="1.5"}%
+d25 1
+a25 1
+I agree with you, Bob, that Proxy may be used more generally. On the other hand, I am afraid of loosing ability to communicate the purpose of this design pattern. This is why I have reservations about calling the section <nop>ProxyData. So can we ask in Bryan's sense: is "ExternalDataInterface" is a good descriptive term for those things actually in there now and conceivably in the future? My feeling is that where the proxy pattern would be used in other ways, the data would not end up in the container section in the GBIF/TDWG common infrastructure part (Grrrr, I want a name for this! See CommonInfrastructureNameForStandard).
+d27 1
+a27 1
+Bob, can you give a scenario/use case/example of a use of proxy data definitions that does not represent an Interface to external data, but which should be bundled with these sections? 
+d30 10
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1085758231" format="1.0" version="1.4"}%
+d21 1
+d23 1
+a23 1
+We settled on Proxy from the Design Pattern sense: "Proxy a surrogate or placeholder for another object to control access to it". This is more general than just stuff available as as external interface of some kind, but does include those, web services and guids (as do our Proxy objects). Almost any of the first few google hits on "Proxy Design Pattern" will give a good overview. I would resist "ExternalDataInterface" because _it_ is not as general was we mean.
+d25 5
+a29 2
+-- Main.BobMorris - 28 May 2004
+
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BryanHeidorn" date="1085749887" format="1.0" version="1.3"}%
+d19 6
+a24 1
+-- Main.BryanHeidorn - 28 May 2004	
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085746920" format="1.0" version="1.2"}%
+d15 5
+a19 1
+---
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085742592" format="1.0" version="1.1"}%
+d3 1
+a3 1
+(This belongs to ProxyDataModel, please also check there!)
+d10 1
+a10 1
+Any suggestions for a good term? What shall we call all these "lists of things in the outside world" which we use while describing? Resources may indeed by a bad name for it, and I think this is one reason for the decision to call those parts most relevant for SDD "Entities".
+d12 1
+d14 3
+a16 1
+-- Gregor Hagedorn - 28 May 2004
+@

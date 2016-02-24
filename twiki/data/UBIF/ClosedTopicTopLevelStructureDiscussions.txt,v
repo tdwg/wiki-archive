@@ -1,0 +1,575 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2009.11.25.03.14.41;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2009.11.20.02.45.34;	author LeeBelbin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.05.08.10.42.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.11.01.11.19.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.07.15.18.14.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.06.11.10.17.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.06.11.09.08.12;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.06.04.12.38.17;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.05.28.12.15.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.05.25.06.01.21;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.05.24.10.54.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.12
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118881" format="1.1" version="1.12"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+---+!! %TOPIC%
+
+(This was moved from UBIF.SchemaDiscussion)
+---
+
+Following from the meeting in Berlin, here is my attempt to document what we are trying to achieve at the top level of the TDWG schemata.  Our goal is to bring all of these standards to the point at which the document structure is as follows (using "Header", "Body" and "XxxMetadata" as placeholder names for now).  This is an example which could possibly be valid but for which I have no use case at this point, including an BDI.SDD_ and an ABCD data set in the same document: 
+<verbatim>
+<DataSets>
+  <DataSet>
+    <Header> <!-- Contains metadata elements common to all standards -->
+      <TransformationHistory/>
+      <ProjectMetadata/>
+    </Header>
+    <Body> <!-- Contains all schema specific metadata and data elements -->
+      <SDDMetadata/> <!-- Whatever SDD metadata remains from Header -->
+      <GeneralDeclarations/>
+      <Entities/>
+      <Resources/>
+      <Terminology/>
+      <Descriptions/>
+    </Body>
+  </DataSet>
+  <DataSet>
+    <Header> <!-- Contains metadata elements common to all standards -->
+      <TransformationHistory/>
+      <ProjectMetadata/>
+    </Header>
+    <Body> <!-- Contains all schema specific metadata and data elements -->
+      <ABCDMetadata/> <!-- Whatever ABCD metadata remains from Header -->
+      <Units/>
+    </Body>
+  </DataSet>
+</DataSets>
+</verbatim>
+
+The exact selection of top-level elements to be included in the "Header" (and those which would remain standard-specific) is clearly undefined at this point (and there could be a future migration of extra elements into the common element).  The Body element could be a type which gets extended or a substitution group according to what seems most manageable.  Header is clearly superfluous but may help to clarify the structure.
+
+Does this match with what others are expecting?  Do we need to separate this off now as a separate TDWG activity?
+
+-- Main.DonaldHobern - 21 May 2004
+
+---
+
+1. I would prefer to keep it here and invite everybody to join the WIKI. This discussion is working. I added the topic to our top-level topic (BDI.SDD_).
+
+2. I prefer to omit the Header and Body section. I think little is gained by them. Furthermore, <nop>GeneralDeclarations, and Resources (i.e. the <nop>ProxyData for references to Agents, Media, Geography, Publication databases) should well be shared data types (used by multiple data standards) as well. However, they are not really "Header" information. So the distinction between metadata header and data body is NOT congruent with the distinction common/shared data types and specific types.
+
+<verbatim>
+<DataSets>
+  <DataSet>
+    <TransformationHistory/>
+    <ProjectMetadata/>
+    <SDDMetadata/> <!-- Whatever SDD metadata remains from Header -->
+    <GeneralDeclarations/>
+    <Entities/>
+    <Resources/>
+    <Terminology/>
+    <Descriptions/>
+  </DataSet>
+  <DataSet>
+    <TransformationHistory/>
+    <ProjectDefinition/>
+    <ABCDMetadata/>
+    <Units/>
+  </DataSet>
+</DataSets>
+</verbatim>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 21 May 2004
+---
+
+To the Donald Hobern question: Does this match with what others are expecting? Do we need to separate this off now as a separate TDWG activity? I reply: yes and probabably. I also wonder if in future we might need even something like this: 
+
+<verbatim>
+<gbif:Envelope xmlns="gbif" xmnls:gbif="http://gbif.org/ns/2004-001">
+   <Envelope-TransformationHistory>
+   <tdwg:DataSets xmlns="tdwg" xmlns:tdwg="blahblah">
+       <DataSets-TransformationHistory>
+       <DataSet>
+          <Header>
+            <DataSet-TransformationHistory>
+            ...
+          </Header>
+          <Body>
+ 
+          ...
+       </DataSet>
+       ...
+    </tdwg:DataSets>
+    <somebodyElse:DataSets xmnls:somebodyElse="...">
+       ...
+    </somebodyElse:DataSets>
+</gbif:Envelope>
+</verbatim>
+
+This may be overkill, but it recognizes these issues, which may or may not be of concern (perhaps because they sometimes duplicate concerns of messaging-leval (e.g. SOAP) layers: 
+
+   * simple service aggregation, e.g. response to "Send me everything you can discover about Ithomia patilla 
+   * tracking forwarding through agents that don't modify content in any deep way (e.g. "I normalized the address from "Bob Morris at UMASS-Boston" to "urn:email:ram@@cs.umb.edu" and used "urn:serviceAddress:smtp.cs.umb.edu" to deliver it.) 
+   * memorializing wholesale <nop>DataSets removal, e.g. "I have removed 12 <tdwg:DataSets> objects" 
+
+-- Bob Morris - 21 May 2004
+
+---
+
+Overkill... Your 3 level structure with transformations on each of these (Envelope, Datasets, Dataset) is not the end. You can have a common transformation on envelopes obtained from different sources. So the only solution would be to have a tree of Dataset objects, each node of which can define a transformation.
+
+I think it is sufficient if you receive two Datasets with two Dataset objects each (A, B, C, D), you output one Datasets collection with ABCD and add your transformation to each of the histories inside ABCD. Note that if different datasets come from different sources or have different formats (1 ABCD, 2 BDI.SDD_, 1 <nop>TaxonNames), different software agents may derive them. See the following two images:<br />
+<img src="%ATTACHURLPATH%/TransformationsCombined.png" width="482" height="258" alt="Combined -&gt; tree"  /><br />
+(= this is Bob's <nop>DataSets-TransformationHistory)<br />
+<img src="%ATTACHURLPATH%/TransformationsSeparate.png" width="482" height="237" alt="Separate -&gt; remains flat" /><br />
+(= here all transformations are reduced to atomic <nop>DataSet-Transformations)<br />
+I think you can do all your three bullets just with the simple solution.
+
+See also the topic UBIF.DerivationHistory and ResolvedTopicDatasetCapitalization!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 21 May 2004
+
+I agree with Gregor that we can simply merge different <nop>DataSets objects into one when we need to. They have no other purpose and have no metadata of their own (that is in each of the <nop>DataSet objects).  
+
+I would also be happy for us to lose the Header envelope from my model, but I am not so sure about the Body.  It provides a simple place to do other things like adding constraints for the data elements in the <nop>DataSet.  We could extend the <nop>DataSet itself but this feels cleaner to me (perhaps just a matter of choice).
+
+-- Main.DonaldHobern - 22 May 2004
+
+Donald is right, the constraints (especially identity constraints if key/keyref linking is used) are a problem. There are no problems with Derivations or Transformations, they are constraint free. However, depending on the design, there may already be a constraint involving the globally unique <nop>ProjectName/ID in <nop>ProjectMetadata. This occurs if a combined globally unique key is constructed from <nop>Project/Dataset ID + local object keys -- we may choose to fully change all local keys instead, making them immediately global, so that no constraint would have to point into <nop>ProjectMetadata.
+
+However, in the current BDI.SDD_ design, the <nop>ProjectMetadata uses Resource objects, e.g. to define the geographical, taxonomic, and publication scope, <nop>ProjectIcon, or the agents owning or editing the entire project datasets. These are keyrefs pointing to Resources/Geography, <nop>Entities/ClassNames, Resources/Publications, <nop>Resources/MediaResources and Resources/Agents.
+
+I hope that the different TDWG/GBIF standard groups can agree on a common Proxy-Model to refer to the reciprocal and external data. If so the <nop>ProxyData (see ObsoleteProxyListsInAllTdwgGbifStandards for a discussion on options to name this) could become part of the header, in which case it would be easy to have:
+
+<verbatim>
+<DataSets>
+  <DataSet><!-- define xs:key to external resources/proxy data here -->
+    <Derivation/>
+    <ProjectMetadata/>
+    <GeneralDeclarations/><!-- This may or may not be here -->
+    <ProxyData/><!-- including the elements currently in SDD.Entities and SDD.Resources -->
+    <DescriptiveData><!-- define xs:key to SDD-specifics like states, glossary, etc. here -->
+      <SDDMetadata/> <!-- Actually, at the moment we have none, only SDD.ConfigurationData -->
+      <Terminology/>
+      <CodedDescriptions/>
+      <IdentificationKeys/>
+    </DescriptiveData>
+  </DataSet>
+  <DataSet>
+    <TransformationHistory/>
+    <ProjectDefinition/>
+    <CollectionData>
+      <Metadata/>
+      <Units/>
+    </CollectionData>
+  </DataSet>
+</DataSets>
+</verbatim>
+
+The design really depends on a discussion on the common use of a ObsoleteTopicProxyDataModel (which does not necessarily mean the currently proposed BDI.SDD_.model. However, we are lacking a discussion here! At the moment I know that Walter Berendsohn is reluctant to adopt it because it makes the model more complicated, and I have not yet any feedback from Jessie Kennedy on it. Also, this is really a topic the GBIF DADI Science Subcommitee should comment upon. Anybody elses insight into the general architectural implications of defining such a generalized interface between knowledge and data domains, or into the specifics of the proposed linking mechanims is just as welcome! (Please use the ObsoleteTopicProxyDataModel topic for this discussion.)
+
+In BDI.SDD_ 0.91 beta 15ff I try to rearrange things according to the model above.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 24./28. May 2004
+---
+
+From an email between Bob and me (about data collections containing data from different knowledge domains):
+
+Bob writes: "An example here might be a document that had both flora and fauna. An author might be motivated to separate the stuff used for for flora from those used for fauna." -- Gregor: "Would that not be two datasets? There may be situations where two datasets are not good because it is a single project, but I cannot think of any concrete example." -- Bob: I believe these will arise naturally in ecological cases. Possibly these can, and maybe should indeed be factored into two datasets, but this presents a different problem because I don't think we have a robust way to make references from a description in one dataset to an entity in another. For example, in our butterfly data we may refer to the nectar plants and the larval host plants. Now in this case one
+> could use a proxy that is essentially the scientific name and so the two data set solution is possibly OK. It is suboptimal though, because it becomes clumsy or impossible to formulate reasonable queries like "What color is the flower of the host of Ithomia patilla?", or "Does the data support that no butterflies pollinate red flowers?". 
+
+Gregor: Yes, I think it should be two dataset objects, each defining proxy objects for the material that is in the other. The proxy objects are designed to be semantically meaningfull, so for many purposes you don't have to go to the details in the other dataset. Of course I agree that the queries become more complicated, and it becomes the task of the consumer to figure out that detailed information about the source object of a proxy object is already provided in another dataset container, but then I think it makes a lot of sense to go that more complicated way. In many cases the information will indeed be in different data collections from different sources. So the case that a single data collection contains both the nomenclatural data and the descriptions, or molecular data and specimen records is rather the exception. Providing alternative methods that allow simpler querying in these cases alone will make the whole system more complicated I believe. The "other-dataset" methods have to be implemented as well, after all. So I prefer asking providers to provide data by knowledge domain, as if they had separate projects/data collections.
+
+See also the XXX_Duplicate.xml example file in the upcoming versions. 
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 3. June 2004
+
+%META:FILEATTACHMENT{name="TransformationsCombined.png" attr="h" autoattached="1" comment="" date="1146861232" path="TransformationsCombined.png" size="7316" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="TransformationsSeparate.png" attr="h" autoattached="1" comment="" date="1146861232" path="TransformationsSeparate.png" size="8452" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1099308131" from="UBIF.TopLevelStructure" to="UBIF.ClosedTopicTopLevelStructureDiscussions"}%
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685134" format="1.1" reprev="1.11" version="1.11"}%
+d8 1
+a8 1
+Following from the meeting in Berlin, here is my attempt to document what we are trying to achieve at the top level of the TDWG schemata.  Our goal is to bring all of these standards to the point at which the document structure is as follows (using "Header", "Body" and "XxxMetadata" as placeholder names for now).  This is an example which could possibly be valid but for which I have no use case at this point, including an BDI.SDD and an ABCD data set in the same document: 
+d46 1
+a46 1
+1. I would prefer to keep it here and invite everybody to join the WIKI. This discussion is working. I added the topic to our top-level topic (BDI.SDD).
+d110 1
+a110 1
+I think it is sufficient if you receive two Datasets with two Dataset objects each (A, B, C, D), you output one Datasets collection with ABCD and add your transformation to each of the histories inside ABCD. Note that if different datasets come from different sources or have different formats (1 ABCD, 2 BDI.SDD, 1 <nop>TaxonNames), different software agents may derive them. See the following two images:<br />
+d129 1
+a129 1
+However, in the current BDI.SDD design, the <nop>ProjectMetadata uses Resource objects, e.g. to define the geographical, taxonomic, and publication scope, <nop>ProjectIcon, or the agents owning or editing the entire project datasets. These are keyrefs pointing to Resources/Geography, <nop>Entities/ClassNames, Resources/Publications, <nop>Resources/MediaResources and Resources/Agents.
+d158 1
+a158 1
+The design really depends on a discussion on the common use of a ObsoleteTopicProxyDataModel (which does not necessarily mean the currently proposed BDI.SDD.model. However, we are lacking a discussion here! At the moment I know that Walter Berendsohn is reluctant to adopt it because it makes the model more complicated, and I have not yet any feedback from Jessie Kennedy on it. Also, this is really a topic the GBIF DADI Science Subcommitee should comment upon. Anybody elses insight into the general architectural implications of defining such a generalized interface between knowledge and data domains, or into the specifics of the proposed linking mechanims is just as welcome! (Please use the ObsoleteTopicProxyDataModel topic for this discussion.)
+d160 1
+a160 1
+In BDI.SDD 0.91 beta 15ff I try to rearrange things according to the model above.
+@
+
+
+1.10
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1147084970" format="1.1" version="1.9"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+d8 1
+a8 1
+Following from the meeting in Berlin, here is my attempt to document what we are trying to achieve at the top level of the TDWG schemata.  Our goal is to bring all of these standards to the point at which the document structure is as follows (using "Header", "Body" and "XxxMetadata" as placeholder names for now).  This is an example which could possibly be valid but for which I have no use case at this point, including an SDD and an ABCD data set in the same document: 
+d46 1
+a46 1
+1. I would prefer to keep it here and invite everybody to join the WIKI. This discussion is working. I added the topic to our top-level topic (SDD.WebHome).
+d110 1
+a110 1
+I think it is sufficient if you receive two Datasets with two Dataset objects each (A, B, C, D), you output one Datasets collection with ABCD and add your transformation to each of the histories inside ABCD. Note that if different datasets come from different sources or have different formats (1 ABCD, 2 SDD, 1 <nop>TaxonNames), different software agents may derive them. See the following two images:<br />
+d129 1
+a129 1
+However, in the current SDD design, the <nop>ProjectMetadata uses Resource objects, e.g. to define the geographical, taxonomic, and publication scope, <nop>ProjectIcon, or the agents owning or editing the entire project datasets. These are keyrefs pointing to Resources/Geography, <nop>Entities/ClassNames, Resources/Publications, <nop>Resources/MediaResources and Resources/Agents.
+d158 1
+a158 1
+The design really depends on a discussion on the common use of a ObsoleteTopicProxyDataModel (which does not necessarily mean the currently proposed SDD.model. However, we are lacking a discussion here! At the moment I know that Walter Berendsohn is reluctant to adopt it because it makes the model more complicated, and I have not yet any feedback from Jessie Kennedy on it. Also, this is really a topic the GBIF DADI Science Subcommitee should comment upon. Anybody elses insight into the general architectural implications of defining such a generalized interface between knowledge and data domains, or into the specifics of the proposed linking mechanims is just as welcome! (Please use the ObsoleteTopicProxyDataModel topic for this discussion.)
+d160 1
+a160 1
+In SDD 0.91 beta 15ff I try to rearrange things according to the model above.
+d175 1
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099307940" format="1.0" version="1.8"}%
+d10 12
+a21 12
+	 <Header> <!-- Contains metadata elements common to all standards -->
+		<TransformationHistory/>
+		<ProjectMetadata/>
+	 </Header>
+	 <Body> <!-- Contains all schema specific metadata and data elements -->
+		<SDDMetadata/> <!-- Whatever SDD metadata remains from Header -->
+		<GeneralDeclarations/>
+		<Entities/>
+		<Resources/>
+		<Terminology/>
+		<Descriptions/>
+	 </Body>
+d24 8
+a31 8
+	 <Header> <!-- Contains metadata elements common to all standards -->
+		<TransformationHistory/>
+		<ProjectMetadata/>
+	 </Header>
+	 <Body> <!-- Contains all schema specific metadata and data elements -->
+		<ABCDMetadata/> <!-- Whatever ABCD metadata remains from Header -->
+		<Units/>
+	 </Body>
+d51 8
+a58 8
+	 <TransformationHistory/>
+	 <ProjectMetadata/>
+	 <SDDMetadata/> <!-- Whatever SDD metadata remains from Header -->
+	 <GeneralDeclarations/>
+	 <Entities/>
+	 <Resources/>
+	 <Terminology/>
+	 <Descriptions/>
+d61 4
+a64 4
+	 <TransformationHistory/>
+	 <ProjectDefinition/>
+	 <ABCDMetadata/>
+	 <Units/>
+d76 9
+a84 9
+	<Envelope-TransformationHistory>
+	<tdwg:DataSets xmlns="tdwg" xmlns:tdwg="blahblah">
+		 <DataSets-TransformationHistory>
+		 <DataSet>
+			 <Header>
+				<DataSet-TransformationHistory>
+				...
+			 </Header>
+			 <Body>
+d86 7
+a92 7
+			 ...
+		 </DataSet>
+		 ...
+	 </tdwg:DataSets>
+	 <somebodyElse:DataSets xmnls:somebodyElse="...">
+		 ...
+	 </somebodyElse:DataSets>
+d98 3
+a100 3
+	* simple service aggregation, e.g. response to "Send me everything you can discover about Ithomia patilla 
+	* tracking forwarding through agents that don't modify content in any deep way (e.g. "I normalized the address from "Bob Morris at UMASS-Boston" to "urn:email:ram@@cs.umb.edu" and used "urn:serviceAddress:smtp.cs.umb.edu" to deliver it.) 
+	* memorializing wholesale <nop>DataSets removal, e.g. "I have removed 12 <tdwg:DataSets> objects" 
+d129 1
+a129 1
+I hope that the different TDWG/GBIF standard groups can agree on a common Proxy-Model to refer to the reciprocal and external data. If so the <nop>ProxyData (see UseProxyListsInAllTdwgGbifStandards for a discussion on options to name this) could become part of the header, in which case it would be easy to have:
+d134 10
+a143 10
+	 <Derivation/>
+	 <ProjectMetadata/>
+	 <GeneralDeclarations/><!-- This may or may not be here -->
+	 <ProxyData/><!-- including the elements currently in SDD.Entities and SDD.Resources -->
+	 <DescriptiveData><!-- define xs:key to SDD-specifics like states, glossary, etc. here -->
+		<SDDMetadata/> <!-- Actually, at the moment we have none, only SDD.ConfigurationData -->
+		<Terminology/>
+		<CodedDescriptions/>
+		<IdentificationKeys/>
+	 </DescriptiveData>
+d146 6
+a151 6
+	 <TransformationHistory/>
+	 <ProjectDefinition/>
+	 <CollectionData>
+		<Metadata/>
+		<Units/>
+	 </CollectionData>
+d156 1
+a156 1
+The design really depends on a discussion on the common use of a ProxyDataModel (which does not necessarily mean the currently proposed SDD.model. However, we are lacking a discussion here! At the moment I know that Walter Berendsohn is reluctant to adopt it because it makes the model more complicated, and I have not yet any feedback from Jessie Kennedy on it. Also, this is really a topic the GBIF DADI Science Subcommitee should comment upon. Anybody elses insight into the general architectural implications of defining such a generalized interface between knowledge and data domains, or into the specifics of the proposed linking mechanims is just as welcome! (Please use the ProxyDataModel topic for this discussion.)
+d173 2
+a174 2
+%META:FILEATTACHMENT{name="TransformationsCombined.png" attr="h" comment="" date="1085161946" moveby="GregorHagedorn" movedto="SDD.TopLevelStructure" movedwhen="1085395711" movefrom="SDD.UBIF.SchemaDiscussion" path="C:\Data\Desktop\TransformationsCombined.png" size="7316" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="TransformationsSeparate.png" attr="h" comment="" date="1085162000" moveby="GregorHagedorn" movedto="SDD.TopLevelStructure" movedwhen="1085395763" movefrom="SDD.UBIF.SchemaDiscussion" path="C:\Data\Desktop\TransformationsSeparate.png" size="8452" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1089915240" format="1.0" version="1.7"}%
+d170 1
+a170 1
+See also the XXX_Duplicate.xml example file in the upcoming versions. As of 3. June I cannot release that SDD version, however, until we have decided on the name for the common things, see ResolvedTopicCommonSchemaSearchingName! Please do discuss and participate!
+d175 1
+a175 1
+%META:TOPICMOVED{by="GregorHagedorn" date="1089915363" from="SDD.TopLevelStructure" to="UBIF.TopLevelStructure"}%
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="GregorHagedorn" date="1086949020" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="UnifiedBioInfoFramework"}%
+(This was moved from UnifiedBioInfoFramework)
+d115 1
+a115 1
+See also the topic DerivationHistory and ResolvedTopicDatasetCapitalization!
+d173 3
+a175 2
+%META:FILEATTACHMENT{name="TransformationsCombined.png" attr="h" comment="" date="1085161946" moveby="GregorHagedorn" movedto="SDD.TopLevelStructure" movedwhen="1085395711" movefrom="SDD.UnifiedBioInfoFramework" path="C:\Data\Desktop\TransformationsCombined.png" size="7316" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="TransformationsSeparate.png" attr="h" comment="" date="1085162000" moveby="GregorHagedorn" movedto="SDD.TopLevelStructure" movedwhen="1085395763" movefrom="SDD.UnifiedBioInfoFramework" path="C:\Data\Desktop\TransformationsSeparate.png" size="8452" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 3
+a3 3
+%META:TOPICINFO{author="GregorHagedorn" date="1086944892" format="1.0" version="1.5"}%
+%META:TOPICPARENT{name="OverarchingPatternsForTdwgSchemata"}%
+(This was moved from OverarchingPatternsForTdwgSchemata)
+d173 2
+a174 2
+%META:FILEATTACHMENT{name="TransformationsCombined.png" attr="h" comment="" date="1085161946" moveby="GregorHagedorn" movedto="SDD.TopLevelStructure" movedwhen="1085395711" movefrom="SDD.OverarchingPatternsForTdwgSchemata" path="C:\Data\Desktop\TransformationsCombined.png" size="7316" user="GregorHagedorn" version="1.1"}%
+%META:FILEATTACHMENT{name="TransformationsSeparate.png" attr="h" comment="" date="1085162000" moveby="GregorHagedorn" movedto="SDD.TopLevelStructure" movedwhen="1085395763" movefrom="SDD.OverarchingPatternsForTdwgSchemata" path="C:\Data\Desktop\TransformationsSeparate.png" size="8452" user="GregorHagedorn" version="1.1"}%
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1086352697" format="1.0" version="1.4"}%
+d170 1
+a170 1
+See also the XXX_Duplicate.xml example file in the upcoming versions. As of 3. June I cannot release that SDD version, however, until we have decided on the name for the common things, see CommonInfrastructureSearchingName! Please do discuss and participate!
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085746500" format="1.0" version="1.3"}%
+d163 10
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085464881" format="1.0" version="1.2"}%
+d69 1
+a69 1
+-- Gregor Hagedorn - 21 May 2004
+d103 1
+d115 1
+a115 1
+See also the topic DerivationHistory and DatasetCapitalization!
+d117 1
+a117 1
+-- Gregor Hagedorn - 21 May 2004
+d129 1
+a129 1
+I hope that the different TDWG/GBIF standard groups can agree on a common Proxy-Model to refer to the reciprocal and external data. If so the <nop>ProxyData could become part of the header, in which case it would be easy to have:
+d158 4
+a161 1
+In SDD 0.91 beta 15 I try to rearrange things according to the model above.
+a162 2
+-- Gregor Hagedorn - 24 May 2004
+
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1085396040" format="1.0" version="1.1"}%
+d133 1
+a133 1
+	 <TransformationHistory/>
+d137 1
+a137 1
+	 <SDD><!-- define xs:key to SDD-specifics like states, glossary, etc. here -->
+d142 1
+a142 1
+	 </SDD>
+d147 1
+a147 1
+	 <ABCD>
+d150 1
+a150 1
+	 </ABCD>
+d155 1
+a155 1
+The design really depends on a discussion on the common use of a ProxyDataModel (which does not necessarily mean the currently proposed SDD.model. However, we are lacking a discussion here! At the moment I know that Walter Berendsohn is reluctant to adopt it because it makes the model more complicated, and I have not yet any feedback from Jessie Kennedy on it... Also, this is really a topic the GBIF DADI Science Subcommitee should comment upon. Anybody elses insight into the general architectural implications of defining such a generalized interface between knowledge and data domains, or into the specifics of the proposed linking mechanims is just as welcome! (Please use the ProxyDataModel topic for this discussion.)
+d157 1
+a157 1
+-- Gregor Hagedorn - 24 May 2004
+d159 2
+@

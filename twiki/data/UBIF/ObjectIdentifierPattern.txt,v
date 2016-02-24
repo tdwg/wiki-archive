@@ -1,0 +1,1053 @@
+head	1.20;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.20
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2005.03.14.17.22.30;	author GregorHagedorn;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2005.03.13.18.41.05;	author GregorHagedorn;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2005.03.13.04.47.55;	author BobMorris;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2005.03.12.19.42.26;	author GregorHagedorn;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2005.03.11.22.03.51;	author BobMorris;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2005.03.09.15.22.23;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2004.12.14.10.04.20;	author GregorHagedorn;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2004.12.11.11.54.05;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2004.12.10.19.03.26;	author DonaldHobern;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2004.12.10.17.04.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2004.12.10.15.04.39;	author DonaldHobern;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2004.12.10.10.06.03;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.11.30.14.59.33;	author SallyHinchcliffe;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.11.19.12.52.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.11.18.09.50.00;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.11.16.14.59.13;	author MarkusDoering;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.11.16.10.11.09;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.11.04.09.09.57;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.11.03.22.20.00;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.20
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1110820950" format="1.0" version="1.19"}%
+Note March 2005: Although the proposed solutions may not be ideal, there have been no comments on this since December 2004. I therefore plan to summarize the discussion and present conclusions soon. Since I cannot do that today. please feel free add comments - I will incorporate them when summing up. Please also see ObjectTypePattern.
+
+---
+
+Probably any kind of object exchange (through TCS, SDD, ABCD, perhaps <nop>LinneanCore (LC)) has the following requirements for identifiers:
+	* Inform about the kind of identifier in the data source and whether they are temporary or stable
+	* Cross-link between objects from the same or different knowledge domains (e. g. refer to a taxon name)
+	* Provide machine-resolution mechanisms (e.g. URL, LSID, DOI)
+
+Part of the following discussion is still centered around LC or TCS, but really I think it is a very general question and e.g. SDD objects (characters, descriptions, as well as <nop>ClassName or Unit proxies) should follow the same pattern.
+
+The discussion is already a bit long, if you are in a hurry, you could try to pick it up at the [[#PickupPoint][id-type diagram]].
+---
+
+When revising LC, Sally proposed a general "RecordId" type that is both used to define the identity of a LC object, and to link to other objects. Sally's annotation: "The locally or globally unique Identifier for this name record. Could be one of three kinds of ID: GUID (persistent, machine resolvable such as an LSID), human resolvable Global ID (e.g. 'IPNI citation ID 14098-1') or locally (within this dataset) resolved ID (e.g. '1' or 'K001928712') - probably belongs somewhere else if it looks useful and could end up being widely used". This type has two attributes: "type" and "id". "id" is xs:string. The attribute "type" belongs in Sally's proposal to an enumeration of "Human Resolvable", "Locally Resolvable", "Globally Resolvable". Example: &lt;NameRecordId type="Human Resolvable" id="IpniCitation 1003545-1 version 1.1"/&gt;
+
+The design of UBIF discussed in Christchurch differs in several aspects:
+	1 "id" is used only for object identifiers, whereas Sally uses this attribute name both for definition and reference. In UBIF, when referring to an id the "ref" attribute is used. TCS uses the same pattern as UBIF (SDD had to change from using "key" to "id" so that we are more compatible). The "ref" pattern makes it clearer that this is not an id of the element, but an object is referred to. The design is also used in xhtml (id/name and href) or xml schema itself. I believe we should follow this.
+	2 More importantly (and probably UBIF should change here?) UBIF always uses two id systems in parallel: One internal for cross-referencing within a document scope (id/ref) and one to Link to external objects. Under Links you can have general URL, LSID, or DOI. There is no equivalent to Sally's human-resolvable ID, i.e. something that provided you find the right web query interface, you can enter somewhere and resolve it. Please take a look at the top of diagram on ProxyDataPublication. "ObjectLink" is now called "Link", and Webservice linking methods removed by now.
+	3 There is no way to store a source-database-local id in current UBIF. The assumption is that if such a thing exists, it would be used for the document cross-referencing id - but this assertion can nowhere be made explicit or rejected!
+	4 On the other hand, UBIF proposes in parallel to the machine-readable links a Label (with text and abbreviations possibly in multiple language) that are intended for human consumption. In the LC world, that is where I believe the <nop>FullName belongs - and I actually propose to rename it to "Label".
+
+I think Sally's example falls somewhere between in combining a local id with a text helping humans to guess about how to resolve this. On the other hand, it seems that such a text is not ideally suited to cross referencing names.
+
+Who can help us to make the best of both worlds?
+
+-- Main.GregorHagedorn - 03 Nov 2004
+---
+
+Rich commented by email:
+
+*NameRecordID*: One of my (overly ambitious?) hopes for LC was to get away from project-specific ID numbers for taxon names (e. g., separate IPNI, ITIS, Species2000, GBIF, etc. ID numbers for the same name instance).  I would be *very* happy if we could agree on a GUID system for LC name instances, perhaps administered by GBIF. That way, we could avoid the issues surrounding LUIDs altogeher, and just pass around one set of GUIDs.  I realize this may be too much to ask for,  but my main concern is, how can we cross-map the same funtional "name" instance across LC datasets provided by different nomenclators? In theory, LC should only include information records that are "objectively discernable" -- not really open to interpretation (except, perhaps, for interpretations on the relevant Code and how it should be applied to form the "correct" name in rare cases).  So, my point is -- would it be impractical to restrict this to GUID only, after we identify a logical GUID provider? 
+
+Separate from the previous comment, would it be better to to allow the ID element to be Unbounded -- so multiple LUIDs and/or GUIDs can be provided, when more than one are known to be congruent (i. e., refer to the same name instance?)
+
+Gregor: I basically agree with you, but I think if we want to be inclusive and access data sources, we can not require a single GUID system. I agree with you that a specific one (LSID?) should be recommended, however. Ultimately, the nice thing about LSID is that simply by prefixing the IPNI, ITIS, etc. ids with a namespace, authority, etc. of the LSID, the old system is turned into the new system. This allows the local software to remain unchanged and the LSID created or interpreted on the fly in the provider interface.  - 16 Nov 2004
+
+---
+
+*Just stepping back and thinking.* In a way, one may want to distinguish between the following types of identifiers:
+	* temporary identifiers valid only in the current xml document or stream context
+		* Examples: an ID/IDREF pair in an xml document, but also an SDD document where the cross-referencing identifiers are created on the fly
+	* permanent local identifiers that will remain valid in the foreseeable future
+		* Example: IPNI-IDs (not yet searchable with web interface, but probably planned), SDD document, where multiple documents (perhaps different character subsets) will refer to the same character always by the same numeric ID
+	* public identifiers that are human resolvable via a web form
+		* whether these are Local ID or Globally Unique ID (GUID) probably does not matter yet
+		* Examples are <nop>IndexFungorum IDs, Specimen collection IDs
+		* Is is relevant to inform whether an identifier is "local" or "public"? Seems to be closely related.
+	* machine resolvable identifiers
+		* these are always GUID
+		* Examples are LSID, DOI, any kind or URL
+		* A distinction may be made about how permanent the link can be expected to be.
+
+Currently, in the UBIF proxy model only the resolvable GUIDs are addressed in linking. Example (assuming IPNI would support LSIDs): 
+<verbatim>
+<Link><LSID>urn:lsid:lsid.gbif.net:IPNI:157927-1</LSID>
+-- or (with alternatives) --
+<Link>
+  <LSID>urn:lsid:lsid.gbif.net:IPNI:157927-1</LSID>
+  <URL>http://www.ipni.org/ipni/plantsearch?id=157927-1&query_type=by_id&output_format=object_view</URL>
+</Link>
+</verbatim>
+
+Markus Döring proposes to attempt to get rid of the Link layer and put the ids as attributes on the element defining the object. This does not allow multiple URLs as the current UBIF model does, but if they are required, a denormalization having url and alturl may be acceptable. This could look like:
+
+<verbatim>
+<ScientificName lsid="urn:lsid:lsid.gbif.net:IPNI:157927-1"/>
+-- or (with alternatives) --
+<ScientificName lsid="urn:lsid:lsid.gbif.net:IPNI:157927-1" url="http://www.ipni.org/ipni/plantsearch?id=157927-1&query_type=by_id&output_format=object_view" alturl="http://www.ipni.org ..."/>
+</verbatim>
+
+I am willing to follow a denormalized attribute model - there is little value in supporting a truly unlimited number of id and resolution services, but for a transition period we have to be flexible and support a few.
+
+However, this still does not allow to express all the options listed above. Also, when cross-referencing within a document (having a list of literature/publications somewhere and referring to these, as currently done in SDD or TCS) it is unclear to which of the multiple attribute the ref value would refer. UBIF currently always introduces a secondary id for this purpose, but this seems undesirable in the longer run when people actually start using directly resolvable ids like lsids.
+
+Thus, an alternative model could be to follow Sally's "id-type" model:
+<verbatim>
+<ScientificName id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="lsid" id2="http://www.ipni.org ..." id2type="url" />
+-- or (preferring to use a public/local id for cross-referencing within the xml document) --
+<ScientificName id="238723" idtype="local" 
+					 id2="urn:lsid:lsid.gbif.net:IPNI:157927-1" id2type="lsid" 
+					 id3="http://www.ipni.org ..." id3type="url" />
+</verbatim>
+
+Please give me some feedback on these loose ideas!
+
+-- Main.GregorHagedorn - 16 Nov 2004
+
+---
+
+I would like to see all this in the light of the different use for object-ids and object-references here:
+<verbatim>
+Object ID:
+<object id=... idtype=... id2=... id2type=... />
+
+Object Reference:
+<object ref=... label=... />
+</verbatim>
+
+An object could have several IDs whereas a reference to an object would only need 1. A single simple label string would also be nice for object references, but not for objects themselves which would probably need multiple languages, etc. Also the reference does not necessarily need an idtype, as it is given in the schema where the reference is pointing to. Just for references pointing beyond its local document it would be good to know the type. But as this has to be a global resolvable ID it might not be important, cause LSID and URL are self explanatory.
+
+Remaining questions I see:
+	* do we need multiple IDs for an object or/and reference and how could we deal with that?
+		* I guess for a reference it is enough to reference the "primary" id of an object
+		* multiple IDs would be good to have for objects so a client could chose between them (if he prefers LSIDs for example)
+		* to avoid new elements we could agree on a limited amount of possible ids, maybe 2 are already enough (local/global) e.g. id, id2 ?
+	* list of identifier types being used. The types listed already are delimited by different attributes such as local/global, permanent/temporary, resolvable/unresolvable, URI/non-URI. But instead of capturing this I suggest to use a small definite list of idtypes that primarily distinguishes between temporary and permantent ids and global/local ones:
+		* temp (e.g. generated on the fly for the xml document only)
+		* luid (permanent but local; this would have to include IPNI etc.)
+		* guid (other than the special cases below, e.g. GUID strings)
+		* doi (resovable special case guid)
+		* url (resovable special case guid)
+		* lsid (resovable special case url listed to promote its use)
+	* Does a reference need an idtype?
+
+-- Main.MarkusDoering - 16 Nov 2004
+
+---
+
+I would vote for at least 3 alternatives, to allow giving both an official local id for cross-referencing, a conventional resolvable URI, and have space to migrate to a new GUID system like LSIDs. The reference needs no idtype I believe.
+
+I really like Markus's idea of having a label attribute on the object reference side. In UBIF there is a label in the proxy, and a debugref as an option to create a human readable id-ref analogue. But the debugref depends on the ref-id relation. In contrast the label idea could be interpreted as making the ref itself optional. That could be a _migration option_ for all those cases where people only have a single string in their databases and somehow justified recoil from the idea to have to add this string to a publication proxy object list, add an id to it, and then ref this id - at the place where in their database there is just a simple string type.
+
+So a system may define
+	* Object definition or Object Proxy has one required id/idtype, and two optional alternative id2/id2type/id3/id3type attributes. Semantics:
+		* The first id is used for document-internal cross-referencing. The data provider can choose which type is preferred for cross-referencing based on the convenience of implementation.
+		* If several of the three ids are of a resolvable type, the sequence indicate a usage-preference by the provider.
+	* Object reference has one optional ref and an optional label. 
+		* The implied syntax is that either the ref or the label must be present (however, this is not expressible in xml schema)
+		* What would be expressible is that the label is required - I am not sure how desirable this is - since the ref would point to a place inside the document, which should have sufficient human-readable semantics.
+		* Yet an alternative to have label attribute would be to use the string content of the element that contains the ref attribute. The advantage would be that even in cases where the alternative to "by-ref" is not a single string but 2-3 elements if would be possible to offer the local-or-by-reference pattern as alternatives. I am not sure whether this complicates the design too much, however.
+		* In TCS 0.8 the ref attribute has an annotation "Points to a top-level element via an ID reference; use gref to reference an external entity via a GUID." - however there is not gref attribute in TCS. But it gives me the idea that yet another method may have a choice of label alone, ref + optional label pointing within xml document, ref + required label pointing directly to external resolvable ID. Unfortunately, xml schema does not allow me to make these alternatives strict without introducing three different element names for each usage of this pattern which somewhat bloats the schema.
+
+#PickupPoint
+Regarding the idtype categories: Markus and I drew up the following possible ontology "diagram":
+
+<verbatim>
+					ID
+				/		\
+	temporary		  permanent
+						 /		  \
+						/			 \
+				local ID			 global ID (GUID)
+				/		\				/		\
+		 private	public	 resolvable  non-resolvable
+								  /		\				/		\ 
+								URI	  Other		private public	 
+							  /  \		 | 
+							URL  URN  Example: DOI
+									|
+							 Example: LSID
+NOTES:
+ID = comparison possible
+temporary = comparison only in single document, two repeated queries are not comparable based on ID
+permanent = IDs from repeated queries are comparable 
+local = IDs are comparable only in usage/provider context
+global = IDs are globally comparable
+private = not queryable
+public = queryable, = Sally's human-resolvable IDs
+</verbatim>
+
+As Markus points out we do not want it to be that complicated... Here is a modified version of Markus's enumeration again:
+	* *temp:* temporary, e. g. generated on the fly for the xml document only<br/>
+	* *local:* permanent but local id (luid); this would include human-resolvable ids like IF, IPNI etc.<br/>
+	* *guid:* global ids other than the special cases below, e.g. 128 bit GUID integers or universal resource names (urn) that do not offer resolution mechansims<br/>
+	* *url:* resolvable standard internet address. In practice "permanent" only over moderate periods of time.<br/>
+	* *doi:* resolvable "digital object identifiers" (not a urn)<br/>
+	* *lsid:* life science IDs (resolvable special case urn that promises excellent permanency and resolution mechanisms
+
+<small>Note: I propose to replaced luid with local because I find luid rarely used (according to google) and if used strictly defined as a local 64 bit integer.</small>
+
+*Question:* Should we separate "urn"s other than lsid, rather than including it in the non-resolvable other guids? Is there perhaps a better name for this non-resolvable guid type? As the ontology shows, url, doi, lsid are all in principle a guid. I would prefer to highlight lsid as a type if TDWG and GBIF make this the recommendation. It should be clear that the flat enumeration is based on practical considerations, not on the ontology itself.
+
+---
+
+So this would mean (for Object insert any of "Publication", "TaxonConcept", ABCD "Unit", SDD "Character", etc.)
+
+*Object ID:*
+
+<verbatim>
+<Object id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="lsid" 
+		  id2="http://www.ipni.org/ ..." id2type="url" />
+</verbatim>
+
+-- or (preferring to use a public-local id for cross-referencing within the xml document) --
+
+<verbatim>
+<Object idtype="local" id="238723" 
+		  id2type="lsid" id2="urn:lsid:lsid.gbif.net:IPNI:157927-1" 
+		  id3type="url"  id3="http://www.ipni.org/ipni/plantsearch?id=157927-1&query_type=by_id&output_format=object_view" />
+</verbatim>
+
+and *Object Reference:*
+
+<verbatim>
+<Object ref="238723" label="some human readable label text capturing 
+ the semantic identity of the object" />
+</verbatim>
+
+-- Gregor Hagedorn - 17 Nov 2004
+
+---
+
+A thought that we had here at Kew, which I think will clarify some of our concerns ... One thing I think is important is that anyone who has an existing set of 'permanent public local ids' (in Gregor's terms, Human Resolvable in my terms) has a good *upgrade path* from those to LSIDs. For instance, we have been giving out IPNI ids for a few years now, so there are a lot of datasets out there with IPNI ids and even version numbers in them. It should be a goal of any Global ID system that if, say, IPNI switches over to using LSIDs, then a simple batch process should be able to convert those legacy Human Resolvable Ids into LSIDs - for example by adding the string 'urn:lsid:lsid.gbif.net:IPNI:' onto the front of them. A simple point, but one that will prevent a lot of problems in the long run! -- Main.SallyHinchcliffe - 30 Nov 2004	
+	* <small>As a separate, but related topic: Sally mentions a problem when some records are the result of a query, and others are provided only because they are required by refs in these records. "if the search request was for 'everything in Poa' and some of the related concepts weren't in Poa, then how was the requester to know which records were returned because they matched the request, and which were returned because they were referred to in the other records? I could imagine that if you had a very interconnected set of concepts, then it would always return the entire data set, whatever you asked it for!" -- In TCS v. 08 a xs:attribute name="primary" type="xs:boolean" use="optional" is intended for this. xs:annotation: "If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept." -- I think not delivering the required referenced records is not desirable. Should some attribute like primary (or "request=primary?") be part of a general design pattern for all kind of objects that is defined together with the object id design pattern? Or is this a protocol issue? -- Gregor Hagedorn - 17 Nov 2004</small>
+	* <small>Again this is a question of goals. As a data server, my goal is to serve up the least amount of data required to satisfy a query. So if someone asks for 'everything in Poa' I don't want to have to serve up names from another genus just for completeness. I'd rather serve up the simple list of results along with some ids that allow those interested to get the complete data by following up the links. Whether these be LSIDs or whatever, I'm not that bothered. Bandwidth may be cheap, but getting a completely resolved set of data (e.g. everything in Poa, plus all of the basionyms, related records, child records, parent records, etc.) usually requires repeated hits of the database and when you've got thousands of queries a day that's _not_ cheap. -- Main.SallyHinchcliffe - 30 Nov 2004</small>
+
+---
+
+I'd like to suggest that the suggested denormalised form for the id/idtype pairings may actually be harder to process than would be the case if we simply have a container with one or more subelements.  In the latter case software to generate the XML needn't count ids to track how many have already been inserted, and software to process the XML can use simple XPath style expressions to extract elements of interest (whereas with the denormalised version three separate expressions would be needed).  The arbitrary restriction on the number of ids could also be frustrating.  I would recommend that we go with a container element for this.  -- Main.DonaldHobern - 10 Dec 2004
+
+---
+
+I do prefer a collection as well (and as currently proposed in UBIF). The main reason for denormalization is probably shorter xml that is easier to debug. These social questions may be very important. 
+
+How would your proposed collection look? Object reference is not affected, but Object ID might look:
+<verbatim>
+<Object id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="lsid">
+  <Label>
+	  ... probably still multilingual ...
+  </Label>
+  <Links>
+	 <Link id="http://www.ipni.org/ ..." idtype="url" >
+	 <Link id="238723" idtype="local">
+  </Links>
+  ...
+</Object> 
+</verbatim>
+
+This includes the aspect that a link is always an alternative id (if a machine can resolve it unambiguously, it must have all properties of ids), but an id is not always a link. The sequence of id and the link objects also indicates a preference of usage by the provider. However, the provider may already have switched to an lsid system and prefer this to be used, but the client may be unable to do so. Multiple links allow coexistence and migration scenarios.
+
+-- Gregor Hagedorn - 10 Dec 2004
+---
+This is exactly what I had in mind  -- Main.DonaldHobern - 10 Dec 2004
+---
+
+Robert Kukla writes in email: "I think there are several aspects to this ID discussion:
+
+	1 Should a single (<nop>TaxonConcept) record have more than one ID? I think conceptually it should not. If there is a central repository that allows the retrieval of this (TC) record via the resolution of a GUID I am all in favour of using that GUID instead of a local ID. It could be argued that a local ID should be considered temporary or volatile (exists only for this document) and I am fine with that. Everything else, in my mind, is not a (TC) record ID.
+	2 Would it be useful to have a pointer to a web page that has the information from which the (TC) record has been derived?<br/>
+	Possibly. Reasons are:<br/>
+	 - has better formatting of the data<br/>
+	 - is without conversion artefacts<br/>
+	 - has additional information<br/>
+	As there seems to be a requirement for it, we shall include it. This however is not an ID, but a reference. Potentially two or more concepts could point to the same web page. I would suggest a single container (only one such thing per (TC) record) e.g. &lt;ProviderLink type="url"&gt;http://www.provider.com/concepthome.html&lt;ProviderLink&gt;
+	3 Would it be useful to have pointers to web pages that have additional information related to the (TC) record? IMO not. This information should be stored in seperate data sets pointing to (TC) records. If this is not possible for whatever reason the provider specific Element should be used.
+
+--  Cheers, Robert" - 10 Dec 2004
+---
+
+Regarding Robert's "aspects":
+
+	1 I agree that each TCS object should have a single id.  Other identifiers are references to the same data object under other schemes and it would be useful to keep these somehow separate, indicating that all others are alternate ids.
+	2 I agree that such pointers should be possible and I believe that they can be supported through any of the (normalised or denormalised) alternatives on this page.
+	3 I think we have to allow for this option as the only way in the near future to indicate the existence of much information which will not be transformed into a standardised structured form.  There may be no provider-specific element.  The associated data may take any of a wide range of forms and a fully open model is required until the day when we have managed to structure everything (i.e. probably forever).
+
+  Main.DonaldHobern - 10 Dec 2004 
+---
+
+One thing needs perhaps to be clarified: If the id is one of "temp", "local", or "guid", then the only resolution mechanism is in Links, and if this is missing the object is only "human resolvable". If however, the id type itself is already url, doi or lsid, one resolution mechanism is through the id attribute in the object element itself, others are under Links.
+
+I feel uncomfortable both about this choice, but the alternative would be to repeat the stuff under link.
+
+And another second thought: "Link" is used in (x)html head both to *cross-reference* other relevant information and for alternative representations. Example:
+<verbatim>
+  <link rel="stylesheet" type="text/css" href="markup.css" />
+  <link rel="bookmark" href="#top" title="Page top" />
+  <link rel="start" href="../" title="W3C Home Page" />
+  <link rel="contents" href="#navbar" title="Navigation" />
+  <link rel="appendix" href="Activity" title="Activity Statement" />
+  <link rel="appendix" href="xhtml-roadmap/" title="Roadmap" />
+  <link rel="appendix" href="2004/xhtml-faq" title="FAQ" />
+  <link rel="help" href="../Help/siteindex" title="Site Index" />
+  <link rel="glossary" href="../2001/12/Glossary" title="Glossary" />
+  <link rel="copyright" href="#copyright" title="Copyright" />
+  <link rel="alternate" type="text/html" title="HTML version" href=",html" />
+  <link rel="alternate" type="application/xhtml+xml" title="XHTML version" href=",xhtml" />
+</verbatim>
+
+So is the general term "Link" appropriate here? My current feeling is that in contrast to xhtml, for the biosciences domain we would rather like to distinguish between alternate id/resolution mechanisms (which are easily generalizable) and cross-reference kind of links, which are very specific to the exact subdomain (taxonomic names, specimens, descriptive data, etc.). So here only alternative representations are intended. We could follow the xhtml style and use both rel, type, href. Or perhaps the following pattern is more precise: 
+<verbatim>
+<Object id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="lsid">
+  <Label>
+	  ... probably still multilingual ...
+  </Label>
+  <Alternate>
+	 <Link id="http://www.ipni.org/ ..." idtype="url" >
+	 <Link id="238723" idtype="local"><!-- = "human resolvable" -->
+  </Alternate>
+  ...
+</Object> 
+</verbatim>
+
+What do you think?
+
+-- Gregor Hagedorn - 10/14. Dec 2004
+---
+
+One thing I keep stumbling on here is the fact that the urn mechanism actually _provides_ for the same information that is in an idtype in that case. And I shudder when I see the same information in two places--too much chance of inconsistency. Secondly, urn's are a type of uri and possibly uri is in fact the notion being sought here. There is a great deal written about, and some standards for, the things supported in uri's, even though urn's evolved because uri's may have been too general. The recent approach to an integrated view of urn's and uri's is the series of RFCs leading up to [[http://www.faqs.org/rfcs/rfc3404.html][RFC3404]] _Dynamic Delegation Discovery System (DDDS) Part Four: The Uniform Resource Identifiers (URI)_. DDDS is in fact the foundation of the only(?) resolution service for LSIDs and certainly the only kind mentioned explicitly in the LSID spec.
+
+At the very least, probably the requirements here should be tested against those for uri's as well as urn's, if not for DDDS. Particularly worth study are [[http://www.faqs.org/rfcs/rfc1737.html][RFC1737]] _Functional Requirements for Uniform Resource Names_,  [[http://www.faqs.org/rfcs/rfc2168.html][RFC 2168 ]] _Resolution of Uniform Resource Identifiers using the Domain Name System_  (obsoleted by the DDDS RFCs) and [[http://www.faqs.org/rfcs/rfc2483.html][RFC 2483 ]] _URI Resolution Services Necessary for URN Resolution_, and the things they reference. In particular, RFC2483 lays out a set of operations and operands desired for resolution, along with their operands, error conditions, etc. [[http://www.faqs.org/rfcs/rfc2915.htm][RFC2915]]l _The Naming Authority Pointer (NAPTR) DNS Resource Record_ is the specification of a specific part of RFC2168, also obsoleted by DDDS. In my opinion there is substantial motivation to remain close to the model of RFC2483, because there is a lot of existing infrastructure premised on it. The requirements in the RFCs obsoleted by DDDS remain worthy of mapping to those mentioned in this wiki topic.
+
+-- Main.BobMorris - 11 Mar 2005
+
+I think only few identifier types are in fact URIs, viz. URN (with LSID) and URL. How shall we deal with the other kind of identifiers? DOI may or may not be embedded in urns, as far as I remember the method to do so is contentious. How to providers that provider numeric guids inform what that is? How does a provider inform whether an integer number is created on the fly for cross-referencing purposes or is indeed stable? -- Gregor Hagedorn
+
+Please see UriAndUrnAndUrl -- Main.BobMorris - 13 Mar 2005	  
+---
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1103018184" from="UBIF.LinneanCoreIdentifiers" to="UBIF.ObjectIdentifierPattern"}%
+@
+
+
+1.19
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.18
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110739265" format="1.0" version="1.18"}%
+d8 1
+a8 1
+	* Cross-link between objects from the same or differnt knowledge domains (e.g. refer to a taxon name)
+a304 3
+---
+
+I could not read all the specs you quote, Bob, but I think your analysis is incomplete. Only two identifier types are in fact uris, viz. lsid and url. How shall we deal with the other kind of identifiers? DOI may or may not be embedded in urns, as far as I remember the method to do so is contentious. How to providers that provider numeric guids inform what that is? How does a provider inform whether an integer number is created on the fly for cross-referencing purposes or is indeed stable?
+d306 1
+a306 4
+I agree with you that there seem to be things still not understood by me, but I wonder how to address them in the next 3 days...
+
+Gregor Hagedorn
+---
+@
+
+
+1.17
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110689275" format="1.0" version="1.17"}%
+d307 1
+a307 1
+I did not read all the specs you quote Bob, but I think your analysis is incomplete. Only two identifier types are in fact uris, viz. lsid and url. Can you make an actual proposal how to deal with the other kind of identifiers? DOI may or may not be embedded in urns, as far as I remember the method to do so is even contentious. How to providers that provider numeric guids inform what that is? How does a provider inform whether an integer number is created on the fly for cross-referencing purposes or is indeed stable?
+d314 1
+a314 1
+Please see UriAndUrnAndUrl -- Main.BobMorris - 13 Mar 2005  	
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110656546" format="1.0" version="1.16"}%
+d314 3
+@
+
+
+1.15
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1110578631" format="1.0" version="1.15"}%
+d300 1
+a300 1
+One thing I keep stumbling on here is the fact that the urn mechanism actually _provides_ for the same information that is in an idtype in that case. And I shudder when I see the same information in two places---too much chance of inconsistency. Secondly, urn's are a type of uri and possibly uri is in fact the notion being sought here. There is a great deal written about, and some standards for, the things supported in uri's, even though urn's evolved because uri's may have been too general. The recent approach to an integrated view of urn's and uri's is the series of RFCs leading up to [[http://www.faqs.org/rfcs/rfc3404.html][RFC3404]] _Dynamic Delegation Discovery System (DDDS) Part Four: The Uniform Resource Identifiers (URI)_. DDDS is in fact the foundation of the only(?) resolution service for LSIDs and certainly the only kind mentioned explicitly in the LSID spec.
+d302 1
+a302 1
+At the very least, probably the requirements here should be tested against those for uri's as well as urn's, if not for DDDS. Particularly worth study are[[http://www.faqs.org/rfcs/rfc1737.html][RFC1737]] _Functional Requirements for Uniform Resource Names_,	[[http://www.faqs.org/rfcs/rfc2168.html][RFC 2168 ]] _Resolution of Uniform Resource Identifiers using the Domain Name System_  (obsoleted by the DDDS RFCs) and [[http://www.faqs.org/rfcs/rfc2483.html][RFC 2483 ]] _URI Resolution Services Necessary for URN Resolution_, and the things they reference. In particular, RFC2483 lays out a set of operations and operands desired for resolution,  along with their operands, error conditions, etc. [[http://www.faqs.org/rfcs/rfc2915.htm][RFC2915]]l _The Naming Authority Pointer (NAPTR) DNS Resource Record_ is the specification of a specific part of RFC2168, also obsoleted by DDDS. In my opinion there is substantial motivation to remain close to the model of RFC2483, because there is a lot of existing infrastructure premised on it. The requirements in the RFCs obsoleted by DDDS remain worthy of mapping to those mentioned in this wiki topic.
+d304 4
+d309 1
+d311 2
+a312 1
+-- Main.BobMorris - 11 Mar 2005
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1110381743" format="1.0" version="1.14"}%
+d300 8
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 5
+a5 1
+%META:TOPICINFO{author="GregorHagedorn" date="1103018660" format="1.0" version="1.13"}%
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 2
+a2 3
+%META:TOPICINFO{author="GregorHagedorn" date="1102766045" format="1.0" version="1.12"}%
+%META:TOPICPARENT{name="LinneanCore"}%
+Probably any kind of object exchange (through TCS, SDD, ABCD, perhaps LinneanCore) has the following requirements for identifiers:
+d7 1
+a7 1
+When revising LC, Sally proposed a general "RecordId" type that is both used to define the identity of a LC object, and to link to other objects. Sally's annotation: "The locally or globally unique Identifier for this name record. Could be one of three kinds of ID: GUID (persistent, machine resolvable such as an LSID), human resolvable Global ID (e.g. 'IPNI citation ID 14098-1') or locally (within this dataset) resolved ID (e.g. '1' or 'K001928712') - probably belongs somewhere else if it looks useful and could end up being widely used". This type has two attributes: "type" and "id". "id" is xs:string. The attribute "type" belongs in Sally's proposal to an enumeration of "Human Resolvable", "Locally Resolvable", "Globally Resolvable". Example: &lt;NameRecordId type="Human Resolvable" id="IpniCitation 1003545-1 version 1.1"/&gt;
+d9 1
+d12 2
+a14 1
+
+d86 2
+d119 1
+a119 1
+I really like Markus's label idea. In UBIF there is a label in the proxy, and a debugref as an option to create a human readable id-ref analogue. But the debugref depends on the ref-id relation. In contrast the label idea could be interpreted as making the ref itself optional. That could be a _migration option_ for all those cases where people only have a single string in their databases and somehow justified recoil from the idea to have to add this string to a publication proxy object list, add an id to it, and then ref this id - at the place where in their database there is just a simple string type.
+d131 1
+d159 7
+a165 7
+As Markus points out we do not want it to be that complicated... Here is a modified version of Markus's list again:<br/>
+- *temp:* temporary, e. g. generated on the fly for the xml document only<br/>
+- *local:* permanent but local id (luid); this would include human-resolvable ids like IF, IPNI etc.<br/>
+- *guid:* global ids other than the special cases below, e.g. 128 bit GUID integers or universal resource names (urn) that do not offer resolution mechansims<br/>
+- *url:* resolvable standard internet address. In practice "permanent" only over moderate periods of time.<br/>
+- *doi:* resolvable "digital object identifiers" (not a urn)<br/>
+- *lsid:* life science IDs (resolvable special case urn that promises excellent permanency and resolution mechanisms
+d169 1
+a169 1
+Question: Should we separate "urn"s other than lsid, rather than including it in the non-resolvable other guids? Is there perhaps a better name for this non-resolvable guid type? As the ontology shows, url, doi, lsid are all in principle a guid. I would prefer to highlight lsid as a type if TDWG and GBIF make this the recommendation. It should be clear that the flat enumeration is based on practical considerations, not on the ontology itself.
+a174 1
+<verbatim>
+d177 1
+d180 1
+d184 1
+d188 1
+d190 1
+a190 1
+*Object Reference:*
+d192 1
+a194 1
+
+d201 3
+a203 5
+A thought that we had here at Kew, which I think will clarify some of our concerns ... One thing I think is important is that anyone who has an existing set of 'permanent public local ids' (in Gregor's terms, Human Resolvable in my terms) has a good upgrade path from those to LSIDs. For instance, we have been giving out IPNI ids for a few years now, so there are a lot of datasets out there with IPNI ids and even version numbers in them. It should be a goal of any Global ID system that if, say, IPNI switches over to using LSIDs, then a simple batch process should be able to convert those legacy Human Resolvable Ids into LSIDs - for example by adding the string 'urn:lsid:lsid.gbif.net:IPNI:' onto the front of them. A simple point, but one that will prevent a lot of problems in the long run! -- Main.SallyHinchcliffe - 30 Nov 2004	
+
+---
+		* <small>As a separate, but related topic: Sally mentions a problem when some records are the result of a query, and others are provided only because they are required by refs in these records. "if the search request was for 'everything in Poa' and some of the related concepts weren't in Poa, then how was the requester to know which records were returned because they matched the request, and which were returned because they were referred to in the other records? I could imagine that if you had a very interconnected set of concepts, then it would always return the entire data set, whatever you asked it for!" -- In TCS v. 08 a xs:attribute name="primary" type="xs:boolean" use="optional" is intended for this. xs:annotation: "If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept." -- I think not delivering the required referenced records is not desirable. Should some attribute like primary (or "request=primary?") be part of a general design pattern for all kind of objects that is defined together with the object id design pattern? Or is this a protocol issue? -- Gregor Hagedorn - 17 Nov 2004</small>
+		* <small>Again this is a question of goals. As a data server, my goal is to serve up the least amount of data required to satisfy a query. So if someone asks for 'everything in Poa' I don't want to have to serve up names from another genus just for completeness. I'd rather serve up the simple list of results along with some ids that allow those interested to get the complete data by following up the links. Whether these be LSIDs or whatever, I'm not that bothered. Bandwidth may be cheap, but getting a completely resolved set of data (e.g. everything in Poa, plus all of the basionyms, related records, child records, parent records, etc.) usually requires repeated hits of the database and when you've got thousands of queries a day that's _not_ cheap. -- Main.SallyHinchcliffe - 30 Nov 2004</small>
+d230 1
+a230 1
+
+a231 8
+
+---
+
+One thing needs to be clarified: If the id is one of "temp", "local", or "guid", then the only resolution mechanism is in Links, and if this is missing the object is only "human resolvable". If however, the id type itself is already url, doi or lsid
+
+-- Gregor Hagedorn - 10 Dec 2004
+
+
+d250 1
+a250 1
+	1 I agree that each TCS should have a single id.  Other identifiers are references to the same data object under other schemes and it would be useful to keep these somehow separate, indicating that all others are alternate ids.
+d257 40
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonaldHobern" date="1102705406" format="1.0" version="1.11"}%
+d3 2
+a4 2
+Probably any kind of object exchange (through TCS, SDD, ABCD, perhaps LinneanCore) has the following needs for identifiers:
+	* Inform about identifiers in the source database and whether they are temporary or stable
+d12 1
+a12 1
+The design of UBIF differs in several aspects:
+d14 4
+a17 7
+"id" is used only for object identifiers, whereas Sally uses this attribute name both for definition and reference. In UBIF, when referring to an id the "ref" attribute is used. TCS uses the same pattern as UBIF (SDD had to change from using "key" to "id" so that we are more compatible). The "ref" pattern makes it clearer that this is not an id of the element, but an object is referred to. The design is also used in xhtml (id/name and href) or xml schema itself. I believe we should follow this.
+
+More importantly (and probably UBIF should change here?) UBIF always uses two id systems: One internal for cross-referencing within a document scope (id/ref) and one to Link to external objects. Under Links you can have general URL, LSID, or DOI. There is no equivalent to Sally's human-resolvable ID, i.e. something that provided you find the right web query interface, you can enter somewhere and resolve it. Please take a look at the top of diagram on ProxyDataPublication. "ObjectLink" is now called "Link", and Webservice linking methods removed by now.
+
+There is no way to store a source-database-local id. The assumption is that if such a thing exists, it would be used for the document cross-referencing id - but this assertion can nowhere be made explicit or rejected!
+
+On the other hand, UBIF proposes in parallel to the machine-readable links a Label (with text and abbreviations possibly in multiple language) that are intended for human consumption. In the LC world, that is where I believe the <nop>FullName belongs - and I actually propose to rename it to "Label".
+d32 1
+a32 1
+Gregor: I think if we want to be inclusive and access data sources, the one-system GUID can not be made required. I agree with you that it should be urgently recommended, however. Ultimately, the nice thing about LSID is that simply by prefixing the IPNI, ITIS, etc. ids with a namespace, authority, etc. of the LSID, the old system is turned into the new system. This allows the local software to remain unchanged and the LSID created or interpreted on the fly in the provider interface.  - 16 Nov 2004
+d68 1
+a68 1
+I am quite happy to follow a denormalized attribute model - there is little value in supporting an unlimited number of id and resolution services, but for a transition period we may have to be flexible.
+d72 1
+a72 1
+An alternative model could be to follow Sally's "id-type" model:
+d114 1
+a114 1
+I would vote for 3 alternatives, to allow giving both an official local id for cross-referencing, a conventional resolvable URI, and have space to migrate to a new GUID system like LSIDs. The reference needs no idtype I believe.
+d159 1
+a159 1
+- *url:* resolvable standard internet address, in practice "permanent" only over moderate periods of time<br/>
+d163 5
+a167 1
+Note: I propose to replaced luid with local because I find it rarely used (google) and where used defined as a local 64 bit integer.
+d206 1
+a206 1
+I do prefer a collection as well (and as currently proposed in UBIF). The main reason for denormalization is probably shorter xml that is easier to debug. These social questions may be important. 
+d222 2
+d230 7
+d258 1
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1102698241" format="1.0" version="1.10"}%
+d223 2
+d241 8
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="DonaldHobern" date="1102691079" format="1.0" version="1.9"}%
+d198 1
+d200 1
+d203 36
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1102673163" format="1.0" version="1.8"}%
+d199 1
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="SallyHinchcliffe" date="1101826773" format="1.0" version="1.7"}%
+d3 3
+a5 3
+LC has the following needs for identifiers:
+	* Inform about identifiers in the source database
+	* Cross-link between multiple LC records (e.g. refer to a basionym of a name)
+a6 6
+---
+
+When revising LC, Sally proposed a general "RecordId" type that is both used to define the identity of a LC object, and to link to other objects. Sally's annotation: "The locally or globally unique Identifier for this name record. Could be one of three kinds of ID: GUID (persistent, machine resolvable such as an LSID), human resolvable Global ID (e.g. 'IPNI citation ID 14098-1') or locally (within this dataset) resolved ID (e.g. '1' or 'K001928712') - probably belongs somewhere else if it looks useful and could end up being widely used". This type has two attributes: "type" and "id". "id" is xs:string, "type" belongs to an enumeration of
+	* Human Resolvable
+	* Locally Resolvable
+	* Globally Resolvable
+d8 1
+a8 1
+Example: &lt;NameRecordId type="Human Resolvable" id="IpniCitation 1003545-1 version 1.1"/&gt;
+d14 1
+a14 1
+"id" is used only for object identifiers. When referring to an id the "ref" attribute is used. TCS uses the same pattern. This makes it clearer that this is not an id of the element, but an object is referred to. The design is also used in xhtml (id/name and href) or xml schema itself. I believe we should follow this.
+d16 1
+a16 1
+More importantly (and perhaps UBIF should change here?) UBIF always uses two id systems: One internal for cross-referencing within a document scope (id/ref) and one to Link to external objects. Under Links you can have general URL, LSID, or DOI. There is no equivalent to Sally's human-resolvable ID, i.e. something that provided you find the right web query interface, you can enter somewhere and resolve it. Please take a look at the top of diagram on ProxyDataPublication. "ObjectLink" is now called "Link", and Webservice linking methods removed by now.
+d168 15
+a182 5
+-- Gregor Hagedorn - 17 Nov 2004
+---
+A thought that we had here at Kew, which I think will clarify some of our concerns ...
+One thing I think is important is that anyone who has an existing set of 'permanent public local ids' (in Gregor's terms, Human Resolvable in my terms) has a good upgrade path from those to LSIDs. For instance, we have been giving out IPNI ids for a few years now, so there are a lot of datasets out there with IPNI ids and even version numbers in them. It should be a goal of any Global ID system that if, say, IPNI switches over to using LSIDs, then a simple batch process should be able to convert those legacy Human Resolvable Ids into LSIDs - for example by adding the string 'urn:lsid:lsid.gbif.net:IPNI:' onto the front of them. A simple point, but one that will prevent a lot of problems in the long run!
+Main.SallyHinchcliffe - 30 Nov 2004	
+d184 2
+a185 1
+As a separate, but related topic: Sally mentions a problem when some records are the result of a query, and others are provided only because they are required by refs in these records. "if the search request was for 'everything in Poa' and some of the related concepts weren't in Poa, then how was the requester to know which records were returned because they matched the request, and which were returned because they were referred to in the other records? I could imagine that if you had a very interconnected set of concepts, then it would always return the entire data set, whatever you asked it for!" -- In TCS v. 08 a xs:attribute name="primary" type="xs:boolean" use="optional" is intended for this. xs:annotation: "If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept."
+d187 1
+a187 1
+I think not delivering the required referenced records is not desirable. Should some attribute like primary (or "request=primary?") be part of a general design pattern for all kind of objects that is defined together with the object id design pattern? Or is this a protocol issue?
+d191 3
+a193 1
+Again this is a question of goals. As a data server, my goal is to serve up the least amount of data required to satisfy a query. So if someone asks for 'everything in Poa' I don't want to have to serve up names from another genus just for completeness. I'd rather serve up the simple list of results along with some ids that allow those interested to get the complete data by following up the links. Whether these be LSIDs or whatever, I'm not that bothered. Bandwidth may be cheap, but getting a completely resolved set of data (e.g. everything in Poa, plus all of the basionyms, related records, child records, parent records, etc.) usually requires repeated hits of the database and when you've got thousands of queries a day that's _not_ cheap.
+d195 3
+a197 2
+Main.SallyHinchcliffe - 30 Nov 2004	
+ 
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1100868722" format="1.0" version="1.6"}%
+d3 189
+a191 180
+LC has the following needs for identifiers:
+	* Inform about identifiers in the source database
+	* Cross-link between multiple LC records (e.g. refer to a basionym of a name)
+	* Provide machine-resolution mechanisms (e.g. URL, LSID, DOI)
+---
+
+When revising LC, Sally proposed a general "RecordId" type that is both used to define the identity of a LC object, and to link to other objects. Sally's annotation: "The locally or globally unique Identifier for this name record. Could be one of three kinds of ID: GUID (persistent, machine resolvable such as an LSID), human resolvable Global ID (e.g. 'IPNI citation ID 14098-1') or locally (within this dataset) resolved ID (e.g. '1' or 'K001928712') - probably belongs somewhere else if it looks useful and could end up being widely used". This type has two attributes: "type" and "id". "id" is xs:string, "type" belongs to an enumeration of
+	* Human Resolvable
+	* Locally Resolvable
+	* Globally Resolvable
+
+Example: &lt;NameRecordId type="Human Resolvable" id="IpniCitation 1003545-1 version 1.1"/&gt;
+
+---
+
+The design of UBIF differs in several aspects:
+
+"id" is used only for object identifiers. When referring to an id the "ref" attribute is used. TCS uses the same pattern. This makes it clearer that this is not an id of the element, but an object is referred to. The design is also used in xhtml (id/name and href) or xml schema itself. I believe we should follow this.
+
+More importantly (and perhaps UBIF should change here?) UBIF always uses two id systems: One internal for cross-referencing within a document scope (id/ref) and one to Link to external objects. Under Links you can have general URL, LSID, or DOI. There is no equivalent to Sally's human-resolvable ID, i.e. something that provided you find the right web query interface, you can enter somewhere and resolve it. Please take a look at the top of diagram on ProxyDataPublication. "ObjectLink" is now called "Link", and Webservice linking methods removed by now.
+
+There is no way to store a source-database-local id. The assumption is that if such a thing exists, it would be used for the document cross-referencing id - but this assertion can nowhere be made explicit or rejected!
+
+On the other hand, UBIF proposes in parallel to the machine-readable links a Label (with text and abbreviations possibly in multiple language) that are intended for human consumption. In the LC world, that is where I believe the <nop>FullName belongs - and I actually propose to rename it to "Label".
+
+I think Sally's example falls somewhere between in combining a local id with a text helping humans to guess about how to resolve this. On the other hand, it seems that such a text is not ideally suited to cross referencing names.
+
+Who can help us to make the best of both worlds?
+
+-- Main.GregorHagedorn - 03 Nov 2004
+---
+
+Rich commented by email:
+
+*NameRecordID*: One of my (overly ambitious?) hopes for LC was to get away from project-specific ID numbers for taxon names (e. g., separate IPNI, ITIS, Species2000, GBIF, etc. ID numbers for the same name instance).  I would be *very* happy if we could agree on a GUID system for LC name instances, perhaps administered by GBIF. That way, we could avoid the issues surrounding LUIDs altogeher, and just pass around one set of GUIDs.  I realize this may be too much to ask for,  but my main concern is, how can we cross-map the same funtional "name" instance across LC datasets provided by different nomenclators? In theory, LC should only include information records that are "objectively discernable" -- not really open to interpretation (except, perhaps, for interpretations on the relevant Code and how it should be applied to form the "correct" name in rare cases).  So, my point is -- would it be impractical to restrict this to GUID only, after we identify a logical GUID provider? 
+
+Separate from the previous comment, would it be better to to allow the ID element to be Unbounded -- so multiple LUIDs and/or GUIDs can be provided, when more than one are known to be congruent (i. e., refer to the same name instance?)
+
+Gregor: I think if we want to be inclusive and access data sources, the one-system GUID can not be made required. I agree with you that it should be urgently recommended, however. Ultimately, the nice thing about LSID is that simply by prefixing the IPNI, ITIS, etc. ids with a namespace, authority, etc. of the LSID, the old system is turned into the new system. This allows the local software to remain unchanged and the LSID created or interpreted on the fly in the provider interface.  - 16 Nov 2004
+
+---
+
+*Just stepping back and thinking.* In a way, one may want to distinguish between the following types of identifiers:
+	* temporary identifiers valid only in the current xml document or stream context
+		* Examples: an ID/IDREF pair in an xml document, but also an SDD document where the cross-referencing identifiers are created on the fly
+	* permanent local identifiers that will remain valid in the foreseeable future
+		* Example: IPNI-IDs (not yet searchable with web interface, but probably planned), SDD document, where multiple documents (perhaps different character subsets) will refer to the same character always by the same numeric ID
+	* public identifiers that are human resolvable via a web form
+		* whether these are Local ID or Globally Unique ID (GUID) probably does not matter yet
+		* Examples are <nop>IndexFungorum IDs, Specimen collection IDs
+		* Is is relevant to inform whether an identifier is "local" or "public"? Seems to be closely related.
+	* machine resolvable identifiers
+		* these are always GUID
+		* Examples are LSID, DOI, any kind or URL
+		* A distinction may be made about how permanent the link can be expected to be.
+
+Currently, in the UBIF proxy model only the resolvable GUIDs are addressed in linking. Example (assuming IPNI would support LSIDs): 
+<verbatim>
+<Link><LSID>urn:lsid:lsid.gbif.net:IPNI:157927-1</LSID>
+-- or (with alternatives) --
+<Link>
+  <LSID>urn:lsid:lsid.gbif.net:IPNI:157927-1</LSID>
+  <URL>http://www.ipni.org/ipni/plantsearch?id=157927-1&query_type=by_id&output_format=object_view</URL>
+</Link>
+</verbatim>
+
+Markus Döring proposes to attempt to get rid of the Link layer and put the ids as attributes on the element defining the object. This does not allow multiple URLs as the current UBIF model does, but if they are required, a denormalization having url and alturl may be acceptable. This could look like:
+
+<verbatim>
+<ScientificName lsid="urn:lsid:lsid.gbif.net:IPNI:157927-1"/>
+-- or (with alternatives) --
+<ScientificName lsid="urn:lsid:lsid.gbif.net:IPNI:157927-1" url="http://www.ipni.org/ipni/plantsearch?id=157927-1&query_type=by_id&output_format=object_view" alturl="http://www.ipni.org ..."/>
+</verbatim>
+
+I am quite happy to follow a denormalized attribute model - there is little value in supporting an unlimited number of id and resolution services, but for a transition period we may have to be flexible.
+
+However, this still does not allow to express all the options listed above. Also, when cross-referencing within a document (having a list of literature/publications somewhere and referring to these, as currently done in SDD or TCS) it is unclear to which of the multiple attribute the ref value would refer. UBIF currently always introduces a secondary id for this purpose, but this seems undesirable in the longer run when people actually start using directly resolvable ids like lsids.
+
+An alternative model could be to follow Sally's "id-type" model:
+<verbatim>
+<ScientificName id="urn:lsid:lsid.gbif.net:IPNI:157927-1" idtype="lsid" id2="http://www.ipni.org ..." id2type="url" />
+-- or (preferring to use a public/local id for cross-referencing within the xml document) --
+<ScientificName id="238723" idtype="local" 
+					 id2="urn:lsid:lsid.gbif.net:IPNI:157927-1" id2type="lsid" 
+					 id3="http://www.ipni.org ..." id3type="url" />
+</verbatim>
+
+Please give me some feedback on these loose ideas!
+
+-- Main.GregorHagedorn - 16 Nov 2004
+
+I would like to see all this in the light of the different use for object-ids and object-references here:
+<verbatim>
+Object ID:
+<object id=... idtype=... id2=... id2type=... />
+
+Object Reference:
+<object ref=... label=... />
+</verbatim>
+
+An object could have several IDs whereas a reference to an object would only need 1. A single simple label string would also be nice for object references, but not for objects themselves which would probably need multiple languages, etc. Also the reference does not necessarily need an idtype, as it is given in the schema where the reference is pointing to. Just for references pointing beyond its local document it would be good to know the type. But as this has to be a global resolvable ID it might not be important, cause LSID and URL are self explanatory.
+
+Remaining questions I see:
+	* do we need multiple IDs for an object or/and reference and how could we deal with that?
+		* I guess for a reference it is enough to reference the "primary" id of an object
+		* multiple IDs would be good to have for objects so a client could chose between them (if he prefers LSIDs for example)
+		* to avoid new elements we could agree on a limited amount of possible ids, maybe 2 are already enough (local/global) e.g. id, id2 ?
+	* list of identifier types being used. The types listed already are delimited by different attributes such as local/global, permanent/temporary, resolvable/unresolvable, URI/non-URI. But instead of capturing this I suggest to use a small definite list of idtypes that primarily distinguishes between temporary and permantent ids and global/local ones:
+		* temp (e.g. generated on the fly for the xml document only)
+		* luid (permanent but local; this would have to include IPNI etc.)
+		* guid (other than the special cases below, e.g. GUID strings)
+		* doi (resovable special case guid)
+		* url (resovable special case guid)
+		* lsid (resovable special case url listed to promote its use)
+	* Does a reference need an idtype?
+
+-- Main.MarkusDoering - 16 Nov 2004
+
+---
+
+I would vote for 3 alternatives, to allow giving both an official local id for cross-referencing, a conventional resolvable URI, and have space to migrate to a new GUID system like LSIDs. The reference needs no idtype I believe.
+
+I really like Markus's label idea. In UBIF there is a label in the proxy, and a debugref as an option to create a human readable id-ref analogue. But the debugref depends on the ref-id relation. In contrast the label idea could be interpreted as making the ref itself optional. That could be a _migration option_ for all those cases where people only have a single string in their databases and somehow justified recoil from the idea to have to add this string to a publication proxy object list, add an id to it, and then ref this id - at the place where in their database there is just a simple string type.
+
+So a system may define
+	* Object definition or Object Proxy has one required id/idtype, and two optional alternative id2/id2type/id3/id3type attributes. Semantics:
+		* The first id is used for document-internal cross-referencing. The data provider can choose which type is preferred for cross-referencing based on the convenience of implementation.
+		* If several of the three ids are of a resolvable type, the sequence indicate a usage-preference by the provider.
+	* Object reference has one optional ref and an optional label. 
+		* The implied syntax is that either the ref or the label must be present (however, this is not expressible in xml schema)
+		* What would be expressible is that the label is required - I am not sure how desirable this is - since the ref would point to a place inside the document, which should have sufficient human-readable semantics.
+		* Yet an alternative to have label attribute would be to use the string content of the element that contains the ref attribute. The advantage would be that even in cases where the alternative to "by-ref" is not a single string but 2-3 elements if would be possible to offer the local-or-by-reference pattern as alternatives. I am not sure whether this complicates the design too much, however.
+		* In TCS 0.8 the ref attribute has an annotation "Points to a top-level element via an ID reference; use gref to reference an external entity via a GUID." - however there is not gref attribute in TCS. But it gives me the idea that yet another method may have a choice of label alone, ref + optional label pointing within xml document, ref + required label pointing directly to external resolvable ID. Unfortunately, xml schema does not allow me to make these alternatives strict without introducing three different element names for each usage of this pattern which somewhat bloats the schema.
+
+Regarding the idtype categories: Markus and I drew up the following possible ontology "diagram":
+
+<verbatim>
+					ID
+				/		\
+	temporary		  permanent
+						 /		  \
+						/			 \
+				local ID			 global ID (GUID)
+				/		\				/		\
+		 private	public	 resolvable  non-resolvable
+								  /		\				/		\ 
+								URI	  Other		private public	 
+							  /  \		 | 
+							URL  URN  Example: DOI
+									|
+							 Example: LSID
+NOTES:
+ID = comparison possible
+temporary = comparison only in single document, two repeated queries are not comparable based on ID
+permanent = IDs from repeated queries are comparable 
+local = IDs are comparable only in usage/provider context
+global = IDs are globally comparable
+private = not queryable
+public = queryable, = Sally's human-resolvable IDs
+</verbatim>
+
+As Markus points out we do not want it to be that complicated... Here is a modified version of Markus's list again:<br/>
+- *temp:* temporary, e. g. generated on the fly for the xml document only<br/>
+- *local:* permanent but local id (luid); this would include human-resolvable ids like IF, IPNI etc.<br/>
+- *guid:* global ids other than the special cases below, e.g. 128 bit GUID integers or universal resource names (urn) that do not offer resolution mechansims<br/>
+- *url:* resolvable standard internet address, in practice "permanent" only over moderate periods of time<br/>
+- *doi:* resolvable "digital object identifiers" (not a urn)<br/>
+- *lsid:* life science IDs (resolvable special case urn that promises excellent permanency and resolution mechanisms
+
+Note: I propose to replaced luid with local because I find it rarely used (google) and where used defined as a local 64 bit integer.
+
+-- Gregor Hagedorn - 17 Nov 2004
+---
+
+As a separate, but related topic: Sally mentions a problem when some records are the result of a query, and others are provided only because they are required by refs in these records. "if the search request was for 'everything in Poa' and some of the related concepts weren't in Poa, then how was the requester to know which records were returned because they matched the request, and which were returned because they were referred to in the other records? I could imagine that if you had a very interconnected set of concepts, then it would always return the entire data set, whatever you asked it for!" -- In TCS v. 08 a xs:attribute name="primary" type="xs:boolean" use="optional" is intended for this. xs:annotation: "If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept."
+
+I think not delivering the required referenced records is not desirable. Should some attribute like primary (or "request=primary?") be part of a general design pattern for all kind of objects that is defined together with the object id design pattern? Or is this a protocol issue?
+
+-- Gregor Hagedorn - 17 Nov 2004
+---
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1100771400" format="1.0" version="1.5"}%
+d177 1
+a177 1
+As a separate, but related topic:
+d179 1
+a179 3
+Sally mentions a problem when some records are the result of a query, and others are provided only because they are required by refs in these records. "if the search request was for 'everything in Poa' and some of the related concepts weren't in Poa, then how was the requester to know which records were returned because they matched the request, and which were returned because they were referred to in the other records? I could imagine that if you had a very interconnected set of concepts, then it would always return the entire data set, whatever you asked it for! There then followed a bit of discussion between Donald and Robert about it and I think they suggested various solutions but by this time we had run out of time so I just had IPNI return IPNI ids of related concepts, without any linked concept being included in the dataset. (This is the root of my desire for a 'good enough' or human resolvable id, to hold the fort until LSIDs or other GUIDs become available)"
+
+I think not delivering the required referenced records is not desirable. Do we need an additional attribute on objects to indicate whether an object is part of the result set, or part of secondary references? Is this a protocal issue?
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="MarkusDoering" date="1100617153" format="1.0" version="1.4"}%
+a109 1
+
+a116 1
+
+d120 65
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1100599869" format="1.0" version="1.3"}%
+d92 30
+a121 2
+-- Main.GregorHagedorn - 16 Nov 2004
+
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099559397" format="1.0" version="1.2"}%
+d3 1
+a3 1
+LC has two needs for identifiers:
+d5 2
+a6 2
+	* Crosslink between multiple LC records
+
+d9 1
+a9 3
+When revising LC, Sally proposed a general "RecordId" type that is both used to define the identity of a LC object, and to link to other objects. Sally's annotation: "The locally or globally unique Identifier for this name record. Could be one of three kinds of ID: GUID (persistent, machine resolvable such as an LSID), human resolvable Global ID (e.g. 'IPNI citation ID 14098-1') or locally (within this dataset) resolved ID (e.g. '1' or 'K001928712') - probably belongs somewhere else if it looks useful and could end up being widely used".
+
+This type has two attributes: "type" and "id". "id" is xs:string, "type" belongs to an enumeration of
+d20 1
+a20 3
+"id" is used only for object identifiers, when referring to an id the "ref" attribute is used. This makes it clearer that this is not an id of the element, but an object is referred to. The design is also used in xhtml (id/name and href) or xml schema itself. I believe we should follow this.
+
+More importantly (and perhaps UBIF should change here?) UBIF always uses two id systems: One internal for cross-referencing within a document scope (id/ref) and one to Link to external objects. Under Links you can have general URL, LSID, or DOI. There is no equivalent to Sally's human-resolvable ID, i.e. something that provided you find the right web query interface, you can enter somewhere and resolve it. 
+d22 1
+a22 1
+Please take a look at the top of diagram on ProxyDataPublication. "ObjectLink" is now called "Link", and Webservice linking methods removed by now.
+d24 1
+a24 1
+Also there is no way to store a source-database-local id. The assumption is that if such a thing exists, it would be used for the document cross-referencing id, but this assertion can nowhere be made.
+d28 1
+a28 3
+I do think that Sally's example falls somewhere between in combining a local id with a text helping humans to guess about how to resolve this.
+
+On the other hand, it seems that such a text is not ideally suited to cross referencing names.
+d37 1
+a37 1
+*NameRecordID*: One of my (overly ambitious?) hopes for LC was to get away from project-specific ID numbers for taxon names (e.g., separate IPNI, ITIS, Species2000, GBIF, etc. ID numbers for the same name instance).  I would be *very* happy if we could agree on a GUID system for LC name instances, perhaps administered by GBIF. That way, we could avoid the issues surrounding LUIDs altogeher, and just pass around one set of GUIDs.  I realize this may be too much to ask for,  but my main concern is, how can we cross-map the same funtional "name" instance across LC datasets provided by different nomenclators? In theory, LC should only include information records that are "objectively discernable" -- not really open to interpretation (except, perhaps, for interpretations on the relevant Code and how it should be applied to form the "correct" name in rare cases).  So, my point is -- would it be impractical to restrict this to GUID only, after we identify a logical GUID provider? 
+d41 52
+a92 1
+---
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1099520400" format="1.0" version="1.1"}%
+d39 10
+@

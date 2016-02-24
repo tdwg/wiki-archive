@@ -1,0 +1,131 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118882" format="1.1" version="1.28"}%
+%META:TOPICPARENT{name="BDI.SDD_"}%
+---+!! %TOPIC%
+
+(This is part of the UBIF.SchemaDiscussion discussion. See also InterfaceDiscussion. The name for the section contain Agent, Publication, etc. Proxy objects in the TopLevelStructure is discussed under NameForProxyOrInterfaceSection.)
+---
+
+Fundamentals: 
+   * From the standpoint of a biodiversity dataset many objects from other knowledge domains need to be addressed, such as publications, geographical locations from gazetteers, agents (organisation, person, software) and media libraries (e.&nbsp;g. images in different resolutions and with captions in multiple languages).
+   * From a specific biodiversity dataset, the same in true for other biodiversity knowledge domains. For example, descriptive data need class (taxon) names, class hierarchies, references to specimens/units.
+   * Three conventional methods exist to deal with this situation:
+      1 Ignore the problem and pretend the external objects can be represented by a simple human readable string (publication, person name, taxon name), disregarding the fact that this only allows humans to guess identity and prevents integration of different datasets. Unions of such sets can be queried using fuzzy query operators, but datasets cannot be joined - e.&nbsp;g. not <nop>GenBank sequences with ABCD specimen and GLOPP host-parasite interaction data.
+      2 Realize the problem and provide a internal object representation that is specific to the application. Thus Specify is also a literature database, <nop>DarwinCore and ABCD have geography and taxon name models, the <nop>TaxonConcept schema proposes to use the <nop>EndNote literature information model. These methods do not allow to truly reference external object providers.
+      3 Use a URL web address. This has two major problems: 
+         * It may break and then not only the link is lost, but also often the semantics of the referencing object (a descriptions claiming to describe "http://x.y.org/taxon?ID=234764" is worthless).
+         * Although most objects can be provided some are not available. No external taxonomic name service will ever be able to provide all, including new taxon names so that they can be described.
+
+To solve these problems I propose to consistently use a class of objects called proxy data. These primarily have very simple representation of an object composed of 
+   * Label (potentially in multiple languages) that is expected to capture the semantics of the object (make it recognizable to humans outside of the referring context). This implies a desire to be globally unique, which cannot be guaranteed however. The Label is required.
+   * Links using several linking concepts including LSID, DOI, direct URLs, or perhaps web service definitions. The Links are optional and will be missing when no external object exists yet.
+   * a key attribute that allows a proxy object to be referenced multiple times within an xml document.
+Together with a developer Annotation and extensibility containers (Ext and <nop>CustomExtensions) this constitutes the base functionality of the <nop>ProxyData type.
+
+In addition, each kind of proxy data class may contain extensions providing additional, more detailled data. To discuss both the base proxy elements and such extensions, I propose to discuss publications. This is external data to all currently active groups and is of similar importance to most biodiversity groups. Also it is obvious that no external publication database will ever fully provide the needs of scientists both citing difficult-to-find 200 year old literature and publications that have just appeared.
+
+   * <small>Jerry Cooper writes: <em>"Finally, I will make a prediction... In two years time we will decide that we urgently need a standard for describing literature because [...] we need a mechanism for sharing ‘literature objects’. The data structures for storing literature references in many databases are inadequate and people will have a lot of future work in order to standardise them. However, a standard already exists, MARC, and, although it is based on flat data, at least it atomizes and tags the components logically (and is actually quite easy to re-model into a hierarchical structure). We really do need to think about this now and be encouraging digitizers to treat literature data with respect and not dump it into a string! The ‘SimpleCitation’ object in this schema is a MARC subset."</em> -- I agree. It would be highly valuable if the standard tracks coming up for the TDWG meeting in NZ would already all agree on a common publication-specific extension of a general linking model!</small>
+
+   * <small>See also the useful comments on Publications in http://circa.gbif.net/Public/irc/gbif/dadi/newsgroups?n=names&a=re&art=27</small>
+
+So in &gt; &gt; <strong> ProxyDataPublication</strong> &lt; &lt; please discuss both the basics of Proxies and the specifics of reference models!
+
+---
+
+The proxy architecture is proposed as a generally used architecture for all biodiversity knowledge domains (see ObsoleteProxyListsInAllTdwgGbifStandards). The following is a graphical overview of the use of proxy in the current version of BDI.SDD_:
+
+<p style="text-align:center"><img src="%ATTACHURLPATH%/ProxyTypeOverview.png" alt="ProxyTypeOverview.png" /></p>
+
+I personally believe that proxy data objects are what the GBIF indexer should be built upon. A data provider that participates in GBIF could export all internal objects into a <nop>ProxyData object, mapping the local complex data model to the shared data model. This is similar to the flat representations that <nop>DiGIR uses, with the slight difference that they are not exclusively coupled to a query protocol, but can also be used to cache data locally. This would be ideal as a basis for the GBIF indexer.
+
+---
+
+Other proxy discussions (except ProxyDataPublication):
+
+   * For specimen (<nop>BDI.SDD_.Objects) see ProxyDataSpecimen - here especially what would the common name be? Note that here I propose to basically reuse the elements from <nop>DarwinCore after extracting them from their tight coupling into <nop>DiGIR!
+   * For images (<nop>MediaResourceProxy) see ProxyDataMediaResource.
+   * Agents: AgentDataModel, also the older: BDI.SDD_.WhenAreTwoAgentsTheSame?
+
+<strong>History and term for the concept:</strong> In version BDI.SDD_ 0.9 (dec. 2003) <nop>ProxyTypes used to be called <nop>ResourceConnectors. This was considered not intuitive. At the Berlin 2004 meeting the term "proxy" (-data or -type) was accepted by all those present. The term "proxy" is used in the frequently used proxy programming pattern. It refers to the fact that the objects may either be proxies if no external object exists, or proxy cache if the asynchronous external object is temporarily unreachable (see also the earlier WIKI discussion ResolvedTopicConnectorOrProxy).
+ 
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 18 June 2004
+
+---
+
+Donald Hobern commented in email:
+
+   * In general I think that the proxy idea is a good one but we need serious work to get general buy-in for the idea and to make sure that the specifics are right.  I would say therefore that we should avoid presenting it as a core part of UBIF right now.  We need something to occupy this position, but it may be simpler to move the whole problem out of the data modeling issue by using GUIDs to reference external data resources and elements and to rely on external services to provide data on the various access methods and formats.  Anything we put in the XML may be invalidated at any time.  Keeping track on location-independent GUIDs may be a simpler idea.  I certainly think we need to float the problem and the alternatives in Christchurch but I would take all of the Proxies out of version 1 of UBIF. I realise you've put a lot of effort into this, but I think it is still too speculative to become part of the standard core.
+
+My comments: Moving things out is the general trend on the web, but I am very wary about this. I am very much in favor of federating data, collaborating and using IDs to link information. However, I believe data streams and documents should maintain a sense of continuity and preserve the semantics of links for human consumption. This is the essential model of printed books and libraries - and it is one of the foundations of science.
+
+Imagine printed scientific articles - instead of giving human readable references - refer to some GUID code that you can enter into the computer and then obtain the information. This is the current state on the web. Unfortunately, we all know that institutions, even if well managed, change. Data citing specimens solely by case numbers used at a given time in a specific collection may become worthless after some restructuring. In our institution we find that the knowledge of coded references that was preserved over decades, often disappears with retirement of colleagues and valuable data become trash.
+
+So when talking about proxies I have two interfaces in mind:
+   * Interfacing with human semantic understanding by providing the label in addition to machine-readable links (this is the core of the proxy and present in the base type)
+   * Interfacing between complex dedicated applications implementing a specific rich data model like ABCD, and applications for which these needs are peripheral and which need a simple model. I believe, for instance that after separating the issues of protocol, <nop>DarwinCore will remain an important simple interface to collection data, in addition to ABCD.
+
+Perhaps these could be separated. Would it make sense to have the base type (perhaps modified and simplified itself, e.g. using fewer types in Links), and leave the truly immature simple-data interface question out?
+
+I am not sure whether I am ahead (realizing that we need additional interfacing beyond simple guid/uri) or behind times (because the web will become so stable that references are easily retrieved after 100 years) - both is quite possible.
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 29 July 2004
+---
+
+Markus Döring commented on 11. August: "Assume we have always a service which resolves IDs by appending it to the webservice URL: <nop>http://www.bioservice.org/alpinevegetation/426781876 or like this <nop>http://www.bioservice.org/alpinevegetation/getObject?id=426781876. Couldn't we live with a simple proxy object defined just as this: <em>"&lt;Taxon datasource="http://www.bioservice.org/alpinevegetation" id="426781876"&gt;Abies alba Mill.&lt;/Taxon&gt;"</em>?
+
+Gregor Hagedorn: I think the problem is that only a small number of services will be fully under our control (e.g. not publications like <nop>MedLine, geographical gazetteers, molecular sequence databases like <nop>GenBank). This makes it difficult to require such an automatic mapping. However, if I change your proposal to: &lt;Taxon lsid="urn:lsid:www.bioservice.org:alpinevegetation:426781876" id="426781876"&gt;Abies alba Mill.&lt;/Taxon&gt; this is already close to what the proxy base model tries to achieve: a locally referrable id that defines identity even if no external service id is present, a link to the outside, and a human readable label.
+
+Two more problems: a) Most likely at least URL, LSID, and DOI will exist in parallel. That is the only reason why Link is a collection. I personally have no major problem in making it three attributes. It seems a bit artifical, but if that improves acceptance I will gladly endorse it! As you can see in the new UBIF versions (BDI.SDD_.CurrentSchemaVersion) the complex webservice proposal is underscored (starts with "__"), meaning it is tentative and should perhaps be removed. b) Almost all object labels are potentially multilingual. Examples are geographical names, and even the full Agent label often needs transcriptions (Chinese to roman letters) or contains Place names to improve name uniqueness ("Hans Heinrich, Munich" or  "Hans Heinrich, München"?). I believe this is a problem for GBIF, which is already now viewed as being a shop dominated by English speaking countries. And Chinese is the most widely used language on earth... However, providing several languages is impossible with an attribute approach. Can this be better hidden than I do? The proposed model is simply the model used in BDI.SDD_, which throughout is multilingual. For BDI.SDD_ it is easier to keep it as it is, because this responds to generic code.
+
+---
+
+Markus Döring: Is it really required to reference another object using XML validation techniques? I could imagine the above simple proxy model to be used just in place somewhere inside the xml hierarchy and not referencing via xml to global proxy objects. So something like:
+
+<verbatim>
+<SDD>
+ <Taxon datasource"local" id="123">
+  <ScientificName>Abies alba Mill.</ScientificName>
+  <HigherTaxon>Pinaceae</HigherTaxon>
+  <Genus>Abies</Genus>
+  <Synonyms> ... </Synonyms>
+  ...
+ </Taxon>
+
+ <Taxon datasource"local" id="124">
+ ...
+ </Taxon>
+
+ <Description datasource"local" id="567">
+  <Taxon datasource"local" id="123">Abies alba Mill.</Taxon> 
+  <HumanDescription>...</...>
+  ...
+ </Description>
+</SDD>
+</verbatim>
+
+I don't very much like to impose the xml ID/IDREF constraints on users (must be document global numbers, which usually means that it is more complicated to output a document, since the numbers have to be created on the fly rather than being able to use or hash existing ids). Some people think that the xml id/idref mechanism should be considered depracated. However, replace in &lt;Taxon datasource"local" id="123"&gt;Abies alba Mill.&lt;/Taxon&gt; "id" with "ref", and it seems you are close to the proxy ref that UBIF is proposing - plus an optional copied Label inside the <nop>ProxyRef. A similar thing is actually proposed in the <nop>MicroAgent (although that is structured) and in the <nop>MicroMeasurementUnit (although again an extra element is present there, which could be removed). I see no problem to generalize this and allow in any place where a proxy ref is expected to have either 
+<verbatim>
+<Publication ref="123123" />  or 
+<Publication ref="123123">Smith & Gordon 1999</Publication>
+</verbatim>
+The more important distinction at the moment is that in the Micro... types the ref is optional, like in:
+<verbatim>
+<Publication>Smith & Gordon 1999</Publication>
+</verbatim>
+I am unclear whether it is desirable to allow this, but it may be possible. If this is the accepted migration path to a truly linked system that is fine. Perhaps one could optionally also allow:
+<verbatim>
+<Publication language="en">Smith & Gordon 1999</Publication>
+</verbatim>
+to simplify later migration to full proxy objects.
+
+
+   * <small>Aside: "Taxon" is a problematic term. Other things than taxa can be collected and described, most notably diseases (the name stands for a taxon x taxon and sometimes region combination). BDI.SDD_/UBIF proposes <nop>ClassName - I realize this conflicts with the class rank term. We can change it to something better...</small>
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 11 August 2004
+---
+
+Note: In the change from UBIF 1.0 beta 14 to beta 15 I have now removed the Webservice-Linking mechanism, see ProxyLinkByWebservice.
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 13 August 2004
+
+
+%META:FILEATTACHMENT{name="ProxyTypeOverview.png" attr="h" comment="" date="1085519464" path="C:\Data\Desktop\DESCR\TDWG-SDD\Schema\091\ProxyTypeOverview.png" size="16161" user="GregorHagedorn" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1147083758" from="UBIF.ProxyDataModel" to="UBIF.ObsoleteTopicProxyDataModel"}%

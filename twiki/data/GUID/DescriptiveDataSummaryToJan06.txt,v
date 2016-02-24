@@ -1,0 +1,62 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2006.01.26.05.11.14;	author KevinThiele;	state Exp;
+branches;
+next	;
+
+
+desc
+@
+.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@This page is a pretty straight dump of a brief flurry on the GBIF-GUID list on 26 Jan 2006 - the initial discussions on GUIDs for descriptive data. It's probably best not to add to this page - instead use GUIDsForDescriptiveData
+
+*from Kevin Thiele*: descriptive data are a third major domain for this GUID discussion, along with taxon names/concepts and specimens/collection data
+
+*from Robert Huber*: Those who are interested in assigning a GUID to descriptive etc data might take a look at http://www.std-doi.de. This is a german based project which uses DOIs to identify datasets. Participating data centers hold data of almost any thinkable kind: meteorolgy, satellite images, geology, paleontology, oceanography etc.. Many questions are answered there and the process of assigning GUIDs to real digital objects is not that complicated (Ok, I know the details..).
+
+*from Roger Hyam*: makes the important distinction that GUIDs are necessary in an Open World (e.g. the WWW), whereas characters and states are usually used in a Closed World (e.g. an individual key, and individual SDD document). [[OpenWorldvsClosedWorldExampleForDescriptiveData][Click here for Roger's example]]. "So the thing that is troubling me is that Character/State uses a closed world model where not finding something implies that it doesn't have that attribute. In an open world system one can only draw conclusions from presence not absence. We could give GUIDs to characters and states but it doesn't get us very far as it doesn't permit us to re-use or extend them in a simple way. (sure you could build an inheritance model for characters and states but this rapidly becomes a complete ontology language of which there are a few already available!). My gut feeling is that in the long term the Character/State model doesn't transfer well into an open world model. I suspect this problem may occur in other descriptive areas where the existing model specifies noun-adjective pairs that I don't have experience of. Perhaps we could explore this a little."
+
+*from Robert Huber*: So when we are thinking about GUIDs in this context I assume you would assign a GUID on the 'contextual meaning of terms'? E.g. what open means when you describe a open umbilicus?
+A GUID would then direct the user to a document/ db entry which explains that ?  Or would the GUID be assigned to a complete SDD description?
+
+*from Bob Morris*: I think the most debilitating issue is that  GUIDs could only go on categorical characters (= 'enumerated' to informaticists), and maybe not even all of those. Absent a compelling reason, I hate to see an abstraction that can only be applied to certain classes of what one needs to talk
+
+*from Ricardo Pereira*: Couldn't you describe (to machines), the semantics of continuous variables (or characters) in an ontology? Still, you won't be able to assign GUIDs to continuous characters, but does it make sense to do it? Wouldn't it be enough to describe the character and the range of values it can assume? I guess there must be various ontologies that model continuous variables (measurements for example) out there.
+
+*from Roger Hyam*: To me it seems to make more sense for a user to string concepts together to make a meaning rather than defining every possible contextual meaning. So if a central thesaurus defined flower and colour they could be strung together as a series of assertions in a descriptive document. In N3:
+
+mytaxa:rose myterms:has _:att .
+_:att rdf:type myterms:flower .
+_:att myterms:is myterms:red .
+
+There would still be room for specific complex predicates and objects to be defined centrally but in general this appears to allow for greater flexibility in an open system. It might not suite all tastes though.
+
+Continuous characters might be something like this:
+
+mytaxa:rose myterms:has _:att1 .
+_:att1 rdf:type myterms:leaf .
+_:att1 myterms:length _.att2
+_:att2 rdf:value "22" .
+_:att2 rdf:type myterms:oneMilPrecisionMeasurement .
+
+The blank nodes in this mean it would probably be easier to read in XML syntax.  I am sure there are vocabularies out there that could be used for measurement stuff.
+
+Do we need GUIDs for the resources in this or can we just do this with old fashioned URIs? Who else used LSIDs or DOIs to do this kind of thing? I just seem to see the use of namespace type URIs.
+
+*from Dag Terje Endresen*: Assigning a GUID to phenotype (character) would allow a statement like disease resistance measured on specimen GUID_#s1 according to the measurement method described and defined by GUID_#p1 (which could for example be percent of leaf covered by fungus or similar). Food crop phenotypes are often measured according to measurement standards defined and published by IPGRI or UPOV. I think persistent actionable GUIDs for the characters would be of great value and that we would soon see plant breeders and scientists collecting public phenotype data if the measured values (states) from different datasets are made more readily interoperable. Assigning GUIDs are however not the complete solution. The context of the measurement (like for example climate, humidity) would make the scored values incomparable without information on this modifier. I think this is addressed by SDD. Comparing phenotype states from different datasets and different context are much more challenging than uniquely identifying characters and states. But it would be one nice step in a useful direction.
+
+*from Jessie Kennedy*: This isn't strictly GUID stuff but we did some work on looking at character descriptions of plants and tried to find a mechanism that would help tie down the definitions of descriptions so that we might be able to compare taxon concepts based on character descriptions and looked at using id to refer to these to aid comparison in databases. See [[http://www.soc.napier.ac.uk/publication.php3?op=getpublication&publicationid=5941057][Proceedings of Data Integration in the Life Sciences (DILS) Leipzig 2004 LNBI 2994 63-78]], [[http://www.soc.napier.ac.uk/publication.php3?op=getpublication&publicationid=6056053][21st Annual British National Conference on Databases (BNCOD21) (pp. 80-91). Edinburgh: Heriot-Watt University.]] and Taxon, 543, 751-765@

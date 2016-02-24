@@ -1,0 +1,152 @@
+Apparently, with a few changes the current TAPIR protocol could accept custom operators that could be used by filters. At the moment, there's clearly one additional category of operators that could add a lot of value to TAPIR services: spatial operators. But in the future maybe other operators could also be useful. The following changes introduce a new type of operator represented by "XOP" (in the absence of a better name) which could mean extensible operator, or custom operator:
+
+<verbatim>
+<xsd:complexType name="filterEncoding">
+  <xsd:choice>
+    <xsd:element ref="COP"/>
+    <xsd:element ref="LOP"/>
+    <xsd:element ref="XOP"/>  <-- new
+  </xsd:choice>
+</xsd:complexType>
+</verbatim>
+
+So the extensible operator is simply an abstract element that could be "implemented" by concrete operators in any external schema:
+
+<verbatim>
+<xsd:element name="XOP" abstract="true" CustomOperators>
+</verbatim>
+
+LOP types should be changed to accept the new operator:
+
+<verbatim>
+<xsd:complexType name="unaryLOPType">
+  <xsd:choice>
+      <xsd:element ref="COP"/>
+      <xsd:element ref="LOP"/>
+      <xsd:element ref="XOP"/>  <-- new
+  </xsd:choice>
+</xsd:complexType>
+...
+<xsd:complexType name="multiLOPType">
+  <xsd:choice minOccurs="2" maxOccurs="unbounded">
+    <xsd:element ref="COP"/>
+    <xsd:element ref="LOP"/>
+    <xsd:element ref="XOP"/>  <-- new
+  </xsd:choice>
+</xsd:complexType>
+</verbatim>
+
+The following schema tries to define spatial operators based on the same ones available from the OGC Filter Encoding Specification, mainly replacing the OGC property elements by TAPIR concepts. Although being a "redefinition" of the same operators, the idea is to be as similar as possible in order to ease translations between messages and maybe allow code reusability in case some wrapper decides to implement both the WFS and TAPIR protocols.
+
+One advantage in this case is that the "heavy" GML is only referenced by a protocol extension, and not the protocol itself.
+
+<verbatim>
+<?xml version="1.0"?>
+<xsd:schema 
+  targetNamespace="http://tdwg.org/tapir/extensions/spatialops/1.0"
+  xmlns="http://tdwg.org/schemas/tapir/extensions/spatialops/1.0" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:tapir="http://tdwg.org/tapir/1.0"
+  xmlns:gml="http://www.opengis.net/gml">
+
+<import namespace="http://tdwg.org/tapir/1.0" CustomOperators> 
+<import namespace="http://www.opengis.net/gml" CustomOperators> 
+
+<xsd:element name="Equals" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Disjoint" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Touches" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Within" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Overlaps" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Crosses" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Intersects" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="Contains" type="BinarySpatialOPType" substitutionGroup="spatialOP"/>
+<xsd:element name="DWithin" type="DistanceBufferType"  substitutionGroup="spatialOP"/>
+<xsd:element name="Beyond" type="DistanceBufferType" substitutionGroup="spatialOP"/>
+<xsd:element name="BBOX" type="BBOXType" substitutionGroup="spatialOP"/>
+
+<xsd:element name="spatialOP" abstract="true" substitutionGroup="tapir:XOP"/>
+
+<xsd:complexType name="BinarySpatialOPType">
+  <xsd:sequence>
+    <xsd:element ref="tapir:concept"/>
+    <xsd:choice>
+      <xsd:element ref="gml:_Geometry"/>
+      <xsd:element ref="gml:Envelope"/>
+    </xsd:choice>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BBOXType">
+  <xsd:sequence>
+    <xsd:element ref="tapir:concept"/>
+    <xsd:element ref="gml:Envelope"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="DistanceType" mixed="true">
+  <xsd:attribute name="units" type="xsd:anyURI" use="required"/>
+</xsd:complexType>
+
+<xsd:complexType name="DistanceBufferType">
+  <xsd:sequence>
+    <xsd:element ref="tapir:concept"/>
+    <xsd:element ref="gml:_Geometry"/>
+    <xsd:element name="Distance" type="DistanceType"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+</xsd:schema>
+</verbatim>
+
+But services that understand custom operators should obviously advertise that in their capabilities responses, so the last part of the changes is a new section under the filterCapabilities element as suggested below:
+
+<verbatim>
+<xsd:complexType name="filterCapabilities">
+  <xsd:sequence>
+    <xsd:element name="logical" minOccurs="0">
+      <xsd:complexType/>
+    </xsd:element>
+    <xsd:element name="comparative" minOccurs="0">
+      <xsd:complexType>
+        <xsd:sequence>
+          <xsd:element name="basicComparativeOperators" minOccurs="0" CustomOperators>
+          <xsd:element name="in" minOccurs="0"/>
+          <xsd:element name="isNull" minOccurs="0"/>
+          <xsd:element name="like" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="basicArithmeticOperators" minOccurs="0">
+      <xsd:complexType/>
+    </xsd:element>
+
+    <xsd:element name="customOperators" minOccurs="0">   <---- new section
+      <xsd:element name="source">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:any maxOccurs="unbounded" CustomOperators>
+          </xsd:sequence>
+          <xsd:attribute name="identifier" type="xsd:anyURI" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+  </xsd:sequence>
+
+</xsd:complexType>
+</verbatim>
+
+So a wrapper accepting those spatial operators would output something like this:
+
+<verbatim>
+<filterCapabilities>
+...
+  <customOperators>
+    <source identifier="http://tdwg.org/tapir/extensions/spatialops/1.0">
+      <Equals/>
+      <Disjoint/>
+      <Touches/>
+      <Within/>
+      <Overlaps/>
+    </source>
+  </customOperators>
+</filterCapabilities>
+</verbatim>

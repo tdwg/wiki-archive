@@ -1,0 +1,418 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@Currently (August 2006) a capabilities response (without dynamic output models) looks like:
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+    </header>
+    <capabilities>
+        <operations>
+            <ping/>
+            <metadata/>
+            <capabilities/>
+            <view>
+                <queryTemplates>
+                    <queryTemplate location="http://url_to_searchtemplateA"/>
+                    <queryTemplate location="http://url_to_searchtemplateB"/>
+                    <queryTemplate location="http://url_to_inventorytemplate"/>
+                </queryTemplates>
+            </view>
+            <inventory/>
+            <search>
+                <staticOutputModels>
+                    <outputModel location="http://url_to_raw_outputmodelA"/>
+                    <outputModel location="http://url_to_raw_outputmodelB"/>
+                </staticOutputModels>
+            </search>
+        </operations>
+        <filter>
+            <encoding>
+                <expression>
+                    <concept/>
+                    <literal_/>
+                    <parameter/>
+                    <variable/>
+                    <arithmetic>
+                        <add/>
+                        <sub/>
+                    </arithmetic>
+                </expression>
+                <booleanOperators>
+                    <logical>
+                        <not/>
+                        <and/>
+                        <or/>
+                    </logical>
+                    <comparative>
+                        <equals/>
+                        <greaterThan/>
+                        <greaterThanOrEquals/>
+                        <lessThan/>
+                        <lessThanOrEquals/>
+                        <in/>
+                        <isNull/>
+                        <like/>
+                    </comparative>
+                </booleanOperators>
+            </encoding>
+        </filter>
+        <concepts>
+            <conceptNameServers>
+                <server location="http://url_to_primary_concept_server"/>
+                <server location="http://url_to_secondary_concept_server"/>
+            </conceptNameServers>
+            <schema namespace="http://www.tdwg.org/schemas/abcd/1.2"
+                location="http://www.bgbm.org/TDWG/CODATA/Schema/ABCD-1.20.xsd">
+                <mappedConcept
+                    id="/DataSets/DataSet/DatasetDerivations/DatasetDerivation/DateSupplied"
+                    searchable="true"/>
+                <mappedConcept
+                    id="/DataSets/DataSet/DatasetDerivations/DatasetDerivation/Description"
+                    searchable="true"/>
+            </schema>
+            <schema namespace="http://digir.net/schema/conceptual/darwin/extension/curatorial/1.0"
+                location="http://digir.net/schema/conceptual/darwin/extension/curatorial/1.0/curatorialWithDiGIRv1.3.xsd">
+                <mappedConcept id="/CatalogNumberNumeric" searchable="true" mandatory="true"/>
+                <mappedConcept id="/IdentifiedBy" searchable="true"/>
+            </schema>
+        </concepts>
+
+        <variables>
+            <environment>
+                <timestamp/>
+                <lastUpdate/>
+                <date/>
+                <datasourceName/>
+                <accessPoint/>
+            </environment>
+        </variables>
+        
+        <settings>
+            <minQueryTermLength>2</minQueryTermLength>
+            <maxElementRepetitions>10</maxElementRepetitions>
+            <maxElementLevels>20</maxElementLevels>
+            <maxResponseTags>500</maxResponseTags>
+            <maxResponseSize>500</maxResponseSize>
+        </settings>
+        
+    </capabilities>
+</response>
+</verbatim>
+
+But when the specification was being prepared and PyWrapper being updated, it has been recognized that the "view" operation and the understanding of templates and output models was confusing. So to help making the protocol clearer and more symmetric, a new capabilities proposal was made, mainly removing the view operation and allowing the different levels of provider implementation to be expressed through other capabilities elements. So a new capabilities response would now look like:
+
+<verbatim>
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://rs.tdwg.org/tapir/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://rs.tdwg.org/tapir/1.0    http://ww2.biocase.org/svn/tapir/trunk/protocol/tapir.xsd">
+    <header>
+        <source accesspoint="http://accesspoint_url" sendtime="2005-11-11T12:23:56.023+01:00">
+            <software name="TAPIR_Implementation" version="1.0"/>
+        </source>
+    </header>
+    <capabilities>
+
+      <operations>
+        <ping/>
+        <capabilities/>
+        <metadata/>
+        <inventory> (optional)
+            <templates> (optional)
+              ...
+            </templates>
+            <anyConcepts/> (optional)
+        </inventory>
+        <search> (optional)
+            <templates> (optional)
+              ...
+            </templates>
+
+            <outputModels> (optional)
+              <knownOutputModels> (optional)
+                ...
+              </knownOutputModels>
+              <anyOutputModels> (optional)
+                <responseStructure>
+                 ...xml schema options...
+                </responseStructure>
+              </anyOutputModels>
+            </outputModels>
+        <search/>
+      </operations>
+
+      <requests>
+        <encoding>
+           <kvp/> (= URL key-value pairs)
+           <xml/> (optional)
+        </encoding>
+        <globalParameters>
+           <logOnly>accepted</logOnly>
+           <xslt/> (optional)
+        </globalParameters>
+        <filter>
+            ....
+        </filter>
+      </requests>
+
+      <concepts>
+        ....
+      </concepts>
+
+      <variables>
+        ....
+      </variables>
+
+      <settings>
+        ....
+      </settings>
+
+      <custom/>
+   </capabilities>
+</response>
+</verbatim>
+
+---++ Additional constraints that go beyond the protocol schema
+
+---+++ Inventory operation
+
+If a provider supports the inventory operation, it must advertise either one or more inventory templates, or the <anyConcepts/> capability. But this is still not a choice, because it can actually advertise both things (even supporting <anyConcepts/> a provider may wish to point to useful inventory templates). So the only situation not accepted is to advertise inventory with an empty <inventory/> element.
+
+Additionally, if a provider supports <anyConcepts/>, it must understand filters. 
+
+---+++ Search operation
+
+If a provider supports the search operation, it must advertise either one or more search templates, or the <outputModels> capability. But this is still not a choice, because it can actually advertise both things (even supporting <outputModels> a provider may wish to point to useful search templates). So the only situation not accepted is to advertise search with an empty <search/> element. 
+
+The same is valid for the <outputModels> section: if present, then a provider should either indicate one or more <knownOutputModels> or the <anyOutputModels> capability. Both can be advertised, but an empty <outputModels/> element will be considered wrong.
+
+Additionally, if a provider supports <outputModels>, it must undertand filters, partial selection and order by parameters. But it can optionally support <anyOutputModels>.
+
+---++ Suggested levels of provider implementations
+
+---+++ TAPIRLite
+
+TapirLite only supports KVP request encoding and templates for both inventory and search (with no additional parameters).
+
+---+++ Intermediate TAPIR
+
+Supports inventory on any concepts (and therefore supports order by and filter parameters). Supports search only based on known output models (and therefore supports partial selection, order by and filter parameters).
+
+---+++ Full TAPIR
+
+Supports inventory on any concepts and supports search with any output model (provided it maps to known concepts).
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d151 1
+a151 1
+           <kvp/>
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d186 1
+a186 1
+If a provider supports <anyConcepts/>, it must understand filters. 
+d190 1
+a190 1
+If a provider supports the search operation, it must advertise either one or more search templates, or the <outputModels> capability. But this is still not a choice, because it can actually advertise both things (even supporting <outputModels> a provider may wish to point to useful search templates). So the only situation not accepted is to advertise search with an empty <search/> element.
+d192 3
+a194 1
+If a provider supports <outputModels>, it must undertand filters, partial selection and order by parameters. But it can optionally support <anyOutputModels>.
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d198 1
+a198 1
+Only supports KVP request encoding and templates for both inventory and search (with no additional parameters).
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d186 1
+a186 1
+If a provider supports <anyConcepts/>, it must understand filters and order by parameters. 
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d206 1
+a206 1
+Supports inventory on any concepts and supports any output models (provided they reference output models that map to known  concepts.
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d198 1
+a198 1
+Only supports KVP request encoding and templates for both inventory and search. Doesn't support filters as well.
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d193 14
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d141 1
+a141 1
+                <responseStructure> (optional)
+d158 1
+a158 2
+        <queryParameters>
+          <filter>
+d160 1
+a160 2
+          </filter>
+        </queryParameters>
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d188 7
+a194 1
+If a provider supports <anyConcepts/>, it must understand filters and order by instructions. 
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d181 8
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a144 2
+              <partialSelection/>
+              <orderBy/>
+@

@@ -1,0 +1,221 @@
+%META:TOPICINFO{author="AnnieSimpson" date="1142379171" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="TechnicalImplementationWorkingGroup"}%
+---++TECHNICAL IMPLEMENTATION Working Group
+
+PM report Day Three, sorted.
+
+
+|0	|C/T	|	|CHECKLIST STRUCTURE	|Discussed|
+|1	|C/T	|12	|STRATEGY - SHAWN	|Later|
+|2	|C/T	|15	|STRUCTURE - HANNU	|Later|
+|3	|C/T	|4	|CORE - BOB	|Later after use cases|
+|4	|C/T	|26	|DC/ABCD EXTENSIONS - TECH	|Done|
+|5	|	|24	|MESSAGES - ODM	|Done|
+|6	|TECH	|11	|DOC-EXCHANGE - BOB	|Done|
+|7	|TECH	|13	|RECORDS - MARKUS	|N/A (no primary data)|
+|8	|TECH	|10	|INTEGRITY - BOB	|Homework|
+|9	|TECH	|19	|MAPPING - WOUTER	|Done|
+|10	|	|21	|EXCLUSION - MICHAEL	|Done - optional elements|
+|11	|C/T	|20	|SYNONYMS - WOUTER	|Done|
+|12	|C/T	|23	|TAXO/COMMON NAME - NAIMA	|Done|
+|13	|CHK	|17	|UPDATE / DATA QUALITY	|Done - annotation|
+|14	|CHK	|14	|DATA USE / OWNERSHIP - MARKUS	|For GBIF|
+|15	|TECH	|9	|EXTENSIBILITY - BOB	|Done - with #8|
+|16	|TECH	|8	|XML-ENUM - BOB	|Done - with #8 ==> Bob|
+|17	|TECH	|7	|STRONG TYPING - BOB	|Done ==> Bob's homework|
+|18	|TECH	|6	|DOC-INSTANCE - BOB	|Done|
+|19	|TECH	|5	|DOC SIZE - BOB	|Done|
+|50	|MGT	|22	|DISSEMINATION - NAIMA	|  |
+|98	|	|(16)	|UPDATE - CHRISTINE	|  |
+|99	|	|(25)	|LIFEFORM - BOB	|  |
+|99	|TECH	|1	|OUTSOURCE - KEVIN	|  |
+|99	|CHK	|2	|USE - MICHAEL	|  |
+|99	|CHK	|3	|NAMES - HANNU	|  |
+|99	|	|(18)	|TIME REQUIRED - MICHAEL	|  |
+
+*1. OUTSOURCE - KEVIN*
+
+Leave information out when/where possible - outsource data (e.g. common name doesn't belong). Future data services - potential sources for common names and other descriptive data.
+
+*2. USE - MICHAEL*
+
+Michael: Ref: I3N Argentina database (common names for species-X - to be shared in the future?). How much of the data in each database should be included in the schema as a piece of the overall core global dataset? 50% of visitors to fishbase access via common names. But wrt GISIN schema - who will use it and what for? = most useful to educated users, familiar with the issue and data accessible via the schema. GISIN will not be useful e.g. to managers looking for management information - they need summarial information or guidance on species management. Majority of GISIN-users may be more interested in a GUID rather than a common name as an access-point. But a list of all common names of species-X would also be useful and maybe only obtainable from GISIN. Is this a job for a third party?
+
+*3. NAMES - HANNU*
+
+Hannu: GISIN may be the first place where information about a species in a country is recorded - therefore common name is important. As a registry of organisms in new places - new common names may also be recorded for the first time in GISIN. Kevin - perhaps outsource this in the future.
+
+*4. CORE - BOB*
+
+Small schema that would be a 'core' group of elements with various extensions might be more affective.
+Elements specific to taxonomic groups would be extensions of the core. 
+Keep the core stable.
+Olivier: core consists mostly of references to other information items (have as many references as possible).
+
+*5. DOC SIZE - BOB*
+
+Reduce instance document size. The schema is an XML document but it doesn't look like the documents that are produced from these databases. The schema is a set of rules that define these documents. (checklist)
+
+*6. DOC-INSTANCE - BOB*
+
+Find improvements to schema that increase instance-document integrity so that it can't break as it moves around the network and goes through different processing applications. (technical). Instance documents whose integrity can be identified by existing software.
+
+*7. STRONG TYPING - BOB*
+
+Strong typing. There are too many string types. E.g. long list of impact types needs to be moved into schema mechanisms so that processing software doesn't need to understand the commentary. Most of the things that are in the commentary right now - we need to agree on them. Enumerations that are comments in the present schema need to be turned into enumerations. (future?) 
+Markus: if enumerations are forced then you limit extensibility.
+
+*8. XML-ENUM - BOB*
+
+This is a weakness of XML schema. (Technical - and made recommendations to the other groups). (If an element is going to remain the same then it can be turned into enumerations e.g. realm)
+
+*9. EXTENSIBILITY - BOB*
+
+Improve extensibility of the schema. (Technical)
+
+*10. INTEGRITY - BOB*
+
+Improve integrity of the schema. There are some known weaknesses in XML. (Technical)
+List of concerns:
+- Make schema smaller ==> BM
+- Enumeration
+
+*11. DOC-EXCHANGE - BOB*
+
+Instance document exchange (transport). GBIF mechanisms are already in place (TAPIR). Good if these docs move using established protocols. (Technical)
+
+[LISTEN - BOB]
+
+Listen to other groups needs to accomplish these things effectively.
+
+*12. WHERE TO GO - SHAWN*
+
+Scope of schema - where are we going with this project?
+
+1) Extensibility of the core for serving key audience needs.
+
+2) Three main things 
+
+- search for species/individual queries for that species
+
+- once the species is found 
+
+- obtaining information about that species in a general way
+
+- collection locations for that species (for mapping, projects etc.)
+
+3) number of records returned (TECHNICAL)
+
+e.g. find all species presence in a Bay = @10,000 records returned (with collection data everywhere not just for that species in that Bay).
+Possible solution? Allow users to find species by pathway and location. Then allow users to narrow the search from the species list that results. Defines GUI but also schema functionality. Search and filter applications will take care of this. Do you want to filter as part of the schema development or at the application level?
+
+*13. RECORDS - MARKUS*
+
+Markus: Is it reasonable to expect a return of this many collection records? 
+Michael: Roughly 20,000 known invasive species in the world (Rod Randall, Global Compendium of Weeds). Some are environmental weeds, others are agricultural weeds. Add this info. to information in the GISD = as many as 30K known IAS through all taxa. 40% of spp in the GISD that are not plants (e.g. mammals) = 20/30K species that are known with 30-40 global distribution records mostly at country level. This excludes collection and observation data described by Shawn. GBIF is a potential third-party source for collection and observation data but it lacks the native/alien/invasive flagging/definition.
+
+*14. DATA USE / OWNERSHIP - MARKUS*
+
+TECHNICAL & CHECKLIST
+
+Would the GISIN take the whole dataset or only the information for those species tagged as introduced. Fishbase has information on 29K species but only 600+ have been recorded as being moved around the world/introduced. There is information available for species that are not necessarily flagged as invasive elsewhere in the database. 
+Re: utility of secondary datasets. All of the info in the dbase is from a record source (e.g. expert on a family). We would like the source reference to be flagged to give credit. Would there be a general reference set for the whole GISIN schema? Would those references stay within the databases?
+Hannu: that is part of the metadata. It's up to the metadata provider to make sure that ownership data is present.
+Kevin: there are several levels of ownership though (e.g. owner of the dbase, owner of particular datum. How do we track this?
+Michael: provide assignation of a reference to every single element in the schema. However this may be impractical to implement.
+Christine: This issue is associated with the reliability/validation of the data elements.
+
+*15. STRUCTURE - HANNU*
+
+TOP PRIORITY
+
+Adapt the schema to capture data
+
+structure of the schema
+
+checklist - elements
+
+Hannu: ref - UK Nat. Biodiv. Network. 
+
+How do we motivate GISIN providers to share their data?
+
+Michael: One motivation may be the ability to 'credit' the information source. Is the problem only with the level of work required to present that level of referencing information or is there another problem?
+
+Hannu: No it's only the hard work. References can be included for the sake of correctness or for giving credit. Make institution level metadata inheritable down to the element level. (CHECKLIST GROUP)
+
+*[16. UPDATE - CHRISTINE]*
+
+ (Provider responsibility)
+
+Christine: Will there be an option for experts to enter and modify data that's already there but is incorrect?
+
+Michael: Corrections should be submitted to the provider.
+
+*17. UPDATE / DATA QUALITY*
+
+Most checklists are of 'exotic' species that are not necessarily identified as 'invasive'.
+
+Metadata element: What is the criteria for including species on your list?
+
+Or biostatus element based on 'impacts'?
+
+*18. TIME REQUIRED - MICHAEL*
+
+Michael: Tools given to providers to make data accessible to GISIN. What effort would a provider have to go to (how much time) to prepare data for GISIN?
+
+Hannu: Using the exercise example - it could be done in one morning.
+
+Markus: half a day but it depends on how close the dbase resembles the structure of the schema. E.g. differing terminology that's not a big issue. But if you need to separate taxonomic information and taxonomic reference to fit them into the schema then that would be more difficult and take more time. Specimen/collection database converted to suit the GISIN (taxon) dbase then that is a larger effort.
+
+*19. MAPPING - WOUTER - TECHNICAL*
+
+Some people will design or modify their dbase based on the schema.
+
+Create a mapping tool where providers could see and compare their fields with the schema fields/elements. There is such a tool in MS-Access to help map your database against other databases.
+
+*20. SYNONYMS - WOUTER - CHECKLIST & TECHNICAL*
+
+Tracing synonymies and common names.
+
+Related to data quality
+
+- similar species (look-alikes)
+
+- list of experts
+
+*21. EXCLUSION - MICHAEL*
+
+Michael: Should provider tools allow providers to keep certain data/elements out of GISIN?
+Hannu: Yes. Allow providers to filter what they are providing.
+
+*22. DISSEMINATION - NAIMA*
+
+TECHNICAL
+
+Once the schema is finalized what will be the way of disseminating it to other countries so it can be used effectively?
+
+Annie: there will be a person in the GISIN secretariat responsible for determining how to do this (an "implementer"), along with incentives.
+
+
+*23. TAXO/COMMON NAME - NAIMA*
+
+Search by taxonomic name and by common name.
+
+
+*24. MESSAGES - ODM*
+
+Schema is for information exchange (request/response mechanism). We should think about the messages that will be exchanged. We may need to break the schema into different chunks according to the types of requests that might be submitted or messages exchanged. Wouter made comment about being able to clearly ID species independent of the information we have on the species. We should consider how the schema is going to be used as we develop it. Know your users and their needs. Allow basic and more advanced queries.
+
+
+*25. LIFEFORM - BOB*
+
+Is it intended that that LifeForm have added to it an attribute with values constrained to the list in the annotation? -- BobMorris - 03 Jan 2006 
+
+*26. DC EXTENSIONS - TECH*
+
+Do we need Darwin Core/ABCD Extensions to the Schema for Primary Data.
+
+
+
+-- Main.AnnieSimpson - 14 Mar 2006
+

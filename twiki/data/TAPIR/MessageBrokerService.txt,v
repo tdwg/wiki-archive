@@ -1,0 +1,95 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@---+ MessageBrokerService
+
+A MessageBrokerService is a service distributing messages to other services and pooling their responses. It has a single AccessPoint. A MessageBroker will be used for portals but can also be used in a cascading way to create local networks, e. g. for special interest groups. In this way it serves as a gateway to a complete network of distributed services with (potentially) its own registry of services.
+
+Making the protocol compliant with MessageBrokers would not be a trivial task,
+and probably other more generic protocols would better support query
+distribution. Such protocols could already exist, but we have not
+investigated with more details.
+
+Therefore we do not specify a complete protocol for brokers now, but we think they are the generalized form of a ProviderService for which a protocol is being specified.
+
+---+++++ Suggestions for a Broker Service Protocol
+Based on the ProviderService protocol there are some additional complications:
+
+   * Brokers can be cascading, therefore ...
+   * how to adress destinations in the header? Do we need to be able to pass on a message to only a subset of other services somewhere down the line/tree of services?
+   * how to avoid vicious circles MessageBrokerService loops in the forwarding of messages?
+
+---+++++ Current Protocols
+Although the DiGIR protocol has some elements
+especifically related to that service (e.g. "responseWrapper" element
+and multiple destinations), it is not validating all messages
+exchanged between clients and the "portal" engine, and it seems the
+protocol is not officialy supposed to cover these types of messages.
+BioCASE on its turn uses a java API for that purpose. 
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d5 6
+a10 1
+We do not specify a complete protocol for brokers now, but we think they are the generalized form of a ProviderService for which a protocol is being specified.
+d18 8
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@a10 1
+   * broker responses contain lists of responses from datasources or other brokers
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d13 1
+@

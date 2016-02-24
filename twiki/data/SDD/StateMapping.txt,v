@@ -1,0 +1,505 @@
+head	1.11;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.11
+date	2009.11.25.03.14.38;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2009.11.20.02.45.31;	author LeeBelbin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.05.04.11.26.29;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2004.06.21.11.30.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.05.28.14.07.45;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.04.20.14.01.44;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.04.01.16.39.44;	author TrevorPaterson;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.03.30.17.01.58;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.03.30.15.24.28;	author TrevorPaterson;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.03.30.10.27.06;	author GregorHagedorn;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.11
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118878" format="1.1" version="1.11"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+---+!! %TOPIC%
+
+---+++Introduction
+
+A frequent problem when trying to design descriptions for both detailed output (e.g. natural language descriptions) and for identification is that the first usually prefers detailed categories, whereas the latter is better served with more coarse-grained categories. 
+
+The distinction comes from the fact that fine-grained categories ("lanceolate, oblanceolate, obliquely lanceolate, , obliquely oblanceolate, ovate-lanceolate") can be understood as "passive vocabulary" by many consumers of the data, but are "active vocabulary" only for the expert. The expressiveness of the finer categories is considerable and may often be relevant when comparing an object with a full description, but it is a source of error or simply inability to continue identification, when required to score by non-experts.
+
+---+++SDD proposal in 0.9
+
+Terminology/Character/Character/Categorical/Mappings provides a mechanism that allows to map a number of states to other states. The relation support n:m mapping, i.e. a source state can be mapped to multiple target states:<br />
+- ovate-lanceolate -> ovate<br />
+- ovate-lanceolate -> lanceolate
+
+---+++Open points and questions
+
+1. SDD currently implictly assumes that mappings may be defined in cases where a long list of categories (states) should be shortened to a shorter list, _OR_ if error prone states should be "degenerated" to achieve error tolerance. These two goals are identical in the case of identification, but are not the same. Which use cases would have to distinguish between them? Do we need extra metadata on why a mapping occurs? In principle the degeneration (1 -> n states) can be distinguished from combination (n -> 1) based on the data itself. Is this enough?
+
+2. A serious problem I see is that two types of mapping are possible:<br />
+a -> d<br />
+b -> d<br />
+c -> d<br />
+("d" is a generalized state and deprecated for scoring data / should not be used)
+
+or:<br />
+a -> c<br />
+b -> c<br />
+c -> c<br />
+where c now has a sensu stricto for scoring and a sensu lato after mapping (for identification)
+
+a) Should it be possible to score "sensu-lato states". What if one flora/fauna treatment has a coarse concept, and another a fine one, would it be useful to allow "coarse scoring"? Or if experts and non-experts score? Or if the identification trail (those states scored during id) is maintained as persistent data to document observations during specimen identification? The latter use case almost seems to require that c s.str. can be distinguished from c s. lat.!
+
+If that is so, what do we have to do? Suggestion for changes of the SDD schema?
+
+b) I believe the first case d could be allowed for scoring (rather than being "deprecated", something that does not exist in SDD anyhow - should it?). However, this would still leave us with two sets of concepts:
+
+<pre>
+ 1 2 3 4 5 6 7 8 9 10 (ordered fine-grained states)
+ --A-- B -- C--- -D-- (coarse-grained states, corresponding to above)</pre>
+
+Now, I think it is a bad idea NOT to distinguish between the fine and coarse grained state set: "1, 2, A, 3, 4, B, 5, 6, C, 7, 8, 9, D, 10". Currently the only option would be two create two characters and map concepts between them. This seems to be less than ideal, but I still 
+
+3. Should mapping be possible on the reusable concept level? Or would mapping depend on the specific structure that is used? Do we need both and add another complication doing so (currently it is possible only on the character level).
+ 
+
+-- Gregor Hagedorn - 30 Mar 2004
+
+---
+
+The problems that  you are considering relate to how states can be generalized - (e.g by forming hierarchies of related states and substates). If I understand correctly, your mappings can represent a categorisation or grouping of refined states under (or belonging to) a less precise _parent_ state.
+
+   * If a state maps to *TWO* groups/categories you are in fact recording that the fine grained state is an *intermediate* of the two groups.
+   * and if it maps to *three* groups, an intermediate of the three groups ( and therefore the categorisation cannot be 'linear ordered').
+
+With Main.PrometheusII we briefly considered allowing _specialisation_ of states: for example *pale violet* might be a _type­_ of *violet* which might be a _type_ of *purple*. 
+However, we decided that state definitions should stand on their own and there would be no structured relationship between _states_ and _substates_ (of course the textual definition might record such relationships textually).
+
+We considered that these type of relationships might only be significant/relevant for some states (eg colours, shapes) and even for them it might be *contentious* for one _authority_ to make the categorisation/grouping. Furthermore, unless the score was actually recorded in the context of this defined hierarchical terminology, an automatic generalisation would only be our *interpretation* of what the original author meant.
+
+At the end of the day, because we were focussing on *accuracy* of description, we decided that unless a complete hierarchy was represented in the defined terminology/ontology for description, *AND* this was fully appreciated and understood by the working taxonomist *AND* they agreed with the relationships in it… it would be difficult to have any confidence in the relationships/mappings.
+
+The formation of a taxon description can be considered a _generalisation_ of the states present in the constituent taxons (and ultimately the states represented in actual constituent specimens). We envisage this in Main.PrometheusII as being a collection of atomic statements – e. g. – _leaf shape can be x, y, z or b._, or _leaf shape is typically x or y, or occasionally z._ etc. - - we have not addessed whether these categorisations could have generalized labels. SDD would seem to require this because it is attempting to provide one data format to fit all uses (for example supporting the generalisation of  detailed or composite descriptions into keys), which will require translation between expertise/accuracy levels.
+
+   * to expand on this point a bit.... If we collect descriptive data for specimens, which could be _concrete_ (one given leaf is 5 cm long, another leaf 8 cm) or _abstract_ (the leaves are green or yellow) a higher level (taxon) description can be composed by a process of abstraction. For example, a species description could be created by generalising from specimen descriptions ( e.g. leaves 5-8cm; green or yellow). Some of these generalized groupings can be expressed numerically as ranges, but there is no 'natural', generalized groupings for many states - colours are a bad example because they are actually a physical property so _yellow-to-green_ might be semantically sensible, but trying to express a range of other states is not semantically interpretable if we have no notion of the intemediates (e.g. what would be all the intermediate shapes between lanceolate and obovate... I know what shapes _I_ would consider intermediate - but not which shapes _you_ would consider intermediate). So we can have sets of states that represent the variety possible for that description, but they have no easy categorisation label to define them.... Another consideration is where we may want to *divide up*  variation semantically and call the range of observed leaf lengths _short_ or _long_ (but such abstract labels only have meaning in relation to some other description). We are suggesting that using a Prometheus-like datamodel and description ontology would allow semantically unambiguous data to be collected, which might be generalized at a higher level - by a mixture of automatic and manual processes - with the possibility that these abstractions are still tied to the original 'real' observations. -- Main.TrevorPaterson - 01 Apr 2004
+
+I think this will be wonderful if it works – allowing automation of key generation etc, but might not be reliably accurate enough for the purposes that Main.PrometheusII was targeting (or more importantly it might not be accepted as accurate or useful ) – this comes down to the basic problem of creating acceptable shared terminologies, which is compounded if the terminology is increasingly constrained with multiple ontological relationships.
+
+-- Main.TrevorPaterson - 30 Mar 2004 
+
+---
+
+Mapping can be used to express two things, and part of what I ask is whether these are strictly separate or not (I believe in practice they mix): 
+   * Generalization of a clear situation where detailed states 1 and 2 are specializations of A, and you are correct that then 1 belonging both to A and B would mean it is intermediate, and 
+   * Error tolerance, where 1 is really A (or a specialization of it) but can be confused with B.
+
+Now perhaps this is significant, since in the first case recording a state as the generalized state is meaningful, but recording the perhaps confused state is not. However, if I want to record the process of identifications, I have to live with possible misinterpretations, and will be happy if they are known in the character definition (or "ontology"). As an aside: is there anything in OWL that represents misinterpretation?
+
+Trevor, can you explain what the "substates" in Main.PrometheusII are (perhaps as subtopic of that topic)? That is one thing I still haven't understood. You say "there are structured relationship between states and substates" - but what makes something a substate rather than a state in Prometheus?
+
+Regarding the inference process from specimen to class (= taxon) and from classes/taxa to higher classes/taxa: SDD considers this a generalization as well (see, e.g., Lisbon minutes). Your example "typically x or y, or occasionally z" would normally be reached without using a state mapping definition, however. Mapping primarily provides views of different detail and if all data would be coded on the detailed state level, there would be no reason to use the coarse generalized states for a generalized taxa. However, if some descriptions use the broad concepts and others the narrow ones, it may be beneficial to first map narrow to broad, and then generalize only the broad concepts in the higher taxon. Nevertheless, the taxon description generalization hierarchy and the terminological generalization hierarchy are fundamentally independent. Note that the class-generalization process would be expected to add "typically" and "occasionally" as SDD frequency modifiers. (I am not sure that this is the "categorisations could have generalized labels" you refer to, or whether you ask about a label for the combined statement?)
+
+I think I do not agree with the arguments based on "authority" and "allowing only a single opinion". I think is not part of the scientific process. You can have that in law or theology, but not in science (see AuthoritativeTerminology). This is probably one of the premises where Prometheus differs fundamentally from SDD. Also, I believe it will be very problematic to use Main.PrometheusII for identification, if you have long lists of detailed states (as in my example above) which for most users are only passive vocabulary. 
+
+* * * * * * * * *
+
+But this is a side discussion. I have no concrete cases or experience, but in principle Trevor's statement that "creating acceptable shared terminologies" becomes more difficult if "terminology is increasingly constrained with multiple ontological relationships" may be true. However, I view the mapping relations as rules that help in the application of data for identification and not as part of the ontological definition of states. Stating is good progress in this discussion has achieved. However, the problem then is no longer relevant, and changes in the state mapping would not affect definition and use of a terminology.
+
+Thus, please let us come back to the original questions 1 to 3!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 30 Mar 2004 / 20 Apr 2004
+---
+
+Just a note: this is still an unresolved topic in SDD after the Berlin meeting!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685131" format="1.1" reprev="1.10" version="1.10"}%
+d11 1
+a11 1
+---+++BDI.SDD proposal in 0.9
+d19 1
+a19 1
+1. BDI.SDD currently implictly assumes that mappings may be defined in cases where a long list of categories (states) should be shortened to a shorter list, _OR_ if error prone states should be "degenerated" to achieve error tolerance. These two goals are identical in the case of identification, but are not the same. Which use cases would have to distinguish between them? Do we need extra metadata on why a mapping occurs? In principle the degeneration (1 -> n states) can be distinguished from combination (n -> 1) based on the data itself. Is this enough?
+d35 1
+a35 1
+If that is so, what do we have to do? Suggestion for changes of the BDI.SDD schema?
+d37 1
+a37 1
+b) I believe the first case d could be allowed for scoring (rather than being "deprecated", something that does not exist in BDI.SDD anyhow - should it?). However, this would still leave us with two sets of concepts:
+d64 1
+a64 1
+The formation of a taxon description can be considered a _generalisation_ of the states present in the constituent taxons (and ultimately the states represented in actual constituent specimens). We envisage this in Main.PrometheusII as being a collection of atomic statements – e. g. – _leaf shape can be x, y, z or b._, or _leaf shape is typically x or y, or occasionally z._ etc. - - we have not addessed whether these categorisations could have generalized labels. BDI.SDD would seem to require this because it is attempting to provide one data format to fit all uses (for example supporting the generalisation of  detailed or composite descriptions into keys), which will require translation between expertise/accuracy levels.
+d82 1
+a82 1
+Regarding the inference process from specimen to class (= taxon) and from classes/taxa to higher classes/taxa: BDI.SDD considers this a generalization as well (see, e.g., Lisbon minutes). Your example "typically x or y, or occasionally z" would normally be reached without using a state mapping definition, however. Mapping primarily provides views of different detail and if all data would be coded on the detailed state level, there would be no reason to use the coarse generalized states for a generalized taxa. However, if some descriptions use the broad concepts and others the narrow ones, it may be beneficial to first map narrow to broad, and then generalize only the broad concepts in the higher taxon. Nevertheless, the taxon description generalization hierarchy and the terminological generalization hierarchy are fundamentally independent. Note that the class-generalization process would be expected to add "typically" and "occasionally" as BDI.SDD frequency modifiers. (I am not sure that this is the "categorisations could have generalized labels" you refer to, or whether you ask about a label for the combined statement?)
+d84 1
+a84 1
+I think I do not agree with the arguments based on "authority" and "allowing only a single opinion". I think is not part of the scientific process. You can have that in law or theology, but not in science (see AuthoritativeTerminology). This is probably one of the premises where Prometheus differs fundamentally from BDI.SDD. Also, I believe it will be very problematic to use Main.PrometheusII for identification, if you have long lists of detailed states (as in my example above) which for most users are only passive vocabulary. 
+d95 1
+a95 1
+Just a note: this is still an unresolved topic in BDI.SDD after the Berlin meeting!
+d97 1
+a97 1
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+@
+
+
+1.9
+log
+@Added topic name via script
+@
+text
+@d1 2
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1146741989" format="1.0" version="1.8"}%
+%META:TOPICPARENT{name="ClosedTopicSchemaDiscussionSDD09"}%
+d11 1
+a11 1
+---+++SDD proposal in 0.9
+d19 1
+a19 1
+1. SDD currently implictly assumes that mappings may be defined in cases where a long list of categories (states) should be shortened to a shorter list, _OR_ if error prone states should be "degenerated" to achieve error tolerance. These two goals are identical in the case of identification, but are not the same. Which use cases would have to distinguish between them? Do we need extra metadata on why a mapping occurs? In principle the degeneration (1 -> n states) can be distinguished from combination (n -> 1) based on the data itself. Is this enough?
+d35 1
+a35 1
+If that is so, what do we have to do? Suggestion for changes of the SDD schema?
+d37 1
+a37 1
+b) I believe the first case d could be allowed for scoring (rather than being "deprecated", something that does not exist in SDD anyhow - should it?). However, this would still leave us with two sets of concepts:
+d54 2
+a55 2
+	* If a state maps to *TWO* groups/categories you are in fact recording that the fine grained state is an *intermediate* of the two groups.
+	* and if it maps to *three* groups, an intermediate of the three groups ( and therefore the categorisation cannot be 'linear ordered').
+d64 1
+a64 1
+The formation of a taxon description can be considered a _generalisation_ of the states present in the constituent taxons (and ultimately the states represented in actual constituent specimens). We envisage this in Main.PrometheusII as being a collection of atomic statements – e. g. – _leaf shape can be x, y, z or b._, or _leaf shape is typically x or y, or occasionally z._ etc. - - we have not addessed whether these categorisations could have generalized labels. SDD would seem to require this because it is attempting to provide one data format to fit all uses (for example supporting the generalisation of  detailed or composite descriptions into keys), which will require translation between expertise/accuracy levels.
+d66 1
+a66 1
+	* to expand on this point a bit.... If we collect descriptive data for specimens, which could be _concrete_ (one given leaf is 5 cm long, another leaf 8 cm) or _abstract_ (the leaves are green or yellow) a higher level (taxon) description can be composed by a process of abstraction. For example, a species description could be created by generalising from specimen descriptions ( e.g. leaves 5-8cm; green or yellow). Some of these generalized groupings can be expressed numerically as ranges, but there is no 'natural', generalized groupings for many states - colours are a bad example because they are actually a physical property so _yellow-to-green_ might be semantically sensible, but trying to express a range of other states is not semantically interpretable if we have no notion of the intemediates (e.g. what would be all the intermediate shapes between lanceolate and obovate... I know what shapes _I_ would consider intermediate - but not which shapes _you_ would consider intermediate). So we can have sets of states that represent the variety possible for that description, but they have no easy categorisation label to define them.... Another consideration is where we may want to *divide up*  variation semantically and call the range of observed leaf lengths _short_ or _long_ (but such abstract labels only have meaning in relation to some other description). We are suggesting that using a Prometheus-like datamodel and description ontology would allow semantically unambiguous data to be collected, which might be generalized at a higher level - by a mixture of automatic and manual processes - with the possibility that these abstractions are still tied to the original 'real' observations. -- Main.TrevorPaterson - 01 Apr 2004
+d75 2
+a76 2
+	* Generalization of a clear situation where detailed states 1 and 2 are specializations of A, and you are correct that then 1 belonging both to A and B would mean it is intermediate, and 
+	* Error tolerance, where 1 is really A (or a specialization of it) but can be confused with B.
+d82 1
+a82 1
+Regarding the inference process from specimen to class (= taxon) and from classes/taxa to higher classes/taxa: SDD considers this a generalization as well (see, e.g., Lisbon minutes). Your example "typically x or y, or occasionally z" would normally be reached without using a state mapping definition, however. Mapping primarily provides views of different detail and if all data would be coded on the detailed state level, there would be no reason to use the coarse generalized states for a generalized taxa. However, if some descriptions use the broad concepts and others the narrow ones, it may be beneficial to first map narrow to broad, and then generalize only the broad concepts in the higher taxon. Nevertheless, the taxon description generalization hierarchy and the terminological generalization hierarchy are fundamentally independent. Note that the class-generalization process would be expected to add "typically" and "occasionally" as SDD frequency modifiers. (I am not sure that this is the "categorisations could have generalized labels" you refer to, or whether you ask about a label for the combined statement?)
+d84 1
+a84 1
+I think I do not agree with the arguments based on "authority" and "allowing only a single opinion". I think is not part of the scientific process. You can have that in law or theology, but not in science (see AuthoritativeTerminology). This is probably one of the premises where Prometheus differs fundamentally from SDD. Also, I believe it will be very problematic to use Main.PrometheusII for identification, if you have long lists of detailed states (as in my example above) which for most users are only passive vocabulary. 
+d95 1
+a95 1
+Just a note: this is still an unresolved topic in SDD after the Berlin meeting!
+a97 1
+
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 96
+a96 95
+%META:TOPICINFO{author="GregorHagedorn" date="1087817402" format="1.0" version="1.7"}%
+%META:TOPICPARENT{name="SchemaDiscussionSDD09"}%
+---+++Introduction
+
+A frequent problem when trying to design descriptions for both detailed output (e.g. natural language descriptions) and for identification is that the first usually prefers detailed categories, whereas the latter is better served with more coarse-grained categories. 
+
+The distinction comes from the fact that fine-grained categories ("lanceolate, oblanceolate, obliquely lanceolate, , obliquely oblanceolate, ovate-lanceolate") can be understood as "passive vocabulary" by many consumers of the data, but are "active vocabulary" only for the expert. The expressiveness of the finer categories is considerable and may often be relevant when comparing an object with a full description, but it is a source of error or simply inability to continue identification, when required to score by non-experts.
+
+---+++SDD proposal in 0.9
+
+Terminology/Character/Character/Categorical/Mappings provides a mechanism that allows to map a number of states to other states. The relation support n:m mapping, i.e. a source state can be mapped to multiple target states:<br />
+- ovate-lanceolate -> ovate<br />
+- ovate-lanceolate -> lanceolate
+
+---+++Open points and questions
+
+1. SDD currently implictly assumes that mappings may be defined in cases where a long list of categories (states) should be shortened to a shorter list, _OR_ if error prone states should be "degenerated" to achieve error tolerance. These two goals are identical in the case of identification, but are not the same. Which use cases would have to distinguish between them? Do we need extra metadata on why a mapping occurs? In principle the degeneration (1 -> n states) can be distinguished from combination (n -> 1) based on the data itself. Is this enough?
+
+2. A serious problem I see is that two types of mapping are possible:<br />
+a -> d<br />
+b -> d<br />
+c -> d<br />
+("d" is a generalized state and deprecated for scoring data / should not be used)
+
+or:<br />
+a -> c<br />
+b -> c<br />
+c -> c<br />
+where c now has a sensu stricto for scoring and a sensu lato after mapping (for identification)
+
+a) Should it be possible to score "sensu-lato states". What if one flora/fauna treatment has a coarse concept, and another a fine one, would it be useful to allow "coarse scoring"? Or if experts and non-experts score? Or if the identification trail (those states scored during id) is maintained as persistent data to document observations during specimen identification? The latter use case almost seems to require that c s.str. can be distinguished from c s. lat.!
+
+If that is so, what do we have to do? Suggestion for changes of the SDD schema?
+
+b) I believe the first case d could be allowed for scoring (rather than being "deprecated", something that does not exist in SDD anyhow - should it?). However, this would still leave us with two sets of concepts:
+
+<pre>
+ 1 2 3 4 5 6 7 8 9 10 (ordered fine-grained states)
+ --A-- B -- C--- -D-- (coarse-grained states, corresponding to above)</pre>
+
+Now, I think it is a bad idea NOT to distinguish between the fine and coarse grained state set: "1, 2, A, 3, 4, B, 5, 6, C, 7, 8, 9, D, 10". Currently the only option would be two create two characters and map concepts between them. This seems to be less than ideal, but I still 
+
+3. Should mapping be possible on the reusable concept level? Or would mapping depend on the specific structure that is used? Do we need both and add another complication doing so (currently it is possible only on the character level).
+ 
+
+-- Gregor Hagedorn - 30 Mar 2004
+
+---
+
+The problems that  you are considering relate to how states can be generalized - (e.g by forming hierarchies of related states and substates). If I understand correctly, your mappings can represent a categorisation or grouping of refined states under (or belonging to) a less precise _parent_ state.
+
+	* If a state maps to *TWO* groups/categories you are in fact recording that the fine grained state is an *intermediate* of the two groups.
+	* and if it maps to *three* groups, an intermediate of the three groups ( and therefore the categorisation cannot be 'linear ordered').
+
+With Main.PrometheusII we briefly considered allowing _specialisation_ of states: for example *pale violet* might be a _type­_ of *violet* which might be a _type_ of *purple*. 
+However, we decided that state definitions should stand on their own and there would be no structured relationship between _states_ and _substates_ (of course the textual definition might record such relationships textually).
+
+We considered that these type of relationships might only be significant/relevant for some states (eg colours, shapes) and even for them it might be *contentious* for one _authority_ to make the categorisation/grouping. Furthermore, unless the score was actually recorded in the context of this defined hierarchical terminology, an automatic generalisation would only be our *interpretation* of what the original author meant.
+
+At the end of the day, because we were focussing on *accuracy* of description, we decided that unless a complete hierarchy was represented in the defined terminology/ontology for description, *AND* this was fully appreciated and understood by the working taxonomist *AND* they agreed with the relationships in it… it would be difficult to have any confidence in the relationships/mappings.
+
+The formation of a taxon description can be considered a _generalisation_ of the states present in the constituent taxons (and ultimately the states represented in actual constituent specimens). We envisage this in Main.PrometheusII as being a collection of atomic statements – e. g. – _leaf shape can be x, y, z or b._, or _leaf shape is typically x or y, or occasionally z._ etc. - - we have not addessed whether these categorisations could have generalized labels. SDD would seem to require this because it is attempting to provide one data format to fit all uses (for example supporting the generalisation of  detailed or composite descriptions into keys), which will require translation between expertise/accuracy levels.
+
+	* to expand on this point a bit.... If we collect descriptive data for specimens, which could be _concrete_ (one given leaf is 5 cm long, another leaf 8 cm) or _abstract_ (the leaves are green or yellow) a higher level (taxon) description can be composed by a process of abstraction. For example, a species description could be created by generalising from specimen descriptions ( e.g. leaves 5-8cm; green or yellow). Some of these generalized groupings can be expressed numerically as ranges, but there is no 'natural', generalized groupings for many states - colours are a bad example because they are actually a physical property so _yellow-to-green_ might be semantically sensible, but trying to express a range of other states is not semantically interpretable if we have no notion of the intemediates (e.g. what would be all the intermediate shapes between lanceolate and obovate... I know what shapes _I_ would consider intermediate - but not which shapes _you_ would consider intermediate). So we can have sets of states that represent the variety possible for that description, but they have no easy categorisation label to define them.... Another consideration is where we may want to *divide up*  variation semantically and call the range of observed leaf lengths _short_ or _long_ (but such abstract labels only have meaning in relation to some other description). We are suggesting that using a Prometheus-like datamodel and description ontology would allow semantically unambiguous data to be collected, which might be generalized at a higher level - by a mixture of automatic and manual processes - with the possibility that these abstractions are still tied to the original 'real' observations. -- Main.TrevorPaterson - 01 Apr 2004
+
+I think this will be wonderful if it works – allowing automation of key generation etc, but might not be reliably accurate enough for the purposes that Main.PrometheusII was targeting (or more importantly it might not be accepted as accurate or useful ) – this comes down to the basic problem of creating acceptable shared terminologies, which is compounded if the terminology is increasingly constrained with multiple ontological relationships.
+
+-- Main.TrevorPaterson - 30 Mar 2004 
+
+---
+
+Mapping can be used to express two things, and part of what I ask is whether these are strictly separate or not (I believe in practice they mix): 
+	* Generalization of a clear situation where detailed states 1 and 2 are specializations of A, and you are correct that then 1 belonging both to A and B would mean it is intermediate, and 
+	* Error tolerance, where 1 is really A (or a specialization of it) but can be confused with B.
+
+Now perhaps this is significant, since in the first case recording a state as the generalized state is meaningful, but recording the perhaps confused state is not. However, if I want to record the process of identifications, I have to live with possible misinterpretations, and will be happy if they are known in the character definition (or "ontology"). As an aside: is there anything in OWL that represents misinterpretation?
+
+Trevor, can you explain what the "substates" in Main.PrometheusII are (perhaps as subtopic of that topic)? That is one thing I still haven't understood. You say "there are structured relationship between states and substates" - but what makes something a substate rather than a state in Prometheus?
+
+Regarding the inference process from specimen to class (= taxon) and from classes/taxa to higher classes/taxa: SDD considers this a generalization as well (see, e.g., Lisbon minutes). Your example "typically x or y, or occasionally z" would normally be reached without using a state mapping definition, however. Mapping primarily provides views of different detail and if all data would be coded on the detailed state level, there would be no reason to use the coarse generalized states for a generalized taxa. However, if some descriptions use the broad concepts and others the narrow ones, it may be beneficial to first map narrow to broad, and then generalize only the broad concepts in the higher taxon. Nevertheless, the taxon description generalization hierarchy and the terminological generalization hierarchy are fundamentally independent. Note that the class-generalization process would be expected to add "typically" and "occasionally" as SDD frequency modifiers. (I am not sure that this is the "categorisations could have generalized labels" you refer to, or whether you ask about a label for the combined statement?)
+
+I think I do not agree with the arguments based on "authority" and "allowing only a single opinion". I think is not part of the scientific process. You can have that in law or theology, but not in science (see AuthoritativeTerminology). This is probably one of the premises where Prometheus differs fundamentally from SDD. Also, I believe it will be very problematic to use Main.PrometheusII for identification, if you have long lists of detailed states (as in my example above) which for most users are only passive vocabulary. 
+
+* * * * * * * * *
+
+But this is a side discussion. I have no concrete cases or experience, but in principle Trevor's statement that "creating acceptable shared terminologies" becomes more difficult if "terminology is increasingly constrained with multiple ontological relationships" may be true. However, I view the mapping relations as rules that help in the application of data for identification and not as part of the ontological definition of states. Stating is good progress in this discussion has achieved. However, the problem then is no longer relevant, and changes in the state mapping would not affect definition and use of a terminology.
+
+Thus, please let us come back to the original questions 1 to 3!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 30 Mar 2004 / 20 Apr 2004
+---
+
+Just a note: this is still an unresolved topic in SDD after the Berlin meeting!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 28 May 2004
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 2
+a2 2
+%META:TOPICINFO{author="GregorHagedorn" date="1085753265" format="1.0" version="1.6"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1082469704" format="1.0" version="1.5"}%
+d90 6
+a95 3
+-- Gregor Hagedorn - 30 Mar 2004 / 20 Apr 2004
+---
+
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1080837584" format="1.0" version="1.4"}%
+d17 1
+a17 1
+1. SDD currently implictly assumes that mapping is defined for any case where a long list of categories (states) should be shortened to a smaller list, OR if error prone states should be "degenerated" to achieve error tolerance. These two goals are identical in the case of identification, but are not the same. Which use cases would have to distinguish between them? Should it be marked "for identification"? Do we need extra metadata on why a mapping occurs? In principle the degeneration (1 -> n states) can be distinguished from combination (n -> 1) based on the data itself. Is this enough?
+d23 1
+a23 1
+(d: a state formulated generally and depracated for scoring data with)
+d28 1
+d31 1
+a31 1
+2.a Should it be possible to score "sensu-lato states". What if one flora/fauna treatment has a coarse concept, and another a fine one, would it be useful to allow "coarse scoring"? Or if experts and non-experts score? Or if the identification trail (those states scored during id) is maintained as persistent data to document observations during specimen identification? The latter use case almost seems to require that c s.str. can be distinguished from c s. lat.!
+d35 1
+a35 1
+2.b I believe the first case d could be allowed for scoring (rather than being "deprecated", something that does not exist in SDD anyhow - should it?). However, this would still leave us with two sets of concepts:
+d52 1
+a52 1
+	* If a state maps to *TWO* groups/categories you are infact recording that the fine grained state is an *intermediate* of the two groups.
+d62 1
+a62 1
+The formation of a taxon description can be considered a _generalisation_ of the states present in the constituent taxons (and ultimately the states represented in actual constituent specimens). We envisage this in Main.PrometheusII as being a collection of atomic statements – eg – _leaf shape can be x, y, z or b._, or _leaf shape is typically x or y, or occasionally z._ etc. - - we have not addessed whether these categorisations could have generalized labels. SDD would seem to require this because it is attempting to provide  one data format to fit all uses ( for example supporting the generalisation of  detailed or composite descriptions into keys) , which will require translation between expertise/accuracy levels.
+d64 1
+a64 2
+	* to expand on this point a bit....
+	. if we collect descriptive data for specimens, which could be _concrete_ (one given leaf is 5 cm long, another leaf 8 cm) or _abstract_ (the leaves are green or yellow) a higher level (taxon) description can be composed by a process of abstraction. For example, a species description could be created by generalising from specimen descriptions ( e.g. leaves 5-8cm; green or yellow). Some of these generalized groupings can be expressed numerically as ranges, but there is no 'natural', generalized groupings for many states - colours are a bad example because they are actually a physical property so _yellow-to-green_ might be semantically sensible, but trying to express a range of other states is not semantically interpretable if we have no notion of the intemediates ( eg. what would be all the intermediate shapes between lanceolate and obovate....I know what shapes _I_ would consider intermediate - but not which shapes _you_ would consider intermediate). So we can have sets of states that represent the variety possible for that description, but they have no easy categorisation label to define them.... Another consideration is where we may want to *divide up*  variation semantically and call the range of observed leaf lengths _short_ or _long_ (but such abstract labels only have meaning in relation to some other description). We are suggesting that using a Prometheus-like datamodel and description ontlogy would allow semantically unambiguous data to be collected, which might be generalized at a higher level - by a mixture of automatic and manual processes - with the possibility that these abstractions are still tied to the original 'real' observations.-- Main.TrevorPaterson - 01 Apr 2004
+d66 1
+a66 1
+I think this will be wonderful if it works – allowing automation of key generation etc, but might not be reliably accurate enough for the purposes that Main.PrometheusII was targeting ( or more importantly it might not be accepted as accurate or useful ) – this comes down to the basic problem of creating acceptable shared terminologies, which is compounded if the terminology is increasingly constrained with multiple ontological relationships.  
+d74 1
+a74 1
+	* Error tolerance, where 1 is really A (or a specializatio of it) but can be confused with B.
+d78 1
+a78 1
+Trevor, can you use this to explain to us what the substates in Main.PrometheusII are (perhaps as subtopic of that topic)? That is one thing I still haven't understood. 
+d80 1
+a80 1
+Regarding the rest, I believe it will be very problematic to use Main.PrometheusII for identification, if you have long lists of detailed states as in my example above which for most users are only passive vocabulary. 
+d82 1
+a82 1
+I think I do not agree with your arguments that are based on authority and having only a single opinion. I think is not part of the scientific process. You can have that in law or theology, but not in science (see AuthoritativeTerminology). This is probably one of the premises where Prometheus differs fundamentally.
+d84 9
+a92 1
+-- Gregor Hagedorn - 30 Mar 2004
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1080666117" format="1.0" version="1.3"}%
+d63 3
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="TrevorPaterson" date="1080660268" format="1.0" version="1.2"}%
+d47 1
+a47 1
+----------------------------------------------------------------------------------------------------
+d49 1
+a49 1
+The problems that  you are considering relate to how states can be generalized  - (e.g by forming hierarchies of related states and substates).
+d51 2
+a52 5
+If I understand correctly, your mappings can represent a categorisation or grouping of refined states under ( or belonging to) a less precise _parent_ state.
+
+If a state maps to *TWO* groups/categories you are infact recording that the fine grained state is an *intermediate* of the two groups.
+
+and if it maps to *three* groups, an intermediate of the three groups ( and therefore the categorisation cannot be 'linear ordered').
+d61 1
+a61 1
+The formation of a taxon description can be considered a _generalisation_ of the states present in the constituent taxons ( and ultimately the states represented in actual constituent specimens). We envisage this in Main.PrometheusII as being a collection of atomic statements – eg – _leaf shape can be x, y, z or b._, or _leaf shape is typically x or y, or occasionally z._ etc. - - we have not addessed whether these categorisations could have generalized labels. SDD would seem to require this because it is attempting to provide  one data format to fit all uses ( for example supporting the generalisation of  detailed or composite descriptions into keys) , which will require translation between expertise/accuracy levels.
+d66 16
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1080642426" format="1.0" version="1.1"}%
+d47 22
+a68 1
+---
+@

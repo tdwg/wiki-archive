@@ -1,0 +1,51 @@
+%META:TOPICINFO{author="RicardoPereira" date="1170087475" format="1.1" version="1.8"}%
+---++ LSID Resolver for Observations
+
+*Coordinator(s):* Matt Jones
+
+*Participants:*  Matt Jones, others needed!
+
+----
+---+++ Description
+This group will develop a prototype LSID resolver for observations. 
+
+----
+---+++ Technical Information
+
+   * *URL for prototype user interface:* http://data.esa.org, eventually http://knb.ecoinformatics.org
+   * *LSID authority(ies):* esa.org, eventually ecoinformatics.org
+   * *LSID namespace(s):* various
+   * *Hardware platform:* Dell rack mount server, 4GB RAM, 72GB disk (for now)
+   * *Server platform:* Linux (RHEL4), postgresql 7.4 db, Tomcat 5 servlet engine, Metacat 1.6 XML database
+   * *LSID Software stack used:* Java
+   * *RDF/OWL ontology used for metadata:* custom, needs additional work
+   * *Approximate number of LSIDs stored:* few for now, > 5000 when knb.ecoinformatics.org comes online
+   * *Other resources:*
+
+----
+---+++ Roadmap, Milestones, Timeline
+
+   * 2005: add LSID support to Metacat server so that all Ecological Metadata Language data is LSID accessible
+   * Spring 2006 - Debug LSID implementation for single authority
+   * Summer 2006 - Add support for one metacat to servie multiple authorities
+   * Fall 2006 - Add ability to use LSIDs as native identifier in EML documents and in all Metacat function calls
+
+----
+---+++ Discussion, Implementation Issues
+
+Initial implementation completed based on Dave Thau's SEEK LSID work.  esa.org is now providing an LSID resolver, but there are several bugs in the implementation, partiularly with the SOAP LSID handlers. (Rod Page's test page has illustrated the bugs that need to be fixed).  Searching http://data.esa.org will result in a list of data sets registered with associated LSID identfiers for each, which can be resolved (using the HTTP bindings to avoid the SOAP bugs).  
+
+We want metacat to support multiple authorities, as any given Metacat server can support observational data that originates at multiple institutions, each of which is defacto authoritative for the data.  This will require storing the authority for each data set in Metacat (which currently only stores namespace, object, and revision portions of the LSID).  Once metacat supports multiple authorities, would like to be able to publish multiple metacat servers as available to serve replicas of a given data object (much like DNS has authoritative servers for a domain and caching, non-authoritative servers for domains).
+
+----
+---+++ Lessons Learned, Conclusions, Recommendations
+Observations are far too voluminous to be serialized as XML, much less RDF, themselves.  Observational data sets already present in Knowledge Network for Biocomplexity (KNB) can be 100's of megabytes in size without being encoded in XML. Instead, we serialize structured metadata about the observations in Ecological Metadata Language (EML) in XML format, and the resolver returns a subset of this as RDF.  Retrieving the full EML document in XML format allows downstream clients to fully understand the physical and logical structure of the observational data sets, retrieve the full observational data set in binary or text format, and then parse and ingest the observations.  This also applies to observations that have occurred within the context of field experiments.  EML provides rich natural lanhuage descriptors for explaining the semantics underlying the observations, including sampling design, methods and protocols, and many other facets of data collection.
+
+The separation between data and metadata at the observational level is completely arbitrary and mostly depends on the perspective of the data consumer, not the data producer.  As a consequence, both the metadata content and the data content need to be strongly versioned to enable reproducable scientific analyses.  If the metadata changes (e.g., a new concept is assigned to a species name in the metadata), many downstream analyses will get different results (e.g., biodiversity estimates change over time) because the metadata about species identification is used as if it were data in the analysis.  As a consequence, both the metadata (i.e., EML document) and the data are assigned their own LSIDs in our implementation, both are versioned, and both are retrieved from the LSID getData calls.  The LSID getMetadata call that returns RDF metadata is barely used in this implementation.
+
+
+
+----
+---+++++ Categories
+CategoryWorkingGroup
+CategoryPrototypingWG

@@ -1,0 +1,26 @@
+---++ Use Case: Tracking Record Caching 
+
+----
+---+++++ Description
+One of the challanges of making primary biodiversity data available online is that it is difficult to track data usage once the data is online. Once aggregators cache the primary data, it is difficult, if not impossible, for data providers to identify which services cached and are serving their data. Such information would be very valuable for data providers to demonstrate the relevance of their services and holdings.
+
+---+++++ Assumptions/Pre-conditions
+   * Data provider identify records using GUIDs.
+   * Metadata associated with served records complies with Dublin Core profile (i.e., at least has the creator field). 
+   * Global data indexing service exists and can access data from original data provider and all concerned aggregators. Records which are not accessible by the global indexing service cannot be traced back to the original data provider.
+   * Aggregators identify records using GUIDs and keep references to source records (at least when a new GUID is assigned, for example, when value is added to the source record).
+   * Data provider and aggregators are themselves identified by a GUID (may use NCD standard here).
+
+---+++++ Basic Flow
+   1.  Data provider publishes a data record using an online service (such as DiGIR, BioCASE or TAPIR).
+   1.  Aggregator(s) harvest(s) data from data provider (using one of the above mentioned query protocols).
+   1.  Global index harvests data from both data provider and aggregator(s).
+   1.  Global index links harvested record information based on GUIDs (i.e., RDF merge).
+   1.  Data provider queries global index for services that have provided its records.
+
+---+++++ Notes
+   1.  This use-case can be used to track data usage to some extent, i.e., in analyses, reports, and publications, as long as there is a service that provides metadata about the object in which the original record was used, and the metadata about the object is also accessible by the global indexing service.
+   1.  The use-case can be used to track dynamic usage of data records as well, i.e., number of times a record has been queried and downloaded, if aggregators provide metadata about usage information. Such information may be grouped by data provider for example.
+
+---+++++ Categories
+CategoryUseCases

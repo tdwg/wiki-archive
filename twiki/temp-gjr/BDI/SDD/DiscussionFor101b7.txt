@@ -1,0 +1,124 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118873" format="1.1" version="1.8"}%
+%META:TOPICPARENT{name="ToolsForBDI.SDD"}%
+---+!! %TOPIC%
+
+   * [[%ATTACHURL%/SDD1.01beta7.zip][SDD1.01beta7.zip]]: SDD101b7
+
+
+These items below passed in email between Gregor, Jacob, and Bob as remaining unresolved. Indicated in color in the discussion is their subsequent resolution.
+
+
+   + 1. id attribute on !AbstractObject
+In email responding to Main.JacobAsiedu (>> below) Main.GregorHagedorn wrote:
+<verbatim>
+Hi Jacob
+
+>> I can see that that Id's are optional now..Was that your intention or an
+>> oversight?
+
+Intention. xs:key will make the id attributes required in most cases, but in 
+some cases I would like to keep the class derivation without requiring people 
+to add nonsense ids in their data. An example is dataset itself.
+
+I annotated the id element to that extent, please improve it if insufficient. 
+</verbatim>
+
+
+---
+Comments:
+
+Bob and Jacob strongly disagree with this decision. We believe the better thing to do is omit the id from the !AbstractObject and make it mandatory on those types where it is meant to be. An alternative is to derive a second type, e.g. !AbstractObjectWithKey with mandatory key and derive the appropriate ones from that. Another alternative is to put "prohibited" on the attribute on types where that is what is meant.
+
+Generally, we think it is always better to let Schema do its work when there is a reasonable way to do so. This makes for more robust application code, requiring less special casing in the code. 
+ 
+-- Main.BobMorris - 20 Apr 2006
+
+%RED%Telephone conference 22 Apr 2006 with Main.GregorHagedorn, Main.KevinThiele, Main.BobMorris.
+
+Main.GregorHagedorn argued that this or other mechanisms would destabilize the b7 release. Highly influenced by this, Main.BobMorris agreed (silently?) that the important case in which a reference is made to a thing with no id, is caught in validation of instance documents and so he could live with optionality for this release.%ENDCOLOR%
+
+%GREEN% Decision taken: leave it optional, unanimously agreed.%ENDCOLOR%
+---
+---
+
+   + 2. Quantity of modifiers limited to 4
+<verbatim>
+Jacob asks:  Modifiers limited to 1-4 in !CodedDescriptions - Allow applications to decide 
+how many they want?
+
+Gregor replies:
+Intention: May allow applications to design smoother User Interfaces. 
+Kevin is to support only 1, 4 is already pretty heavy. Good? I don't know...
+</verbatim>
+
+---
+Comments: 
+
+Bob: I don't agree that schema developers should impose their ideas about user interface design on application writers. I see no reason to put a limit on this. It accomplishes nothing structural. Jacob agrees. 20 Apr 2006
+
+---
+%RED%Telephone conference 22 Apr 2006 with Main.GregorHagedorn, Main.KevinThiele, Main.BobMorris. It was agreed that supporting large numbers, or an indefinite number, of modifiers is difficult for some existing applications. Main.BobMorris sighed and conceded that from a software engineering point, the only differences are 0, 1, 2, many, and indefinite. Main.GregorHagedorn observed that socially and perhaps technically it will be easier to increase than decrease a fixed number in subsequent releases. Main.BobMorris muttered, probably too low to be heard, that programmers would have more robust code requiring no future extension if they actually programmed as though the number is indefinite and deal with version-based limits as a configuration issue. %ENDCOLOR%
+
+%GREEN% Decision taken: leave it fixed at 4. Main.GregorHagedorn, Main.KevinThiele agreed. Main.BobMorris abstained, muttering. %ENDCOLOR%
+---
+---
+
+   + 3. !GeoLocality not referenced
+<verbatim>
+Jacob: !GeoLocality - Seems it are not used at all. Remove them? 
+
+Gregor: Rather not, would be used in scope, which is currently as "__". I think 
+better to keep in base ontology, is very fundamental type.
+</verbatim>
+
+
+---
+Comments
+
+Bob: I agree with Gregor, but think we should take a stand now on what people are supposed to make of "__". Once we are stable, we should simply remove them from the released version and archive a copy of "stable plus __" and always derive from that. Alternatively, we could define Lite to be current  minus "__".
+---
+%RED%Telephone conference 22 Apr 2006 with Main.GregorHagedorn, Main.BobMorris. (a)Original point is now moot as geolocality is no longer "__" in draft b8. !GeoLocality will  be renamed !GeographicArea based on UBIF conversation of 21 April between Main.GregorHagedorn and Main.MarkusDoering.
+
+Second point is also moot. See WhatToDoWithElementsMarkedForDiscussion.%ENDCOLOR%
+
+%GREEN%Decision taken: Moot%ENDCOLOR%
+
+
+---
+   + 4. General naming pattern for references:
+
+Gregor:
+<verbatim>
+Schema being largely element-name-based, I would like to have a naming pattern 
+to distinguish between a ref reference pointing to a local id, a reference by 
+text (e.g. simply having a publication "label" with or without uri, and a 
+potential to "NEST/EMBED" objects.
+
+In the schema part UBIF_ObjectPattern.xsd you can find "__ReferencePattern" 
+where I display my ideas.
+
+This is critical for future stability, we may have to rename all current &lt;State 
+ref="23"/&gt; elements to &lt;State ref="23"/&gt; or &lt;state ref="23"/&gt;.
+
+I know I was pestering you with this in St. Petersburg, and I avoided the topic 
+in Berlin because we did not get anywhere in St. Petersburg with this.
+</verbatim>
+
+---
+Comments:
+
+I would skirt this question altogether, leave the naming as it is in 101b7. Let the chips fall where they may. We have no idea what is needed for future stability given the current turmoil in TAG.
+
+
+  - Main.BobMorris - 21 Apr 2006     
+
+
+%RED%Telephone conference 22 Apr 2006 with Main.GregorHagedorn, Main.KevinThiele, Main.BobMorris. Bob and Kevin argued that the extreme merit of Gregor's argument notwithstanding , and despite the likely high cost of a future major revision under some scenarios in which an XML-Schema remains the primary expression of BDI.SDD_, the schedule impact of a major renaming can not now be tolerated. Gregor conceded this point.%ENDCOLOR%
+
+%GREEN% Decision taken unanimously: Leave the current naming in place. %ENDCOLOR%
+---
+
+---
+  
+
+%META:FILEATTACHMENT{name="SDD1.01beta7.zip" attr="h" comment="SDD101b7" date="1145588712" path="SDD1.01beta7.zip" size="168523" user="BobMorris" version="1.1"}%

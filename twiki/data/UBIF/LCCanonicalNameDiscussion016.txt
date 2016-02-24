@@ -1,0 +1,69 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1103195463" format="1.0" version="1.2"}%
+%META:TOPICPARENT{name="LinneanCoreCanonicalName"}%
+Marc Geoffrey and I had a excellent in-person discussion and studied the BGBM "Berlin Model". I have remodeled our name atomization approach from 1.5 to follow the Berlin Model (see http://www.bgbm.org/scripts/ASP/BGBMModel/TablesAndAttr.asp?Cat=CR). What I like about the model is that the Genus name is always in an element "Genus", whereas in the current LC 0.1.5 model the Genus name would be in "Uninomial" for the Genus itself, and in "Genus" if Genus is used as part of bi-/trinomial infrageneric, specific, or infraspecific names. I think the alternative model replacing uninomial with either suprageneric or genus is easier and needs less explanation. I did test the technicalities, the schema validation that a name is a canonical name is equivalent. I am not sure at all, however, whether I overlook some important property the alternative is missing.
+
+I think the instance examples below are a better illustration than schema diagrams:
+
+<verbatim>
+  <Name>
+	 <!-- Example for suprageneric rank: -->
+	 <CanonicalName>
+		<Text>Poaceae</Text>
+		<Uninomial>Poaceae</Uninomial>
+	 </CanonicalName>
+	 <Alternative>
+		<Text>Poaceae</Text>
+		<SupragenericName>Poaceae</SupragenericName>
+	 </Alternative>
+  </Name>
+  <Name>
+	 <!-- Example for genus rank: -->
+	 <CanonicalName>
+		<Text>Calamagrostis</Text>
+		<Uninomial>Calamagrostis</Uninomial>
+	 </CanonicalName>
+	 <Alternative>
+		<Text>Calamagrostis</Text>
+		<Genus>Calamagrostis</Genus>
+		<!-- Advantage of this: calling a genus name a "genus" rather than "uninomial" is more intuitive. Disadvantage of this: the attribute ref="" could be present, which is meaningless in this model! -->
+	 </Alternative>
+  </Name>
+  <Name>
+	 <!-- Example for infrageneric rank: -->
+	 <CanonicalName>
+		<Text>Calamagrostis ser. Muticae</Text>
+		<Genus ref="123">Calamagrostis</Genus>
+		<InfragenericEpithet>Muticae</InfragenericEpithet>
+	 </CanonicalName>
+	 <Alternative>
+		<Text>Calamagrostis ser. Muticae</Text>
+		<Genus ref="123">Calamagrostis</Genus>
+		<InfragenericEpithet>Muticae</InfragenericEpithet>
+	 </Alternative>
+  </Name>
+  <Name>
+	 <!-- Example for species rank:  (both alternatives are identical) -->
+	 <CanonicalName>
+		<Text>Caesia spinosa</Text>
+		<Genus ref="124">Caesia</Genus>
+		<SpecificEpithet>spinosa</SpecificEpithet>
+	 </CanonicalName>
+	 <Alternative>
+		<Text>Caesia spinosa</Text>
+		<Genus ref="124">Caesia</Genus>
+		<SpecificEpithet>spinosa</SpecificEpithet>
+	 </Alternative>
+  </Name>
+</verbatim>
+
+Please give some feedback whether you prefer <br/>
+a) Uninomial-Genus=binomialprefix-model (LC 0.1.4) or <br/>
+b) Suprageneric-Genus=uninomial or binomialprefix-model based on Marc Geoffrey's &amp; al. model<br/>
+I tend to prefer the latter because it seems to me more intuitively understandable by biologists, i.e. needs less explanation.
+
+Please also compare the questions in LCCanonicalAuthorshipDiscussion016!
+
+-- [[Main.GregorHagedorn][Gregor Hagedorn]] - 13 Dec 2004
+

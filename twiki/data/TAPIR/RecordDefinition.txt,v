@@ -1,0 +1,172 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@---+ Record Definition
+
+To use a count and paging in a CustomSearch it is necessary to define an element to represent a "record" which can be counted.
+This is done by using the xpath based ConceptualBinding in the definition for a CustomSearch.
+
+In some cases it is also useful to be able to define a list of concepts as "records", eg. references, descriptions and taxa in SDD or networks, organisations and collections in the metadata profile of BioCASE. The definition of records in this case is not allow to overlap. This means it does not make sense to define a record within an already defined record. In this case an wrong request error should be raised.
+
+E.g. !/RecordSet/Specimen and !/RecordSet/Specimen/Identification
+
+This would mean a seperate count returned for each of the record definitions and an aggregation (sum) of the records for the paging mechanism, thus the total matched records.
+
+See the CustomSearchProposalOne for an example xml document
+
+
+---+++++ Paging algorithm for multiple record definitions
+A wrapper software would have to know which tables and which keys are involved when identifying a record.
+
+Each RecordDefinition would have a list of tables with primary keys associated. To find the tables one would have to look at the closest parental RepNode which can be the RecordDefinition element itself. The LockedTables of this RepNode are responsible for identifying a distinct record, thus the distinct combination of their primary keys (a full join) is regarded as a single record.
+
+The paging mechanism would have to step through all of the records for each record definition.
+Thus it would have to "add" the records like a UNION is doing in SQL.
+
+---+++++ Example
+The BioCASE metaprofile lists 3 kinds of entities with their metadata. All of them are regarded as records and when paging through results they all need to show up once. 
+<verbatim>
+<RecordSet>
+  <Network> ... <Network>
+  <Organisation> ... <Organisation>
+  <Collection> ... <Collection>
+</RecordSet>
+</verbatim>
+
+So a simple RecordDefinition pointing to one element is not enough. We will need to know that all the 3 unrelated or related entities should be considered for counting and paging.
+
+Lets say you keep the data in your database in 3 different tables tNet, tOrg and tCol.
+To step through all of the records with a SearchRequest, you would have to define 3 RecordDefinitions like this:
+<verbatim>
+  <RecordDefinition path="/RecordSet/Network" RecordDefinition>
+  <RecordDefinition path="/RecordSet/Organisation" RecordDefinition>
+  <RecordDefinition path="/RecordSet/Collection" RecordDefinition>
+</verbatim>
+
+
+The algorithm then detects that the primary keys of table tNet should be used to identify a Network record, tOrg for Organisations and tCol for Collection records. The software would have to create a list of all (matching) PKs of those tables, sort them in some way and start paging through them.
+
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d24 1
+a24 1
+The BioCASE metaprofile lists 3 kinds of entities with their metadata. All of them are regarded as records and when paging through results they all need to show up once.
+d33 4
+a36 2
+lets say you keep the data in your database in 3 different tables tNet, tOrg and tCol.
+For a CustomSearch to step through all of the records, you would have to define 3 RecordDefinitions:
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d8 1
+a8 1
+E.g. RecordDefinitionRecordSet/Specimen and RecordDefinitionRecordSet/Specimen/Identification
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@d6 4
+a9 1
+In some cases it is also useful to be able to define a list of concepts as "records", eg. references, descriptions and taxa in SDD or networks, organisations and collections in the metadata profile of BioCASE.
+d15 1
+a15 1
+---+++++ Algorithm
+d20 21
+d42 1
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d9 1
+a9 1
+See the CustomSearch proposals for an example xml document
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d9 1
+a9 1
+See the CustomSearch example for an xml document
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d10 9
+@

@@ -1,0 +1,854 @@
+head	1.23;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.23
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	2006.05.08.10.05.49;	author GregorHagedorn;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2006.05.04.11.12.44;	author GregorHagedorn;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2006.04.26.10.12.26;	author GregorHagedorn;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2006.04.24.09.48.01;	author GregorHagedorn;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2006.04.09.17.42.23;	author GregorHagedorn;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2006.04.07.16.39.37;	author GregorHagedorn;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2006.04.07.13.19.53;	author GregorHagedorn;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2006.04.06.14.06.39;	author KevinThiele;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2006.04.06.13.48.18;	author GregorHagedorn;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2006.04.06.10.11.22;	author BobMorris;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2006.04.06.09.24.42;	author GregorHagedorn;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.04.05.16.22.23;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.04.05.13.13.02;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.04.04.15.43.43;	author GregorHagedorn;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2006.04.03.19.39.38;	author GregorHagedorn;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2006.04.03.16.29.20;	author GregorHagedorn;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2006.04.03.13.39.39;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2006.04.03.09.34.50;	author GregorHagedorn;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2006.04.03.08.17.57;	author GregorHagedorn;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2006.03.01.17.20.22;	author GregorHagedorn;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2006.03.01.13.18.43;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2006.03.01.00.31.24;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.23
+log
+@Added topic name via script
+@
+text
+@---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1147082749" format="1.1" version="1.22"}%
+%META:TOPICPARENT{name="MeetingMinutes"}%
+---++SDD Berlin 2006 Meeting, First week of April
+
+This page contains agenda items together with minutes for individual items. A second page summarizes the results of the meeting:
+[[SDD2006BerlinSummary]].
+
+*Participants for Monday-Thursday:* Bob Morris, Gregor Hagedorn, Jacob Asiedu, Damian Barnier, Kevin Thiele. 
+On Tuesday Markus Döring joined us, on Friday only Bob Morris, Gregor Hagedorn, Jacob Asiedu participated.
+
+---+++Schema validation issues -- *Monday*
+   * Main issue was key/keyref, was ambiguous def. in w3c standard (part 1.3.4 of the W3C Schema rules); erroneously implemented in spy, current solution is: all identity constraints taken out, may be put in (reversely than before) in a future version). Should have been done, Jacob double-checks.
+   * Removed the default attribute '""' of the Audience from !AudienceRepresentationBase. We think this is an error in the schema. The "" has length of zero, but the audience type was defined to have a length of at least one. Should have been done, Jacob double-checks.
+
+---+++Other technical/Java issues -- *Monday*
+   * Replaced all names,types,refs that begins with "__" with "TBD__"  so that there is no conflicts in castors's local variables which begin with "_". TBD means to be determined.
+      * Clarification: technically there is no problem, just conflict of convention. However, double underscore exists only in draft versions, but signifies that these elements should be deleted before using, xslt to do this exist. We only have this versions around for lack of time of doing this every time we update.
+   * Replaced the SDD type "String" with "StringSDD" so that there is no conflicts with Java.lang.String and generated code are compiled successfully. Background: Until semantics are agreed UBIF prevents the various ways to *not* have a string (Like: &lt;element xsi:nil /&gt; -- &lt;element&gt;&lt;/element&gt; -- &lt;element&gt;""&lt;/element&gt; -- (no element at all)
+&lt;element&gt;content&lt;/element&gt;. This problem of xs:string differs sharply from other simple types like xs:integer, xs:datetime.) Agreed: <nop>StringNonEmpty having constraint: length > 0. Done.
+   * Replaced 'xs:Name' with 'xs:NCName' because castor does not yet support xs:Name. Difference is: name allows colons it, non-colonized name (i.e. not Iraq). Agreed and done.
+   * Removed all references to /*/ in the documentation so that Java does not treat them as part of java comments.
+      Occurs only in the form: xs:selector xpath="Dataset/TaxonNames/*/Label" or element content of xs:annotation.
+      Considered defect of particular schema compiler software.
+   * Multiple (indirect) inclusion of the basic "type library" parts of UBIF schema - is this a problem? Problems only conceptual, but unavoidable to reuse very basic type libraries (like UBIF_TypeLib.xsd) in multiple schema components. Not a problem.
+
+Result: Validating version of schema
+
+---+++Gap-times:
+   * Discuss SDD [[Charter]]!!!
+
+---+++Various -- *Tuesday*
+   * Revise basic object concept (Gregor), id in element optional and only for linking, GUIDs expressed in Links...
+      * removed attribute "unique" from the label text type, considered responsibility of application.
+      * considered changing attribute "role" to "kind" or "form". Not done after revisiting media resources.
+      * changed label role/kind value ="concise" to "full", revisited and revised Label, Detail, <nop>MediaResource and Links enumeration.
+      * Where are definitions (for abstract concepts): in <nop>MediaResources or in Links/Link? Decision: Link with rel=BasedOn, <nop>MediaResource with role="normative". Different because <nop>MediaResource is a Representation, not interresource link.
+   * The basic object concept discussion also covered the issues on normative definitions for character, character states, etc.(Kevin/Damian)
+
+---+++TAPIR issues -- *Tuesday morning, together with Markus Döring*
+   * Replace recursive tree elements (tree data expressed with standard representation of digraphs)?
+      * Used in Taxon hierarchies, Concept trees, Identification trees.
+      * Problem: xml-tree has order of children. Traversal order: breadth first (node, sequence of children) or depth first (child-child-child, next child, child). Traversal order does not order, but requirement: list of edges must remain ordered, is not a set. (In contrast, a graph is a set of edges!)
+      * For concept trees: old SDD solution does not handle multiple inheritance (ascospore in part of ascus AND ascospore is kind of spore). Possible if tree is generalized to directed acyclical graph with single root.
+      * For taxon hierarchies: We have no preference, but TCS is using a list.
+      * Possible advantages of edge list (digraph with ordered edge list):
+         * TAPIR
+         * Fewer constraints to verify
+         * UML model closer to schema
+   * Concept trees: Decision: no global "tree type", but types on the edges. Revised and changed the label for the new, edge-based model.
+      * Consider: If using digraph with ordered edge list once, we should use it everywhere for any datastructure that is a special case of a digraph (tree, forest, etc.) Reasoning based on robustness grounds.
+
+
+---+++Various -- *Wednesday*
+   * Concept states (Kevin/Damian)
+      * Issue is resolved when changing concept trees to list of referrable concepts plus separate hierarchies with edge lists.
+   * <nop>MediaResource, location cannot be specified; there link element enumeration what things are, ... (Damian) -- FIXED.
+
+   * Replace pointer from Concepts to characters with pointer from characters to concepts. Bob proposed this a long time ago and I thought it does not matter much which way round - but now I see the wisdom in this. It just took me a long time. Concepts are more general and likely to be reused if we view SDD as modular data pieces. (Gregor)
+        * Long discussion, possible to separate issues of concept and character curation when referring from characters to concepts. Idea: character is multiple inheritance from concepts (plus its character data type): Petal color is a color character, is a petal character, is a plant character, is an unaided observation character.
+
+---+++Various -- *Thursday*
+   * Concept Hierarchies/Character Trees
+      * Discussions carried over from Wednesday on how to arrange and re-use concepts in trees defined using edge lists.  Agreed to split the <nop>ConceptHierarchies and <nop>CharacterTrees with the intention of developing ontology like structures for concepts at a later date.   
+    
+Resolutions: Abandon <nop>ConceptTrees, just keep Character / <nop>CharacterTree (no longer arbitrary DAG!), concepts ontologies may be added later. 
+
+Result: Structural changes in SDD schema.
+
+---+++RDF/xml-schema -- *Thursday*
+   * Talk about RDF issues, possibility to mix structured documents with rdf, or learn from rdf
+   * Gregor's Roger-validated talk in EDI/April, architecture meeting - prepare and discuss. See
+  [[http://wiki.tdwg.org/twiki/bin/view/TAG/TagMeeting1Agenda]]
+   * John Wilbanks: write xslt to express rdf metadata based on structured documents?
+
+---+++Preparation for Talk Presenting SDD at TDWG TAG meeting in Edinburgh (Thursday afternoon)
+
+Roger: "We all have some familiarity with the technologies being presented so we don't need detailed technical talks but what we do need to do is have an overview of how they fit into the broader scheme of things. The whole talk should last a maximum of 15 minutes."
+
+   * Motivation & Rationale: Very brief introduction to motivations i.e. what it was intended to do and why it takes the form it does. 
+      * See [[Charter]].
+   * Publishing: Software Implementations. The software available (or planned) to publish data in this format. 
+      * EFG: pathway-based (stored dichotomous/polytomous) interactive identification keys
+      * EFG: web-service-based species pages.
+      * EFG: plans to publish a framework for generating conversion software from and to SDD.
+      * Collaborative annotation of jpg2000 images using SDD
+      * Lucid: matrix based interactive identification keys
+      * Phoenix: pathway-based (stored dichotomous/polytomous) interactive identification keys
+      * <nop>IdentifyLife: collaborative framework for exchanging and managing keys and character ontologies.
+      * <nop>DiversityDescriptions (based on <nop>DeltaAccess)
+      * Navikey: web-based identification applet.
+
+   * Publishing: Deployments. Who is using (or about to use) these implementations to publish data. What is the demographic? 
+      * See Audience in [[Charter]]. Organisations as well as individual scientists.
+   * Consuming: Software Implementations. The software available (or planned) to consume data in this format. 
+      * See publishing.
+   * Consuming: Deployments. Who is using (or about to use) these implementations to consume data. What is the demographic?
+      * See Audience in [[Charter]]. 
+
+   * Market Size: Potential Publishers Who could be producing data like this. 
+      * Research to answer this question has not been funded so far.
+   * Market Size: Potential Customers Who could be consuming data like this. 
+      * Research to answer this question has not been funded so far.
+
+   * Success Factors: Significant factors for successful adoption. Why has it been successful? What do you think will make it successful? From an adopters point of view. 
+      * SDD itself should be invisible to users, only experienced through software.
+      * Such software will be adapted for data production and consumption if it increases the productiveness of knowledge workers.
+      * Software needs to address the expectations and previous experience of consumers (biologists, etc.). 
+      * Such software may be based on proprietary dataformats, as is currently largely the case. SDD will be successfull if the users are demanding data sharing and and collaboration tools, and desire to use the best aspects of multiple software programs for the same dataset.
+      * The wide variety of open source and production-quality supported commercial development tools for the implementation language (XML-Schema).
+ 
+   * Hurdles to Adoption: Significant hurdles to adoption. What have been the major hurdles to adoption? Or what are perceived as the major hurdles? 
+      * Complexity of the problem
+      * Lack of a tradition in descriptive systematics and taxonomy for broadscale collaborations and early exposure of data
+      * Low level of funding for developing software tools sufficiently advanced to indeed make users productive
+      * SDD needs some external validation tools, not all requirements could be fullfilled using xml-schema-based validation.
+
+   * Big Picture Where does the technology fit in the model discussed in the morning session (this obviously can't be prepared ahead of time so a blank slide is fine). Points raised in discussion on this will form the detailed agenda for day 2. 
+      * It does not.
+----
+
+---+++Various clean-up tasks -- *Friday*
+
+*Participants:* Bob, Gregor, Jacob. 
+
+Open Issues:
+   * As a result of the TAPIR/non-tree-structure change, natural language support needs redistribution between concept and node-list. Conclusion: shifted into character tree, both on internal nodes and character nodes. Thus in fact now more similar again to SDD 1.0!
+   * Move Modifiers into Concepts. -- Agreed as a step towards a lighter SDD. Modifier sets are now a special case of Concepts. Modifier definitions itself remain unchanged.
+   * Base the Dataset itself on <nop>AbstractObject, so far all the Dataset metadata are considered special cases, but they seem to fit well with the general model. Only necessary action: add "coverage" as a Detail-text role. Resolution: Agreed.
+   * Both the taxon hierarchy and identification key are still tree, not edge list (TAPIR issues). - Jacob/Bob todo.
+   * Put keyrefs (taken out in St. Petersburg because of technical issues with w3c schema validation tools) back in. - Jacob/Bob todo.
+
+Note: Originally we had hoped to start thinking about SDD-Lite, but other than a substantial simplification of the modifier definitions, no time was available for this.
+
+----
+
+The Result of this meeting was at first SDD [[Version101]], which we later decided to change to [[Version1dot1]] because too many changes had accumulated. See also DiscussionFor101b7 (although most discussion occurred through email and telephone conference calls).
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1146046317" from="SDD.BerlinAgendaAprilOhSix" to="SDD.SDD2006BerlinMinutes"}%
+@
+
+
+1.22
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.21
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1146741164" format="1.0" version="1.21"}%
+d12 2
+a13 2
+	* Main issue was key/keyref, was ambiguous def. in w3c standard (part 1.3.4 of the W3C Schema rules); erroneously implemented in spy, current solution is: all identity constraints taken out, may be put in (reversely than before) in a future version). Should have been done, Jacob double-checks.
+	* Removed the default attribute '""' of the Audience from ZZZObsoleteAudienceRepresentationBase. We think this is an error in the schema. The "" has length of zero, but the audience type was defined to have a length of at least one. Should have been done, Jacob double-checks.
+d16 3
+a18 3
+	* Replaced all names,types,refs that begins with "__" with "TBD__"  so that there is no conflicts in castors's local variables which begin with "_". TBD means to be determined.
+		* Clarification: technically there is no problem, just conflict of convention. However, double underscore exists only in draft versions, but signifies that these elements should be deleted before using, xslt to do this exist. We only have this versions around for lack of time of doing this every time we update.
+	* Replaced the SDD type "String" with "StringSDD" so that there is no conflicts with Java.lang.String and generated code are compiled successfully. Background: Until semantics are agreed UBIF prevents the various ways to *not* have a string (Like: &lt;element xsi:nil /&gt; -- &lt;element&gt;&lt;/element&gt; -- &lt;element&gt;""&lt;/element&gt; -- (no element at all)
+d20 5
+a24 5
+	* Replaced 'xs:Name' with 'xs:NCName' because castor does not yet support xs:Name. Difference is: name allows colons it, non-colonized name (i.e. not Iraq). Agreed and done.
+	* Removed all references to /*/ in the documentation so that Java does not treat them as part of java comments.
+		Occurs only in the form: xs:selector xpath="Dataset/TaxonNames/*/Label" or element content of xs:annotation.
+		Considered defect of particular schema compiler software.
+	* Multiple (indirect) inclusion of the basic "type library" parts of UBIF schema - is this a problem? Problems only conceptual, but unavoidable to reuse very basic type libraries (like UBIF_TypeLib.xsd) in multiple schema components. Not a problem.
+d29 1
+a29 1
+	* Discuss SDD [[Charter]]!!!
+d32 6
+a37 6
+	* Revise basic object concept (Gregor), id in element optional and only for linking, GUIDs expressed in Links...
+		* removed attribute "unique" from the label text type, considered responsibility of application.
+		* considered changing attribute "role" to "kind" or "form". Not done after revisiting media resources.
+		* changed label role/kind value ="concise" to "full", revisited and revised Label, Detail, <nop>MediaResource and Links enumeration.
+		* Where are definitions (for abstract concepts): in <nop>MediaResources or in Links/Link? Decision: Link with rel=BasedOn, <nop>MediaResource with role="normative". Different because <nop>MediaResource is a Representation, not interresource link.
+	* The basic object concept discussion also covered the issues on normative definitions for character, character states, etc.(Kevin/Damian)
+d40 11
+a50 11
+	* Replace recursive tree elements (tree data expressed with standard representation of digraphs)?
+		* Used in Taxon hierarchies, Concept trees, Identification trees.
+		* Problem: xml-tree has order of children. Traversal order: breadth first (node, sequence of children) or depth first (child-child-child, next child, child). Traversal order does not order, but requirement: list of edges must remain ordered, is not a set. (In contrast, a graph is a set of edges!)
+		* For concept trees: old SDD solution does not handle multiple inheritance (ascospore in part of ascus AND ascospore is kind of spore). Possible if tree is generalized to directed acyclical graph with single root.
+		* For taxon hierarchies: We have no preference, but TCS is using a list.
+		* Possible advantages of edge list (digraph with ordered edge list):
+			* TAPIR
+			* Fewer constraints to verify
+			* UML model closer to schema
+	* Concept trees: Decision: no global "tree type", but types on the edges. Revised and changed the label for the new, edge-based model.
+		* Consider: If using digraph with ordered edge list once, we should use it everywhere for any datastructure that is a special case of a digraph (tree, forest, etc.) Reasoning based on robustness grounds.
+d54 3
+a56 3
+	* Concept states (Kevin/Damian)
+		* Issue is resolved when changing concept trees to list of referrable concepts plus separate hierarchies with edge lists.
+	* <nop>MediaResource, location cannot be specified; there link element enumeration what things are, ... (Damian) -- FIXED.
+d58 2
+a59 2
+	* Replace pointer from Concepts to characters with pointer from characters to concepts. Bob proposed this a long time ago and I thought it does not matter much which way round - but now I see the wisdom in this. It just took me a long time. Concepts are more general and likely to be reused if we view SDD as modular data pieces. (Gregor)
+		  * Long discussion, possible to separate issues of concept and character curation when referring from characters to concepts. Idea: character is multiple inheritance from concepts (plus its character data type): Petal color is a color character, is a petal character, is a plant character, is an unaided observation character.
+d62 3
+a64 3
+	* Concept Hierarchies/Character Trees
+		* Discussions carried over from Wednesday on how to arrange and re-use concepts in trees defined using edge lists.  Agreed to split the <nop>ConceptHierarchies and <nop>CharacterTrees with the intention of developing ontology like structures for concepts at a later date.	
+	 
+d70 2
+a71 2
+	* Talk about RDF issues, possibility to mix structured documents with rdf, or learn from rdf
+	* Gregor's Roger-validated talk in EDI/April, architecture meeting - prepare and discuss. See
+d73 1
+a73 1
+	* John Wilbanks: write xslt to express rdf metadata based on structured documents?
+d79 31
+a109 31
+	* Motivation & Rationale: Very brief introduction to motivations i.e. what it was intended to do and why it takes the form it does. 
+		* See [[Charter]].
+	* Publishing: Software Implementations. The software available (or planned) to publish data in this format. 
+		* EFG: pathway-based (stored dichotomous/polytomous) interactive identification keys
+		* EFG: web-service-based species pages.
+		* EFG: plans to publish a framework for generating conversion software from and to SDD.
+		* Collaborative annotation of jpg2000 images using SDD
+		* Lucid: matrix based interactive identification keys
+		* Phoenix: pathway-based (stored dichotomous/polytomous) interactive identification keys
+		* <nop>IdentifyLife: collaborative framework for exchanging and managing keys and character ontologies.
+		* <nop>DiversityDescriptions (based on <nop>DeltaAccess)
+		* Navikey: web-based identification applet.
+
+	* Publishing: Deployments. Who is using (or about to use) these implementations to publish data. What is the demographic? 
+		* See Audience in [[Charter]]. Organisations as well as individual scientists.
+	* Consuming: Software Implementations. The software available (or planned) to consume data in this format. 
+		* See publishing.
+	* Consuming: Deployments. Who is using (or about to use) these implementations to consume data. What is the demographic?
+		* See Audience in [[Charter]]. 
+
+	* Market Size: Potential Publishers Who could be producing data like this. 
+		* Research to answer this question has not been funded so far.
+	* Market Size: Potential Customers Who could be consuming data like this. 
+		* Research to answer this question has not been funded so far.
+
+	* Success Factors: Significant factors for successful adoption. Why has it been successful? What do you think will make it successful? From an adopters point of view. 
+		* SDD itself should be invisible to users, only experienced through software.
+		* Such software will be adapted for data production and consumption if it increases the productiveness of knowledge workers.
+		* Software needs to address the expectations and previous experience of consumers (biologists, etc.). 
+		* Such software may be based on proprietary dataformats, as is currently largely the case. SDD will be successfull if the users are demanding data sharing and and collaboration tools, and desire to use the best aspects of multiple software programs for the same dataset.
+		* The wide variety of open source and production-quality supported commercial development tools for the implementation language (XML-Schema).
+d111 5
+a115 5
+	* Hurdles to Adoption: Significant hurdles to adoption. What have been the major hurdles to adoption? Or what are perceived as the major hurdles? 
+		* Complexity of the problem
+		* Lack of a tradition in descriptive systematics and taxonomy for broadscale collaborations and early exposure of data
+		* Low level of funding for developing software tools sufficiently advanced to indeed make users productive
+		* SDD needs some external validation tools, not all requirements could be fullfilled using xml-schema-based validation.
+d117 2
+a118 2
+	* Big Picture Where does the technology fit in the model discussed in the morning session (this obviously can't be prepared ahead of time so a blank slide is fine). Points raised in discussion on this will form the detailed agenda for day 2. 
+		* It does not.
+d126 5
+a130 5
+	* As a result of the TAPIR/non-tree-structure change, natural language support needs redistribution between concept and node-list. Conclusion: shifted into character tree, both on internal nodes and character nodes. Thus in fact now more similar again to SDD 1.0!
+	* Move Modifiers into Concepts. -- Agreed as a step towards a lighter SDD. Modifier sets are now a special case of Concepts. Modifier definitions itself remain unchanged.
+	* Base the Dataset itself on <nop>AbstractObject, so far all the Dataset metadata are considered special cases, but they seem to fit well with the general model. Only necessary action: add "coverage" as a Detail-text role. Resolution: Agreed.
+	* Both the taxon hierarchy and identification key are still tree, not edge list (TAPIR issues). - Jacob/Bob todo.
+	* Put keyrefs (taken out in St. Petersburg because of technical issues with w3c schema validation tools) back in. - Jacob/Bob todo.
+@
+
+
+1.20
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1146046346" format="1.0" version="1.20"}%
+d13 1
+a13 1
+	* Removed the default attribute '""' of the Audience from AudienceRepresentationBase. We think this is an error in the schema. The "" has length of zero, but the audience type was defined to have a length of at least one. Should have been done, Jacob double-checks.
+@
+
+
+1.19
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1145872081" format="1.0" version="1.19"}%
+d5 3
+d138 1
+@
+
+
+1.18
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144604543" format="1.0" version="1.18"}%
+d60 1
+a60 1
+		* Discussions carried over from Wednesday on how to arrange and re-use concepts in trees defined using edge lists.  Agreed to split the ConceptHeirarchies and CharacterTrees with the intention of developing ontology like structures for concepts at a later date.	
+d131 4
+@
+
+
+1.17
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144427977" format="1.0" version="1.17"}%
+d32 2
+a33 2
+		* changed label role/kind value ="concise" to "full", revisited and revised Label, Detail, MediaResource and Links enumeration.
+		* Where are definitions (for abstract concepts): in <nop>MediaResources or in Links/Link? Decision: Link with rel=BasedOn, MediaResource with role="normative". Different because MediaResource is a Representation, not interresource link.
+d62 1
+a62 1
+Resolutions: Abandon ConceptTrees, just keep Character / CharacterTree (no longer arbitrary DAG!), concepts ontologies may be added later. 
+d85 2
+a86 2
+		* IdentifyLife: collaborative framework for exchanging and managing keys and character ontologies.
+		* DiversityDescriptions (based on DeltaAccess)
+d125 1
+a128 2
+	* Revision data go into base type? - Not discussed.
+
+@
+
+
+1.16
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144415993" format="1.0" version="1.16"}%
+d125 2
+a126 3
+	* Revision data go into base type?
+	* Both TaxonList and identification key is still tree, not edge list.
+	* Put keyrefs back in.
+d128 3
+a130 1
+	* Look at possible reduction to "Lite" if time *Friday*
+@
+
+
+1.15
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinThiele" date="1144332398" format="1.0" version="1.15"}%
+d5 2
+a6 1
+*Agenda proposal*
+d14 1
+a14 1
+		 * Clarification: technically there is no problem, just conflict of convention. However, double underscore exists only in draft versions, but signifies that these elements should be deleted before using, xslt to do this exist. We only have this versions around for lack of time of doing this every time we update.
+d62 1
+a62 3
+Resolutions:
+Character / CharacterTree (no longer arbitrary DAG!), then concepts. 
+concept
+a65 6
+STUFF TODO:
+  Secondary elements in concepts not yet reworked
+  TaxonList and identification key is still tree, not edge list.
+DO Revision data go into base type?
+
+
+d72 1
+a72 3
+----
+
+---+++Talks Presenting SDD at TDWG TAG meeting in Edinburgh
+d117 12
+@
+
+
+1.14
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144331298" format="1.0" version="1.14"}%
+d115 1
+d119 2
+a121 1
+		* Low level of funding for developing software tools sufficiently advanced to indeed make users productive
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1144318282" format="1.0" version="1.13"}%
+d81 1
+a81 1
+Talks Template 
+d85 2
+a86 1
+	* Motivation & Rationale Very brief introduction to motivations i.e. what it was intended to do and why it takes the form it does. 
+d88 10
+d99 1
+d101 4
+a104 1
+	* Consuming: Deployments. Who is using (or about to use) these implementations to consume data. What is the demographic? 
+d106 1
+d108 2
+d111 10
+a120 1
+	* Hurdles to Adoption Significant hurdles to adoption. What have been the major hurdles to adoption? Or what are perceived as the major hurdles? 
+d122 1
+a122 1
+
+a123 1
+
+@
+
+
+1.12
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144315482" format="1.0" version="1.12"}%
+d56 4
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144254143" format="1.0" version="1.11"}%
+d39 1
+a39 1
+		* For concept trees: old SDD solution does not handle multiple inheritance (ascospore in part of ascus AND ascospore is kind of spore. Possible if tree is generalized to directed acyclical graph with single root.
+d48 1
+d56 4
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144242782" format="1.0" version="1.10"}%
+d54 1
+d61 1
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144165423" format="1.0" version="1.9"}%
+d27 1
+a27 1
+---+++Various -- *Tuesday/Wednesday*
+d30 4
+a33 8
+		* changed attribute "role" to "kind" or "form" TODO - TOBEDECIDED
+		* changed label role/kind value ="concise" to "full" DONE
+		* Where are definitions (for abstract concepts): in <nop>MediaResources or in Links/Link @@?
+
+	* Concept states (Damian)
+	* Character, character state definitions - normative definitions (Kevin)
+	* <nop>MediaResource, location cannot be specified; there link element enumeration what things are, ... (Damian)
+	* Replace pointer from Concepts to characters with pointer from characters to concepts. Bob proposed this a long time ago and I thought it does not matter much which way round - but now I see the wisdom in this. It just took me a long time. Concepts are more general and likely to be reused if we view SDD as modular data pieces. (Gregor)
+d41 1
+a41 2
+
+		* Possible advantages of edge list (ordered digraph):
+d43 9
+a51 3
+			* Fewer constraints to verify 
+			* UML model	
+	* Concept trees: Decision: no global "tree type", but types on the edges.
+d53 1
+a53 1
+		* If using ordered digraph once, we should use it everywhere for any datastructure that is a special case of a digraph (tree, forest, etc.) Reasoning based on robustness grounds.
+d57 5
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144093178" format="1.0" version="1.8"}%
+d30 1
+a30 1
+		* changed attribute "role" to "kind" TODO - TOBEDECIDED
+d41 10
+d52 1
+d68 10
+a77 10
+* Motivation & Rationale Very brief introduction to motivations i.e. what it was intended to do and why it takes the form it does. 
+* Publishing: Software Implementations. The software available (or planned) to publish data in this format. 
+* Publishing: Deployments. Who is using (or about to use) these implementations to publish data. What is the demographic? 
+* Consuming: Software Implementations. The software available (or planned) to consume data in this format. 
+* Consuming: Deployments. Who is using (or about to use) these implementations to consume data. What is the demographic? 
+* Market Size: Potential Publishers Who could be producing data like this. 
+* Market Size: Potential Customers Who could be consuming data like this. 
+* Success Factors: Significant factors for successful adoption. Why has it been successful? What do you think will make it successful? From an adopters point of view. 
+* Hurdles to Adoption Significant hurdles to adoption. What have been the major hurdles to adoption? Or what are perceived as the major hurdles? 
+* Big Picture Where does the technology fit in the model discussed in the morning session (this obviously can't be prepared ahead of time so a blank slide is fine). Points raised in discussion on this will form the detailed agenda for day 2. 
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144081760" format="1.0" version="1.7"}%
+d15 1
+a15 1
+&lt;element&gt;content&lt;/element&gt;. This problem of xs:string differs sharply from other simple types like xs:integer, xs:datetime.) Agreed: StringNonEmpty having constraint: length > 0. Done.
+d29 4
+a32 4
+		* removed attribute "unique" from the label text type.  NEED to check for "unique"
+		* changed attribute "role" to "kind" TODO
+		* changed role="concise" to "full" TODO!!! 
+		* Where are definitions (for abstract concepts): in MediaResources or in Links/Link @@?
+d51 19
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144071579" format="1.0" version="1.6"}%
+d30 1
+a30 1
+		* changed attribute "role" to "kind" 
+d32 1
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144056890" format="1.0" version="1.5"}%
+d11 1
+a11 1
+---+++Other technical/Java issues -- *Monday-morning*
+d15 1
+a15 6
+&lt;element&gt;content&lt;/element&gt;. This problem of xs:string differs sharply from other simple types like xs:integer, xs:datetime.)
+
+Agreed: StringNonEmpty having constraint: length > 0.
+
+TODO
+
+d27 5
+a32 5
+---+++TAPIR issues -- *Tuesday/Wednesday*
+	* Replace recursive tree elements (tree data expressed with standard representation of digraphs?
+
+---+++Various -- *Tuesday/Wednesday*
+	* Revise basic object concept (Gregor)
+d38 4
+d46 2
+a47 1
+	* Gregor's Roger-validated talk in EDI/April, architecture meeting - prepare and discuss
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1144052277" format="1.0" version="1.4"}%
+d8 2
+a9 2
+	* Main issue was key/keyref, was ambiguous def. in w3c standard (part 1.3.4 of the W3C Schema rules); erroneously implemented in spy, current solution is: all identity constraints taken out, may be put in (reversely than before) in a future version).
+	* Removed the default attribute '""' of the Audience from AudienceRepresentationBase. We think this is an error in the schema. The "" has length of zero, but the audience type was defined to have a length of at least one.
+d13 9
+a21 2
+	* Replaced the SDD type "String" with "StringSDD" so that there is no conflicts with Java.lang.String and generated code are compiled succesfully.
+	* Replaced 'xs:Name' with 'xs:NCName' because castor does not yet support xs:Name.
+d23 3
+a25 1
+	* Multiple (indirect) inclusion of the basic "type library" parts of UBIF schema - is this a problem?
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1141233622" format="1.0" version="1.3"}%
+d5 1
+a5 1
+*Timing*
+d7 3
+a9 1
+Bob and Jacob arrive Saturday April 1 (cheaper flight) and have social Jet-lag recovery until Monday.
+d11 6
+a16 1
+Monday/Tuesday will be Gregor/Jacob/Bob.
+d18 1
+a18 1
+Kevin/Damian arrive in Berlin Wed. 11:35 (BA 982), can be in BBA/Dahlem ca. 13:00.
+d20 2
+a21 1
+Major work will be Thursday, Friday, and Saturday.
+a22 1
+Sunday, 9. April all travel back. XX:XX: Bob/Jacob , 19:40: Kevin/Damian.
+d24 2
+d27 6
+a32 1
+*Agenda proposal* Please add!
+d34 1
+a34 8
+	* Lurking items that xerces found. Jacob should itemize here
+	* St. Petersburg items
+	* TAPIR issues
+		* replace recursive tree elements with standard representation of digraphs
+		* Gregor: propose to replace pointer from Concepts to characters with pointer from characters to concepts. Bob proposed this a long time ago and I thought it does not matter much which way round - but now I see the wisdom in this. It just took me a long time. Concepts are more general and likely to be reused if we view SDD as modular data pieces.
+		* What else?
+	* Look at possible reduction to "Lite" if time
+	* Talk about RDF representations if time
+d36 6
+a41 1
+	* Discuss SDD [Charter].
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1141219123" format="1.0" version="1.2"}%
+d3 1
+a3 1
++++SDD Berlin 2006 Meeting, First week of April
+d15 1
+a15 1
+Sunday, 9. April all travel back. XX:XX Bob/Jacob , 19:40: Kevin/Damian.
+d24 1
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1141173084" format="1.0" version="1.1"}%
+d3 1
+d5 14
+a18 1
+Agenda proposal for April 2006 Berlin Meeting. Please add
+d28 1
+a28 2
+
+-- Main.BobMorris - 01 Mar 2006
+@

@@ -1,0 +1,96 @@
+%TMPL:INCLUDE{"page"}%
+%TMPL:INCLUDE{"viewtoolbar"}%
+%TMPL:INCLUDE{"viewtopicactionbuttons"}%
+%TMPL:INCLUDE{"viewbottombar"}%
+
+
+
+%TMPL:DEF{"pagetitle"}%<h1 class="patternTemplateTitle"><nop>%TOPIC% (%MAKETEXT{"Preview"}%)</h1>%TMPL:END%
+
+
+
+%TMPL:DEF{"bodyclassname"}%patternNoViewPage patternPreviewPage%TMPL:END%
+
+
+
+%TMPL:DEF{"titleaction"}%(%MAKETEXT{"Preview"}%) %TMPL:END%
+
+
+
+%TMPL:DEF{"revCommentPluginOptions"}%%IF{ "context RevCommentPluginEnabled" then="<div class='revComment'><div class='patternTopicAction'><label for='comment'>Summary of changes</label> <input type='hidden' name='t' value='%URLPARAM{t}%' /><input class='twikiEditComment twikiInputField' type='text' style='width:50%' name='comment' id='comment' value='%URLPARAM{comment}%' /> <a target='RevComment' onclick='return launchWindow(\"%TWIKIWEB%\",\"RevComment\")' href='#%MAKETEXT{"Opens page in new window"}%' title='' >%MAKETEXT{"help"}%</a></div><!--/patternTopicAction--></div><!--/revComment-->" else=""}%%TMPL:END%
+
+
+
+%TMPL:DEF{"forcerevisioncheckbox"}%<span class="patternSaveOptionsContents"><input type="checkbox" class="twikiCheckbox" title="Creates a new topic revision when saving" id="forcenewrevision" name="forcenewrevision" %FORCENEWREVISIONCHECKBOX% /><label for="forcenewrevision">%MAKETEXT{"Force new revision"}%</label> <a target="ForceNewRevision" onclick="return launchWindow('%TWIKIWEB%','ForceNewRevision')" href="#%MAKETEXT{"Opens page in new window"}%" title='%MAKETEXT{"Read new revision help text in new window"}%' rel='nofollow'>%MAKETEXT{"help"}%</a></span><!--/patternSaveOptionsContents-->%TMPL:END%
+
+
+
+%TMPL:DEF{"action_buttons"}%%TMPL:P{"button_save"}%%TMPL:P{"sep"}%%TMPL:P{"button_quietsave"}%%TMPL:P{"sep"}%%TMPL:P{"button_checkpoint"}% %MAKETEXT{"or"}% %TMPL:P{"button_discard"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"button_save"}%<input type="submit" id="save" class="twikiSubmit" %MAKETEXT{"value='Save' accesskey='s'"}% />%TMPL:END%
+
+%TMPL:DEF{"button_quietsave"}%<input type="submit" class="twikiButton" name="action_quietsave" id="quietsave" %MAKETEXT{"value='Quiet save' accesskey='q'"}% />%TMPL:END%
+
+%TMPL:DEF{"button_checkpoint"}%<input type="submit" class="twikiButton" name="action_checkpoint" id="checkpoint" %MAKETEXT{"value='Checkpoint' accesskey='k'"}% />%TMPL:END%
+
+%TMPL:DEF{"button_discard"}%<input id="discard" type="submit" class="twikiButton" name="action_cancel" %MAKETEXT{"value='Discard' accesskey='d'"}% />%TMPL:END%
+
+
+
+%TMPL:DEF{"topicaction"}%<div class="patternTopicActions">%TMPL:P{"revCommentPluginOptions"}%<div class="patternTopicAction">%TMPL:P{"saveoptions"}%<div class="patternActionButtons">%TMPL:P{"action_buttons"}%</div><!--/patternActionButtons--></div><!--/patternTopicAction--></div><!--/patternTopicActions-->%TMPL:P{"actionbuttons_help"}%%TMPL:END%
+
+
+%TMPL:DEF{"actionbuttons_help"}%<div class="patternSaveHelp twikiGrayText">%TMPL:P{"accesskeys_help"}%</div><!--/patternSaveHelp-->%TMPL:END%
+
+
+
+%TMPL:DEF{"accesskeys_help"}%%ICON{info}% <a href="#%MAKETEXT{"Opens page in new window"}%" onclick="launchWindow('%TWIKIWEB%', 'AccessKeys'); return false;">%MAKETEXT{"Access keys"}%</a>: %MAKETEXT{"S = Save, Q = Quiet save, K = Checkpoint, D = Discard"}%%TMPL:END%
+
+
+
+%TMPL:DEF{"saveoptions"}%<div class="patternSaveOptions">%TMPL:P{"forcerevisioncheckbox"}%</div><!--/patternSaveOptions-->%TMPL:END%
+
+
+
+%TMPL:DEF{"pagehelp"}%<div class="twikiHelp">
+%MAKETEXT{"<span class='twikiAlert'><b>Do not forget</b></span> to save your changes."}%
+<ul>
+  <li> %MAKETEXT{"To *save* changes: Press the ~[Save Changes~] button."}%</li>
+  <li> %MAKETEXT{"To make *more changes*: Go back in your browser."}%</li>
+  <li> %MAKETEXT{"To *cancel* and discard any changes: Press the ~[Discard~] button."}%</li>
+</ul>
+</div>%TMPL:END%
+
+
+
+%TMPL:DEF{"formstart"}%<form name="main" action="%SCRIPTURLPATH{"save"}%/%WEB%/%TOPIC%" method="post">%TMPL:END%
+
+
+
+%TMPL:DEF{"formend"}%%FORMFIELDS%
+<input type="hidden" name="originalrev" value="%URLPARAM{"originalrev"}%" />
+<input type="hidden" name="redirectto" value="%REDIRECTTO%" />
+<input type="hidden" name="text" value="%HIDDENTEXT%" />
+<input type="hidden" name="cmd" value="%CMD%" />
+<input type="hidden" name="formtemplate" value="%FORMTEMPLATE%" />
+<input type="hidden" name="topicparent" value="%TOPICPARENT%" /></form>%TMPL:END%
+
+
+
+%TMPL:DEF{"content"}%%TMPL:P{"pagetitle"}%
+%TMPL:P{"pagehelp"}%
+%TMPL:P{"formstart"}%
+<div class="patternPreviewArea">
+<div class="patternContent">
+<div class="patternTopic">
+%TEXT%
+</div>
+%META{"form"}%
+</div>
+</div>
+%TMPL:P{"topicaction"}%
+%TMPL:P{"formend"}%
+%TMPL:P{"nojavascript_pagehelp"}%
+%TMPL:END%

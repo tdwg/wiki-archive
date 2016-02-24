@@ -1,0 +1,120 @@
+%META:TOPICINFO{author="GarryJolleyRogers" date="1259118881" format="1.1" version="1.13"}%
+%META:TOPICPARENT{name="UBIF.SchemaDiscussion"}%
+---+!! %TOPIC%
+
+(This is a subtopic of UBIF.SchemaDiscussion)
+---
+
+1. The BDI.SDD_ version discussed in Berlin had <br/>
+&nbsp;&nbsp;<nop>DataSets/DataSet/TransformationHistory/Transformation<br/>
+and then Actions, Generator, ... and <nop>PreviousTransformations/Transformation. <nop>TransformationHistory/Transformation seems one step too much, but neither term seems to express the mixture of current and previous correctly.
+
+Bryan Heidorn and I discussed this and I propose for the general (TDWG-wide, see ResolvedTopicCommonSchemaSearchingName for question how to call this...) history and project metadata thing:
+
+a) To rename Transformation to <nop>.../Derivation (.../PreviousDerivations) and remove the duplication of <nop>TransformationHistory/Transformation.<br/>
+b) Accept that it is metadata and move it into the <nop>ProjectMetadata element (preferably after the current IPRStatements), i.&nbsp;e.<br/>
+&nbsp;&nbsp;<nop>DataSets/DataSet/ProjectMetadata/Derivation (containing Actions, Generator, ... <nop>PreviousDerivations/Derivation)<br/>
+c) Related: Just having <nop>DataSets/DataSet/Metadata seems to be too unspecific. Is it ok to have for all kind of TDWG standards <nop>DataSets/DataSet/ProjectMetadata? Other element name proposals?
+
+Please comment! See BDI.SDD_.CurrentSchemaVersion for download of schema!
+
+-- Gregor Hagedorn - 21 May 2004
+---
+
+I would like to get more specific about the kind of metadata we are relating to in this discussion.<br />
+From a more data access point of view I see the following different sources for metadata:
+
+(1) metadata about the supplier of the data (creator of the dataset).<br />
+(2) metadata about the specific dataset.<br />
+(3) metadata about the full source dataset.<br />
+
+I am not sure if the proposed project metadata would fit in any of those. Probably into (3). I am aware that there is a lot of the current BDI.SDD_ project definition missing, but I am really not sure if this should all become a shared definition. For ABCD networking I would think that (3) would describe the datasource, which does not have to be congruent with a single collection, but rather describes a single database.
+
+The supplier (1) would be mostly important for technical contact. It could be worthwhile thinking about embedding the suppliers (1) metadata directly into the protocol. On the other hand I see the protocol as machine readable only, so a technical contact doesn't belong into the protocol itself from this point of view, but rather in an external metadata standard which I hope this shared standard could serve as.
+
+Data about a specific dataset (2) to me didn't seem very important first, but now I think that the data derivation/transformation part is actually exactly describing the change of the data since it left the "source". So data derivation would belong into category (2) as long as we stick to the idea to only list automatic derivations here, which are not stored somewhere and more or less done on the fly. 
+
+Other (2) metadata would probably be derived from the dataset itself and could be better achieved by external public services like a GBIF indexing service for datasources. This is why I called category (2) metadata in the proposal below just &lt;Derivation&gt;.
+
+Following is the core version of what I imagine the shared metadata should hold based on mondays Berlin discussion.
+
+<Verbatim>
+<DataSets>
+   <DataSet>
+      <Header>
+         <Supplier>
+            <Name />
+            <TechContact>
+               <Name />
+               <Tel />
+               <Mail />
+            </TechContact>
+            <Webpage />
+            <Icon />
+         </Supplier>
+         <SourceDataSet>
+            <Name />
+            <AdminContact>
+               <Name />
+               <Tel />
+               <Mail />
+            </AdminContact>
+            <Description />
+            <IPR />
+            <Webpage />
+            <Icon />
+            <LastUpdated />
+         </SourceDataSet>
+         <Derivation>
+            <Actions>
+               <Action type="..." agent="..."  timestamp="..." description="..."/>
+            </Actions>
+            <Notes />
+            <PreviousDerivation>
+               <Actions>
+                  <Action type="..." agent="..."  timestamp="..." description="..."/>
+               </Actions>
+               <Notes />
+            </PreviousDerivation>
+         </Derivation>
+      </Header>
+      
+      <ABCDUnits>
+         <Unit guid="...">
+         ...
+      </ABCDUnits>
+   </DataSet>
+</DataSets>
+</Verbatim>
+
+&lt;ABCDUnits&gt; is used as an example only and could clearly be any of the TDWG standards.
+
+-- Markus Doering - 24 May 2004
+---
+
+I think your 3-point list at the top is really useful. The design as shown in BDI.SDD_ beta 15 and later (see BDI.SDD_.CurrentSchemaVersion) combines the technical metadata about supplier with the Derivations (points 1 and 2) since these also exist for previous derivations. These previous data I consider very valuable. Please argue if you think not. Putting them into Derivations means a simple rule exists: If you are a portal getting data from elsewhere and pass them on (with or without filtering) enclose the Derivation you received with your own data, annotate your own actions and pass it on. I think this applies to your "Supplier" element.
+
+There is relatively little information about the specific dataset. As you say, some can be inferred from Actions in Derivation, but only the Base-dataset is described in detail. The assumption is that the rest can be inferred from the data that are actually delivered. These inferences could be cached/indexed at GBIF, as you say. Can anyone think of use cases/scenarios where more data would be needed? If not I assume that is covered. (Actually one thing missing is an <nop>ExpirationDate, see BDI.SDD_.DataExpirationDates for a discussion of this.)
+
+Your <nop>SourceDataSet seems to me closely related to the current <nop>ProjectMetadata. Is <nop>SourceDataSet a better term? I have some reservations because earlier data sources may exists, which have been reworked into the current source data, e.g. an older DELTA revision or a specimen database has been ported to newer data formats and revised or error corrected. Thus there is an IPR history, (which was discussed in Berlin: technical versus human revision history) and since we could not find a good solution to integrate that with the technical history, we propose to have humans edit IPR, acknowledgment, etc. similarly to a printed publication. When you say less than the current data should go in the common type, I have no problem but discussing it with Bryan we thought everything that is still in there in Beta 15 generally useful. Please do argue against specific points!
+
+Is there really an <nop>AdminContact on the data set metadata level as you propose? What was missing in the version before the meeting was an Owner, that has now been added (albeit as a reference to an Agent proxy object). Is that sufficiently equivalent to <nop>AdminContact?
+
+Finally, I am not sure what you mean when you talk about some things belonging perhaps to a protocol? Do you mean something like <nop>DiGIR? My framework of mind would be that metadata information that is important when a received dataset is processed or archived away, should be embedded into the "payload" rather than being exchanged in (presumably unprotocolled) protocol exchanges before the data are delivered. Or do you think that the ABCD/BDI.SDD_ data would in future be wrapped again in outer wrappers?
+
+-- Gregor Hagedorn - 24 May 2004
+---
+
+A few responses.
+
+(1) I fully agree with Gregor that the metadata should be part of the delivered data package rather than an earlier protocol exchange.  This is the only way to manage the data and metadata correctly with more complex applications which aggregate data sets.
+
+(2) I think that the metadata should always describe the full source data set.  The filtering and other processing involved in generating the response should become the first element in the TransformationHistory.
+
+(3) I think that the metadata discussion could (and perhaps should) be widened even further than Markus' initial three points.  For what different purposes are we producing metadata?  We certainly want the metadata to be available to explain a data set (whichever of Markus' three versions we mean, and including everything discussed above).  Can we use the same metadata to assist users in discovering the data set in the first place?  In other words, is the descriptive metadata needed to allow a user to select a resource the same as the metadata that we pass with the resource on subsequent data requests?.  I think these metadata are the same, but perhaps we should be explicit.  (Incidentally this is all relevant to DiGIR/BioCASe reconciliation - DiGIR search/inventory requests should include the metadata with all responses, ideally using the common data structures we are discussing here in this Wiki; BioCASe should include the plain metadata request, returning a response without any data records.)
+
+(4) If we use the same metadata model for discovery, do we need to extend it to include information on available access mechanisms (endpoints, different protocols, etc.)?  Or do we assume that any user has already managed to locate and access the resource (or that all users use an external registry for this purpose)?  Or should we in fact model include these references to these different endpoints in the metadata using the Proxy model (whateever we finally decide to call it)?
+
+-- Main.DonaldHobern - 03 Jun 2004
+
+%META:TOPICMOVED{by="GregorHagedorn" date="1089915351" from="SDD.DerivationHistory" to="UBIF.DerivationHistory"}%

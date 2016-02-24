@@ -1,0 +1,171 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2009.01.19.20.40.40;	author KevinRichards;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2009.01.13.02.57.08;	author KevinRichards;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.01.13.01.00.35;	author KevinRichards;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.3
+log
+@none
+@
+text
+@%META:TOPICINFO{author="KevinRichards" date="1232397640" format="1.1" reprev="1.3" version="1.3"}%
+%META:TOPICPARENT{name="CurrentGuidWork"}%
+---++ LSID Services Requirements
+
+A need has arisen for general LSID issuing, maintenance and resolution services.
+
+There appears to be a range of technical expertise throughout organisations interested in using LSIDs, and a range of services to cater for these needs would be useful.
+
+It is best described by breaking the needs into 3 groups:
+
+   1. Do your own LSID Authority - no extra services/software needed, other than best practice reccommendations. 
+   2. A subdomain based authority.  Using a central TDWG LSID Authority that issues anonymous looking LSIDs and is supported with relevant web services, and is replicated  - LSID issuing and resolution services will be needed.  Eg urn:lsid:exOrg.tdwg.org:xyz:123 or urn:lsid:lsid.tdwg.org:exOrg:12345 (there are implications of using either option).
+   3. Just use a central LSID based DOI like service where LSIDs are issued per request and look anonymous. Eg urn:lsid:tdwg.org:xyz-123-zzz:443-aa-qq
+
+---+++ Option 1
+
+Requires no work.
+
+---+++ Option 2
+
+This option would allow people to choose a "subdomain" name and create TDWG LSIDs within that subdomain.  This can be acheived either by creating sub-domains of the authority part of the LSID, or by assiging use of a namespace within the lsid.tdwg.org authority.
+
+The API acan be really simple (http GET with an ?id=XXX or /XXX at the end). You can add LSIDs on top of an existing service without need for changing databases or synchronising codes etc. For the likes of an occurrence store application, this is the simplest option for them - the just register something they already have. 
+
+There are advantages and disadvantages of each:
+
+---++++ sub authority option
+Eg urn:lsid:exOrg.tdwg.org:xyz:123
+
+Advantages:
+   * allows the organisation to use the namespace part of the LSID, and therefore allows more granularity of the data/metadata
+   * allows providers to set up partial LSID resolvers that do everything except the DNS SRV record 
+   * allows providers to generate their own LSIDs, as the sub domian is fixed, and the namespaces and ids are up to the provider
+
+Disadvantages:
+   * requires maintenance of many tdwg.org subdomains
+   * may be disputes over who gets particular sub domains
+
+---++++ namespace option
+Eg urn:lsid:lsid.tdwg.org:exOrg:xyz123
+
+Advantages:
+   * only 1 domain / DNS record
+   * always handles the entire resolution process, except the final retrieval of the data from a url
+   
+Disadvantages:
+   * Requires providers to request LSIDs to assign to their data objects (ie cant generate them themselves)  But this is also an advantage because the GUID generation has then been abstracted out from the main data
+
+
+---+++ Option 3 
+
+   Could work something like the following:
+
+   * Users would register and get an API key (just an access key). This would be done manually at first as there would be fewer than a few hundred data suppliers and it would allow for some human checks. 
+   * The key would have one or two domains associated with it. 
+   * In its simplest form users would go to a web page with four boxes on it into which they would enter:
+      * their identification Key 
+      * LSID (leave this blank to generate a new LSID) 
+      * metadata URL 
+      * data URL 
+   * This would generate an LSID for those URLs or modify the existing LSID if one was provided (the URLs are within the domains associated with the key to prevent registration of LSIDs for other peoples resources. Allowing multiple domains per key allows users to move resources between domains). 
+   * There would be a restful web service equivalent of this web page that would allow the submission of large numbers of URLs via POST to generate or change large numbers of LSIDs. 
+   * There would be a simple search service to find LSIDs by URL. 
+   * All resolution and proxy stuff would be handled by the service. The clients would know nothing about it. 
+   * Quality of service stuff could also be carried out by occasionally calling the URLs to check that services exist and emailing administrators if they don't etc 
+
+
+This approach is appealing because their is no discussion about "What should I use for a namespace? Can we have a best practice guide?" or "What is a subdomain?" or "Institution X has stolen our acronym for their subdomain/namespace!", "Can we use UUIDs for namespace/object_id?", "Why can't I put the species name as the objectId?", etc, etc. 
+
+There should be a level where we can help people over the SVR record hump by providing DNS services if they can do the rest.
+
+
+---+++ Architecture
+
+---++++ Load balancing
+
+Could work something like: 
+
+   * Resolution is via round robin DNS (the single point of failure but we could outsource it to some one like DynDNS? that has major redundancy and 0% downtime for decades) 
+   * We have multiple nodes but not hundreds of them - just enough for security. 
+   * Each node can issue LSIDs. We could use the namespaces to separate the nodes. 
+   * Clients either go directly to a node (using the nodes domain name) or they could go via round robin DNS and not know which node they will get. 
+   * Every node knows about every other node. 
+   * Each node periodically asks every other node for an update of the LSIDs it has issued or modified. 
+   * The update is a very simple compressed file with three columns LSID, URL, URL in it. 
+   * Another update contains the current list of all known nodes 
+   * LSIDs may take a few hours to become active - having to propagate round the nodes 
+   * Any one node can be pulled off the system and provided this is done after the other nodes have copies of its most recent LSID updates the LSIDs continue to resolve. 
+   * It would obviously be slightly more complex than this but not necessarily that much more complex. 
+   * A mess would occur if not all nodes knew about all LSIDs from a node before it died but there would have to be an occasional re-sync to check this and to pre-populate new nodes. 
+
+This would be good political approach because projects and institutions could commit to running nodes for a set period and provided these different periods overlapped the network would stay up. 
+
+
+---+++ Personas
+
+Personas are fictitous characters used to look at various uses of a system.
+
+Possible personas:
+
+   * Large institution
+   * Small institution
+   * Individual researcher
+
+
+-- Main.KevinRichards - 13 Jan 2009
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinRichards" date="1231815428" format="1.1" reprev="1.2" version="1.2"}%
+d32 17
+a48 1
+   * 
+d73 33
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="KevinRichards" date="1231808435" format="1.1" reprev="1.1" version="1.1"}%
+d15 3
+d23 2
+d31 1
+a31 1
+   * allows the organisation to use the namespace part of the LSID, and therefore allows more granularity of the data
+@

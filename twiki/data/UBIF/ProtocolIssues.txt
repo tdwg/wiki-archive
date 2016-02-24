@@ -1,0 +1,532 @@
+---+!! %TOPIC%
+
+%META:TOPICINFO{author="GregorHagedorn" date="1092065901" format="1.0" version="1.1"}%
+%META:TOPICPARENT{name="SchemaDiscussion"}%
+(The following is an answer by Gregor Hagedorn to an email by Donald, advocating a kind of protocol incompatible with UBIF.)
+---
+
+Dear all,
+
+Markus, Renato, and I had a discussion around the same topics last Friday, so here I will try to document my idea, and respond to Donalds comments as well. 
+---
+
+1. I have been thinking little about real protocol and query issues. In SDD we struggle with the amount of interrelatedness between terminology and various kind of descriptions, so we try to develop a (non-monolithic!) standard for all the required object types and define the possible relations between them. Several mechanisms in SDD aim at validating relationships, to avoid non-sensical data (a taxon name in place of an Agent, a specimen in the place of a geographical location, a character state in the place of a measurement unit, etc. This is a strongly validating document perspective.
+
+2. Markus and Renato fully convinced me, that for protocol/query purposes it is very important to allow breaking up such a domain model with multiple collections into any kind of desired request. This has two dimensions: a) specifying from which (per multiple at the time) collections objects shall be returned, b) which concepts within these concepts are returnable. Whereas a document may require a dataset to have metadata and perhaps a copyright statement, the protocol should be able to ignore this.
+
+3. I believe it is very easy, from any of SDD, ABCD, or TaxonNames, to write a short xslt setting all minOccur=0 and removing all identity (key/keyref) constraints. This is an automatic operation, as opposed to manually keeping concepts of complex standards like ABCD in synchronicity with those of protocol-specific schemata, which would have to be developed for all the knowledge domains involved in biodiversity informatics. With a modified schema any fragment can be returned, and still validated to some extent. 
+
+4. I do not believe that having no concept of an object at all is a wise definition. DiGIR and DarwinCore plus extensions have a concept of what the object identity is, that is not defined explicitly, but an agreement between participating parties. This approach is not very extensible, I believe.
+
+5. I see no problem in basing a protocol on making global elements (which have an implicit anonymous type in xml schema) or named complex types queryable. Markus mentioned, that the GML protocol uses this. Providers could define which types they support in querying. The global elements, should however define object types, not concepts with no defined relation to an object like in DarwinCore.
+
+6. Similarly to requesting 1 or several collections to be returned, the counting and paging of collections identified by a simplified xpath should be possible. In a case like Units/Unit it should always point to Unit, ie. the object to be returned. The Unit (= collection container element) may or may not be present, depending on the xml-modeling fashion.
+
+7. The extensibility of the DiGIR/DwC model is a very good feature. However, extensibility can easily be achieved by proper modeling of extension points in the schema that defines the concept of a  class/entity like specimen, unit, description, taxon concept, publication, identification key, etc. In SDD any object that is publicly addressable provides three elements combined in the "EnablingGroup". I believe DwC could provive a specimen record concept to have a class, then define the core concepts, and then finish with an Extension element into which the microbial, curatorial, etc. extensions may be placed. Note that this is not the same as including them with a choice element - DwC can be completely agnostic about which extensions it supports. It also means that no permutation-schemata for all possible combinations have to be defined.
+
+8. One consequence of this is that when a provide informs about capabilities, it may return something like a) ABCD with extension x, b) DwC with extension curatorial and soybean.
+
+---
+
+Comments on Donalds email:
+
+Regarding the specimen and observation data I fully agree. ABCD records in itself are somewhat denormalized, and it should be easier to reuse them in different arrangements. However, as far as I understand, ABCD is as it stands because of the desire to have only a single major object type. Using a more object-relational domain model would allow exactly what Donald is proposing.	
+
+> At the same time I finally understood why the DiGIR protocol (unlike
+> the BioCASe protocol) chose to let the <record> element belong to the
+> protocol rather than the conceptual schema.  The whole point is that
+> the protocol makes no assumption about what kind of data is being
+> exchanged. It just deals with bundles of descriptors, all of which
+> somehow relate to a single entity being described.  
+
+As said above, what I think is lacking is the definition of the identy-giving concept. Essentially DwC defines attributes (or properties), but no class. This seems add odds with any object modeling approaches like UML. Donald later mentions that the class definition is tacitly implicit in the DwC namespace. That would force us to create a separate namespace and schema for any kind of object we want to exchange. Except for transient technical problems, this may be ok. However, I mostly want to express data about relations between objects, not the objects itself. I fail to see how to do this if the record is under protocol control. How can I refer to a publication or Agent record, how to a Unit record? Without a class definition, there seems to be no stable, referrable concept of identity.
+
+Also Markus Döring came up with an example, that "somehow relate" is simply not enough. Asking for records of an ant-species that has the enzymatic ability to degrade cellulose, a valid answer is that the ant-species has a preserved specimen somewhere, from which also gut bacteria are isolated, that have the requested property. This is actually an interesting query, but only a schema that knows about organism association allows to specify the indirectness of the query.  
+> The DiGIR record-based approach seems initially to have one major flaw: the
+> understanding of what kind of entity is represented by the <record> is
+> a tacit agreement between the provider and user, without any basis in
+> the protocol, metadata or data.
+> 
+> Now I have a vision for what we can do with a provider based on the
+> "fourth proposal" protocol, if we combine it with a really basic
+> "proto-ontology" and schema repository.  Let's assume that we define a
+> basic core set of biodiversity data object types.  The following
+> should give the idea.  Nesting here indicates object-oriented
+> specialisation:
+> 
+> OntologyClass
+>	  - TaxonOccurrence
+>			  - Accession
+>					  - Specimen
+>					  - Living
+>			  - Observation
+>	  - Institution
+>	  - Collection
+>	  - Survey
+> 
+> (We should avoid modelling anything here until we are sure we need to.
+> The idea of a Survey data type is clearly not yet clear enough and
+> would probably break down into a whole set of different data types
+> based on atlas projects, transects, plots and many other higher-order
+> constructs.)  
+
+Is not this ontology of relationships exactly what TaxonNames and SDD attempt to provide?
+
+Question: does the above imply that for any kind of object a separate namespace is  needed? Perhaps this would be ok (although SDD had to be split into ca. 15 namespaces), except that a lot of tools seem to perform poorly on xml containing true namespace concepts. Some tools simply seem to take the QName as a name and fail to resolve it. A collaborator at MBL working with php + xslt on an identification interface for SDD was unable to use namespace to extend SDD, so rather copied and changed the schema. Of course these are just practical and hopefully transient problems - recommedations regarding this are welcome - I don't really like to put SDD into a UBIF namespace!  But that is what I currently do after I got the confirmation from Altova that even xmlspy under our conditions is unable to deal with namespaces (it can not combine a schema with multiple namespaces with xml-schema import statement defining a library (= chameleon design pattern).
+
+> concepts from the Darwin Core apply to TaxonOccurrence objects, any
+> from the MCPD apply to Living objects, those from the ABCD Unit
+> variously to TaxonOccurrence, Accession, Specimen or Living and others
+> from the ABCD schema to Insitution or Collection.  (Such a schema
+> repository would also allow for relationships to be established
+> between concepts in different schemas: identity, semantic inclusion,
+> etc.)
+
+I fail to see how I can explicitly and type-safe refer from one namespace to another. How can I define that to understand the description, you have to use the class name schema for the taxonomic name, the character schema for the character, etc.? 
+ 
+> ... (The mappings
+> between these schemas could become well-defined and public.)
+
+I do not see any advantages in this over using such a schema ontology to controll whether schemata included at extension points (ABCD in DwC, or DwC in ABCD) are semantically meaningfull
+
+> The provider software would then be able to generate an access point
+> for each object type supported by the provider.  In each case a
+> capabilities request would return a list of the supported concepts and
+> associated schemas.  The capabilities response should also identify
+> the object type accessible through the access point.  This would solve
+> the apparent problem I mentioned above that DiGIR relies on the
+> provider and user having a tacit agreement about what kind of entity
+> they are discussing.
+
+If "supported concepts" are class attributes (like DwC), how does a capabilites request return the class-concepts supported?
+
+> If we want to develop a
+> "FindMatchingTaxonConceptByName" method which returns not only the
+> names and identifiers of any taxon concepts which match the search
+> string, but also any information on currently accepted names for each
+> of these concepts, we will typically end up returning a series of
+> records, some of which are responses to the query and some of which do
+> not match the query but are part of the overall set of returned
+> information and have to be included for completeness.  This is not a
+> failing in the way that the Napier schema has been put together.  Its
+> model is fine in the way that it expresses this.  The problem is that
+> a record-based approach actually would suit this situation better.  I
+> realise now that DiGIR would be a perfect way to manage this
+> connection, and that it is really tempting to provide a set of
+> descriptors for taxon concepts and search for matches using them. For
+> example (and extremely crudely):
+> 
+> <digir:record>
+>	  <concept:ConceptId>10001</concept:ConceptId>
+>	  <concept:ScientificName>Egretta alba</concept:ScientificName>
+>	  <concept:AuthorString>(Linnaeus, 1758) <concept:Synonym>
+>			<concept:Id>10002</concept:Id>
+>			<concept:Name>Ardea alba</concept:Name>
+>			<concept:Type>Nomenclatural</concept:Type>
+>	  </concept:Synonym>
+>	  <concept:Synonym>
+>			<concept:Id>10003</concept:Id>
+>			<concept:Name>Casmerodius albus</concept:Name>
+>			<concept:Type>Homotypic</concept:Type>
+>	  </concept:Synonym></digir:record>
+>	  <concept:IncludedConcept>
+>			<concept:Id>10004</concept:Id>
+>			<concept:Name>Egretta alba alba</concept:Name>
+>	  </concept:IncludedConcept>
+>	  <concept:IncludedConcept>
+>			<concept:Id>10005</concept:Id>
+>			<concept:Name>Egretta alba melanorhynchos</concept:Name>
+>	  </concept:IncludedConcept>
+>	  <concept:InclusiveConcept>
+>			<concept:Id>10006</concept:Id>
+>			<concept:Name>Egretta </concept:Name>
+>	  </concept:InclusiveConcept>
+> </digir:record>
+
+I am not sure I understand that. The ConceptSynonym seems to be a recursion into digir:record. Who has defined that?
+
+I agree with the problem, and we may have related problems in SDD. (For example, if an indentification key has a cross-reference into another key). Asking for the key would return the primary key, and depending on the type of request in the protocol, also the other referenced keys). 
+
+However, I think that the protocol could easily work around this, by having to kind of response types: a) minimal response, in which only exactly the required information is returned. b) "AddDependentObjects", which would add the fuller information. That would work both in the case of reflexive and non-reflexive relations.
+
+Markus discussed on Friday that GML allows multiple queries in a single request, and I believe this is ideal for client software to avoid sequential requests, while still getting exactly the related objects it needs and ignoring those it does not. So a query could in a single request ask for only the ID of the matching taxon concepts, and ask for the same concepts with desired information.
+
+> establish the idea of a UBIF.  Maybe there is a way to reconcile the
+> two approaches.  My hunch is that we really have two data access
+> strategies which can and should cut across all of our data areas.  The
+> first is the record-based approach (which I have been trying to
+> describe above) which is ideally suited to discovery and federated
+> retrieval.  The second is the document-based approach which is much
+> better suited to some kinds of efficient data exchange and also I
+> think for storing data sets (whether complete data sets or the results
+> of some extraction process).  I think that these two should both be
+> supported and that we may need to treat the UBIF model as the way to
+> handle exchange based on documents and the "fourth proposal" as the
+> way to handle query and search functions.
+
+Thanks, Donald, and yes I am frustrated. I am certainly not a major player here, and if the common wisdom is otherwise, I will have to give in. There are two issues: technical xml schema for custom purposes, and a general domain model whose data are expressable in XML. I am really after the latter.
+
+As said above, I believe UBIF and protocol are reconcilable, and in fact I still stupidly believe in the proxy object proposal. I believe that the data interfaces (simple, relatively flat, minimalistic representations of objects) are really what Darwin Core is. They simplify things, but they do it in a way that is not exclusive to querying, they also allow it to be used "from the other side" to actually store data there.
+
+I feel bad about having to deal with an very large number of schemata each defining an object, and having a hard time expressing the relations between these objects. I think the specimen guided approach is misleading in its seeming scarcety of objects.
+
+I also believe that proxy objects reusing each other would simplify querying enormously. The DarwinCore elements should use LinneanCore for their representation of a name, and a geographical location element for the location.
+
+The real important thing I need to get an answer for is relations between objects that are not ontological (this object is a subclass of such) but express knowledge about the objects: This animal has this name (published in this publication), is preserved in this specimen, and this character has a value expressed in this measurement unit. Without a concept of class and class identity I fail to see how to express these relations in data. ABCD and DarwinCore largely ignore this. They do not express taxon names by reference to a taxon name database, and they do not allow doing so. If they allow it, they would have to add a choice of either a local represenation, or a reference. The proxy objects aim at providing this interface: making local data reusable, and either contain all known information or a link to an external object.
+
+Gregor
+
+-- Main.GregorHagedorn - 09 Aug 2004
+
+---
+
+(Below is the first email by Donald:)
+
+Markus (and others),
+
+*** LONG e-mail - I apologise but I cannot express all of the things I'd
+like to raise in a smaller space - I really hope that someone can find
+the time to read it all ***
+
+This difference between record-based and document-based approaches is a
+tricky thing to resolve.
+
+In contrast to Gregor/Walter, I have been starting to get really excited
+about the potential benefits for data integration from our aggressively
+following the record-based approach.  Having thought about this all over
+the weekend, I would like the option of reusing many of the ABCD
+elements as allowable content within DiGIR-style records (fragmenting
+ABCD wherever the nesting is organisational rather than semantic).  I
+recognise the benefits for other purposes of having better structured
+documents, but I am not sure that these apply so much when performing
+DiGIR-style queries.  (I must emphasise that "DiGIR-style" is meant only
+as a short-hand, with no prejudice against BioCASe.)
+
+The situation with SDD and Names is rather different and I feel that
+each of these may be better suited to a document-style transfer.  I am
+not sure how well a DiGIR-style protocol works with these more complex
+documents.  I'll return to this below.
+
+Here are some of the things that have been spinning around in my head:
+
+1. Using the new protocol for overlapping data networks
+
+Two representatives of IPGRI/SINGER visited the Secretariat last week to
+discuss data integration.  They have a data network based on a core
+dataset for all crop types (the Multi-Crop Password Data, MCPD) plus
+extensions for each crop community (Banana, Soybean, Bambara Groundnut,
+etc.).  They are trying to move from a central data warehouse to a
+federated network and were interested in seeing what extra they should
+do to integrate with GBIF.  It rapidly became clear that an excellent
+solution would be for them to implement DiGIR-style providers for each
+of their members, with each member serving records comprising elements
+from at least three schemas: Darwin Core; an MCPD extension; and a
+crop-specific extension.  GBIF would be able to index such providers via
+Darwin Core.  Singer would be able to build their central cache of MCPD
+data.  The different crop communities would be able to build specialised
+portals.  Furthermore, particularly with the help of the BioCASe-style
+capabilities request, GBIF or any other portal could provide detailed
+views for each record which include all of the elements from all
+included schemas.  At very least it is always possible to use element
+names to identify the meaning of an element.  A better solution will be
+to use a schema repository to provide access to explanations of all
+elements.
+
+They also looked at the ABCD 1.48 Unit (which includes some Plant
+Genetic Resource elements - from EURISCO?) but identified that they
+would have a number of requirements for changing the way that the
+various subelements are interrelated and for including extra
+subelements.  I recommended that they provided their suggestions to
+Walter.
+
+The convenience and extensibility of this model for this community
+depends precisely on the fact that the <record> elements are bags into
+which any suitable content can be inserted.  Note that for the
+crop-specific extensions many of the data items they wish to associate
+with an accession identifier are in fact character states which we might
+wish to model using SDD.  For these communities however these items are
+modelled as flat records using well-controlled vocabularies.  The
+open-ended DiGIR-style access approach easily accommodates this.  It is
+equally possible to include entire ABCD units within these records,
+although it would be much more flexible to be able to include the
+various complex subelements such as <Identification> or
+<GatheringProject> within these records.  
+
+2. Considering what is special about observational data
+
+During the life of GBIF, I have fallen into the trap of thinking of
+specimen data as more complex than observation data since it can have
+all of the extra attributes relating to curation, etc.  In the Singapore
+ABCD meeting, I think we all believed that it would be more compact to
+present observational data with the gathering event as the root element
+rather than the Unit, but that this would only really be a pivot of the
+information being expressed in ABCD.  
+
+I now think that this was very naïve on my part.  Both specimen and
+observation data can certainly validly be presented as
+"taxon-occurrence" data (corresponding roughly to the new compact Darwin
+Core elements).  In the case of specimen data, it then makes a great
+deal of sense to extend the same data record with additional information
+relating to the gathering event, curation, etc.  The same model works
+perfectly for casual observations following no particular method.
+However the model is deeply inadequate for handling more serious and
+structured observational data sets.  I believe that this has been
+demonstrated by recent attempts to model bird survey data using ABCD.
+The point is that in these cases the "taxon-occurrence" records are not
+free-floating data points.  They also exist as part of a structured
+matrix of information based on transects, plots, visits, etc.  This
+information cannot simply be squeezed into a "taxon-occurrence" record.
+It needs to be modelled using an entirely separate class of record,
+within which the individual "taxon-occurrence" records are subelements.
+
+This has again driven me to think that we need to loosen up the tendency
+to build documents according to single monolithic structures.  
+
+3. Handling multiple object types through a single provider
+
+In Berlin Markus discussed some of the capabilities of the existing
+BioCASe wrapper software for mapping databases to multiple record types
+(as in the case of a single wrapper serving Institution, Collection and
+Service records from the same database mapping).
+
+At the same time I finally understood why the DiGIR protocol (unlike the
+BioCASe protocol) chose to let the <record> element belong to the
+protocol rather than the conceptual schema.  The whole point is that the
+protocol makes no assumption about what kind of data is being exchanged.
+It just deals with bundles of descriptors, all of which somehow relate
+to a single entity being described.  This means that there is no
+restriction on what additional descriptors can be added to the record.
+(On the other hand, the BioCASe/ABCD combination seeks to offer a
+fully-modelled datatype representing a specimen.)  The DiGIR
+record-based approach seems initially to have one major flaw: the
+understanding of what kind of entity is represented by the <record> is a
+tacit agreement between the provider and user, without any basis in the
+protocol, metadata or data.
+
+Now I have a vision for what we can do with a provider based on the
+"fourth proposal" protocol, if we combine it with a really basic
+"proto-ontology" and schema repository.  Let's assume that we define a
+basic core set of biodiversity data object types.  The following should
+give the idea.  Nesting here indicates object-oriented specialisation:
+
+OntologyClass
+	 - TaxonOccurrence
+			 - Accession
+					 - Specimen
+					 - Living
+			 - Observation
+	 - Institution
+	 - Collection
+	 - Survey
+
+(We should avoid modelling anything here until we are sure we need to.
+The idea of a Survey data type is clearly not yet clear enough and would
+probably break down into a whole set of different data types based on
+atlas projects, transects, plots and many other higher-order
+constructs.)  
+
+At the same time we develop a schema repository which allows us to model
+individual schemas such as Darwin Core, the curatorial extension, the
+MCPD dataset, ABCD, etc.  Within this repository we can manage
+descriptive data for each included concept (perhaps in multiple
+languages and certainly in machine-readable forms).  We can then assign
+concepts from these schemas to one or more of the object types in our
+proto-ontology.  By this I mean we can indicate that any of the concepts
+from the Darwin Core apply to TaxonOccurrence objects, any from the MCPD
+apply to Living objects, those from the ABCD Unit variously to
+TaxonOccurrence, Accession, Specimen or Living and others from the ABCD
+schema to Insitution or Collection.  (Such a schema repository would
+also allow for relationships to be established between concepts in
+different schemas: identity, semantic inclusion, etc.)
+
+Now consider what might happen with a user configuring a
+second-generation provider tool.  
+
+They first define all of their table mappings (including those for
+tables containing data on the institution, collection, specimen, etc.).
+This gives the provider software a representation of the provider's data
+as a graph.  
+
+Next they identify what biodiversity data types they wish to expose.
+This can be generated from a pick-list constructed from information in
+the schema repository.  In the case of a provider corresponding to a
+DiGIR-Darwin Core or BioCASe-ABCD provider today, I would expect this to
+include objects for Institution, Collection and Specimen (or Observation
+or Living, etc. according to the provider concerned - note that this can
+help us with tightening up the meaning of BasisOfRecord).  In the case
+of a future bird survey data provider, it might include Institution,
+Survey, Plot, Visit and Observation.  This would perfectly represent the
+way in which these data need also to be exposed as TaxonOccurrence data
+for those who wish to use them as point data without consideration of
+the underlying survey models.  In this case these users would simply
+request Observation records.
+
+For each of these data types the provider configuration software would
+then ask them to identify the concepts they wished to support.  Again
+the list of options could be pre-populated from the schema repository
+(perhaps based on a list of current core schema versions, with a menu of
+possible extensions, plus the ability to select additional schemas
+currently unknown to the schema repository).  This would allow any
+provider to offer to support any combination of elements from Darwin
+Core, ABCD or other schemas as their chosen descriptors for the objects
+concerned.  Naturally their would still be recommendations and
+documented minimum requirements.  Based on the information in the schema
+repository, the provider software could also determine that it is able
+e.g. to be able to respond to requests for dwc:ScientificName based on
+the configuration for abcd:Identification.  (The mappings between these
+schemas could become well-defined and public.)
+
+The provider software would then be able to generate an access point for
+each object type supported by the provider.  In each case a capabilities
+request would return a list of the supported concepts and associated
+schemas.  The capabilities response should also identify the object type
+accessible through the access point.  This would solve the apparent
+problem I mentioned above that DiGIR relies on the provider and user
+having a tacit agreement about what kind of entity they are discussing.
+
+Any client could use the schema repository to retrieve information about
+the concepts listed in the capabilities response.  This would allow a
+user to make intelligent decisions about whether to request the data
+elements.  It would also allow software to render the returned
+information appropriately, and to provide access to definitions of
+controlled values.
+
+Clearly the provider software would have to have the intelligence to
+select the appropriate sections of the overall graph to convert into SQL
+joins based on the data type being returned, but this seems to be
+something that Markus has already mastered in the BioCASe wrapper
+software.
+
+I believe that basing a "fourth proposal" solution on the existence of
+such a proto-ontology-cum-schema-repository would give us a massively
+powerful and extensible model for data exchange.
+
+4. Returning to consider document-oriented approaches
+
+Now for the bit that seems tougher to work out.  We have three projects
+which (today, at least) are using a document-based approach which to
+varying degrees differs from what I have outlined above.  Up to now I
+have assumed that DiGIR-style access was not really suited to SDD or
+Names.  In each case I think we have need for a document-centred
+approach.  If I want to understand the concepts modelled in a taxonomic
+revision, GSD or red list, it makes sense to retrieve a full
+Napier-style document and manipulate it in memory, since it represents a
+web of inter-connected data elements.  If I want to make full use of an
+SDD data set, I believe that the same approach makes most sense.  
+
+However there are certainly occasions where this approach will not work.
+I have been discussing with Sally Hinchcliffe how we can access IPNI
+through a web service interface, and we have been looking at doing this
+with the Napier schema.  The idea I had in mind was to develop an
+exchange using the Napier schema but with access methods like those used
+by the Species 2000 SPICE project (roughly
+FindMatchingTaxonConceptByName, GetTaxonConceptDetail,
+FindParentTaxonConcepts, FindChildTaxonConcepts).  It has been a little
+difficult to model this well, precisely because the Napier schema is
+document-oriented.  We can certainly make it work, but there are some
+oddities.  If we want to develop a "FindMatchingTaxonConceptByName"
+method which returns not only the names and identifiers of any taxon
+concepts which match the search string, but also any information on
+currently accepted names for each of these concepts, we will typically
+end up returning a series of records, some of which are responses to the
+query and some of which do not match the query but are part of the
+overall set of returned information and have to be included for
+completeness.  This is not a failing in the way that the Napier schema
+has been put together.  Its model is fine in the way that it expresses
+this.  The problem is that a record-based approach actually would suit
+this situation better.  I realise now that DiGIR would be a perfect way
+to manage this connection, and that it is really tempting to provide a
+set of descriptors for taxon concepts and search for matches using them.
+For example (and extremely crudely):
+
+<digir:record>
+	 <concept:ConceptId>10001</concept:ConceptId>
+	 <concept:ScientificName>Egretta alba</concept:ScientificName>
+	 <concept:AuthorString>(Linnaeus, 1758)
+	 <concept:Synonym>
+		  <concept:Id>10002</concept:Id>
+		  <concept:Name>Ardea alba</concept:Name>
+		  <concept:Type>Nomenclatural</concept:Type>
+	 </concept:Synonym>
+	 <concept:Synonym>
+		  <concept:Id>10003</concept:Id>
+		  <concept:Name>Casmerodius albus</concept:Name>
+		  <concept:Type>Homotypic</concept:Type>
+	 </concept:Synonym></digir:record>
+	 <concept:IncludedConcept>
+		  <concept:Id>10004</concept:Id>
+		  <concept:Name>Egretta alba alba</concept:Name>
+	 </concept:IncludedConcept>
+	 <concept:IncludedConcept>
+		  <concept:Id>10005</concept:Id>
+		  <concept:Name>Egretta alba melanorhynchos</concept:Name>
+	 </concept:IncludedConcept>
+	 <concept:InclusiveConcept>
+		  <concept:Id>10006</concept:Id>
+		  <concept:Name>Egretta </concept:Name>
+	 </concept:InclusiveConcept>
+</digir:record>
+
+A DiGIR-style provider supporting such a schema would support all of the
+SPICE request types with ease.  It may very well be that the Napier
+schema is the place from which these individual elements should come.
+
+I am therefore starting to believe that we may be best served by having
+both a Linnaean Core style standard and an additional structured model
+like the Napier schema.  I still feel that most of the concerns I have
+heard expressed about the Napier schema are misguided and that it is an
+excellent model for representing entire lists of related taxon concepts.
+I'm just starting to get blown away by how simply we could integrate
+everything if we had a DiGIR-style interface as well.
+
+In the case of SDD, I am still not sure how useful a DiGIR-style
+interface would be, and I do not think we would want to use DiGIR as an
+access method for retrieving SDD documents in their current form.  It
+might however be the case that a provider tool could wrap an SDD
+document to give access to the Terminology, Description, Character,
+Entity, etc. elements by treating the document as a graph interlinking
+objects of these types.
+
+I can also still see that there are circumstances under which a full
+ABCD document may be a very useful way to represent a collection or
+individual units.  However (as I have tried to show) I think we gain
+massively by offering access to these elements at a finer level of
+granularity.  Clients processing the data will be much less impacted by
+shifting versions of the standards since many of the subelements are
+already much more stable than the overall structure.  
+
+I would like to see TDWG and/or GBIF shifting to a mode in which we
+manage smaller components of the overall data model (like the new Darwin
+Core and extensions) so that we can get to "final" approved versions
+more easily and can keep many of the concepts stable for the foreseeable
+future.  
+
+As one final point, and one which I feel really bad about, much of the
+above (along with the "fourth proposal" move to hand the ownership of
+the <record> element and higher over to the protocol) does really
+violent things to what Gregor has been doing so well to try to establish
+the idea of a UBIF.  Maybe there is a way to reconcile the two
+approaches.  My hunch is that we really have two data access strategies
+which can and should cut across all of our data areas.  The first is the
+record-based approach (which I have been trying to describe above) which
+is ideally suited to discovery and federated retrieval.  The second is
+the document-based approach which is much better suited to some kinds of
+efficient data exchange and also I think for storing data sets (whether
+complete data sets or the results of some extraction process).  I think
+that these two should both be supported and that we may need to treat
+the UBIF model as the way to handle exchange based on documents and the
+"fourth proposal" as the way to handle query and search functions.
+
+Many thanks to anyone who reads this far.  Please comment!
+ 
+Best wishes,
+
+Donald
+ 
+---------------------------------------------------------------
+Donald Hobern (dhobern@gbif.org)
+Programme Officer for Data Access and Database Interoperability 
+Global Biodiversity Information Facility Secretariat 
+Universitetsparken 15, DK-2100 Copenhagen, Denmark
+Tel: +45-35321483	Mobile: +45-28751483	Fax: +45-35321480
+---------------------------------------------------------------

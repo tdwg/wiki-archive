@@ -1,0 +1,640 @@
+head	1.14;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.14
+date	2009.11.25.03.14.39;	author GarryJolleyRogers;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2009.11.20.02.45.33;	author LeeBelbin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.03.06.17.30.00;	author TWikiGuest;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2006.05.13.01.15.11;	author GregorHagedorn;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2006.05.04.11.13.11;	author GregorHagedorn;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2006.02.17.19.31.02;	author JacobAsiedu;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2005.06.11.19.09.45;	author BobMorris;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2005.06.11.13.58.44;	author JacobAsiedu;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2004.05.13.08.06.45;	author GregorHagedorn;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2004.05.12.18.08.14;	author JacobAsiedu;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2004.05.12.15.56.00;	author BobMorris;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2004.05.12.12.48.00;	author JacobAsiedu;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2004.05.11.12.47.14;	author GregorHagedorn;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2004.05.10.18.07.00;	author BobMorris;	state Exp;
+branches;
+next	;
+
+
+desc
+@none
+@
+
+
+1.14
+log
+@none
+@
+text
+@%META:TOPICINFO{author="GarryJolleyRogers" date="1259118879" format="1.1" version="1.14"}%
+---+!! %TOPIC%
+
+*NOTE: The discussion currently refer to older versions of SDD (0.9x). They need to be revised/wiped as a new SDD export to SDD 1.1 is being developed.*
+
+The file [[%ATTACHURL%/ithomidsBDI.SDD.xml][ithomidsBDI.SDD.xml]] contains the result of transforming the file [[%ATTACHURL%/EFGDocument.xml][EFGDocument.xml]] into an SDD instance document. The code to do so was written by Main.JacobAsiedu. EFGDocument.xml is a document produced by a query to an instance of the [[http://www.cs.umb.edu/efg][Electronic Field Guide]] software against a data source containing 82 records representing the 62 species of Ithomid butterflies known in Monteverde, Costa Rica. 
+
+EFGDocument.xml is produced by our software with http <nop>DiGIR queries or idiosyncratic http queries of the EFG project. In this case, it corresponds to the SQL query SELECT * FROM Ithomids. Such a document is returned valid for the Schema [[%ATTACHURL%/EFGDocument.xsd][EFGDocument.xsd]].(In the EFG, when a client requests Descriptions as html, we process such a document with XSLT before serving it).
+
+Each SDD Description contains an object //Description//__<nop>OtherScope with value "Male", "Female", or "Both" according as to what sex the Description applies. How to make this distinction is currently the subject of the topic TheProblemOfSex.
+
+The [[http://www.castor.org][Castor databinding framework]] was used to produce marshalling and unmarshalling code for each of the
+EFGDocument and SDD schemas. This code mediates between Java and XML in a given schema, and the Asiedu code is left with only the task of converting between SDD Java objects and EFGDocument Java objects. This part requires about 7000 lines of Java (but is presently only EFG->SDD). Castor generates about 124,000 lines of code but generated code is probably 5-10 times what would be written by hand---though likely less error prone. Source code for the glue code, and scripts for running Castor are in our
+[[http://efgblade.cs.umb.edu/cgi-bin/cvsweb.cgi/efg2sdd][CVS repository]]
+
+The data author's underlying database, <nop>FileMaker, is very weakly typed, and so is EFGDocument.xsd. Most data is as strings, and much of it is somewhat narrative in this data set. Consequently, the glue code has to parse some of the data. That parsing and several other decisions are guided by the character metadata file [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]], an Excel file which describes such things as whether a character will be in a coded description or not, whether its states are to be local or global, how states are to be parsed if at all, data typing, and a few other things. Among the lessons learned is that we need to uniformize some metatdata aspects of our own data and build tools to provide this kind of representation.
+
+In general, each Class (i.e. taxon) and scope ("Male", "Female", "Both") has both a Coded and <nop>NaturalLanguage description corresponding to the characters for which "coded" is true in the metadata file. That is, the coded and NLP character sets are independent of each other. It seems likely that dichotomous keys could be generated automatically from the coded Descriptions, though our own keys (not represented here) are usually authored by an expert.
+
+There are five <nop>ConceptTrees acting as containers for the globally reusable states that represent these concepts: Color, Aggregation (used for egg laying habit: solitary or clustered), Abundance (Common, Uncommon, Rare, Not recorded from Monteverde, Not yet recorded); Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The <nop>ConceptTrees arise from the metadata file: if a character is declared global and has an "<nop>typeTitle", that <nop>typeTitle becomes the Concept label and all states for that character that are encountered in the database are added to the Concept named by the <nop>typeTitle metadata item. Subsequent processing of a character in the EFGDocument will assign a reference to the Concept and Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in the Description. In the EFGDocument, Characters are called Items, although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export).
+
+-- Main.BobMorris and Main.JacobAsiedu - 10 May 2004
+
+---
+
+It is great to hear that you are testing SDD with code! Points I am confused about: 
+
+   * Why are you adding multiple concept trees? You seem to identify a concept with a tree, but it is thought as a "tree of concepts". Each set of reusable state definitions is thought to be defined at a node in the tree, so a single tree should be enough to express all reusable sets of states. -- Gregor Hagedorn -- 10 May 2004
+      * We had no concepts that had any structure of their own--they are all enumerations--so the treeness never quite made it into our consciousness. We could have a single tree with five (terminal) nodes. It is not so clear what the unifying theme would be in this case, e.g. what the mandatory <nop>ConceptTree/Label should be. Perhaps among our five concepts there are three sorts: ecological (Aggregation and Abundance), physical (Color and Opacity) and the other one (Boolean). So maybe this Concept tree could have three branches below the root. But this might be overkill here. We like the idea of Concept trees, but we don't yet see how they would be used except as an organizing principle (which might justify it). For us at the moment the Concept trees are just a place to hang the global states, and we make no use of their exact organization. --- Main.BobMorris, Main.JacobAsiedu
+         * (I would suggest the tree is labeled "Globally reused state sets" -- i.e. simply label what you use it for. The "ecological" etc. concepts could be node label, but these are not required. You could also, as I suggested, ignore the additional grouping and simply have one node for each reused enumeration directly in the root. I would only recommed not using one tree per concept. The list of trees is flat, so having 100s of trees in a larger project would be very confusing and ultimately very difficult to manage. No big deal for the test data, sure; I just wanted to get at the source of a possible misunderstanding. Note: I get no conclusions to change SDD from this, or does anybody else sees something? -- Gregor Hagedorn -- 13 May 2004
+
+--- 
+
+   * "the coded and NLP character sets are independent": what is a character set? You mean the definition of the terminology? Why would it have to be independent? Does the NLP contain additional data in comparison with the CD (i.e. data where your metadata element "coded" is false?). -- Gregor Hagedorn -- 10 May 2004
+      * Yes, we mean the characters in the Terminology. Because most data in the underlying Filemaker file are just strings, we have to assign each Filemaker field to represent either a character that will be parsed and become eligible for use in Coded descriptions or one that will not. The others are used only in NLDs. That decision is a bit arbitrary, presently being determined mostly by convenience and our need to have something for the Berlin meeting :-).
+      * It is possible that for the ones we are not parsing---and for the corresponding construction of NLDs--we are being silly. Consider the item named "Comments" (Character 25 in ithomids.xml). We end up with 32 different local Categorical states, one for each of the different unparsed strings that appear in the underlying data. We wonder if this is the really the right thing to do. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+         * (I would think this is a good example to export as text character / unconstrained text, see below.) -- -- Gregor Hagedorn -- 13 May 2004
+      * Generally, each Filemaker field has been turned into an Item in the EFGDocument, but like the Filemaker data, most of the EFGDocument Schema is also untyped (hence Item content is mostly strings). On reflection, it is possible that we could handle some of the typing upon generating an EFGDocument (and have the Schema more strongly typed), and then our metadata file would have less work to do. This might be an important lesson for other implementors whose native XML output is not carefully thought out---as ours wasn't!
+      * We do have some data structuring conventions for database authors reflecting the needs to have certain data related to one another in several contexts. For example, sometimes external resources are grouped together for some reason. Thus an author may wish to indicate that X1.jpg, X2.jpg and X3.jpg are all the same illustration of something but at increasing resolution. Those names might appear as the string X1.jpg|X2.jpg|X3.jpg in a field named <nop>SpeciesImage. Our structuring convention is even more complex than lists alone, but always the semantics of any particular such string is externally specified, but in a very ad-hoc way. For example the aforementioned relationship, i.e. that they are the same picture at increasing resolution, appears only in an external XSLT that is concerned with html rendering for clients that request it. That seems reasonable for this particular relationship, but it is hardly a general expression of how to interpret the list. Other such examples are fields for  a list of larval host plants, one for a list of "similar species", which are those that the author believes might be confused with the given species and one for a list of nectar plants. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+         * (The issue of unconstrained lists (only unconstrained text is so far supported) is still on the SDD agenda. Basically the problem is that the last two examples show that there is a need for list or set structures, but on the other hand any such example studied so far really points to an outside resource. Whether it is a list of geographical locations, or a list of host or confused taxa... So my own tendency is that lists are useful as a practical tool, but can we perhaps structure them in a way to make them always "connectible" to outside data resources, like we do with other resources?) -- Gregor Hagedorn -- 13 May 2004
+
+---
+
+   * "although many Items would not necessarily be recognized as biologically meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export)." -- Besides that for DELTAist people the term "Item" is an unlucky choice because more or less syn. with class/object in SDD rather than character: what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (equivalent to a DELTA text character, i.&nbsp;e. <nop>UnconstrainedText set to true in the SDD character state definition). -- Gregor Hagedorn -- 10 May 2004
+      * Ah, we strongly mis-spoke here. When we look to the original Filemaker file, we find only _one_ such field--and it is reflected in the EFGDocument.xml--a thing called "Footer", which is in fact an IPR statement and with a little work could have been emitted that way. However, merely because this is a work in progress, we are nevertheless losing some data only because we haven't got around to treating them yet. Those are things in the Filemaker file that have not yet made it into the metadata file, hence not into the SDD output. They are, however, all biological in nature. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+---
+
+   * In [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]] you have an original character "Scent scales on costal margin of HWD" for which you define a global categorical element of title "Sex". This is probably an oversight. -- Gregor Hagedorn -- 10 May 2004
+      * Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the SDD representation for this character and its modifiers. Done right, it's probably a great example for SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. -- Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+
+%META:FILEATTACHMENT{name="Ith.fp5" attr="" autoattached="1" comment="Filemaker data for 82 Ithomid butterflies" date="1146861063" path="Ith.fp5" size="510976" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="EFGDocument.xsd" attr="" autoattached="1" comment="Schema for native EFG output" date="1146861063" path="EFGDocument.xsd" size="4394" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="ithomidsSDD.xml" attr="" autoattached="1" comment="Ithomid data in SDD" date="1146861063" path="ithomidsSDD.xml" size="936936" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="EFGDocument.xml" attr="" autoattached="1" comment="EFG XML for 82 Ithomid butterfly descriptions" date="1146861063" path="EFGDocument.xml" size="481826" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="IthomidsMetadata.xls" attr="" autoattached="1" comment="Metadata for driving export" date="1146861063" path="IthomidsMetadata.xls" size="22528" user="JacobAsiedu" version="1.2"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1147482674" from="SDD.ZZZObsoleteUMASSBostonElectronicFieldGuideProjectSDDExport" to="SDD.UMassBostonElectronicFieldGuideProject"}%
+@
+
+
+1.13
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="LeeBelbin" date="1258685133" format="1.1" reprev="1.13" version="1.13"}%
+d4 1
+a4 1
+*NOTE: The discussion currently refer to older versions of BDI.SDD (0.9x). They need to be revised/wiped as a new BDI.SDD export to BDI.SDD 1.1 is being developed.*
+d6 1
+a6 1
+The file [[%ATTACHURL%/ithomidsBDI.SDD.xml][ithomidsBDI.SDD.xml]] contains the result of transforming the file [[%ATTACHURL%/EFGDocument.xml][EFGDocument.xml]] into an BDI.SDD instance document. The code to do so was written by Main.JacobAsiedu. EFGDocument.xml is a document produced by a query to an instance of the [[http://www.cs.umb.edu/efg][Electronic Field Guide]] software against a data source containing 82 records representing the 62 species of Ithomid butterflies known in Monteverde, Costa Rica. 
+d10 1
+a10 1
+Each BDI.SDD Description contains an object //Description//__<nop>OtherScope with value "Male", "Female", or "Both" according as to what sex the Description applies. How to make this distinction is currently the subject of the topic TheProblemOfSex.
+d13 1
+a13 1
+EFGDocument and BDI.SDD schemas. This code mediates between Java and XML in a given schema, and the Asiedu code is left with only the task of converting between BDI.SDD Java objects and EFGDocument Java objects. This part requires about 7000 lines of Java (but is presently only EFG->BDI.SDD). Castor generates about 124,000 lines of code but generated code is probably 5-10 times what would be written by hand---though likely less error prone. Source code for the glue code, and scripts for running Castor are in our
+d20 1
+a20 1
+There are five <nop>ConceptTrees acting as containers for the globally reusable states that represent these concepts: Color, Aggregation (used for egg laying habit: solitary or clustered), Abundance (Common, Uncommon, Rare, Not recorded from Monteverde, Not yet recorded); Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The <nop>ConceptTrees arise from the metadata file: if a character is declared global and has an "<nop>typeTitle", that <nop>typeTitle becomes the Concept label and all states for that character that are encountered in the database are added to the Concept named by the <nop>typeTitle metadata item. Subsequent processing of a character in the EFGDocument will assign a reference to the Concept and Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in the Description. In the EFGDocument, Characters are called Items, although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into BDI.SDD characters. (In particular, we are presently losing data in our BDI.SDD export).
+d26 1
+a26 1
+It is great to hear that you are testing BDI.SDD with code! Points I am confused about: 
+d30 1
+a30 1
+         * (I would suggest the tree is labeled "Globally reused state sets" -- i.e. simply label what you use it for. The "ecological" etc. concepts could be node label, but these are not required. You could also, as I suggested, ignore the additional grouping and simply have one node for each reused enumeration directly in the root. I would only recommed not using one tree per concept. The list of trees is flat, so having 100s of trees in a larger project would be very confusing and ultimately very difficult to manage. No big deal for the test data, sure; I just wanted to get at the source of a possible misunderstanding. Note: I get no conclusions to change BDI.SDD from this, or does anybody else sees something? -- Gregor Hagedorn -- 13 May 2004
+d40 1
+a40 1
+         * (The issue of unconstrained lists (only unconstrained text is so far supported) is still on the BDI.SDD agenda. Basically the problem is that the last two examples show that there is a need for list or set structures, but on the other hand any such example studied so far really points to an outside resource. Whether it is a list of geographical locations, or a list of host or confused taxa... So my own tendency is that lists are useful as a practical tool, but can we perhaps structure them in a way to make them always "connectible" to outside data resources, like we do with other resources?) -- Gregor Hagedorn -- 13 May 2004
+d44 2
+a45 2
+   * "although many Items would not necessarily be recognized as biologically meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into BDI.SDD characters. (In particular, we are presently losing data in our BDI.SDD export)." -- Besides that for DELTAist people the term "Item" is an unlucky choice because more or less syn. with class/object in BDI.SDD rather than character: what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (equivalent to a DELTA text character, i.&nbsp;e. <nop>UnconstrainedText set to true in the BDI.SDD character state definition). -- Gregor Hagedorn -- 10 May 2004
+      * Ah, we strongly mis-spoke here. When we look to the original Filemaker file, we find only _one_ such field--and it is reflected in the EFGDocument.xml--a thing called "Footer", which is in fact an IPR statement and with a little work could have been emitted that way. However, merely because this is a work in progress, we are nevertheless losing some data only because we haven't got around to treating them yet. Those are things in the Filemaker file that have not yet made it into the metadata file, hence not into the BDI.SDD output. They are, however, all biological in nature. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+d50 1
+a50 1
+      * Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the BDI.SDD representation for this character and its modifiers. Done right, it's probably a great example for BDI.SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. -- Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+@
+
+
+1.12
+log
+@Added topic name via script
+@
+text
+@d1 1
+d4 1
+a4 2
+%META:TOPICINFO{author="GregorHagedorn" date="1147482911" format="1.1" version="1.11"}%
+*NOTE: The discussion currently refer to older versions of SDD (0.9x). They need to be revised/wiped as a new SDD export to SDD 1.1 is being developed.*
+d6 1
+a6 1
+The file [[%ATTACHURL%/ithomidsSDD.xml][ithomidsSDD.xml]] contains the result of transforming the file [[%ATTACHURL%/EFGDocument.xml][EFGDocument.xml]] into an SDD instance document. The code to do so was written by Main.JacobAsiedu. EFGDocument.xml is a document produced by a query to an instance of the [[http://www.cs.umb.edu/efg][Electronic Field Guide]] software against a data source containing 82 records representing the 62 species of Ithomid butterflies known in Monteverde, Costa Rica. 
+d10 1
+a10 1
+Each SDD Description contains an object //Description//__<nop>OtherScope with value "Male", "Female", or "Both" according as to what sex the Description applies. How to make this distinction is currently the subject of the topic TheProblemOfSex.
+d13 1
+a13 1
+EFGDocument and SDD schemas. This code mediates between Java and XML in a given schema, and the Asiedu code is left with only the task of converting between SDD Java objects and EFGDocument Java objects. This part requires about 7000 lines of Java (but is presently only EFG->SDD). Castor generates about 124,000 lines of code but generated code is probably 5-10 times what would be written by hand---though likely less error prone. Source code for the glue code, and scripts for running Castor are in our
+d20 1
+a20 1
+There are five <nop>ConceptTrees acting as containers for the globally reusable states that represent these concepts: Color, Aggregation (used for egg laying habit: solitary or clustered), Abundance (Common, Uncommon, Rare, Not recorded from Monteverde, Not yet recorded); Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The <nop>ConceptTrees arise from the metadata file: if a character is declared global and has an "<nop>typeTitle", that <nop>typeTitle becomes the Concept label and all states for that character that are encountered in the database are added to the Concept named by the <nop>typeTitle metadata item. Subsequent processing of a character in the EFGDocument will assign a reference to the Concept and Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in the Description. In the EFGDocument, Characters are called Items, although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export).
+d26 1
+a26 1
+It is great to hear that you are testing SDD with code! Points I am confused about: 
+d30 1
+a30 1
+         * (I would suggest the tree is labeled "Globally reused state sets" -- i.e. simply label what you use it for. The "ecological" etc. concepts could be node label, but these are not required. You could also, as I suggested, ignore the additional grouping and simply have one node for each reused enumeration directly in the root. I would only recommed not using one tree per concept. The list of trees is flat, so having 100s of trees in a larger project would be very confusing and ultimately very difficult to manage. No big deal for the test data, sure; I just wanted to get at the source of a possible misunderstanding. Note: I get no conclusions to change SDD from this, or does anybody else sees something? -- Gregor Hagedorn -- 13 May 2004
+d40 1
+a40 1
+         * (The issue of unconstrained lists (only unconstrained text is so far supported) is still on the SDD agenda. Basically the problem is that the last two examples show that there is a need for list or set structures, but on the other hand any such example studied so far really points to an outside resource. Whether it is a list of geographical locations, or a list of host or confused taxa... So my own tendency is that lists are useful as a practical tool, but can we perhaps structure them in a way to make them always "connectible" to outside data resources, like we do with other resources?) -- Gregor Hagedorn -- 13 May 2004
+d44 2
+a45 2
+   * "although many Items would not necessarily be recognized as biologically meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export)." -- Besides that for DELTAist people the term "Item" is an unlucky choice because more or less syn. with class/object in SDD rather than character: what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (equivalent to a DELTA text character, i.&nbsp;e. <nop>UnconstrainedText set to true in the SDD character state definition). -- Gregor Hagedorn -- 10 May 2004
+      * Ah, we strongly mis-spoke here. When we look to the original Filemaker file, we find only _one_ such field--and it is reflected in the EFGDocument.xml--a thing called "Footer", which is in fact an IPR statement and with a little work could have been emitted that way. However, merely because this is a work in progress, we are nevertheless losing some data only because we haven't got around to treating them yet. Those are things in the Filemaker file that have not yet made it into the metadata file, hence not into the SDD output. They are, however, all biological in nature. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+d50 1
+a50 1
+      * Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the SDD representation for this character and its modifiers. Done right, it's probably a great example for SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. -- Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+@
+
+
+1.11
+log
+@none
+@
+text
+@d1 2
+@
+
+
+1.10
+log
+@none
+@
+text
+@d1 2
+a2 3
+%META:TOPICINFO{author="GregorHagedorn" date="1146741191" format="1.0" version="1.10"}%
+*Old discussions below, for newest see UMASSBostonElectronicFieldGuideProject!*
+
+d26 3
+a28 3
+	* Why are you adding multiple concept trees? You seem to identify a concept with a tree, but it is thought as a "tree of concepts". Each set of reusable state definitions is thought to be defined at a node in the tree, so a single tree should be enough to express all reusable sets of states. -- Gregor Hagedorn -- 10 May 2004
+		* We had no concepts that had any structure of their own--they are all enumerations--so the treeness never quite made it into our consciousness. We could have a single tree with five (terminal) nodes. It is not so clear what the unifying theme would be in this case, e.g. what the mandatory <nop>ConceptTree/Label should be. Perhaps among our five concepts there are three sorts: ecological (Aggregation and Abundance), physical (Color and Opacity) and the other one (Boolean). So maybe this Concept tree could have three branches below the root. But this might be overkill here. We like the idea of Concept trees, but we don't yet see how they would be used except as an organizing principle (which might justify it). For us at the moment the Concept trees are just a place to hang the global states, and we make no use of their exact organization. --- Main.BobMorris, Main.JacobAsiedu
+			* (I would suggest the tree is labeled "Globally reused state sets" -- i.e. simply label what you use it for. The "ecological" etc. concepts could be node label, but these are not required. You could also, as I suggested, ignore the additional grouping and simply have one node for each reused enumeration directly in the root. I would only recommed not using one tree per concept. The list of trees is flat, so having 100s of trees in a larger project would be very confusing and ultimately very difficult to manage. No big deal for the test data, sure; I just wanted to get at the source of a possible misunderstanding. Note: I get no conclusions to change SDD from this, or does anybody else sees something? -- Gregor Hagedorn -- 13 May 2004
+d32 7
+a38 12
+	* "the coded and NLP character sets are independent": what is a character set? You mean the definition of the terminology? Why would it have to be independent? Does the NLP contain additional data in comparison with the CD (i.e. data where your metadata element "coded" is false?). -- Gregor Hagedorn -- 10 May 2004
+		* Yes, we mean the characters in the Terminology. Because most data in the underlying Filemaker file are just strings, we have to assign each Filemaker field to represent either a character that will be parsed and become eligible for use in Coded descriptions or one that will not. The others are used only in NLDs. That decision is a bit arbitrary, presently being determined mostly by convenience and our need to have something for the Berlin meeting :-).
+		* It is possible that for the ones we are not parsing---and for the corresponding construction of NLDs--we are being silly. Consider the item named "Comments" (Character 25 in ithomids.xml). We end up with 32 different local Categorical states, one for each of the different unparsed strings that appear in the underlying data. We wonder if this is the really the right thing to do. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+			* (I would think this is a good example to export as text character / unconstrained text, see below.) -- -- Gregor Hagedorn -- 13 May 2004
+		* Generally, each Filemaker field has been turned into an Item in the EFGDocument, but like the Filemaker data, most of the EFGDocument Schema is also untyped (hence Item content is mostly strings). On reflection, it is possible that we could handle some of the typing upon generating an EFGDocument (and have the Schema more strongly typed), and then our metadata file would have less work to do. This might be an important lesson for other implementors whose native XML output is not carefully thought out---as ours wasn't!
+		* We do have some data structuring conventions for database authors reflecting the needs to have certain data related to one another in several contexts. For example, sometimes external resources are grouped together for some reason. Thus an author may wish to indicate that X1.jpg, X2.jpg and X3.jpg are all the same illustration of something but at increasing resolution. Those names might appear as the string X1.jpg|X2.jpg|X3.jpg in a field named <nop>SpeciesImage. Our structuring convention is even more complex than lists alone, but always the semantics of any particular such string is externally specified, but in a very ad-hoc way. For example the aforementioned relationship, i.e. that they are the same picture at increasing resolution, appears only in an external XSLT that is concerned with html rendering for clients that request it. That seems reasonable for this particular relationship, but it is hardly a general expression of how to interpret the list. Other such examples are fields for  a list of larval host plants, one for a list of "similar species", which are those that the author believes might be confused with the given species and one for a list of nectar plants. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+			* (The issue of unconstrained lists (only unconstrained text is so far supported) is still on the SDD agenda. Basically the problem is that the last two examples show that there is a need for list or set structures, but on the other hand any such example studied so far really points to an outside resource. Whether it is a list of geographical locations, or a list of host or confused taxa... So my own tendency is that lists are useful as a practical tool, but can we perhaps structure them in a way to make them always "connectible" to outside data resources, like we do with other resources?) -- Gregor Hagedorn -- 13 May 2004
+
+---
+
+	* "although many Items would not necessarily be recognized as biologically meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export)." -- Besides that for DELTAist people the term "Item" is an unlucky choice because more or less syn. with class/object in SDD rather than character: what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (equivalent to a DELTA text character, i.&nbsp;e. <nop>UnconstrainedText set to true in the SDD character state definition). -- Gregor Hagedorn -- 10 May 2004
+		* Ah, we strongly mis-spoke here. When we look to the original Filemaker file, we find only _one_ such field--and it is reflected in the EFGDocument.xml--a thing called "Footer", which is in fact an IPR statement and with a little work could have been emitted that way. However, merely because this is a work in progress, we are nevertheless losing some data only because we haven't got around to treating them yet. Those are things in the Filemaker file that have not yet made it into the metadata file, hence not into the SDD output. They are, however, all biological in nature. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+d42 2
+a43 2
+	* In [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]] you have an original character "Scent scales on costal margin of HWD" for which you define a global categorical element of title "Sex". This is probably an oversight. -- Gregor Hagedorn -- 10 May 2004
+		* Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the SDD representation for this character and its modifiers. Done right, it's probably a great example for SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. -- Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+d47 2
+a48 5
+The url below is a link to a web application that imports and exports some of our data to/from <nop>SDD.
+http://efg.cs.umb.edu/efg2sdd
+
+It conforms to (validates with xerces and xmlspy) <nop>SDD10beta4 with the following minor changes. Most have already been discussed with Main.GregorHagedorn and we expect them to be folded into the final release.
+
+a49 2
+  1. We moved all xml constraints to the root element(Datasets) to comply with 
+		 part 1.3.4 of the W3C Schema rules.*
+d51 6
+a56 31
+  2. We replaced all names,types,refs that begins with "__" with "TBD__". This is because we use the Castor databinding framework to generate code to marshall and unmarshall XML and Castor (and many source code generation applications) reserve to themselves identifiers starting with "_". (This a long tradition possibly originating in unix).  <br/>
+		 TBD means to be determined and correspond to items signalled as still under discussion by the SDD committee.**
+  
+  3. We replaced the SDD type "String" with "StringSDD" so that there is no conflict
+		with Java.lang.String and generated code can compile succesfully.**
+	
+  4. We replaced 'xs:Name' with 'xs:NCName' because Castor does not yet support xs:Name.**
+	
+  5. We removed all references to /*/ in the documentation so that Java does not treat
+	  them as part of java comments.**
+ 
+  6. We removed the default attribute '""' of the Audience from AudienceRepresentationBase.<br/>
+		 We think this is an error in the schema.<br/>
+		 The "" has lentgh of zero, but the audience type was defined to have<br/>
+		 a length of at least one.*
+
+*Instance documents will not validate unless this change is made.<br/>
+**Does not affect instance documents
+
+This schema can be downloaded as a zip file from:
+
+http://panda.cs.umb.edu/downloads/SDD_10b4umb.zip
+
+-- Main.JacobAsiedu - 11 Jun 2005
+
+%META:FILEATTACHMENT{name="EFGDocument.xml" attr="" comment="EFG XML for 82 Ithomid butterfly descriptions" date="1084211816" path="F:\SDD\EFGDocument.xml" size="481826" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="EFGDocument.xsd" attr="" comment="Schema for native EFG output" date="1084211869" path="F:\SDD\EFGDocument.xsd" size="4394" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="Ith.fp5" attr="" comment="Filemaker data for 82 Ithomid butterflies" date="1084211944" path="F:\SDD\Ith.fp5" size="510976" user="BobMorris" version="1.1"}%
+%META:FILEATTACHMENT{name="IthomidsMetadata.xls" attr="" comment="Metadata for driving export" date="1084365991" path="C:\cvscheckout\efg2sdd\samples\IthomidsMetadata.xls" size="22528" user="JacobAsiedu" version="1.2"}%
+%META:FILEATTACHMENT{name="ithomidsSDD.xml" attr="" comment="Ithomid data in SDD" date="1084212027" path="F:\SDD\ithomidsSDD.xml" size="936936" user="BobMorris" version="1.1"}%
+%META:TOPICMOVED{by="GregorHagedorn" date="1146741131" from="SDD.UMASSBostonElectronicFieldGuideProjectSDDExport" to="SDD.ZZZObsoleteUMASSBostonElectronicFieldGuideProjectSDDExport"}%
+@
+
+
+1.9
+log
+@none
+@
+text
+@d1 4
+a4 1
+%META:TOPICINFO{author="JacobAsiedu" date="1140204662" format="1.0" version="1.9"}%
+d92 1
+@
+
+
+1.8
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1118516985" format="1.0" version="1.8"}%
+d51 1
+a51 1
+http://panda.cs.umb.edu/efg2sdd
+@
+
+
+1.7
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1118498324" format="1.0" version="1.7"}%
+d45 5
+d53 1
+a53 1
+It conforms to (validates with xerces and xmlspy) <nop>SDD10beta4 with the following minor changes.
+d56 1
+a56 1
+  1. We moved all xml constraints to the root element(datasets) to comply with 
+d59 2
+a60 3
+  2. We replaced all names,types,refs that begins with "__" with "TBD__" 
+		 so that there is no conflicts in castors's(the xml databinding framework with used)  local variables which begin with "_".<br/>
+		 TBD means to be determined.**
+d62 2
+a63 2
+  3. We replaced the SDD type "String" with "StringSDD" so that there is no conflicts
+		with Java.lang.String and generated code are compiled succesfully.**
+d65 1
+a65 1
+  4. We replaced 'xs:Name' with 'xs:NCName' because castor does not yet support xs:Name.**
+d70 1
+a70 1
+  6. Removed the default attribute '""' of the Audience from AudienceRepresentationBase.<br/>
+d82 1
+a82 6
+-- Main.JacobAsiedu - 11 Jun 2005  	
+---
+	* In [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]] you have an original character "Scent scales on costal margin of HWD" for which you define a global categorical element of title "Sex". This is probably an oversight. -- Gregor Hagedorn -- 10 May 2004
+		* Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the SDD representation for this character and its modifiers. Done right, it's probably a great example for SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. -- Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+---
+@
+
+
+1.6
+log
+@none
+@
+text
+@d1 84
+a84 49
+%META:TOPICINFO{author="GregorHagedorn" date="1084435605" format="1.0" version="1.6"}%
+The file [[%ATTACHURL%/ithomidsSDD.xml][ithomidsSDD.xml]] contains the result of transforming the file [[%ATTACHURL%/EFGDocument.xml][EFGDocument.xml]] into an SDD instance document. The code to do so was written by Main.JacobAsiedu. EFGDocument.xml is a document produced by a query to an instance of the [[http://www.cs.umb.edu/efg][Electronic Field Guide]] software against a data source containing 82 records representing the 62 species of Ithomid butterflies known in Monteverde, Costa Rica. 
+
+EFGDocument.xml is produced by our software with http <nop>DiGIR queries or idiosyncratic http queries of the EFG project. In this case, it corresponds to the SQL query SELECT * FROM Ithomids. Such a document is returned valid for the Schema [[%ATTACHURL%/EFGDocument.xsd][EFGDocument.xsd]].(In the EFG, when a client requests Descriptions as html, we process such a document with XSLT before serving it).
+
+Each SDD Description contains an object //Description//__<nop>OtherScope with value "Male", "Female", or "Both" according as to what sex the Description applies. How to make this distinction is currently the subject of the topic TheProblemOfSex.
+
+The [[http://www.castor.org][Castor databinding framework]] was used to produce marshalling and unmarshalling code for each of the
+EFGDocument and SDD schemas. This code mediates between Java and XML in a given schema, and the Asiedu code is left with only the task of converting between SDD Java objects and EFGDocument Java objects. This part requires about 7000 lines of Java (but is presently only EFG->SDD). Castor generates about 124,000 lines of code but generated code is probably 5-10 times what would be written by hand---though likely less error prone. Source code for the glue code, and scripts for running Castor are in our
+[[http://efgblade.cs.umb.edu/cgi-bin/cvsweb.cgi/efg2sdd][CVS repository]]
+
+The data author's underlying database, <nop>FileMaker, is very weakly typed, and so is EFGDocument.xsd. Most data is as strings, and much of it is somewhat narrative in this data set. Consequently, the glue code has to parse some of the data. That parsing and several other decisions are guided by the character metadata file [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]], an Excel file which describes such things as whether a character will be in a coded description or not, whether its states are to be local or global, how states are to be parsed if at all, data typing, and a few other things. Among the lessons learned is that we need to uniformize some metatdata aspects of our own data and build tools to provide this kind of representation.
+
+In general, each Class (i.e. taxon) and scope ("Male", "Female", "Both") has both a Coded and <nop>NaturalLanguage description corresponding to the characters for which "coded" is true in the metadata file. That is, the coded and NLP character sets are independent of each other. It seems likely that dichotomous keys could be generated automatically from the coded Descriptions, though our own keys (not represented here) are usually authored by an expert.
+
+There are five <nop>ConceptTrees acting as containers for the globally reusable states that represent these concepts: Color, Aggregation (used for egg laying habit: solitary or clustered), Abundance (Common, Uncommon, Rare, Not recorded from Monteverde, Not yet recorded); Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The <nop>ConceptTrees arise from the metadata file: if a character is declared global and has an "<nop>typeTitle", that <nop>typeTitle becomes the Concept label and all states for that character that are encountered in the database are added to the Concept named by the <nop>typeTitle metadata item. Subsequent processing of a character in the EFGDocument will assign a reference to the Concept and Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in the Description. In the EFGDocument, Characters are called Items, although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export).
+
+-- Main.BobMorris and Main.JacobAsiedu - 10 May 2004
+
+---
+
+It is great to hear that you are testing SDD with code! Points I am confused about: 
+
+	* Why are you adding multiple concept trees? You seem to identify a concept with a tree, but it is thought as a "tree of concepts". Each set of reusable state definitions is thought to be defined at a node in the tree, so a single tree should be enough to express all reusable sets of states. -- Gregor Hagedorn -- 10 May 2004
+		* We had no concepts that had any structure of their own--they are all enumerations--so the treeness never quite made it into our consciousness. We could have a single tree with five (terminal) nodes. It is not so clear what the unifying theme would be in this case, e.g. what the mandatory <nop>ConceptTree/Label should be. Perhaps among our five concepts there are three sorts: ecological (Aggregation and Abundance), physical (Color and Opacity) and the other one (Boolean). So maybe this Concept tree could have three branches below the root. But this might be overkill here. We like the idea of Concept trees, but we don't yet see how they would be used except as an organizing principle (which might justify it). For us at the moment the Concept trees are just a place to hang the global states, and we make no use of their exact organization. --- Main.BobMorris, Main.JacobAsiedu
+			* (I would suggest the tree is labeled "Globally reused state sets" -- i.e. simply label what you use it for. The "ecological" etc. concepts could be node label, but these are not required. You could also, as I suggested, ignore the additional grouping and simply have one node for each reused enumeration directly in the root. I would only recommed not using one tree per concept. The list of trees is flat, so having 100s of trees in a larger project would be very confusing and ultimately very difficult to manage. No big deal for the test data, sure; I just wanted to get at the source of a possible misunderstanding. Note: I get no conclusions to change SDD from this, or does anybody else sees something? -- Gregor Hagedorn -- 13 May 2004
+
+--- 
+
+	* "the coded and NLP character sets are independent": what is a character set? You mean the definition of the terminology? Why would it have to be independent? Does the NLP contain additional data in comparison with the CD (i.e. data where your metadata element "coded" is false?). -- Gregor Hagedorn -- 10 May 2004
+		* Yes, we mean the characters in the Terminology. Because most data in the underlying Filemaker file are just strings, we have to assign each Filemaker field to represent either a character that will be parsed and become eligible for use in Coded descriptions or one that will not. The others are used only in NLDs. That decision is a bit arbitrary, presently being determined mostly by convenience and our need to have something for the Berlin meeting :-).
+		* It is possible that for the ones we are not parsing---and for the corresponding construction of NLDs--we are being silly. Consider the item named "Comments" (Character 25 in ithomids.xml). We end up with 32 different local Categorical states, one for each of the different unparsed strings that appear in the underlying data. We wonder if this is the really the right thing to do. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+			* (I would think this is a good example to export as text character / unconstrained text, see below.) -- -- Gregor Hagedorn -- 13 May 2004
+		* Generally, each Filemaker field has been turned into an Item in the EFGDocument, but like the Filemaker data, most of the EFGDocument Schema is also untyped (hence Item content is mostly strings). On reflection, it is possible that we could handle some of the typing upon generating an EFGDocument (and have the Schema more strongly typed), and then our metadata file would have less work to do. This might be an important lesson for other implementors whose native XML output is not carefully thought out---as ours wasn't!
+		* We do have some data structuring conventions for database authors reflecting the needs to have certain data related to one another in several contexts. For example, sometimes external resources are grouped together for some reason. Thus an author may wish to indicate that X1.jpg, X2.jpg and X3.jpg are all the same illustration of something but at increasing resolution. Those names might appear as the string X1.jpg|X2.jpg|X3.jpg in a field named <nop>SpeciesImage. Our structuring convention is even more complex than lists alone, but always the semantics of any particular such string is externally specified, but in a very ad-hoc way. For example the aforementioned relationship, i.e. that they are the same picture at increasing resolution, appears only in an external XSLT that is concerned with html rendering for clients that request it. That seems reasonable for this particular relationship, but it is hardly a general expression of how to interpret the list. Other such examples are fields for  a list of larval host plants, one for a list of "similar species", which are those that the author believes might be confused with the given species and one for a list of nectar plants. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+			* (The issue of unconstrained lists (only unconstrained text is so far supported) is still on the SDD agenda. Basically the problem is that the last two examples show that there is a need for list or set structures, but on the other hand any such example studied so far really points to an outside resource. Whether it is a list of geographical locations, or a list of host or confused taxa... So my own tendency is that lists are useful as a practical tool, but can we perhaps structure them in a way to make them always "connectible" to outside data resources, like we do with other resources?) -- Gregor Hagedorn -- 13 May 2004
+
+---
+
+	* "although many Items would not necessarily be recognized as biologically meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export)." -- Besides that for DELTAist people the term "Item" is an unlucky choice because more or less syn. with class/object in SDD rather than character: what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (equivalent to a DELTA text character, i.&nbsp;e. <nop>UnconstrainedText set to true in the SDD character state definition). -- Gregor Hagedorn -- 10 May 2004
+		* Ah, we strongly mis-spoke here. When we look to the original Filemaker file, we find only _one_ such field--and it is reflected in the EFGDocument.xml--a thing called "Footer", which is in fact an IPR statement and with a little work could have been emitted that way. However, merely because this is a work in progress, we are nevertheless losing some data only because we haven't got around to treating them yet. Those are things in the Filemaker file that have not yet made it into the metadata file, hence not into the SDD output. They are, however, all biological in nature. -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+---
+
+	* In [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]] you have an original character "Scent scales on costal margin of HWD" for which you define a global categorical element of title "Sex". This is probably an oversight. -- Gregor Hagedorn -- 10 May 2004
+		* Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the SDD representation for this character and its modifiers. Done right, it's probably a great example for SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. -- Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) -- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+---
+
+@
+
+
+1.5
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1084385294" format="1.0" version="1.5"}%
+d24 13
+a36 1
+	* Why are you adding multiple concept trees? You seem to identify a concept with a tree, but it is thought as a "tree of concepts". Each set of reusable state definitions is thought to be defined at a node in the tree, so a single tree should be enough to express all reusable sets of states. ---Main.GregorHagedorn
+d38 1
+a38 3
+We had no concepts that had any structure of their own--they are all enumerations--so the treeness never quite made it into our consciousness. We could have a single tree with five (terminal) nodes. It is not so clear what the unifying theme would be in this case, e.g. what the mandatory <nop>ConceptTree/Label should be. Perhaps among our five concepts there are three sorts: ecological (Aggregation and Abundance), physical (Color and Opacity) and the other one (Boolean). So maybe this Concept tree could have three branches below the root. But this might be overkill here. We like the idea of Concept trees, but we don't yet see how they would be used except as an organizing principle (which might justify it). For us at the moment the Concept trees are just a place to hang the global states, and we make no use of their exact organization. --- Main.BobMorris, Main.JacobAsiedu
+ 
+	* "the coded and NLP character sets are independent": what is a character set? You mean the definition of the terminology? Why would it have to be independent? Does the NLP contain additional data in comparison with the CD (i.e. data where your metadata element "coded" is false?). -- Main.GregorHagedorn
+d40 2
+a41 19
+Yes, we mean the characters in the Terminology. Because most data in the underlying Filemaker file are just strings, we have to assign each Filemaker field to represent either a character that will be parsed and become eligible for use in Coded descriptions or one that will not. The others are used only in NLDs. That decision is a bit arbitrary, presently being determined mostly by convenience and our need to have something for the Berlin meeting :-).
+
+It is possible that for the ones we are not parsing---and for the corresponding construction of NLDs---we are being silly. Consider the item named "Comments" (Character 25 in ithomids.xml). We end up with 32 different local Categorical states, one for each of the different unparsed strings that appear in the underlying data. We wonder if this is the really the right thing to do.
+
+Generally, each Filemaker field has been turned into an Item in the EFGDocument, but like the Filemaker data, most of the EFGDocument Schema is also untyped (hence Item content is mostly strings). On reflection, it is possible that we could handle some of the typing upon generating an EFGDocument (and have the Schema more strongly typed), and then our metadata file would have less work to do. This might be an important lesson for other implementors whose native XML output is not carefully thought out---as ours wasn't!
+
+We do have some data structuring conventions for database authors reflecting the needs to have certain data related to one another in several contexts. For example, sometimes external resources are grouped together for some reason. Thus an author may wish to indicate that X1.jpg, X2.jpg and X3.jpg are all the same illustration of something but at increasing resolution. Those names might appear as the string X1.jpg|X2.jpg|X3.jpg in a field named <nop>SpeciesImage. Our structuring convention is even more complex than lists alone, but always the semantics of any particular such string is externally specified, but in a very ad-hoc way. For example the aforementioned relationship, i.e. that they are the same picture at increasing resolution, appears only in an external XSLT that is concerned with html rendering for clients that request it. That seems reasonable for this particular relationship, but it is hardly a general expression of how to interpret the list. Other such examples are fields for  a list of larval host plants, one for a list of "similar species", which are those that the author believes might be confused with the given species and one for a list of nectar plants. --- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+	* "although many Items would not necessarily be recognized as biologically meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export)." -- Besides for DELTA-ist Item being an unlucky choice (because more or less syn. with class/object in SDD rather than character), what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (i.e. in the character state definition, <nop>UnconstrainedText set to true; -&gt; equivalent to a DELTA text character). Main.GregorHagedorn 10 May 2004
+
+Ah, we strongly mis-spoke here. When we look to the original Filemaker file, we find only _one_ such field--and it is reflected in the EFGDocument.xml--a thing called "Footer", which is in fact an IPR statement and with a little work could have been emitted that way. However, merely because this is a work in progress, we are nevertheless losing some data only because we haven't got around to treating them yet. Those are things in the Filemaker file that have not yet made it into the metadata file, hence not into the SDD output. They are, however, all biological in nature. ---Main.BobMorris, Main.JacobAsiedu 12 May 2004
+
+
+	* In [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]] you have an original character "Scent scales on costal margin of HWD" for which you define a global categorical element of title "Sex". This is probably an oversight. Main.GregorHagedorn 10 May 2004
+
+
+Ah, it is a little less of an oversight than a combination of (a)poor data representation in the original Filemaker.(b)poor naming on our part and (c)poor choice of the SDD representation for this character and its modifiers. Done right, it's probably a great example for SDD. HWD denotes "hind wing dorsal". The logically possible states are: yes in males (but not females), yes in females (but not males), yes in both, the corresponding "no" states, and an "n/a" state and possibly the usual problem of distinguishing absent data from absence of the scent scales. For us, worse yet is that only a few states are actually in the data, so the task of representing the whole thing in the metadata is not so clear to us at the moment. This is a somewhat generic problem if one is trying to deduce the possible states from those represented in the data. 
+
+Without regard to whether the states are all correct,in this case the cell containing "Sex" in the metadata file happens to be ignored. So we are more guilty of misleading than of making an oversight. :-) --- Main.BobMorris, Main.JacobAsiedu 12 May 2004
+d43 1
+d45 2
+@
+
+
+1.4
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="BobMorris" date="1084377360" format="1.0" version="1.4"}%
+d16 1
+a16 1
+There are five <nop>ConceptTrees acting as containers for the globally reusable states that represent these concepts: Color, Aggregation (used for egg laying habit: solitary or clustered), Abundance (Common, Uncommon, Rare, Not recorded from Monteverde, Not yet recorded); Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The <nop>ConceptTrees arise from the metadata file: if a character is declared global and has an "<nop>EnumeratedTitle", that <nop>typeTitle becomes the Concept label and all states for that character that are encountered in the database are added to the Concept named by the <nop>typeTitle metadata item. Subsequent processing of a character in the EFGDocument will assign a reference to the Concept and Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in the Description. In the EFGDocument, Characters are called Items, although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export).
+@
+
+
+1.3
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="JacobAsiedu" date="1084366080" format="1.0" version="1.3"}%
+d24 1
+a24 1
+	* Why are you adding multiple concept trees? You seem to identify a concept with a tree, but it is thought as a "tree of concepts". Each set of reusable state definitions is thought to be defined at a node in the tree, so a single tree should be enough to express all reusable sets of states.
+d26 3
+a28 1
+	* "the coded and NLP character sets are independent": what is a character set? You mean the definition of the terminology? Why would it have to be independent? Does the NLP contain additional data in comparison with the CD (i.e. data where your metadata element "coded" is false?).
+d30 19
+a48 1
+	* "although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export)." -- Besides for DELTA-ist Item being an unlucky choice (because more or less syn. with class/object in SDD rather than character), what are the items expressing rendering preferences? Can you enumerate or give examples? What kind of data are you loosing in the export? I would think that characters like "Comments" or "Habitat" fit very well into the coded description type, albeit as a character only with a single text state (i.e. in the character state definition, <nop>UnconstrainedText set to true; -&gt; equivalent to a DELTA text character).
+a49 1
+	* In [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]] you have an original character "Scent scales on costal margin of HWD" for which you define a global categorical element of title "Sex". This is probably an oversight.
+a50 1
+-- Gregor Hagedorn - 10 May 2004
+@
+
+
+1.2
+log
+@none
+@
+text
+@d1 1
+a1 1
+%META:TOPICINFO{author="GregorHagedorn" date="1084279633" format="1.0" version="1.2"}%
+d12 1
+a12 1
+The data author's underlying database, <nop>FileMaker, is very weakly typed, and so is EFGDocument.xsd. Most data is as strings, and much of it is somewhat narrative in this data set. Consequently, the glue code has to parse some of the data. That parsing and several other decisions are guided by the character metadata file [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]], an Excel file which discribes such things as whether a character will be in a coded description or not, whether its states are to be local or global, how states are to be parsed if at all, data typing, and a few other things. Among the lessons learned is that we need to uniformize some metatdata aspects of our own data and build tools to provide this kind of representation.
+d16 1
+a16 1
+There are five <nop>ConceptTrees acting as containers for the globally reusable states that represent these concepts: Color, Aggregation (used for egg laying habit: solitary or clustered), Abundance (Common, Uncommon, Rare, Not recorded from Monteverde, Not yet recorded); Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The <nop>ConceptTrees arise from the metadata file: if a character is declared global and has an "<nop>EnumeratedTitle", that <nop>EnumeratedTitle becomes the Concept label and all states for that character that are encountered in the database are added to the Concept named by the <nop>EnumeratedTitle metadata item. Subsequent processing of a character in the EFGDocument will assign a reference to the Concept and Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in the Description. In the EFGDocument, Characters are called Items, although many Items would not necessarily be recognized as biological meaningful; some are used for the author to express rendering preferences in a human interface. Only those in the metadata file are turned into SDD characters. (In particular, we are presently losing data in our SDD export).
+d34 2
+a35 2
+---
+
+d39 1
+a39 1
+%META:FILEATTACHMENT{name="IthomidsMetadata.xls" attr="" comment="Metadata for driving export" date="1084211983" path="F:\SDD\IthomidsMetadata.xls" size="23040" user="BobMorris" version="1.1"}%
+@
+
+
+1.1
+log
+@none
+@
+text
+@d1 2
+a2 1
+%META:TOPICINFO{author="BobMorris" date="1084212420" format="1.0" version="1.1"}%
+d4 1
+a4 19
+The file [[%ATTACHURL%/ithomidsSDD.xml][ithomidsSDD.xml]] contains the result of transforming the file
+[[%ATTACHURL%/EFGDocument.xml][EFGDocument.xml]] into an SDD instance document. The code to do so
+was written by Main.JacobAsiedu. EFGDocument.xml is a document produced by
+a query to an instance of the [[http://www.cs.umb.edu/efg][Electronic Field Guide]] software against
+a data source containing 82 records representing the 62 species of
+Ithomid butterflies known in Monteverde, Costa Rica. 
+
+EFGDocument.xml is produced by our software with http <nop>DiGIR queries or
+idiosyncratic http queries of the EFG project. In this case, it
+corresponds to the SQL query SELECT * FROM Ithomids. Such a document is
+returned valid for the Schema[[%ATTACHURL%/EFGDocument.xsd][EFGDocument.xsd]].(In the EFG,
+when a client requests Descriptions as html, we process such a
+document with XSLT before serving it).
+
+
+Each SDD Description contains an object //Description//__<nop>OtherScope
+with value "Male", "Female", or "Both" according as to what sex the
+Description applies. How to make this distinction is currently the
+subject of the topic TheProblemOfSex.
+d6 1
+d8 11
+d20 7
+a26 11
+The [[http://www.castor.org][Castor databinding framework]] was used
+to produce marshalling and unmarshalling code for each of the
+EFGDocument and SDD schemas. This code mediates between Java and XML
+in a given schema, and the Asiedu code is left with only the task of
+converting between SDD Java objects and EFGDocument Java objects. This
+part requires about 7000 lines of Java (but is presently only
+EFG->SDD). Castor generates about 124,000 lines of code but generated
+code is probably 5-10 times what would be written by hand---though
+likely less error prone. Source code for the glue code, and scripts
+for running Castor are in our
+[[http://efgblade.cs.umb.edu/cgi-bin/cvsweb.cgi/efg2sdd][CVS repository]]
+d28 1
+a28 38
+The data author's underlying database, <nop>FileMaker, is very weakly
+typed, and so is EFGDocument.xsd. Most data is as strings, and much of it is somewhat narrative
+in this data set. Consequently, the glue code has to parse some of
+the data. That parsing and several other decisions are guided by the
+character metadata file [[%ATTACHURL%/IthomidsMetadata.xls][IthomidsMetadata.xls]], an Excel file which
+discribes such things as whether a character will be in a coded
+description or not, whether its states are to be local or global, how
+states are to be parsed if at all, data typing, and a few other
+things. Among the lessons learned is that we need to uniformize some
+metatdata aspects of our own data and build tools to provide this kind
+of representation.
+
+In general, each Class (i.e. taxon) and scope ("Male", "Female",
+"Both") has both a Coded and <nop>NaturalLanguage description corresponding
+to the characters for which "coded" is true in the metadata file. That
+is, the coded and NLP character sets are independent of each other. It
+seems likely that dichotomous keys could be generated automatically
+from the coded Descriptions, though our own keys (not represented
+here) are usually authored by an expert.
+
+There are five <nop>ConceptTrees acting as containers for the globally
+reusable states that represent these concepts: Color, Aggregation
+(used for egg laying habit: solitary or clustered), Abundance (Common,
+Uncommon, Rare, Not recorded from Monteverde, Not yet recorded);
+Opacity (Transparent, Translucent, Opaque); Boolean (Yes, No). The
+ConceptTrees arise from the metadata file: if a character is declared
+global and has an "<nop>EnumeratedTitle", that <nop>EnumeratedTitle becomes the
+Concept label and all states for that character that are encountered
+in the database are added to the Concept named by the <nop>EnumeratedTitle
+metadata item. Subsequent processing of a character in the EFGDocument
+will assign a reference to the Concept and
+Concept/<nop>ConceptStates/<nop>StateDefinition as the Character and State in
+the Description. In the EFGDocument, Characters are called Items,
+although many Items would not necessarily be recognized as biological
+meaningful; some are used for the author to express rendering
+preferences in a human interface. Only those in the metadata file are
+turned into SDD characters. (In particular, we are presently losing data
+in our SDD export).
+d30 1
+d32 1
+d34 1
+a34 1
+-- Main.BobMorris and Main.JacobAsiedu- 10 May 2004
+@

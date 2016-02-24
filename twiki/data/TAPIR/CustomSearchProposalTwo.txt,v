@@ -1,0 +1,101 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@---+ CustomSearchProposalTwo
+
+Another proposal to fit the CustomSearch requirements.
+
+The ResponseStructure (starting with <structure>) is defined here using a subset of XML Schema with annotated mappings.
+
+Since the XML Schema schema accepts attribute extensions in most elements using:
+
+<xs:anyAttribute namespace="##other" processContents="lax"/>
+
+Then custom requests would not produce invalid XML due to the attribute annotations.
+
+For counting matches and returned records as well as the paging mechanism we need to give a RecordDefinition, in this case also using the annotation technique.
+
+---+++++ Request
+<verbatim>
+<request>
+   <header>
+      ...
+   </header>
+   <search start="0" limit="2" count="true" xmlns:dwc="http://tdwg.org/dwc/1.0">
+   <filter>
+      <like concept="dwc:ScientificName">Rubus*</like>
+   </filter>
+   <structure xmlns:myns="http://example.net/mysn/1.0">
+     <xsd:element name="myns:DataSet">
+       <xsd:complexType>
+         <xsd:sequence>
+           <xsd:element name="myns:Specimen" maxOccurs="unbounded" record="dwc:record">
+             <xsd:complexType>
+               <xsd:sequence>
+                 <xsd:element name="myns:CatalogNum" type="xsd:string" concept="dwc:CatalogNumber" CustomSearchProposalTwo>
+                 <xsd:element name="myns:Identification" maxOccurs="unbounded" >
+                   <xsd:complexType>
+                     <xsd:sequence>
+                       <xsd:element name="myns:FullName" type="xsd:string" concept="dwc:ScientificName" CustomSearchProposalTwo>
+                     </xsd:sequence>
+                   </xsd:complexType>
+                 </xsd:element>
+               </xsd:sequence>
+             </xsd:complexType>
+           </xsd:element>
+         </xsd:sequence>
+       </xsd:complexType>
+     </xsd:element>
+   </structure>
+   </search>
+</request>
+</verbatim>
+
+
+---+++++ Response
+<verbatim>
+<response>
+   <header>
+      ...
+   </header>
+   <content xmlns:myns="http://example.net/mysn/1.0">
+      <myns:DataSet>
+         <myns:Specimen>
+            <myns:CatalogNum>234</myns:CatalogNum>
+            <myns:Identification>
+               <myns:FullName>Rubus rosaefolius</myns:FullName>
+            </myns:Identification>
+         </myns:Specimen>
+         <myns:Specimen>
+            <myns:CatalogNum>239</myns:CatalogNum>
+            <myns:Identification>
+               <myns:FullName>Rubus brasiliensis</myns:FullName>
+            </myns:Identification>
+         </myns:Specimen>
+      </myns:DataSet>
+   </content>
+</response>
+</verbatim>
+
+
+@

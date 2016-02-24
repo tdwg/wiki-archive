@@ -1,0 +1,421 @@
+head	1.19;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.19
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.09.00.00.00;	author MoinMoin;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial revision
+@
+
+
+1.19
+log
+@Revision 19
+@
+text
+@---+++ What is an access point?
+
+What is the relation between a UDDI service entity, a BioCASE datasource and a DiGIR resource?
+For the definition of terms like provider, datasource, resource, etc. please take a look at the GlossaryOfTerms.
+
+In UDDI and BioCASE there is a URL for a single service, the access point. In DiGIR you can address several resources within one provider which is having a URL as its access point.
+
+Do we need to include addressing of "subdomains" like DiGIR resources into the protocol? If so, how can we adress different datasources? 
+
+*Comments:*
+
+    Subdomains remain very important to a number of providers (e.g. the UK National Biodiversity Network and the Canadian Biodiversity Information Facility) which host a large number of different resources.  Obviously there are different ways that this could be handled, but it should remain simple for providers to share a large number of datasets without having to create a corresponding number of web applications (or worse still running processes).  It is worth mentioning however that some of these providers have a problem with the fact that many of the metadata elements have to be the same for all resources within a DiGIR provider.  The UK NBN wants to be able to give higher profile to the originators of the data sets.
+
+        - Donald Hobern, 30 June 2004
+-----
+    I definetely see the need for addressing different resources within a providers domain. But I thought it would be easier to have a seperate access point = URL for each of them instead of addressing them within the protocol. But I guess you are right that this could lead to a lot of parallel processes for providers sharing many resources, if they are all queried at the same time.
+    But if I understand DiGIR as it is now correctly, you can only address a single resource with one request. How does this save server processes? If I will have to send 10 requests to a provider to access 10 resources, I could as well do this with 10 different access points. So in my opinion it is easier to have seperate access points for each resource - thus eleminating the need to address resources in the protocol - or allow the protocol to address several resources in one go (which would give the wrapper/provider software some serious additional task).
+
+        - Markus Döring, 2 July 2004
+-----
+    Another aspect is that if we address resources inside the protocol, every software that needs to distinguish between resources will need to parse and understand the protocol. This will be important when thinking about security mechanisms to give different users different access rights. One group of people might be allowed to access all resources, when all others should only see certain ones. If we have seperate access points for resources - thus making a resource a service on its own - we can handle these security aspects with standard software dealing with http and tcp/ip.
+
+        - Markus Döring, 2 July 2004
+-----
+    I see no significant differences concerning performace in both approaches. 
+
+    And there's only a small difference considering the ammount of work involved in enabling new resources in the same provider installation: if each resource is associated to a single URL, there should be one folder and one copy of the scripts to each resource. For BioCASE the problem is minimized by the fact that it uses a single CGI script (with a few lines of code making calls to a shared library). For DiGIR the problem is bigger because it uses several files, therefore maintenace would become harder.
+
+    But I think the main difference between the two approaches is conceptual. When we bind the access point to a resource, we are limiting the concept of a service to a single dataset. The other option, binding access points to general data providers, is broader - it means a single service can provide multiple datasets. This conceptual difference can have further implications on things such as UDDI registry and resource discovery. A data provider that wishes to serve 50 datasets needs to register 50 times in UDDI, because each dataset is a different access point. Networks who don't want to use UDDI will have difficulties to keep their list of resources updated - how would they know when a new resource is available from the same provider? Or if an existing resource was dropped? When a dataset is not bound to an access point, any change in the list of datasets being served by a data provider can be automatically advertised through metadata requests.
+
+    If a single service (access point) is associated to multiple datasets (DiGIR approach), a data provider still has the choice of serving new resources either through an existing access point, or through a new one (if it wants to use a different configuration of the web server, for instance to benefit from security aspects mentioned by Markus).
+
+        - RenatoDeGiovanni, 2 July 2004
+-----
+
+    A disadvantage of registering providers (or set of resources) as services in UDDI is that we do not have a resource description there. Naturally I think the individual resources are the real services on wants to talk about and not a set of resources. So one would like to have a description of the available resources in the registry. Querying for each providers metadata to get the resource desciption is quite unwieldy. And I don't see that providers will add or remove resources frequently. And if so, thats not what we really want, no? A stable object GUID requires at least a lasting resource.
+
+    We could still think of having a "global" metadata request, so that networks not using UDDI could retrieve from any of the providers access points the same metadata listing all resources together with their respective access point. This would make the discovery of resources in a providers domain easy but allows one to treat resources seperate from each other.
+
+        - Markus Döring, 3 July 2004
+-----
+   
+    Resource description and metadata, as I understood from previous discussions, would mainly be retrieved through "search" requests, since part of our community wants a complete set of fields for that (IPR, acknowledgements, derivations, etc). UDDI is quite limited for this kind of metadata. And the protocol metadata request we began discussing would be used to retrieve mostly technical information.
+
+    I see UDDI being used mainly for a general service discovery ("who speaks this protocol?"). And nothing prevents us from serving multiple datasets through the same access point. It would be our sole decision to limit or not a service to a single dataset.
+
+    Querying providers metadata to get a list of available resources and basic descriptions is being used by many networks for a long time, and I fail to see any big disadvantage here. I never saw any resource disappearing (hope it would not happen), but I did see many times new resources automatically popping up on the interfaces as some provider connected new datasets.
+
+    Resource codes were never supposed to be GUIDs. They are only unique identifiers within the scope of a single provider. Any additional meaning for resource codes is not part of the original idea. GUIDs are a separate discussion, that may or may not have some intersection with this one (I think it should not).
+
+    At this point, we already have a lot of arguments. I think it would be interesting to draw the possible consequences that each approach would bring to the existing networks before taking a decision. Please, see SingleResourceAccessPoints and MultipleResourceAccessPoints for more details.
+
+        - RenatoDeGiovanni, 4 July 2004
+-----
+
+    As Bob Morris said in one of his presentations, I saw of him : "For computers Metadata and data are exactly the same, just data." If you push this far enough the data can be just a "value" and all around describing this value "metadata". So should "metadata" like (IPR, acknowledgements, derivations, etc) no better be treated as data and exchanged the same way as "data" and be part of the XML data exchange standards and as far as possible independent if not completely absent from the data providing tool ?
+
+       - PatricaMergen, 8 September 2004
+-----
+
+    Concerning the discussion 1 Access Point - 1 resource or 1 Access point - 1 provider but several Resources, we (BeBIF) can give "practical arguments" as we have tested both systems with micro-organisms and ENBI projects. We offer the services of hosting the data of data-providers who have not the resources and help them with the mappings. These are each a resource kept separately in PostgrSQL. They want first to see what it looks like, comment the mappings, test search before the data goes public to GBIF. 
+
+    In the case of DiGIR to give "private" access rights to view the data before they are made public was to install two DiGIR providers a private and a public. Fortunately Microbe people and ENBI people did not complain being on the same provider, but this will not be the case for all resources. So we would anyways have to install almost as many DiGIR's as we have resources or even more if some data have to remain private. Plus moving the XML config files from one Digir provider to the others would have to be automated to avoid mistakes and made quicker.
+
+   In the case of BioCASE each resource is separated anyways and we can play with apache configuration to make a specific resource private or public and decide easier when it is ready to be connected to GBIF. 
+
+   The metadata as they are for the moment in DiGIR as well for the provider and for the resources are very user-friendly to provide, but far to limited and have proven not flexible enough to avoid IPR and proper ?involved persons citing? conflicts. 
+
+   So for practical reasons and based on our experience with both systems, we would be more in favour of Markus's point of view : 1 Access Point - 1 Resource.
+
+
+        - PatricaMergen, 8 September 2004 
+
+
+
+
+
+---+++++ resource GUIDs
+
+Does the protocol need to work with GUIDs identifying resources?
+This helps identifying duplicate resources accessible through several URLs.
+@
+
+
+1.18
+log
+@Revision 18
+@
+text
+@d56 1
+a56 1
+As Bob Morris said in one of his presentations, I saw of him : "For computers Metadata and data are exactly the same, just data." If you push this far enough the data can be just a "value" and all around describing this value "metadata". So should "metadata" like (IPR, acknowledgements, derivations, etc) no better be treated as data and exchanged the same way as "data" and be part of the XML data exchange standards and as far as possible independent if not completely absent from the data providing tool ?
+d61 1
+a61 1
+Concerning the discussion 1 Access Point - 1 resource or 1 Access point - 1 provider but several Resources, we (BeBIF) can give "practical arguments" as we have tested both systems with micro-organisms and ENBI projects. We offer the services of hosting the data of data-providers who have not the resources and help them with the mappings. These are each a resource kept separately in PostgrSQL. They want first to see what it looks like, comment the mappings, test search before the data goes public to GBIF. 
+d63 1
+a63 1
+In the case of DiGIR to give "private" access rights to view the data before they are made public was to install two DiGIR providers a private and a public. Fortunately Microbe people and ENBI people did not complain being on the same provider, but this will not be the case for all resources. So we would anyways have to install almost as many DiGIR's as we have resources or even more if some data have to remain private. Plus moving the XML config files from one Digir provider to the others would have to be automated to avoid mistakes and made quicker.
+d65 1
+a65 1
+In the case of BioCASE each resource is separated anyways and we can play with apache configuration to make a specific resource private or public and decide easier when it is ready to be connected to GBIF. 
+d67 1
+a67 1
+The metadata as they are for the moment in DiGIR as well for the provider and for the resources are very user-friendly to provide, but far to limited and have proven not flexible enough to avoid IPR and proper Â“involved persons citingÂ” conflicts. 
+d69 1
+a69 1
+So for practical reasons and based on our experience with both systems, we would be more in favour of Markus's point of view : 1 Access Point - 1 Resource.
+@
+
+
+1.17
+log
+@Revision 17
+@
+text
+@d59 1
+d61 12
+@
+
+
+1.16
+log
+@Revision 16
+@
+text
+@d54 9
+@
+
+
+1.15
+log
+@Revision 15
+@
+text
+@d10 2
+a11 1
+-----
+d42 14
+@
+
+
+1.14
+log
+@Revision 14
+@
+text
+@d10 1
+@
+
+
+1.13
+log
+@Revision 13
+@
+text
+@d34 6
+@
+
+
+1.12
+log
+@Revision 12
+@
+text
+@d23 1
+d25 8
+@
+
+
+1.11
+log
+@Revision 11
+@
+text
+@d17 1
+a17 1
+        - Markus Doering, 2 July 2004
+d19 1
+d21 2
+@
+
+
+1.10
+log
+@Revision 10
+@
+text
+@d13 1
+a13 2
+
+
+d18 1
+a18 1
+
+@
+
+
+1.9
+log
+@Revision 9
+@
+text
+@d14 1
+d16 1
+a16 1
+But if I understand DiGIR as it is now correctly, you can only address a single resource with one request. How does this save server processes? If I will have to send 10 requests to a provider to access 10 resources, I could as well do this with 10 different access points. So in my opinion it is easier to have seperate access points for each resource - thus eleminating the need to address resources in the protocol - or allow the protocol to address several resources in one go (which would give the wrapper/provider software some serious additional task).
+@
+
+
+1.8
+log
+@Revision 8
+@
+text
+@d15 1
+@
+
+
+1.7
+log
+@Revision 7
+@
+text
+@d14 7
+@
+
+
+1.6
+log
+@Revision 6
+@
+text
+@d6 1
+a6 1
+In UDDI and BioCASE there is a URL for a single service, the access point. In DiGIR you can adress several resources within one provider which is having a URL as its access point.
+d8 1
+a8 1
+Do we need to include adressing of "subdomains" like DiGIR resources into the protocol? If so, how can we adress different datasources? 
+@
+
+
+1.5
+log
+@Revision 5
+@
+text
+@d10 4
+@
+
+
+1.4
+log
+@Revision 4
+@
+text
+@a10 5
+The DiGIR protocol probably needs GUIDs for resources added to it.
+It appears that the stock portal from the cvs repository eliminates 
+duplicates based on provider URL, but multiple providers could see the 
+same resource and a DiGIR client could not tell this except by comparing 
+all records pairwise.
+d12 2
+a13 7
+Among the implications of this is that applications that may be counting 
+occurrences from collection data need to insure that they are not double 
+counting by comparing the record unique identifiers (which as I recall, 
+for DC2 are a combination of fields). [[I][guess this problem is not 
+entirely solved by resource GUIDs since perhaps two resources could have 
+the same collection record]].  I wonder if any any modeling or analysis 
+applications are currently dealing with this.
+@
+
+
+1.3
+log
+@Revision 3
+@
+text
+@d10 14
+@
+
+
+1.2
+log
+@Revision 2
+@
+text
+@d3 4
+a6 1
+To we need to include adressing of "subdomains" like DiGIR resources into the protocol? 
+d8 1
+a8 1
+If so, how can we adress different datasources? 
+a9 1
+For the definition of terms like provider, datasource, resource, etc. please take a look at the GlossaryOfTerms.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 1
+a1 1
+What is an access point? 
+d6 2
+@
